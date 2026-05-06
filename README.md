@@ -1,22 +1,26 @@
-# Calibrated LLM Traveler Simulator
+# Research Worktree — Calibrated LLM Traveler Simulator
 
-基于大语言模型的可校准旅客行为模拟器。
+CCF-A 论文目标：WWW / KDD / NeurIPS / AAAI
 
-## 项目结构
+## 核心贡献
 
-本项目包含两个并行工作流：
+1. **结构化 LLM 模拟器**：Persona→Utility→Choice 三层分离
+2. **双层校准框架**：TextGrad prompt 优化 + post-hoc 概率校准
+3. **模拟器评测协议**：拟合/校准/结构一致性/稳定性/漂移鲁棒性
 
-- **research/** — 科研方向，目标：CCF-A 级别论文发表
-- **product/** — 产品方向，目标：策略预审 / 红队测试 / 合规证据生成
+## 文档
 
-## 核心思路
+- [ROADMAP.md](ROADMAP.md) — 6 月研究路线图
+- [paper/OUTLINE.md](paper/OUTLINE.md) — 论文章节大纲
 
-输入"场景上下文 + offer set + 信息集"，输出结构化的选择分布与行为轨迹，
-通过小样本真实数据实现校准，使模拟器在统计意义上接近真实人群行为分布。
+## 代码结构
 
-## 技术栈
-
-- Python 3.11+
-- TextGrad / ProTeGi（文本梯度 prompt 优化）
-- DSPy（模块化 LLM 编程）
-- 离散选择模型（MNL / Nested Logit）
+```
+src/
+├── simulator/      # 三层模拟器（schema, persona, utility, choice）
+├── calibration/    # TextGrad + post-hoc 校准
+└── evaluation/     # 指标与违例检测器
+experiments/        # 实验脚本（按数据集组织）
+data/               # 数据加载与预处理
+paper/              # LaTeX 源、图表、bib
+```
