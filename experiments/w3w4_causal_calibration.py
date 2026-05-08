@@ -4,8 +4,10 @@ Demonstrates TextGrad + causal constraint optimization on Swissmetro semi-synthe
 
 Usage:
     python experiments/w3w4_causal_calibration.py [--max-iter 10] [--dry-run]
+    python experiments/w3w4_causal_calibration.py --local  # use LM Studio local model
 
 The --dry-run flag uses mock LLM responses for testing the pipeline without API costs.
+The --local flag uses a local OpenAI-compatible server (default: localhost:1234).
 """
 
 import argparse
@@ -18,7 +20,9 @@ from circe.calibration.loss import compute_causal_loss
 from circe.simulator.llm_choice import LLMChoiceSimulator, SimulatorConfig
 
 
-def run_experiment(max_iterations: int = 10, dry_run: bool = False):
+def run_experiment(max_iterations: int = 10, dry_run: bool = False,
+                   local: bool = False, base_url: str = "http://localhost:1234/v1",
+                   model: str = "google/gemma-4-31b", eval_size: int = 10):
     print("=" * 60)
     print("CIRCE W3-W4: Individual Causal Calibration")
     print("=" * 60)
@@ -37,14 +41,27 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False):
     print(f"Train: {len(train_pairs)} pairs, Test: {len(test_pairs)} pairs")
 
     # Configure calibration
+    if local:
+        provider = "openai"
+        sim_model = model
+        tg_model = model
+        print(f"\n[LOCAL MODE — using {model} via {base_url}]")
+    else:
+        provider = "anthropic"
+        sim_model = "claude-haiku-4-5-20251001"
+        tg_model = "claude-sonnet-4-6-20250514"
+        base_url = None
+
     config = CalibrationConfig(
         max_iterations=max_iterations,
         patience=3,
         alpha=1.0,
         gamma=2.0,
-        simulator_model="claude-haiku-4-5-20251001",
-        textgrad_model="claude-sonnet-4-6-20250514",
-        eval_sample_size=min(50, len(train_pairs)),
+        simulator_model=sim_model,
+        textgrad_model=tg_model,
+        eval_sample_size=eval_size,
+        provider=provider,
+        base_url=base_url,
     )
 
     if dry_run:
@@ -53,7 +70,7 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False):
         return
 
     # Run calibration loop
-    print(f"\n--- Running calibration (max {max_iterations} iterations) ---")
+    print(f"\n--- Running calibration (max {max_iterations} iterations, eval_size={eval_size}) ---")
     loop = CalibrationLoop(config=config, dataset=train_pairs)
     start_time = time.time()
     result = loop.run()
@@ -110,36 +127,29 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False):
 def _run_dry(config, train_pairs, test_pairs):
     """Dry run: verify pipeline works without API calls."""
     from unittest.mock import patch, MagicMock
-
-    mock_response = MagicMock()
-    mock_response.content = [MagicMock()]
-    mock_response.content[0].text = '{"train": 0.35, "swissmetro": 0.40, "car": 0.25}'
-    mock_response.usage.input_tokens = 100
-    mock_response.usage.output_tokens = 20
-
-    mock_grad_response = MagicMock()
-    mock_grad_response.content = [MagicMock()]
-    mock_grad_response.content[0].text = (
-        "FEEDBACK: The prompt needs more cost sensitivity.\n\n"
-        "EDITED PROMPT: You are simulating a cost-sensitive commuter. "
-        "Consider that price changes strongly affect mode choice."
-    )
-    mock_grad_response.usage.input_tokens = 500
-    mock_grad_response.usage.output_tokens = 200
+    from circe.llm_client import LLMResponse
 
     call_count = [0]
 
-    def mock_create(**kwargs):
+    def mock_chat(system, user):
         call_count[0] += 1
-        if kwargs.get("max_tokens", 0) > 500:
-            return mock_grad_response
-        return mock_response
+        if "optimization engine" in system.lower() or "improve" in system.lower():
+            return LLMResponse(
+                content=(
+                    "FEEDBACK: The prompt needs more cost sensitivity.\n\n"
+                    "EDITED PROMPT: You are simulating a cost-sensitive commuter. "
+                    "Consider that price changes strongly affect mode choice."
+                ),
+                input_tokens=500,
+                output_tokens=200,
+            )
+        return LLMResponse(
+            content='{"train": 0.35, "swissmetro": 0.40, "car": 0.25}',
+            input_tokens=100,
+            output_tokens=20,
+        )
 
-    with patch("circe.simulator.llm_choice.anthropic") as mock_sim, \
-         patch("circe.calibration.textgrad.anthropic") as mock_tg:
-        mock_sim.Anthropic.return_value.messages.create.side_effect = mock_create
-        mock_tg.Anthropic.return_value.messages.create.side_effect = mock_create
-
+    with patch("circe.llm_client.LLMClient.chat", side_effect=mock_chat):
         config.max_iterations = 3
         config.eval_sample_size = 10
         loop = CalibrationLoop(config=config, dataset=train_pairs[:20])
@@ -155,5 +165,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="CIRCE W3-W4 Causal Calibration")
     parser.add_argument("--max-iter", type=int, default=10)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--local", action="store_true", help="Use local LM Studio model")
+    parser.add_argument("--base-url", default="http://localhost:1234/v1")
+    parser.add_argument("--model", default="google/gemma-4-31b")
+    parser.add_argument("--eval-size", type=int, default=10, help="Pairs per evaluation")
     args = parser.parse_args()
-    run_experiment(max_iterations=args.max_iter, dry_run=args.dry_run)
+    run_experiment(
+        max_iterations=args.max_iter,
+        dry_run=args.dry_run,
+        local=args.local,
+        base_url=args.base_url,
+        model=args.model,
+        eval_size=args.eval_size,
+    )

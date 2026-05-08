@@ -14,9 +14,11 @@ class CalibrationConfig:
     patience: int = 3
     alpha: float = 1.0
     gamma: float = 2.0
-    simulator_model: str = "claude-haiku-4-5-20251001"
-    textgrad_model: str = "claude-sonnet-4-6-20250514"
+    simulator_model: str = "google/gemma-4-31b"
+    textgrad_model: str = "google/gemma-4-31b"
     eval_sample_size: int = 50
+    provider: str = "openai"
+    base_url: str | None = None
 
 
 @dataclass
@@ -47,10 +49,18 @@ class CalibrationLoop:
         self.config = config or CalibrationConfig()
         self.dataset = dataset or []
         self.simulator = LLMChoiceSimulator(
-            SimulatorConfig(model=self.config.simulator_model)
+            SimulatorConfig(
+                model=self.config.simulator_model,
+                provider=self.config.provider,
+                base_url=self.config.base_url,
+            )
         )
         self.textgrad = TextGradEngine(
-            TextGradConfig(model=self.config.textgrad_model)
+            TextGradConfig(
+                model=self.config.textgrad_model,
+                provider=self.config.provider,
+                base_url=self.config.base_url,
+            )
         )
 
     def run(self) -> CalibrationResult:

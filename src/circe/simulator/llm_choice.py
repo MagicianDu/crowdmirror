@@ -1,23 +1,31 @@
-"""LLM-based choice simulator using Claude API."""
+"""LLM-based choice simulator supporting Anthropic and OpenAI-compatible APIs."""
 
 import json
 import re
 from dataclasses import dataclass, field
-import anthropic
+from circe.llm_client import LLMClient, LLMClientConfig
 from circe.simulator.prompt_templates import build_choice_prompt, CHOICE_SYSTEM_PROMPT
 
 
 @dataclass
 class SimulatorConfig:
-    model: str = "claude-haiku-4-5-20251001"
-    max_tokens: int = 150
+    model: str = "google/gemma-4-31b"
+    max_tokens: int = 2000
     temperature: float = 0.0
+    provider: str = "openai"
+    base_url: str | None = None
 
 
 class LLMChoiceSimulator:
     def __init__(self, config: SimulatorConfig | None = None):
         self.config = config or SimulatorConfig()
-        self.client = anthropic.Anthropic()
+        self.client = LLMClient(LLMClientConfig(
+            provider=self.config.provider,
+            base_url=self.config.base_url,
+            model=self.config.model,
+            max_tokens=self.config.max_tokens,
+            temperature=self.config.temperature,
+        ))
         self.system_prompt = CHOICE_SYSTEM_PROMPT
         self.total_input_tokens = 0
         self.total_output_tokens = 0
@@ -38,19 +46,12 @@ class LLMChoiceSimulator:
             attributes=attributes,
             context=context,
         )
-        response = self.client.messages.create(
-            model=self.config.model,
-            max_tokens=self.config.max_tokens,
-            temperature=self.config.temperature,
-            system=self.system_prompt,
-            messages=[{"role": "user", "content": user_prompt}],
-        )
-        self.total_input_tokens += response.usage.input_tokens
-        self.total_output_tokens += response.usage.output_tokens
+        response = self.client.chat(system=self.system_prompt, user=user_prompt)
+        self.total_input_tokens += response.input_tokens
+        self.total_output_tokens += response.output_tokens
         self._call_count += 1
 
-        raw_text = response.content[0].text
-        probs = self._parse_probs(raw_text, alternatives)
+        probs = self._parse_probs(response.content, alternatives)
         return probs
 
     def _parse_probs(self, text: str, alternatives: list[str]) -> dict[str, float]:

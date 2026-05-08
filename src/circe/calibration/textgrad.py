@@ -7,15 +7,17 @@ improve the prompt to reduce the causal loss.
 """
 
 from dataclasses import dataclass, field
-import anthropic
+from circe.llm_client import LLMClient, LLMClientConfig
 from circe.calibration.loss import CausalLossResult
 
 
 @dataclass
 class TextGradConfig:
-    model: str = "claude-sonnet-4-6-20250514"
-    max_tokens: int = 1500
+    model: str = "google/gemma-4-31b"
+    max_tokens: int = 4000
     temperature: float = 0.3
+    provider: str = "openai"
+    base_url: str | None = None
 
 
 @dataclass
@@ -66,7 +68,13 @@ Analyze the errors and produce an improved prompt."""
 class TextGradEngine:
     def __init__(self, config: TextGradConfig | None = None):
         self.config = config or TextGradConfig()
-        self.client = anthropic.Anthropic()
+        self.client = LLMClient(LLMClientConfig(
+            provider=self.config.provider,
+            base_url=self.config.base_url,
+            model=self.config.model,
+            max_tokens=self.config.max_tokens,
+            temperature=self.config.temperature,
+        ))
         self._iteration = 0
         self.total_input_tokens = 0
         self.total_output_tokens = 0
@@ -86,17 +94,11 @@ class TextGradEngine:
             examples_text=examples_text,
         )
 
-        response = self.client.messages.create(
-            model=self.config.model,
-            max_tokens=self.config.max_tokens,
-            temperature=self.config.temperature,
-            system=TEXTGRAD_SYSTEM,
-            messages=[{"role": "user", "content": user_msg}],
-        )
-        self.total_input_tokens += response.usage.input_tokens
-        self.total_output_tokens += response.usage.output_tokens
+        response = self.client.chat(system=TEXTGRAD_SYSTEM, user=user_msg)
+        self.total_input_tokens += response.input_tokens
+        self.total_output_tokens += response.output_tokens
 
-        raw = response.content[0].text
+        raw = response.content
         feedback, edited_prompt = self._parse_response(raw, current_prompt)
 
         step = GradientStep(

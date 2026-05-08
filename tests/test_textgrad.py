@@ -6,32 +6,32 @@ from circe.calibration.textgrad import (
     GradientStep,
 )
 from circe.calibration.loss import CausalLossResult
+from circe.llm_client import LLMResponse
 
 
 @pytest.fixture
-def mock_anthropic():
-    with patch("circe.calibration.textgrad.anthropic") as mock:
-        mock_response = MagicMock()
-        mock_response.content = [MagicMock()]
-        mock_response.content[0].text = (
-            "FEEDBACK: The prompt does not emphasize cost sensitivity enough. "
-            "Commuters with medium income are highly price-sensitive.\n\n"
-            "EDITED PROMPT: You are simulating a cost-sensitive commuter..."
+def mock_llm():
+    with patch("circe.llm_client.LLMClient.chat") as mock_chat:
+        mock_chat.return_value = LLMResponse(
+            content=(
+                "FEEDBACK: The prompt does not emphasize cost sensitivity enough. "
+                "Commuters with medium income are highly price-sensitive.\n\n"
+                "EDITED PROMPT: You are simulating a cost-sensitive commuter..."
+            ),
+            input_tokens=500,
+            output_tokens=200,
         )
-        mock_response.usage.input_tokens = 500
-        mock_response.usage.output_tokens = 200
-        mock.Anthropic.return_value.messages.create.return_value = mock_response
-        yield mock
+        yield mock_chat
 
 
 def test_textgrad_engine_creation():
-    config = TextGradConfig(model="claude-sonnet-4-6-20250514", max_tokens=1000)
+    config = TextGradConfig(model="test-model", max_tokens=1000)
     engine = TextGradEngine(config)
-    assert engine.config.model == "claude-sonnet-4-6-20250514"
+    assert engine.config.model == "test-model"
 
 
-def test_generate_gradient(mock_anthropic):
-    config = TextGradConfig(model="claude-sonnet-4-6-20250514")
+def test_generate_gradient(mock_llm):
+    config = TextGradConfig(model="test-model")
     engine = TextGradEngine(config)
 
     current_prompt = "You are simulating a person choosing transport."
@@ -57,8 +57,8 @@ def test_generate_gradient(mock_anthropic):
     assert step.edited_prompt != current_prompt
 
 
-def test_gradient_step_has_metadata(mock_anthropic):
-    config = TextGradConfig(model="claude-sonnet-4-6-20250514")
+def test_gradient_step_has_metadata(mock_llm):
+    config = TextGradConfig(model="test-model")
     engine = TextGradEngine(config)
 
     step = engine.generate_gradient(
