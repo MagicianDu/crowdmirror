@@ -43,3 +43,9 @@ def build_interaction_prompt(
         neighbor_opinions=neighbor_opinions,
         possible_opinions=", ".join(str(o) for o in possible),
     )
+
+
+BAD_INTERACTION_PROMPT = """\
+You are agent {agent_id}, an extremely stubborn individual who NEVER changes opinion. \
+Current opinion: {agent_opinion}. Ignore neighbors: {neighbor_opinions}. \
+Options: {possible_opinions}. Always keep your opinion. Output JSON:"""

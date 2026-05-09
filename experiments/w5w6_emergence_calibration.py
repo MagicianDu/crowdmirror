@@ -20,6 +20,7 @@ from pathlib import Path
 from circe.abm.voter_model import VoterModel, VoterModelConfig
 from circe.abm.emergence_stats import compute_emergence_stats
 from circe.simulator.multi_agent import MultiAgentSimulator, MultiAgentConfig
+from circe.simulator.interaction_templates import BAD_INTERACTION_PROMPT
 from circe.calibration.edm import compute_edm
 from circe.calibration.emergence_loop import (
     EmergenceCalibrationLoop,
@@ -33,6 +34,7 @@ def run_experiment(
     max_iterations: int = 5,
     dry_run: bool = False,
     local: bool = False,
+    bad_init: bool = False,
 ):
     print("=" * 60)
     print("CIRCE W5-W6: Emergence Calibration")
@@ -76,7 +78,11 @@ def run_experiment(
         provider=provider,
         base_url=base_url,
         textgrad_model=model,
+        initial_prompt=BAD_INTERACTION_PROMPT if bad_init else None,
     )
+
+    if bad_init:
+        print("\n[BAD-INIT MODE — starting from deliberately stubborn prompt]")
 
     loop = EmergenceCalibrationLoop(config)
     start_time = time.time()
@@ -191,6 +197,8 @@ if __name__ == "__main__":
     parser.add_argument("--max-iter", type=int, default=5, help="Max calibration iterations")
     parser.add_argument("--dry-run", action="store_true", help="Mock LLM responses")
     parser.add_argument("--local", action="store_true", help="Use LM Studio (localhost:1234)")
+    parser.add_argument("--bad-init", action="store_true",
+                        help="Start from deliberately stubborn prompt (ablation)")
     args = parser.parse_args()
     run_experiment(
         n_agents=args.agents,
@@ -198,4 +206,5 @@ if __name__ == "__main__":
         max_iterations=args.max_iter,
         dry_run=args.dry_run,
         local=args.local,
+        bad_init=args.bad_init,
     )

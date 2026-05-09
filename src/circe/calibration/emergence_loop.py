@@ -59,6 +59,7 @@ class EmergenceCalibrationConfig:
     base_url: str | None = None
     textgrad_model: str = "google/gemma-4-31b"
     textgrad_temperature: float = 0.3
+    initial_prompt: str | None = None
 
 
 @dataclass
@@ -87,7 +88,7 @@ class EmergenceCalibrationLoop:
     def run(self) -> EmergenceCalibrationResult:
         self.ground_truth_stats = self._generate_ground_truth()
 
-        current_prompt = INTERACTION_TEMPLATE
+        current_prompt = self.config.initial_prompt or INTERACTION_TEMPLATE
         best_prompt = current_prompt
         best_edm = float("inf")
         history: list[dict] = []
