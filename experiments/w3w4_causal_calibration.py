@@ -22,6 +22,11 @@ except ImportError:
 
 bootstrap_src_path()
 
+try:
+    from experiments.evidence_manifest import build_run_manifest, write_manifest
+except ImportError:
+    from evidence_manifest import build_run_manifest, write_manifest
+
 from circe.dgp.counterfactual import generate_counterfactual_dataset
 from circe.calibration.loop import CalibrationLoop, CalibrationConfig
 from circe.calibration.loss import compute_causal_loss
@@ -30,7 +35,9 @@ from circe.simulator.llm_choice import LLMChoiceSimulator, SimulatorConfig
 
 def run_experiment(max_iterations: int = 10, dry_run: bool = False,
                    local: bool = False, base_url: str = "http://localhost:1234/v1",
-                   model: str = "google/gemma-4-31b", eval_size: int = 10):
+                   model: str = "google/gemma-4-31b", eval_size: int = 10,
+                   run_id: str | None = None,
+                   manifest_dir: str = "experiments/results/manifests"):
     print("=" * 60)
     print("CIRCE W3-W4: Individual Causal Calibration")
     print("=" * 60)
@@ -74,7 +81,22 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
 
     if dry_run:
         print("\n[DRY RUN MODE — using mock responses]")
-        _run_dry(config, train_pairs, test_pairs)
+        summary = _run_dry(config, train_pairs, test_pairs)
+        manifest_run_id = run_id or f"w3w4-dry-run-{int(time.time())}"
+        manifest = build_causal_manifest(
+            run_id=manifest_run_id,
+            mode="dry-run",
+            command=["python", "experiments/w3w4_causal_calibration.py", "--dry-run"],
+            config={
+                "max_iterations": config.max_iterations,
+                "eval_size": config.eval_sample_size,
+            },
+            result_summary=summary,
+            result_path="",
+        )
+        manifest_path = Path(manifest_dir) / f"{manifest_run_id}.json"
+        write_manifest(manifest_path, manifest)
+        print(f"Evidence manifest saved to {manifest_path}")
         return
 
     # Run calibration loop
@@ -115,6 +137,7 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
         "best_prompt": result.best_prompt,
         "best_loss": result.best_loss,
         "initial_loss": result.initial_loss,
+        "final_loss": result.final_loss,
         "n_iterations": result.n_iterations,
         "total_llm_calls": result.total_llm_calls,
         "elapsed_seconds": elapsed,
@@ -126,10 +149,62 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
     }
     output_path.write_text(json.dumps(output_data, indent=2))
     print(f"\nResults saved to {output_path}")
+    manifest_run_id = run_id or f"w3w4-{'local' if local else 'live'}-{int(time.time())}"
+    manifest = build_causal_manifest(
+        run_id=manifest_run_id,
+        mode="local" if local else "live",
+        command=["python", "experiments/w3w4_causal_calibration.py"],
+        config={
+            "max_iterations": max_iterations,
+            "eval_size": eval_size,
+            "local": local,
+            "provider": provider,
+            "model": sim_model,
+        },
+        result_summary=output_data,
+        result_path=str(output_path),
+    )
+    manifest_path = Path(manifest_dir) / f"{manifest_run_id}.json"
+    write_manifest(manifest_path, manifest)
+    print(f"Evidence manifest saved to {manifest_path}")
 
     print("\n" + "=" * 60)
     print("W3-W4 COMPLETE: Causal calibration demonstrated.")
     print("=" * 60)
+
+
+def build_causal_manifest(
+    *,
+    run_id: str,
+    mode: str,
+    command: list[str],
+    config: dict,
+    result_summary: dict,
+    result_path: str,
+) -> dict:
+    initial = float(result_summary.get("initial_loss", 0.0))
+    best = float(result_summary.get("best_loss", initial))
+    improvement_ratio = (initial - best) / initial if initial > 0 else 0.0
+    return build_run_manifest(
+        run_id=run_id,
+        lane="causal",
+        mode=mode,
+        command=command,
+        config=config,
+        metrics={
+            "initial_loss": initial,
+            "best_loss": best,
+            "final_loss": float(result_summary.get("final_loss", best)),
+            "improvement_ratio": improvement_ratio,
+            "n_iterations": int(result_summary.get("n_iterations", 0)),
+            "total_llm_calls": int(result_summary.get("total_llm_calls", 0)),
+        },
+        artifacts={"result_json": result_path},
+        notes=[
+            "Causal calibration compares predicted mode probabilities and Swissmetro ATE.",
+            "Dry-run mode uses mocked LLM responses and only validates execution plumbing.",
+        ],
+    )
 
 
 def _run_dry(config, train_pairs, test_pairs):
@@ -167,6 +242,14 @@ def _run_dry(config, train_pairs, test_pairs):
     print(f"  Initial loss: {result.initial_loss:.4f}")
     print(f"  Final loss: {result.final_loss:.4f}")
     print("  [Dry run complete — pipeline is functional]")
+    summary = {
+        "initial_loss": result.initial_loss,
+        "best_loss": result.best_loss,
+        "final_loss": result.final_loss,
+        "n_iterations": result.n_iterations,
+        "total_llm_calls": call_count[0],
+    }
+    return summary
 
 
 if __name__ == "__main__":
@@ -177,6 +260,8 @@ if __name__ == "__main__":
     parser.add_argument("--base-url", default="http://localhost:1234/v1")
     parser.add_argument("--model", default="google/gemma-4-31b")
     parser.add_argument("--eval-size", type=int, default=10, help="Pairs per evaluation")
+    parser.add_argument("--run-id", default=None)
+    parser.add_argument("--manifest-dir", default="experiments/results/manifests")
     args = parser.parse_args()
     run_experiment(
         max_iterations=args.max_iter,
@@ -185,4 +270,6 @@ if __name__ == "__main__":
         base_url=args.base_url,
         model=args.model,
         eval_size=args.eval_size,
+        run_id=args.run_id,
+        manifest_dir=args.manifest_dir,
     )
