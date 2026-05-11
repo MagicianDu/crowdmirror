@@ -1,26 +1,35 @@
+from datetime import datetime, timezone
 import json
+from pathlib import Path
 
+import numpy as np
 import pytest
 
 from experiments.evidence_manifest import build_run_manifest, write_manifest
 
 
-def test_build_run_manifest_records_required_fields(tmp_path):
-    manifest = build_run_manifest(
-        run_id="w3w4-dry-001",
-        lane="causal",
-        mode="dry-run",
-        command=["python", "experiments/w3w4_causal_calibration.py", "--dry-run"],
-        config={"max_iterations": 3, "eval_size": 5},
-        metrics={
+def _manifest_kwargs(**overrides):
+    kwargs = {
+        "run_id": "w3w4-dry-001",
+        "lane": "causal",
+        "mode": "dry-run",
+        "command": ["python", "experiments/w3w4_causal_calibration.py", "--dry-run"],
+        "config": {"max_iterations": 3, "eval_size": 5},
+        "metrics": {
             "initial_loss": 0.30,
             "best_loss": 0.25,
             "final_loss": 0.27,
             "n_iterations": 3,
         },
-        artifacts={"result_json": "experiments/results/w3w4_calibration_result.json"},
-        notes=["dry-run uses mocked LLM responses"],
-    )
+        "artifacts": {"result_json": "experiments/results/w3w4_calibration_result.json"},
+        "notes": ["dry-run uses mocked LLM responses"],
+    }
+    kwargs.update(overrides)
+    return kwargs
+
+
+def test_build_run_manifest_records_required_fields(tmp_path):
+    manifest = build_run_manifest(**_manifest_kwargs())
     assert manifest["schema_version"] == "circe-evidence-v1"
     assert manifest["run_id"] == "w3w4-dry-001"
     assert manifest["lane"] == "causal"
@@ -57,3 +66,49 @@ def test_manifest_rejects_unknown_lane():
             artifacts={},
             notes=[],
         )
+
+
+def test_manifest_rejects_unknown_status_typo():
+    with pytest.raises(ValueError, match="status"):
+        build_run_manifest(**_manifest_kwargs(status="complete"))
+
+
+def test_manifest_rejects_malformed_timestamp():
+    with pytest.raises(ValueError, match="started_at"):
+        build_run_manifest(**_manifest_kwargs(started_at="yesterday morning"))
+
+
+def test_manifest_rejects_naive_timestamp():
+    with pytest.raises(ValueError, match="started_at"):
+        build_run_manifest(**_manifest_kwargs(started_at="2026-05-11T10:00:00"))
+
+
+def test_manifest_rejects_completion_before_start():
+    with pytest.raises(ValueError, match="completed_at"):
+        build_run_manifest(
+            **_manifest_kwargs(
+                started_at="2026-05-11T10:00:00+00:00",
+                completed_at="2026-05-11T09:59:59+00:00",
+            )
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("config", {"input_path": Path("experiments/data/input.json")}),
+        ("metrics", {"recorded_at": datetime(2026, 5, 11, tzinfo=timezone.utc)}),
+        ("notes", ["dry-run", np.int64(7)]),
+    ],
+)
+def test_manifest_rejects_non_json_serializable_inputs(field, value):
+    with pytest.raises(TypeError, match=f"{field} must be JSON serializable"):
+        build_run_manifest(**_manifest_kwargs(**{field: value}))
+
+
+def test_write_manifest_rejects_non_json_serializable_artifacts(tmp_path):
+    manifest = build_run_manifest(**_manifest_kwargs())
+    manifest["artifacts"]["result_json"] = Path("experiments/results/result.json")
+
+    with pytest.raises(TypeError, match="artifacts must be JSON serializable"):
+        write_manifest(tmp_path / "manifest.json", manifest)
