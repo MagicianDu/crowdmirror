@@ -14,6 +14,14 @@ import argparse
 import json
 import time
 from pathlib import Path
+
+try:
+    from ._bootstrap import bootstrap_src_path
+except ImportError:
+    from _bootstrap import bootstrap_src_path
+
+bootstrap_src_path()
+
 from circe.dgp.counterfactual import generate_counterfactual_dataset
 from circe.calibration.loop import CalibrationLoop, CalibrationConfig
 from circe.calibration.loss import compute_causal_loss

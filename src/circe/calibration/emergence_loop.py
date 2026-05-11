@@ -57,6 +57,7 @@ class EmergenceCalibrationConfig:
     model: str = "google/gemma-4-31b"
     provider: str = "openai"
     base_url: str | None = None
+    update_mode: str = "asynchronous"
     textgrad_model: str = "google/gemma-4-31b"
     textgrad_temperature: float = 0.3
     initial_prompt: str | None = None
@@ -170,6 +171,7 @@ class EmergenceCalibrationLoop:
             model=self.config.model,
             provider=self.config.provider,
             base_url=self.config.base_url,
+            update_mode=self.config.update_mode,
         )
         sim = MultiAgentSimulator(sim_config)
         sim.interaction_prompt = interaction_prompt

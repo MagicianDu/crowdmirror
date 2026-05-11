@@ -74,3 +74,19 @@ def test_edm_symmetric():
     result_ab = compute_edm(true_stats=stats_a, predicted_stats=stats_b)
     result_ba = compute_edm(true_stats=stats_b, predicted_stats=stats_a)
     assert result_ab.edm_score == pytest.approx(result_ba.edm_score, abs=1e-6)
+
+
+def test_edm_penalizes_different_entropy_trajectory_with_same_final_state():
+    true_stats = _make_stats(initial_entropy=1.0, final_entropy=0.0, n_steps=10)
+    pred_stats = _make_stats(initial_entropy=1.0, final_entropy=0.0, n_steps=10)
+    pred_stats.entropy_trajectory = [1.0] * 10 + [0.0]
+    result = compute_edm(true_stats=true_stats, predicted_stats=pred_stats)
+    assert result.edm_score > 0.0
+
+
+def test_edm_normalizes_one_step_convergence_mismatch():
+    true_stats = _make_stats(convergence_step=5, n_steps=10)
+    pred_stats = _make_stats(convergence_step=6, n_steps=10)
+    result = compute_edm(true_stats=true_stats, predicted_stats=pred_stats)
+    assert result.edm_score > 0.0
+    assert result.edm_score < 0.05

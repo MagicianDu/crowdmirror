@@ -111,3 +111,17 @@ def test_simulator_handles_malformed_response(mock_llm):
     sim = MultiAgentSimulator(config)
     sim.step()
     assert all(a.opinion in range(2) for a in sim.agents)
+
+
+def test_simulator_supports_asynchronous_update_mode(mock_llm):
+    config = MultiAgentConfig(n_agents=2, n_opinions=2, network="complete", seed=0)
+    sim = MultiAgentSimulator(config)
+    sim.update_mode = "asynchronous"
+    sim.agents[0].opinion = 0
+    sim.agents[1].opinion = 1
+    mock_llm.side_effect = [
+        LLMResponse(content='{"new_opinion": 1}', input_tokens=1, output_tokens=1),
+        LLMResponse(content='{"new_opinion": 1}', input_tokens=1, output_tokens=1),
+    ]
+    sim.step()
+    assert [agent.opinion for agent in sim.agents] == [1, 1]

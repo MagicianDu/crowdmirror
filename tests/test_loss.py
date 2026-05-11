@@ -72,3 +72,18 @@ def test_causal_loss_weights():
         gamma=0.1,
     )
     assert result_high_causal.total_loss > result_low_causal.total_loss
+
+
+def test_ece_penalizes_zero_probability_true_event():
+    ece = compute_ece([0.0], [1.0], n_bins=10)
+    assert ece == pytest.approx(1.0)
+
+
+def test_ece_accepts_soft_probability_targets():
+    ece = compute_ece([0.4, 0.35, 0.25], [0.4, 0.35, 0.25], n_bins=10)
+    assert ece == pytest.approx(0.0, abs=1e-12)
+
+
+def test_ece_rejects_mismatched_lengths():
+    with pytest.raises(ValueError, match="same length"):
+        compute_ece([0.5], [0.5, 0.5])

@@ -59,11 +59,13 @@ class LLMChoiceSimulator:
         if json_match:
             try:
                 parsed = json.loads(json_match.group())
-                probs = {k: float(v) for k, v in parsed.items() if k in alternatives}
+                probs = {alt: float(parsed.get(alt, 0.0)) for alt in alternatives}
+                if any(v < 0.0 or v > 1.0 for v in probs.values()):
+                    raise ValueError("probabilities must be in [0, 1]")
                 total = sum(probs.values())
                 if total > 0:
-                    return {k: v / total for k, v in probs.items()}
-            except (json.JSONDecodeError, ValueError):
+                    return {alt: probs[alt] / total for alt in alternatives}
+            except (json.JSONDecodeError, TypeError, ValueError):
                 pass
         # Fallback: uniform distribution
         n = len(alternatives)

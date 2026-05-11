@@ -117,7 +117,7 @@ class CalibrationLoop:
         self, pairs: list[CounterfactualPair]
     ) -> tuple[CausalLossResult, list[dict]]:
         predicted_probs_flat: list[float] = []
-        actual_outcomes_flat: list[int] = []
+        actual_outcomes_flat: list[float] = []
         true_ates: list[float] = []
         predicted_ates: list[float] = []
         error_examples: list[dict] = []
@@ -167,9 +167,7 @@ class CalibrationLoop:
             # ECE: for each alternative, compare predicted prob to "outcome"
             for alt in ["train", "swissmetro", "car"]:
                 predicted_probs_flat.append(factual_pred.get(alt, 0.0))
-                actual_outcomes_flat.append(
-                    1 if pair.factual_probs.get(alt, 0) > 0.5 else 0
-                )
+                actual_outcomes_flat.append(pair.factual_probs.get(alt, 0.0))
 
             # ATE: compare predicted vs true counterfactual effect on swissmetro
             pred_ate = cf_pred.get("swissmetro", 0) - factual_pred.get("swissmetro", 0)

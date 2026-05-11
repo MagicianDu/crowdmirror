@@ -17,6 +17,14 @@ import argparse
 import json
 import time
 from pathlib import Path
+
+try:
+    from ._bootstrap import bootstrap_src_path
+except ImportError:
+    from _bootstrap import bootstrap_src_path
+
+bootstrap_src_path()
+
 from circe.abm.voter_model import VoterModel, VoterModelConfig
 from circe.abm.emergence_stats import compute_emergence_stats
 from circe.simulator.multi_agent import MultiAgentSimulator, MultiAgentConfig

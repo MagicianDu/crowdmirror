@@ -85,3 +85,26 @@ def test_simulator_handles_malformed_json(mock_llm):
         context={},
     )
     assert abs(sum(probs.values()) - 1.0) < 1e-6
+
+
+def test_parse_probs_returns_all_requested_alternatives():
+    sim = object.__new__(LLMChoiceSimulator)
+    probs = sim._parse_probs(
+        '{"train": 0.7, "car": 0.3}',
+        ["train", "swissmetro", "car"],
+    )
+    assert set(probs) == {"train", "swissmetro", "car"}
+    assert probs["swissmetro"] == pytest.approx(0.0)
+    assert sum(probs.values()) == pytest.approx(1.0)
+
+
+def test_parse_probs_falls_back_on_negative_probability():
+    sim = object.__new__(LLMChoiceSimulator)
+    probs = sim._parse_probs('{"train": 1.2, "car": -0.2}', ["train", "car"])
+    assert probs == {"train": 0.5, "car": 0.5}
+
+
+def test_parse_probs_falls_back_on_non_numeric_probability():
+    sim = object.__new__(LLMChoiceSimulator)
+    probs = sim._parse_probs('{"train": null, "car": 1}', ["train", "car"])
+    assert probs == {"train": 0.5, "car": 0.5}

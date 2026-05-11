@@ -46,21 +46,31 @@ def evaluate_emergence_distortion(
     true_stats: EmergenceStats,
     predicted_stats: EmergenceStats,
 ) -> EmergenceEvalResult:
-    entropy_mae = abs(true_stats.final_entropy - predicted_stats.final_entropy)
+    true_traj = true_stats.entropy_trajectory
+    pred_traj = predicted_stats.entropy_trajectory
+    if not true_traj or not pred_traj:
+        raise ValueError("entropy trajectories must be non-empty")
+
+    max_len = max(len(true_traj), len(pred_traj))
+    true_padded = true_traj + [true_traj[-1]] * (max_len - len(true_traj))
+    pred_padded = pred_traj + [pred_traj[-1]] * (max_len - len(pred_traj))
+    entropy_mae = float(np.mean(
+        np.abs(np.array(true_padded) - np.array(pred_padded))
+    ))
+    trajectory_mse = float(np.mean(
+        (np.array(true_padded) - np.array(pred_padded))**2
+    ))
+
     polarization_error = abs(true_stats.final_polarization - predicted_stats.final_polarization)
 
-    convergence_step_error = None
-    if true_stats.convergence_step is not None and predicted_stats.convergence_step is not None:
+    if true_stats.convergence_step is None and predicted_stats.convergence_step is None:
+        convergence_step_error = 0.0
+    elif true_stats.convergence_step is None or predicted_stats.convergence_step is None:
+        convergence_step_error = float(max(max_len - 1, 1))
+    else:
         convergence_step_error = float(
             abs(true_stats.convergence_step - predicted_stats.convergence_step)
         )
-
-    true_traj = true_stats.entropy_trajectory
-    pred_traj = predicted_stats.entropy_trajectory
-    min_len = min(len(true_traj), len(pred_traj))
-    trajectory_mse = float(np.mean(
-        (np.array(true_traj[:min_len]) - np.array(pred_traj[:min_len]))**2
-    ))
 
     return EmergenceEvalResult(
         entropy_mae=entropy_mae,

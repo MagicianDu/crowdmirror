@@ -126,3 +126,8 @@ def test_emergence_loop_edm_threshold(mock_llm):
     loop = EmergenceCalibrationLoop(config)
     result = loop.run()
     assert result.n_iterations == 1
+
+
+def test_emergence_config_carries_update_mode():
+    config = EmergenceCalibrationConfig(update_mode="asynchronous")
+    assert config.update_mode == "asynchronous"

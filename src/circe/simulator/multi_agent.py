@@ -31,6 +31,7 @@ class MultiAgentConfig:
     temperature: float = 0.0
     provider: str = "openai"
     base_url: str | None = None
+    update_mode: str = "synchronous"
 
 
 @dataclass
@@ -42,6 +43,7 @@ class AgentState:
 class MultiAgentSimulator:
     def __init__(self, config: MultiAgentConfig | None = None):
         self.config = config or MultiAgentConfig()
+        self.update_mode = self.config.update_mode
         self.client = LLMClient(LLMClientConfig(
             provider=self.config.provider,
             base_url=self.config.base_url,
@@ -84,32 +86,39 @@ class MultiAgentSimulator:
             )
 
     def step(self):
+        if self.update_mode == "asynchronous":
+            self._step_asynchronous()
+        elif self.update_mode == "synchronous":
+            self._step_synchronous()
+        else:
+            raise ValueError(f"unknown update_mode: {self.update_mode}")
+        self._trajectory.append(self.get_opinion_distribution())
+
+    def _step_synchronous(self):
         new_opinions = []
         for agent in self.agents:
-            neighbors = list(self.graph.neighbors(agent.agent_id))
-            neighbor_opinions = [self.agents[n].opinion for n in neighbors]
-
-            user_prompt = self.interaction_prompt.format(
-                agent_id=agent.agent_id,
-                agent_opinion=agent.opinion,
-                neighbor_opinions=neighbor_opinions,
-                possible_opinions=", ".join(
-                    str(o) for o in range(self.config.n_opinions)
-                ),
-            )
-
-            response = self.client.chat(system=self.system_prompt, user=user_prompt)
-            self.total_input_tokens += response.input_tokens
-            self.total_output_tokens += response.output_tokens
-            self._call_count += 1
-
-            new_opinion = self._parse_opinion(response.content, agent.opinion)
-            new_opinions.append(new_opinion)
-
+            new_opinions.append(self._query_new_opinion(agent))
         for agent, new_op in zip(self.agents, new_opinions):
             agent.opinion = new_op
 
-        self._trajectory.append(self.get_opinion_distribution())
+    def _step_asynchronous(self):
+        for agent in self.agents:
+            agent.opinion = self._query_new_opinion(agent)
+
+    def _query_new_opinion(self, agent: AgentState) -> int:
+        neighbors = list(self.graph.neighbors(agent.agent_id))
+        neighbor_opinions = [self.agents[n].opinion for n in neighbors]
+        user_prompt = self.interaction_prompt.format(
+            agent_id=agent.agent_id,
+            agent_opinion=agent.opinion,
+            neighbor_opinions=neighbor_opinions,
+            possible_opinions=", ".join(str(o) for o in range(self.config.n_opinions)),
+        )
+        response = self.client.chat(system=self.system_prompt, user=user_prompt)
+        self.total_input_tokens += response.input_tokens
+        self.total_output_tokens += response.output_tokens
+        self._call_count += 1
+        return self._parse_opinion(response.content, agent.opinion)
 
     def run(self, steps: int):
         for _ in range(steps):

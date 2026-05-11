@@ -22,20 +22,32 @@ def compute_edm(
     weights: dict[str, float] | None = None,
 ) -> EDMResult:
     if weights is None:
-        weights = {"entropy": 1.0, "polarization": 1.0, "trajectory": 1.0}
+        weights = {
+            "entropy": 1.0,
+            "polarization": 1.0,
+            "trajectory": 1.0,
+            "convergence": 0.25,
+        }
 
     eval_result = evaluate_emergence_distortion(true_stats, predicted_stats)
 
     w_entropy = weights.get("entropy", 1.0)
     w_polarization = weights.get("polarization", 1.0)
     w_trajectory = weights.get("trajectory", 1.0)
+    w_convergence = weights.get("convergence", 0.25)
+    horizon = max(
+        max(len(true_stats.entropy_trajectory), len(predicted_stats.entropy_trajectory)) - 1,
+        1,
+    )
+    convergence_component = (eval_result.convergence_step_error or 0.0) / horizon
 
-    total_weight = w_entropy + w_polarization + w_trajectory
+    total_weight = w_entropy + w_polarization + w_trajectory + w_convergence
 
     d_macro = (
         w_entropy * eval_result.entropy_mae
         + w_polarization * eval_result.polarization_error
         + w_trajectory * eval_result.trajectory_mse
+        + w_convergence * convergence_component
     ) / total_weight
 
     return EDMResult(d_macro=d_macro, edm_score=d_macro)

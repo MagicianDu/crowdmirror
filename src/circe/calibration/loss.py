@@ -19,20 +19,34 @@ class CausalLossResult:
 
 def compute_ece(
     predicted_probs: list[float],
-    actual_outcomes: list[int],
+    actual_outcomes: list[float],
     n_bins: int = 10,
 ) -> float:
-    preds = np.array(predicted_probs)
-    actuals = np.array(actual_outcomes)
+    preds = np.array(predicted_probs, dtype=float)
+    actuals = np.array(actual_outcomes, dtype=float)
+    if len(preds) != len(actuals):
+        raise ValueError("predicted_probs and actual_outcomes must have the same length")
+    if len(preds) == 0:
+        return 0.0
+    if np.any((preds < 0.0) | (preds > 1.0)):
+        raise ValueError("predicted probabilities must be in [0, 1]")
+    if np.any((actuals < 0.0) | (actuals > 1.0)):
+        raise ValueError("actual outcomes must be in [0, 1]")
+
     bin_edges = np.linspace(0, 1, n_bins + 1)
     ece = 0.0
     for i in range(n_bins):
-        mask = (preds > bin_edges[i]) & (preds <= bin_edges[i + 1])
+        lower = bin_edges[i]
+        upper = bin_edges[i + 1]
+        if i == 0:
+            mask = (preds >= lower) & (preds <= upper)
+        else:
+            mask = (preds > lower) & (preds <= upper)
         if mask.sum() == 0:
             continue
         bin_conf = preds[mask].mean()
-        bin_acc = actuals[mask].mean()
-        ece += mask.sum() / len(preds) * abs(bin_acc - bin_conf)
+        bin_target = actuals[mask].mean()
+        ece += mask.sum() / len(preds) * abs(bin_target - bin_conf)
     return float(ece)
 
 
@@ -45,7 +59,7 @@ def compute_ate_error(
 
 def compute_causal_loss(
     predicted_probs: list[float],
-    actual_outcomes: list[int],
+    actual_outcomes: list[float],
     true_ates: list[float],
     predicted_ates: list[float],
     alpha: float = 1.0,
