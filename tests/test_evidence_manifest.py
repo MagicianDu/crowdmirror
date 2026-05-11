@@ -106,9 +106,38 @@ def test_manifest_rejects_non_json_serializable_inputs(field, value):
         build_run_manifest(**_manifest_kwargs(**{field: value}))
 
 
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("config", {"temperature": float("nan")}),
+        ("config", {"temperature": float("inf")}),
+        ("metrics", {"best_loss": float("nan")}),
+        ("metrics", {"best_loss": float("-inf")}),
+    ],
+)
+def test_manifest_rejects_non_finite_json_numbers(field, value):
+    with pytest.raises(TypeError, match=f"{field} must be JSON serializable"):
+        build_run_manifest(**_manifest_kwargs(**{field: value}))
+
+
 def test_write_manifest_rejects_non_json_serializable_artifacts(tmp_path):
     manifest = build_run_manifest(**_manifest_kwargs())
     manifest["artifacts"]["result_json"] = Path("experiments/results/result.json")
 
     with pytest.raises(TypeError, match="artifacts must be JSON serializable"):
+        write_manifest(tmp_path / "manifest.json", manifest)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("config", {"temperature": float("inf")}),
+        ("metrics", {"best_loss": float("nan")}),
+    ],
+)
+def test_write_manifest_rejects_non_finite_json_numbers(tmp_path, field, value):
+    manifest = build_run_manifest(**_manifest_kwargs())
+    manifest[field] = value
+
+    with pytest.raises(TypeError, match=f"{field} must be JSON serializable"):
         write_manifest(tmp_path / "manifest.json", manifest)

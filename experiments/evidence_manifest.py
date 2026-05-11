@@ -68,7 +68,7 @@ def _resolve_timestamps(
 
 def _ensure_json_serializable(field: str, value: Any) -> None:
     try:
-        json.dumps(value)
+        json.dumps(value, allow_nan=False)
     except (TypeError, ValueError) as exc:
         raise TypeError(f"{field} must be JSON serializable") from exc
 
@@ -82,7 +82,7 @@ def _validate_payload_fields(manifest: dict[str, Any]) -> None:
 def _manifest_json(manifest: dict[str, Any]) -> str:
     _validate_payload_fields(manifest)
     try:
-        return json.dumps(manifest, indent=2, sort_keys=True)
+        return json.dumps(manifest, allow_nan=False, indent=2, sort_keys=True)
     except (TypeError, ValueError) as exc:
         raise TypeError("manifest must be JSON serializable") from exc
 
