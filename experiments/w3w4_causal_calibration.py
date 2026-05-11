@@ -14,6 +14,7 @@ import argparse
 import json
 import time
 from pathlib import Path
+from urllib.parse import quote
 
 try:
     from ._bootstrap import bootstrap_src_path
@@ -31,6 +32,17 @@ from circe.dgp.counterfactual import generate_counterfactual_dataset
 from circe.calibration.loop import CalibrationLoop, CalibrationConfig
 from circe.calibration.loss import compute_causal_loss
 from circe.simulator.llm_choice import LLMChoiceSimulator, SimulatorConfig
+
+
+RESULTS_DIR = Path("experiments/results")
+SCRIPT_COMMAND = ["python", "experiments/w3w4_causal_calibration.py"]
+REQUIRED_RESULT_METRICS = (
+    "initial_loss",
+    "best_loss",
+    "final_loss",
+    "n_iterations",
+    "total_llm_calls",
+)
 
 
 def run_experiment(max_iterations: int = 10, dry_run: bool = False,
@@ -56,6 +68,19 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
     print(f"Train: {len(train_pairs)} pairs, Test: {len(test_pairs)} pairs")
 
     # Configure calibration
+    mode = "dry-run" if dry_run else "local" if local else "live"
+    manifest_run_id = run_id or f"w3w4-{mode}-{int(time.time())}"
+    command = _build_command(
+        max_iterations=max_iterations,
+        dry_run=dry_run,
+        local=local,
+        base_url=base_url,
+        model=model,
+        eval_size=eval_size,
+        run_id=manifest_run_id,
+        manifest_dir=manifest_dir,
+    )
+
     if local:
         provider = "openai"
         sim_model = model
@@ -82,19 +107,20 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
     if dry_run:
         print("\n[DRY RUN MODE — using mock responses]")
         summary = _run_dry(config, train_pairs, test_pairs)
-        manifest_run_id = run_id or f"w3w4-dry-run-{int(time.time())}"
+        output_path = _write_result_summary(manifest_run_id, summary)
+        print(f"Results saved to {output_path}")
         manifest = build_causal_manifest(
             run_id=manifest_run_id,
             mode="dry-run",
-            command=["python", "experiments/w3w4_causal_calibration.py", "--dry-run"],
+            command=command,
             config={
                 "max_iterations": config.max_iterations,
                 "eval_size": config.eval_sample_size,
             },
             result_summary=summary,
-            result_path="",
+            result_path=str(output_path),
         )
-        manifest_path = Path(manifest_dir) / f"{manifest_run_id}.json"
+        manifest_path = _manifest_path(manifest_dir, manifest_run_id)
         write_manifest(manifest_path, manifest)
         print(f"Evidence manifest saved to {manifest_path}")
         return
@@ -130,9 +156,6 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
         print(f"... ({len(result.best_prompt)} chars total)")
 
     # Save results
-    output_dir = Path("experiments/results")
-    output_dir.mkdir(exist_ok=True)
-    output_path = output_dir / "w3w4_calibration_result.json"
     output_data = {
         "best_prompt": result.best_prompt,
         "best_loss": result.best_loss,
@@ -147,13 +170,12 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
             for r in result.history
         ],
     }
-    output_path.write_text(json.dumps(output_data, indent=2))
+    output_path = _write_result_summary(manifest_run_id, output_data)
     print(f"\nResults saved to {output_path}")
-    manifest_run_id = run_id or f"w3w4-{'local' if local else 'live'}-{int(time.time())}"
     manifest = build_causal_manifest(
         run_id=manifest_run_id,
-        mode="local" if local else "live",
-        command=["python", "experiments/w3w4_causal_calibration.py"],
+        mode=mode,
+        command=command,
         config={
             "max_iterations": max_iterations,
             "eval_size": eval_size,
@@ -164,7 +186,7 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
         result_summary=output_data,
         result_path=str(output_path),
     )
-    manifest_path = Path(manifest_dir) / f"{manifest_run_id}.json"
+    manifest_path = _manifest_path(manifest_dir, manifest_run_id)
     write_manifest(manifest_path, manifest)
     print(f"Evidence manifest saved to {manifest_path}")
 
@@ -182,8 +204,16 @@ def build_causal_manifest(
     result_summary: dict,
     result_path: str,
 ) -> dict:
-    initial = float(result_summary.get("initial_loss", 0.0))
-    best = float(result_summary.get("best_loss", initial))
+    missing_metrics = [
+        metric for metric in REQUIRED_RESULT_METRICS if metric not in result_summary
+    ]
+    if missing_metrics:
+        raise ValueError(
+            "result_summary missing required metrics: " + ", ".join(missing_metrics)
+        )
+
+    initial = float(result_summary["initial_loss"])
+    best = float(result_summary["best_loss"])
     improvement_ratio = (initial - best) / initial if initial > 0 else 0.0
     return build_run_manifest(
         run_id=run_id,
@@ -194,10 +224,10 @@ def build_causal_manifest(
         metrics={
             "initial_loss": initial,
             "best_loss": best,
-            "final_loss": float(result_summary.get("final_loss", best)),
+            "final_loss": float(result_summary["final_loss"]),
             "improvement_ratio": improvement_ratio,
-            "n_iterations": int(result_summary.get("n_iterations", 0)),
-            "total_llm_calls": int(result_summary.get("total_llm_calls", 0)),
+            "n_iterations": int(result_summary["n_iterations"]),
+            "total_llm_calls": int(result_summary["total_llm_calls"]),
         },
         artifacts={"result_json": result_path},
         notes=[
@@ -209,7 +239,7 @@ def build_causal_manifest(
 
 def _run_dry(config, train_pairs, test_pairs):
     """Dry run: verify pipeline works without API calls."""
-    from unittest.mock import patch, MagicMock
+    from unittest.mock import patch
     from circe.llm_client import LLMResponse
 
     call_count = [0]
@@ -233,8 +263,6 @@ def _run_dry(config, train_pairs, test_pairs):
         )
 
     with patch("circe.llm_client.LLMClient.chat", side_effect=mock_chat):
-        config.max_iterations = 3
-        config.eval_sample_size = 10
         loop = CalibrationLoop(config=config, dataset=train_pairs[:20])
         result = loop.run()
 
@@ -250,6 +278,61 @@ def _run_dry(config, train_pairs, test_pairs):
         "total_llm_calls": call_count[0],
     }
     return summary
+
+
+def _build_command(
+    *,
+    max_iterations: int,
+    dry_run: bool,
+    local: bool,
+    base_url: str,
+    model: str,
+    eval_size: int,
+    run_id: str,
+    manifest_dir: str,
+) -> list[str]:
+    command = [
+        *SCRIPT_COMMAND,
+        "--max-iter",
+        str(max_iterations),
+        "--eval-size",
+        str(eval_size),
+    ]
+    if dry_run:
+        command.append("--dry-run")
+    if local:
+        command.append("--local")
+    command.extend(
+        [
+            "--base-url",
+            base_url,
+            "--model",
+            model,
+            "--run-id",
+            run_id,
+            "--manifest-dir",
+            manifest_dir,
+        ]
+    )
+    return command
+
+
+def _manifest_path(manifest_dir: str, run_id: str) -> Path:
+    return Path(manifest_dir) / f"{_safe_run_id_token(run_id)}.json"
+
+
+def _write_result_summary(run_id: str, result_summary: dict) -> Path:
+    output_path = RESULTS_DIR / f"w3w4_{_safe_run_id_token(run_id)}.json"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(result_summary, indent=2))
+    return output_path
+
+
+def _safe_run_id_token(run_id: str) -> str:
+    token = quote(run_id, safe="._-")
+    if not token or token in {".", ".."}:
+        raise ValueError("run_id must contain at least one path-safe character")
+    return token
 
 
 if __name__ == "__main__":
