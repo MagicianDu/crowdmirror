@@ -10,7 +10,7 @@ ABLATIONS = ("causal_only", "emergence_only", "joint")
 BASELINES = {
     "semi_synthetic_choice": ["mnl", "uncalibrated_llm", "prompt_only"],
     "swissmetro_choice": ["mnl", "uncalibrated_llm", "prompt_only"],
-    "voter_emergence": ["abm_ground_truth", "uncalibrated_llm", "prompt_only"],
+    "voter_emergence": ["abm_ground_truth", "mnl", "uncalibrated_llm", "prompt_only"],
 }
 VALID_MODES = {"dry-run", "local", "live"}
 

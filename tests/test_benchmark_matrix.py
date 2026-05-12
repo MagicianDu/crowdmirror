@@ -23,9 +23,9 @@ def test_benchmark_plan_covers_required_domains_and_ablations():
 
 def test_benchmark_plan_records_baselines():
     plan = build_benchmark_plan(mode="dry-run", manifest_dir="experiments/results/manifests")
-    baselines = {baseline for item in plan for baseline in item["baselines"]}
+    required_baselines = {"mnl", "uncalibrated_llm", "prompt_only"}
 
-    assert {"mnl", "uncalibrated_llm", "prompt_only"}.issubset(baselines)
+    assert all(required_baselines.issubset(item["baselines"]) for item in plan)
 
 
 def test_benchmark_plan_records_required_entry_shape():
