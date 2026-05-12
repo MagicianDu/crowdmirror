@@ -28,6 +28,40 @@
 3. A benchmark suite covering semi-synthetic choice, transport choice, and agent-based emergence dynamics.
 4. A claim-boundary protocol that prevents dry-run, local-model, and live-model evidence from being overclaimed.
 
+## Contribution-to-Evidence
+
+| Contribution | Notation/equation | Algorithm/protocol | Baseline/ablation | Main table/figure | Allowed claim | Forbidden claim |
+| --- | --- | --- | --- | --- | --- | --- |
+| Formal joint causal-emergence calibration problem | `S_theta(x) -> (a_hat, z_hat)` and `L_joint(theta)=w_c L_choice + w_e L_emerge + w_m L_manifest` subject to manifest completeness constraints | Definition of scenario, choice outcome, emergence trace, simulator state, and evidence manifest | Compare problem coverage against prompt-only persona generation, discrete choice calibration, and ABM-only emergence references | Figure 1: problem graph from scenario to micro choice, macro trajectory, and manifest | CIRCE formalizes simultaneous micro-choice fit and macro-emergence distortion reporting for LLM social simulation | The formalism alone establishes external behavioral validity |
+| CIRCE calibration method | Accepted update `theta_{t+1}` must satisfy `Delta L_joint <= -epsilon` and per-lane constraints for choice, emergence, and manifest validity | Closed-loop joint calibration protocol: propose prompt/model update, run lane, compute losses, write manifest, accept or reject | Causal-only, emergence-only, joint, and manifest-disabled variants | Algorithm 1 and Table 2: accepted updates and loss decomposition | CIRCE evaluates whether a prompt/model update reduces the recorded joint objective for the tested lane and mode | A dry-run or single model run generalizes to all customers, providers, or domains |
+| Benchmark suite | Domain index `D={semi_synthetic_choice, transport_choice, abm_emergence}` with metric vector `(choice_fit, causal_loss, emergence_distortion, manifest_completeness)` | Fixed configs, seeds, commands, result artifacts, and manifest index per benchmark lane | Prompt-only persona, discrete choice calibration, ABM reference, causal-only CIRCE, emergence-only CIRCE, joint CIRCE | Table 1: lane coverage; Table 3: benchmark metrics; Figure 2: ablation deltas | The benchmark tests whether joint calibration changes both micro and macro metrics under recorded configs | The benchmark is a production demand forecast or customer predictive-validity certificate |
+| Executable audit and claim protocol | Claim predicate `claim_allowed(c, m)` over manifest fields `mode`, `status`, `metrics`, `artifacts`, `boundary`, and `config_hash` | Audit script rejects claims without matching manifest class: dry-run, local, live, or archived paper artifact | Protocol-on versus protocol-off claim review; dry-run-only versus manifest-backed local/live claims | Table 4: claim audit results; Appendix manifest examples | The protocol blocks unsupported manuscript and product claims before release | The protocol substitutes for model validation or field evidence |
+
+## Joint Objective Details
+
+- Variables:
+  - `x`: scenario, intervention, and choice context.
+  - `a`: observed, semi-synthetic, or benchmark choice outcome.
+  - `z`: macro-emergence trajectory or endpoint statistic.
+  - `theta`: simulator prompt, model configuration, parser, and calibration state.
+  - `m`: evidence manifest containing mode, status, command, config, metrics, artifact paths, model/provider, seed, and claim boundary.
+- Loss terms:
+  - `L_choice(theta; x, a)`: micro-choice fit or causal-choice mismatch.
+  - `L_emerge(theta; x, z)`: macro-emergence distortion against ABM, semi-synthetic, or archived reference dynamics.
+  - `L_manifest(m)`: audit penalty that is zero only when required manifest fields are complete and inspectable.
+- Weights and constraints:
+  - `w_c` and `w_e` are declared per benchmark lane before running the experiment; they cannot be tuned after reading results.
+  - `L_manifest(m)=0` is a hard acceptance constraint for any paper or Product-facing claim.
+  - Local/live evidence cannot be mixed with dry-run plumbing evidence in the same main-result row.
+- Acceptance rule:
+  - A candidate update is accepted only when the relevant lane objective decreases by at least `epsilon`, manifest validation passes, and no protected claim boundary is violated.
+  - Dry-run acceptance only validates orchestration, parser, persistence, and manifest shape; it does not enter model-quality tables.
+- Discrimination experiments:
+  - Causal-only: optimize/report `L_choice` while holding the emergence calibration lane inactive.
+  - Emergence-only: optimize/report `L_emerge` while holding the choice calibration lane inactive.
+  - Joint: optimize/report both `L_choice` and `L_emerge` under the manifest completeness constraint.
+  - Reviewer-facing discrimination criterion: joint calibration must be reported separately from causal-only and emergence-only variants so the paper can show whether simultaneous micro-choice fit and macro-emergence distortion reporting changes the conclusion.
+
 ## Product Transfer Paths
 
 | Contribution | Product transfer path | Product-facing surface |
@@ -36,6 +70,17 @@
 | CIRCE calibration under auditable evidence manifests | Report evidence card | Surface model, mode, command, metric, artifact path, and claim boundary in customer reports. |
 | Benchmark suite across choice and emergence domains | Customer proof point | Compare against survey-only, generic LLM persona, static dashboard, and notebook-based simulation alternatives using reproducible benchmark lanes. |
 | Claim-boundary protocol | Sensitivity language | State when a recommendation is stable, when evidence is dry-run plumbing only, and when human review or additional local/live evidence is required. |
+
+## Product Moat Crosswalk
+
+| Research artifact | Product surface/API/report field | Customer proof sentence | Moat claim | Evidence gate | Forbidden claim |
+| --- | --- | --- | --- | --- | --- |
+| Evidence manifest | Report evidence card fields: `model`, `provider`, `mode`, `status`, `command`, `config_hash`, `seed`, `metrics`, `artifacts`, `claim_boundary`, `notes` | "This recommendation is tied to a reproducible run record with model, mode, command, metrics, artifacts, and explicit boundary." | Auditability is built into the simulation workflow, not added after the result is written. | Manifest validates against schema and artifact paths are inspectable. | The report is accurate because a manifest exists. |
+| Joint objective run | API/report fields: `choice_fit_metric`, `emergence_distortion_metric`, `joint_objective`, `accepted_update`, `lane` | "The run checks both individual choice fit and macro-emergence distortion before presenting a recommendation." | Differentiates from prompt-only persona demos that expose only generated text or aggregate counts. | Non-dry-run manifest or archived benchmark artifact records initial and final metrics. | This establishes real customer demand or field conversion. |
+| Causal-only/emergence-only/joint ablation | Report sensitivity section: `ablation_lane`, `metric_delta`, `stability_label`, `review_required` | "The recommendation is stable only if causal-only and emergence-only lanes do not contradict the joint result." | Product can explain sensitivity rather than hiding disagreement between lanes. | All compared lanes share fixed config, seed policy, and manifest schema. | A stable ablation replaces human decision review. |
+| Benchmark matrix | Sales proof appendix/API export: `domain`, `baseline`, `ablation`, `mode`, `metric_table`, `artifact_index` | "The method has been compared against declared baseline families on recorded benchmark lanes." | Creates a reproducible comparison surface against survey-only, static dashboard, generic LLM persona, and notebook simulation alternatives. | Benchmark run is backed by committed manifests or archived artifacts; dry-run rows are labeled plumbing only. | Benchmark evidence is customer predictive validity or production ROI evidence. |
+| Claim audit protocol | Release gate/API status: `claim_allowed`, `claim_blocked_reason`, `evidence_class`, `required_manifest` | "Claims are blocked when evidence class, mode, metrics, or artifact paths do not support the wording." | Trust surface includes negative and blocked claims, not only favorable examples. | Audit script or checklist maps every claim to a manifest class. | Audit status means model behavior is validated in the field. |
+| Dry-run plumbing evidence | Internal QA/report footnote only: `mode=dry-run`, `boundary=dry-run plumbing evidence only` | "This run checked orchestration and artifact wiring; it is not model-quality evidence." | Makes engineering readiness visible without overstating model validity. | Dry-run manifest records command, config, child runs, metrics shape, and artifacts. | Dry-run results support product recommendation quality, live performance, or customer proof. |
 
 ## 1. Introduction (1.5-2 pages)
 - 计算社会科学的范式转移：rule-based ABM -> LLM social simulation
@@ -73,12 +118,13 @@
 
 ## 4. Method (3 pages)
 - 4.1 CIRCE Calibration Object
-  - Simulator parameters, prompt/update state, choice outputs, emergence trace
-  - Joint objective: causal loss + emergence distortion
+  - Simulator parameters `theta`, scenario `x`, choice outcome `a`, emergence trace `z`, and manifest `m`
+  - Joint objective: weighted choice loss, weighted emergence loss, and hard manifest-completeness constraint
 - 4.2 Calibration Loop
   - Causal calibration lane for semi-synthetic and transport choice
   - Emergence calibration lane for ABM-controlled dynamics
-  - Joint acceptance rule recorded with metrics and artifacts
+  - Joint acceptance rule recorded with metrics, artifacts, lane label, mode label, and boundary text
+  - Causal-only, emergence-only, and joint variants are first-class discrimination experiments, not informal appendix checks
 - 4.3 Implementation
   - JSON evidence manifest contract
   - Mode labels: dry-run, local, live
