@@ -17,6 +17,7 @@ import argparse
 import json
 import sys
 import time
+import uuid
 from pathlib import Path
 from urllib.parse import quote
 
@@ -70,9 +71,9 @@ def run_experiment(
     print("=" * 60)
 
     mode = "dry-run" if dry_run else "local" if local else "live"
-    manifest_run_id = run_id or f"w5w6-{mode}-{int(time.time())}"
+    manifest_run_id = run_id or _generate_run_id(mode)
     manifest_command = (
-        command
+        _command_with_run_id(command, manifest_run_id)
         if command is not None
         else _build_command(
             n_agents=n_agents,
@@ -111,16 +112,20 @@ def run_experiment(
         summary = _run_dry(n_agents, n_steps, max_iterations, update_mode)
         output_path = _write_result_summary(manifest_run_id, summary)
         print(f"Results saved to {output_path}")
-        manifest = build_emergence_manifest(
-            run_id=manifest_run_id,
-            mode="dry-run",
-            command=manifest_command,
-            config={
+        effective_config = summary.get(
+            "effective_config",
+            {
                 "n_agents": min(n_agents, 5),
                 "n_steps": min(n_steps, 3),
                 "max_iterations": min(max_iterations, 2),
                 "update_mode": update_mode,
             },
+        )
+        manifest = build_emergence_manifest(
+            run_id=manifest_run_id,
+            mode="dry-run",
+            command=manifest_command,
+            config=effective_config,
             result_summary=summary,
             result_path=str(output_path),
         )
@@ -300,15 +305,27 @@ def _run_dry(
             output_tokens=10,
         )
 
+    requested_config = {
+        "n_agents": n_agents,
+        "n_steps": n_steps,
+        "max_iterations": max_iterations,
+        "update_mode": update_mode,
+    }
+    effective_config = {
+        "n_agents": min(n_agents, 5),
+        "n_steps": min(n_steps, 3),
+        "max_iterations": min(max_iterations, 2),
+        "update_mode": update_mode,
+    }
     with patch("circe.llm_client.LLMClient.chat", mock_chat):
         config = EmergenceCalibrationConfig(
-            n_agents=min(n_agents, 5),
+            n_agents=effective_config["n_agents"],
             n_opinions=2,
-            n_steps=min(n_steps, 3),
-            max_iterations=min(max_iterations, 2),
+            n_steps=effective_config["n_steps"],
+            max_iterations=effective_config["max_iterations"],
             patience=3,
             seed=42,
-            update_mode=update_mode,
+            update_mode=effective_config["update_mode"],
         )
         loop = EmergenceCalibrationLoop(config)
         result = loop.run()
@@ -324,7 +341,25 @@ def _run_dry(
         "best_edm": result.best_edm,
         "final_edm": result.final_edm,
         "n_iterations": result.n_iterations,
+        "mock_llm_call_count": call_count[0],
+        "requested_config": requested_config,
+        "effective_config": effective_config,
+        "history": result.history,
+        "audit": {
+            "mode": "dry-run",
+            "mocked_llm": True,
+            "cap_reason": (
+                "dry-run caps agent, step, and iteration counts for fast "
+                "plumbing verification"
+            ),
+        },
     }
+
+
+def _generate_run_id(mode: str) -> str:
+    timestamp_ms = int(time.time() * 1000)
+    random_suffix = uuid.uuid4().hex[:12]
+    return f"w5w6-{mode}-{timestamp_ms}-{random_suffix}"
 
 
 def _build_command(
@@ -367,14 +402,21 @@ def _build_command(
     return command
 
 
+def _command_with_run_id(command: list[str], run_id: str) -> list[str]:
+    if any(part == "--run-id" or part.startswith("--run-id=") for part in command):
+        return command
+    return [*command, "--run-id", run_id]
+
+
 def _manifest_path(manifest_dir: str, run_id: str) -> Path:
     return Path(manifest_dir) / f"{_safe_run_id_token(run_id)}.json"
 
 
 def _write_result_summary(run_id: str, result_summary: dict) -> Path:
     output_path = RESULTS_DIR / f"w5w6_{_safe_run_id_token(run_id)}.json"
+    result_json = json.dumps(result_summary, allow_nan=False, indent=2)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(result_summary, indent=2))
+    output_path.write_text(result_json)
     return output_path
 
 

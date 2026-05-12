@@ -307,6 +307,145 @@ def test_emergence_dry_run_writes_result_artifact_and_truthful_command(
     ]
 
 
+def test_emergence_default_run_ids_are_unique_within_same_second(
+    tmp_path,
+    monkeypatch,
+):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(emergence.time, "time", lambda: 1_700_000_000)
+    monkeypatch.setattr(
+        emergence,
+        "_run_dry",
+        lambda n_agents, n_steps, max_iterations, update_mode: {
+            "initial_edm": 0.12,
+            "best_edm": 0.08,
+            "final_edm": 0.09,
+            "n_iterations": 2,
+            "mock_llm_call_count": 11,
+            "effective_config": {
+                "n_agents": min(n_agents, 5),
+                "n_steps": min(n_steps, 3),
+                "max_iterations": min(max_iterations, 2),
+                "update_mode": update_mode,
+            },
+            "history": [{"iteration": 0, "edm_score": 0.12, "d_macro": 0.05}],
+        },
+    )
+
+    manifest_dir = tmp_path / "manifests"
+    for _ in range(2):
+        emergence.run_experiment(
+            n_agents=5,
+            n_steps=3,
+            max_iterations=2,
+            dry_run=True,
+            local=False,
+            bad_init=False,
+            update_mode="asynchronous",
+            run_id=None,
+            manifest_dir=str(manifest_dir),
+        )
+
+    manifests = sorted(manifest_dir.glob("*.json"))
+    assert len(manifests) == 2
+    run_ids = [_read_json(path)["run_id"] for path in manifests]
+    assert len(set(run_ids)) == 2
+
+
+def test_emergence_manifest_command_includes_generated_run_id_when_omitted(
+    tmp_path,
+    monkeypatch,
+):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        emergence,
+        "_run_dry",
+        lambda n_agents, n_steps, max_iterations, update_mode: {
+            "initial_edm": 0.12,
+            "best_edm": 0.08,
+            "final_edm": 0.09,
+            "n_iterations": 2,
+            "mock_llm_call_count": 11,
+            "effective_config": {
+                "n_agents": 5,
+                "n_steps": 3,
+                "max_iterations": 2,
+                "update_mode": update_mode,
+            },
+            "history": [{"iteration": 0, "edm_score": 0.12, "d_macro": 0.05}],
+        },
+    )
+
+    manifest_dir = tmp_path / "manifests"
+    emergence.run_experiment(
+        n_agents=5,
+        n_steps=3,
+        max_iterations=2,
+        dry_run=True,
+        local=False,
+        bad_init=False,
+        update_mode="asynchronous",
+        run_id=None,
+        manifest_dir=str(manifest_dir),
+        command=[
+            "python",
+            "experiments/w5w6_emergence_calibration.py",
+            "--dry-run",
+        ],
+    )
+
+    manifest = _read_json(next(manifest_dir.glob("*.json")))
+    assert "--run-id" in manifest["command"]
+    run_id_index = manifest["command"].index("--run-id")
+    assert manifest["command"][run_id_index + 1] == manifest["run_id"]
+
+
+def test_emergence_result_summary_rejects_non_finite_json(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+
+    with pytest.raises(ValueError):
+        emergence._write_result_summary(
+            "bad-json",
+            {
+                "initial_edm": float("nan"),
+                "best_edm": 0.08,
+                "final_edm": 0.09,
+                "n_iterations": 2,
+            },
+        )
+
+    assert not (tmp_path / "experiments/results/w5w6_bad-json.json").exists()
+
+
+def test_emergence_dry_run_summary_includes_audit_fields():
+    summary = emergence._run_dry(
+        n_agents=9,
+        n_steps=7,
+        max_iterations=4,
+        update_mode="synchronous",
+    )
+
+    assert summary["mock_llm_call_count"] > 0
+    assert summary["effective_config"] == {
+        "n_agents": 5,
+        "n_steps": 3,
+        "max_iterations": 2,
+        "update_mode": "synchronous",
+    }
+    assert summary["requested_config"] == {
+        "n_agents": 9,
+        "n_steps": 7,
+        "max_iterations": 4,
+        "update_mode": "synchronous",
+    }
+    assert summary["history"]
+    assert summary["audit"] == {
+        "mode": "dry-run",
+        "mocked_llm": True,
+        "cap_reason": "dry-run caps agent, step, and iteration counts for fast plumbing verification",
+    }
+
+
 def test_w5w6_script_help_runs_from_repo_root():
     env = os.environ.copy()
     env.pop("PYTHONPATH", None)
