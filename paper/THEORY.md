@@ -80,15 +80,17 @@ model-quality paper or Product claims.
 
 Suppose the initial accepted state has finite objective value `J_0 =
 L_joint(theta_0, m_0)`, the stopping threshold is `tau >= 0`, and every accepted
-update must satisfy the manifest constraint plus the `epsilon` acceptance rule:
+update in a produced accepted-update sequence satisfies the manifest constraint
+plus the `epsilon` acceptance rule:
 
 ```text
 J_{t+1} <= J_t - epsilon
 ```
 
-for a fixed `epsilon > 0` whenever `J_t > tau`. Then the number of accepted
-updates needed before the run reaches threshold `tau` is finite and is bounded
-by:
+for a fixed `epsilon > 0` whenever `J_t > tau`. For any sequence that continues
+to produce accepted updates under this rule, the sequence can contain at most
+the following number of accepted updates before its accepted objective is at or
+below threshold `tau`:
 
 ```text
 ceil(max(J_0 - tau, 0) / epsilon)
@@ -96,6 +98,9 @@ ceil(max(J_0 - tau, 0) / epsilon)
 
 Candidate updates with incomplete manifests are not counted as accepted updates
 and cannot extend the accepted sequence.
+
+This proposition does not guarantee that the update operator can always find another accepted candidate.
+It also does not guarantee optimizer convergence or objective reachability; it is only an accounting bound on sequences that already satisfy the acceptance rule.
 
 ## Proof Sketch
 
@@ -108,9 +113,11 @@ If `J_0 <= tau`, the run already satisfies the threshold and needs no accepted
 improvement update. Otherwise, after one accepted update the objective is at most
 `J_0 - epsilon`. After `k` accepted updates it is at most `J_0 - k epsilon`.
 The first `k` satisfying `J_0 - k epsilon <= tau` is at most
-`ceil((J_0 - tau) / epsilon)`, so the accepted sequence must reach the threshold
-within that many accepted updates. Because incomplete manifests never enter the
-accepted sequence, they cannot weaken this bound.
+`ceil((J_0 - tau) / epsilon)`. Therefore a sequence that keeps producing
+accepted updates under the rule cannot have more than that many above-threshold
+accepted updates. The statement is conditional on accepted updates existing; it
+does not assert that the candidate generator will find them. Because incomplete
+manifests never enter the accepted sequence, they cannot weaken this bound.
 
 ## Product Transfer
 
