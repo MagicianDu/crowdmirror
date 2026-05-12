@@ -7,7 +7,9 @@ from types import SimpleNamespace
 import pytest
 
 import experiments.w3w4_causal_calibration as causal
+import experiments.w5w6_emergence_calibration as emergence
 from experiments.w3w4_causal_calibration import build_causal_manifest
+from experiments.w5w6_emergence_calibration import build_emergence_manifest
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -167,6 +169,160 @@ def test_w3w4_script_help_runs_from_repo_root():
     assert "--run-id" in result.stdout
 
 
+def test_build_emergence_manifest_records_edm_metrics():
+    manifest = build_emergence_manifest(
+        run_id="emergence-test",
+        mode="dry-run",
+        command=["python", "experiments/w5w6_emergence_calibration.py", "--dry-run"],
+        config={"n_agents": 5, "n_steps": 3, "update_mode": "asynchronous"},
+        result_summary={
+            "initial_edm": 0.12,
+            "best_edm": 0.08,
+            "final_edm": 0.09,
+            "n_iterations": 2,
+        },
+        result_path="experiments/results/w5w6_emergence_result.json",
+    )
+    assert manifest["lane"] == "emergence"
+    assert manifest["metrics"]["improvement_ratio"] == (0.12 - 0.08) / 0.12
+    assert manifest["config"]["update_mode"] == "asynchronous"
+
+
+def test_build_emergence_manifest_rejects_missing_required_metrics():
+    with pytest.raises(ValueError, match="result_summary missing required metrics"):
+        build_emergence_manifest(
+            run_id="emergence-test",
+            mode="dry-run",
+            command=["python", "experiments/w5w6_emergence_calibration.py", "--dry-run"],
+            config={"n_agents": 5, "n_steps": 3, "update_mode": "asynchronous"},
+            result_summary={
+                "initial_edm": 0.12,
+                "best_edm": 0.08,
+                "n_iterations": 2,
+            },
+            result_path="experiments/results/w5w6_emergence_test.json",
+        )
+
+
+def test_emergence_non_dry_run_writes_unique_result_artifact_and_truthful_command(
+    tmp_path,
+    monkeypatch,
+):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(emergence, "EmergenceCalibrationLoop", _FakeEmergenceLoop)
+
+    manifest_dir = tmp_path / "manifests"
+    emergence.run_experiment(
+        n_agents=6,
+        n_steps=4,
+        max_iterations=3,
+        dry_run=False,
+        local=True,
+        bad_init=True,
+        update_mode="synchronous",
+        run_id="matrix/local run 02",
+        manifest_dir=str(manifest_dir),
+    )
+
+    result_path = tmp_path / "experiments/results/w5w6_matrix%2Flocal%20run%2002.json"
+    manifest_path = manifest_dir / "matrix%2Flocal%20run%2002.json"
+    assert result_path.exists()
+    manifest = _read_json(manifest_path)
+    assert manifest["artifacts"]["result_json"] == str(
+        Path("experiments/results/w5w6_matrix%2Flocal%20run%2002.json")
+    )
+    assert manifest["config"]["update_mode"] == "synchronous"
+    assert manifest["command"] == [
+        "python",
+        "experiments/w5w6_emergence_calibration.py",
+        "--agents",
+        "6",
+        "--steps",
+        "4",
+        "--max-iter",
+        "3",
+        "--local",
+        "--bad-init",
+        "--run-id",
+        "matrix/local run 02",
+        "--manifest-dir",
+        str(manifest_dir),
+        "--update-mode",
+        "synchronous",
+    ]
+
+
+def test_emergence_dry_run_writes_result_artifact_and_truthful_command(
+    tmp_path,
+    monkeypatch,
+):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        emergence,
+        "_run_dry",
+        lambda n_agents, n_steps, max_iterations, update_mode: {
+            "initial_edm": 0.12,
+            "best_edm": 0.08,
+            "final_edm": 0.09,
+            "n_iterations": 2,
+        },
+    )
+
+    manifest_dir = tmp_path / "manifests"
+    emergence.run_experiment(
+        n_agents=5,
+        n_steps=3,
+        max_iterations=2,
+        dry_run=True,
+        local=False,
+        bad_init=False,
+        update_mode="asynchronous",
+        run_id="w5w6-plan-check",
+        manifest_dir=str(manifest_dir),
+    )
+
+    result_path = tmp_path / "experiments/results/w5w6_w5w6-plan-check.json"
+    assert result_path.exists()
+    assert _read_json(result_path)["best_edm"] == 0.08
+    manifest = _read_json(manifest_dir / "w5w6-plan-check.json")
+    assert manifest["artifacts"]["result_json"] == str(
+        Path("experiments/results/w5w6_w5w6-plan-check.json")
+    )
+    assert manifest["command"] == [
+        "python",
+        "experiments/w5w6_emergence_calibration.py",
+        "--agents",
+        "5",
+        "--steps",
+        "3",
+        "--max-iter",
+        "2",
+        "--dry-run",
+        "--run-id",
+        "w5w6-plan-check",
+        "--manifest-dir",
+        str(manifest_dir),
+        "--update-mode",
+        "asynchronous",
+    ]
+
+
+def test_w5w6_script_help_runs_from_repo_root():
+    env = os.environ.copy()
+    env.pop("PYTHONPATH", None)
+    result = subprocess.run(
+        [sys.executable, "experiments/w5w6_emergence_calibration.py", "--help"],
+        cwd=REPO_ROOT,
+        env=env,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stderr
+    assert "--run-id" in result.stdout
+    assert "--update-mode" in result.stdout
+
+
 def _fake_pairs(**kwargs):
     return [SimpleNamespace(ate=i / 1000) for i in range(500)]
 
@@ -193,6 +349,24 @@ class _FakeCalibrationLoop:
                     iteration=4,
                     loss=SimpleNamespace(total_loss=0.20, ece=0.07, ate_mae=0.13),
                 ),
+            ],
+        )
+
+
+class _FakeEmergenceLoop:
+    def __init__(self, config):
+        self.config = config
+
+    def run(self):
+        return SimpleNamespace(
+            best_prompt="follow calibrated neighbor pressure",
+            best_edm=0.08,
+            initial_edm=0.12,
+            final_edm=0.09,
+            n_iterations=3,
+            history=[
+                {"iteration": 0, "edm_score": 0.12, "d_macro": 0.05},
+                {"iteration": 2, "edm_score": 0.08, "d_macro": 0.03},
             ],
         )
 
