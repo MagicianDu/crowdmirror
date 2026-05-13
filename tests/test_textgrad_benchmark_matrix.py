@@ -36,6 +36,50 @@ def test_summarize_matrix_marks_negative_textgrad_result():
     assert summary["negative_result_count"] == 1
 
 
+def test_summarize_matrix_reports_candidate_acceptance_counts():
+    summary = summarize_matrix(
+        [
+            {
+                "run_id": "local-a",
+                "metrics": {
+                    "initial_loss": 0.30,
+                    "best_loss": 0.20,
+                    "final_loss": 0.22,
+                    "improvement_ratio": 0.33,
+                    "candidate_update_count": 2,
+                    "candidate_evaluated_count": 2,
+                    "candidate_accepted_count": 1,
+                    "candidate_rejected_count": 1,
+                    "candidate_pending_count": 0,
+                    "candidate_acceptance_rate": 0.5,
+                },
+            },
+            {
+                "run_id": "local-b",
+                "metrics": {
+                    "initial_loss": 0.40,
+                    "best_loss": 0.40,
+                    "final_loss": 0.50,
+                    "improvement_ratio": 0.0,
+                    "candidate_update_count": 1,
+                    "candidate_evaluated_count": 0,
+                    "candidate_accepted_count": 0,
+                    "candidate_rejected_count": 0,
+                    "candidate_pending_count": 1,
+                    "candidate_acceptance_rate": None,
+                },
+            },
+        ]
+    )
+
+    assert summary["candidate_update_count"] == 3
+    assert summary["candidate_evaluated_count"] == 2
+    assert summary["candidate_accepted_count"] == 1
+    assert summary["candidate_rejected_count"] == 1
+    assert summary["candidate_pending_count"] == 1
+    assert summary["candidate_acceptance_rate"] == 0.5
+
+
 def test_build_matrix_plan_expands_seed_prompt_and_budget_axes():
     plan = build_matrix_plan(
         run_prefix="diag",

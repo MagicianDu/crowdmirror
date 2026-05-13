@@ -85,6 +85,7 @@ def summarize_matrix(manifests: list[dict[str, Any]]) -> dict[str, Any]:
         "best_improvement_ratio": max(improvement_ratios, default=0.0),
         "negative_result_count": negative_result_count,
         "diagnosis_counts": dict(sorted(diagnosis_counts.items())),
+        **_candidate_acceptance_totals(manifests),
     }
 
 
@@ -157,6 +158,7 @@ def evaluate_paper_gate(
     negative_result_count = sum(
         1 for manifest in manifests if _is_negative_textgrad_result(manifest)
     )
+    candidate_acceptance = _candidate_acceptance_totals(manifests)
 
     if missing_cells:
         status = "insufficient_evidence"
@@ -176,6 +178,7 @@ def evaluate_paper_gate(
         ),
         "improved_run_count": improved_run_count,
         "negative_result_count": negative_result_count,
+        **candidate_acceptance,
     }
 
 
@@ -198,6 +201,9 @@ def diagnose_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
     truncation_count = int(metrics.get("suspected_prompt_truncation_count", 0) or 0)
     if truncation_count > 0:
         flags.append("suspected_prompt_truncation")
+
+    if int(metrics.get("candidate_rejected_count", 0) or 0) > 0:
+        flags.append("candidate_update_rejected")
 
     improvement = float(metrics.get("improvement_ratio", 0.0) or 0.0)
     effect_status = metrics.get("textgrad_effect_status")
@@ -246,6 +252,32 @@ def _is_negative_textgrad_result(manifest: dict[str, Any]) -> bool:
         and int(metrics.get("prompt_update_count", 0)) > 0
         and float(metrics.get("improvement_ratio", 0.0)) <= 0.0
     )
+
+
+def _candidate_acceptance_totals(manifests: list[dict[str, Any]]) -> dict[str, Any]:
+    update_count = 0
+    evaluated_count = 0
+    accepted_count = 0
+    rejected_count = 0
+    pending_count = 0
+    for manifest in manifests:
+        metrics = manifest.get("metrics", {})
+        update_count += int(metrics.get("candidate_update_count", 0) or 0)
+        evaluated_count += int(metrics.get("candidate_evaluated_count", 0) or 0)
+        accepted_count += int(metrics.get("candidate_accepted_count", 0) or 0)
+        rejected_count += int(metrics.get("candidate_rejected_count", 0) or 0)
+        pending_count += int(metrics.get("candidate_pending_count", 0) or 0)
+    acceptance_rate = (
+        accepted_count / evaluated_count if evaluated_count > 0 else None
+    )
+    return {
+        "candidate_update_count": update_count,
+        "candidate_evaluated_count": evaluated_count,
+        "candidate_accepted_count": accepted_count,
+        "candidate_rejected_count": rejected_count,
+        "candidate_pending_count": pending_count,
+        "candidate_acceptance_rate": acceptance_rate,
+    }
 
 
 def _run_id(

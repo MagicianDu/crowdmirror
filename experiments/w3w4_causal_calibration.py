@@ -215,6 +215,7 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
         textgrad_call_count=result.textgrad_call_count,
         textgrad_max_tokens=textgrad_max_tokens,
     )
+    candidate_acceptance = _candidate_acceptance_summary(textgrad_steps)
     output_data = {
         "best_prompt": result.best_prompt,
         "best_loss": result.best_loss,
@@ -246,6 +247,7 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
             for r in result.history
         ],
     }
+    output_data.update(candidate_acceptance)
     output_path = _write_result_summary(manifest_run_id, output_data)
     textgrad_steps_path = _write_textgrad_steps(manifest_run_id, textgrad_steps)
     print(f"\nResults saved to {output_path}")
@@ -331,6 +333,20 @@ def build_causal_manifest(
         metrics["textgrad_output_budget_saturated"] = bool(
             result_summary["textgrad_output_budget_saturated"]
         )
+    for candidate_metric in (
+        "candidate_update_count",
+        "candidate_evaluated_count",
+        "candidate_accepted_count",
+        "candidate_rejected_count",
+        "candidate_pending_count",
+    ):
+        if candidate_metric in result_summary:
+            metrics[candidate_metric] = int(result_summary[candidate_metric])
+    if "candidate_acceptance_rate" in result_summary:
+        rate = result_summary["candidate_acceptance_rate"]
+        metrics["candidate_acceptance_rate"] = None if rate is None else float(rate)
+    if "candidate_update_status" in result_summary:
+        metrics["candidate_update_status"] = result_summary["candidate_update_status"]
 
     artifacts = {"result_json": result_path}
     if textgrad_steps_path is not None:
@@ -390,6 +406,7 @@ def _run_dry(config, train_pairs, test_pairs):
         textgrad_call_count=result.textgrad_call_count,
         textgrad_max_tokens=config.textgrad_max_tokens,
     )
+    candidate_acceptance = _candidate_acceptance_summary(textgrad_steps)
     print(f"  Pipeline OK: {result.n_iterations} iterations, {call_count[0]} mock LLM calls")
     print(f"  Initial loss: {result.initial_loss:.4f}")
     print(f"  Final loss: {result.final_loss:.4f}")
@@ -417,6 +434,7 @@ def _run_dry(config, train_pairs, test_pairs):
         ),
         "textgrad_steps": textgrad_steps,
     }
+    summary.update(candidate_acceptance)
     return summary
 
 
@@ -492,24 +510,95 @@ def _write_textgrad_steps(run_id: str, textgrad_steps: list[dict]) -> Path:
 
 def _textgrad_steps_from_history(history) -> list[dict]:
     steps = []
-    for record in history:
+    records = list(history)
+    for index, record in enumerate(records):
         step = getattr(record, "gradient_step", None)
         if step is None:
             continue
         prompt_before = getattr(record, "prompt", "")
         edited_prompt = getattr(step, "edited_prompt", "")
+        loss_before = float(getattr(step, "loss_before", record.loss.total_loss))
+        next_record = records[index + 1] if index + 1 < len(records) else None
+        candidate_loss_after = None
+        candidate_loss_delta = None
+        candidate_status = "unchanged"
+        if edited_prompt != prompt_before:
+            if next_record is None:
+                candidate_status = "pending"
+            else:
+                candidate_loss_after = float(next_record.loss.total_loss)
+                candidate_loss_delta = round(candidate_loss_after - loss_before, 12)
+                candidate_status = (
+                    "accepted" if candidate_loss_after < loss_before else "rejected"
+                )
         steps.append(
             {
                 "iteration": int(getattr(step, "iteration", record.iteration)),
-                "loss_before": float(
-                    getattr(step, "loss_before", record.loss.total_loss)
-                ),
+                "loss_before": loss_before,
+                "candidate_loss_after": candidate_loss_after,
+                "candidate_loss_delta": candidate_loss_delta,
+                "candidate_acceptance_status": candidate_status,
                 "feedback": getattr(step, "feedback", ""),
                 "edited_prompt": edited_prompt,
                 "edited_prompt_changed": edited_prompt != prompt_before,
             }
         )
     return steps
+
+
+def _candidate_acceptance_summary(textgrad_steps: list[dict]) -> dict:
+    update_steps = [
+        step for step in textgrad_steps if step.get("edited_prompt_changed")
+    ]
+    accepted_count = sum(
+        1
+        for step in update_steps
+        if step.get("candidate_acceptance_status") == "accepted"
+    )
+    rejected_count = sum(
+        1
+        for step in update_steps
+        if step.get("candidate_acceptance_status") == "rejected"
+    )
+    pending_count = sum(
+        1
+        for step in update_steps
+        if step.get("candidate_acceptance_status") == "pending"
+    )
+    evaluated_count = accepted_count + rejected_count
+    acceptance_rate = (
+        accepted_count / evaluated_count if evaluated_count > 0 else None
+    )
+    return {
+        "candidate_update_count": len(update_steps),
+        "candidate_evaluated_count": evaluated_count,
+        "candidate_accepted_count": accepted_count,
+        "candidate_rejected_count": rejected_count,
+        "candidate_pending_count": pending_count,
+        "candidate_acceptance_rate": acceptance_rate,
+        "candidate_update_status": _candidate_update_status(
+            accepted_count=accepted_count,
+            rejected_count=rejected_count,
+            pending_count=pending_count,
+        ),
+    }
+
+
+def _candidate_update_status(
+    *,
+    accepted_count: int,
+    rejected_count: int,
+    pending_count: int,
+) -> str:
+    if accepted_count == 0 and rejected_count == 0 and pending_count == 0:
+        return "no_candidate_update"
+    if accepted_count > 0 and rejected_count == 0:
+        return "accepted"
+    if accepted_count > 0 and rejected_count > 0:
+        return "mixed"
+    if rejected_count > 0:
+        return "rejected"
+    return "pending"
 
 
 def _prompt_update_count(textgrad_steps: list[dict]) -> int:

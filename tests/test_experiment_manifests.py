@@ -92,6 +92,40 @@ def test_build_causal_manifest_records_textgrad_effect_status():
     assert manifest["metrics"]["textgrad_effect_status"] == "updated_no_improvement"
 
 
+def test_build_causal_manifest_records_candidate_acceptance_metrics():
+    manifest = build_causal_manifest(
+        run_id="candidate-acceptance",
+        mode="local",
+        command=["python", "experiments/w3w4_causal_calibration.py", "--local"],
+        config={"max_iterations": 2, "eval_size": 5},
+        result_summary={
+            "initial_loss": 0.30,
+            "best_loss": 0.20,
+            "final_loss": 0.22,
+            "n_iterations": 3,
+            "total_llm_calls": 63,
+            "textgrad_call_count": 2,
+            "prompt_update_count": 2,
+            "candidate_update_count": 2,
+            "candidate_evaluated_count": 2,
+            "candidate_accepted_count": 1,
+            "candidate_rejected_count": 1,
+            "candidate_pending_count": 0,
+            "candidate_acceptance_rate": 0.5,
+        },
+        result_path="experiments/results/w3w4_candidate_acceptance.json",
+        textgrad_steps_path="experiments/results/w3w4_candidate_acceptance_steps.json",
+    )
+
+    assert manifest["metrics"]["initial_loss"] == 0.30
+    assert manifest["metrics"]["best_loss"] == 0.20
+    assert manifest["metrics"]["final_loss"] == 0.22
+    assert manifest["metrics"]["candidate_accepted_count"] == 1
+    assert manifest["metrics"]["candidate_rejected_count"] == 1
+    assert manifest["metrics"]["candidate_pending_count"] == 0
+    assert manifest["metrics"]["candidate_acceptance_rate"] == 0.5
+
+
 def test_build_causal_manifest_rejects_missing_required_metrics():
     with pytest.raises(ValueError, match="result_summary missing required metrics"):
         build_causal_manifest(
@@ -185,10 +219,19 @@ def test_non_dry_run_writes_textgrad_steps_artifact(tmp_path, monkeypatch):
 
     assert result_summary["textgrad_call_count"] == 2
     assert result_summary["prompt_update_count"] == 1
+    assert result_summary["candidate_update_count"] == 1
+    assert result_summary["candidate_evaluated_count"] == 1
+    assert result_summary["candidate_accepted_count"] == 1
+    assert result_summary["candidate_rejected_count"] == 0
+    assert result_summary["candidate_pending_count"] == 0
+    assert result_summary["candidate_acceptance_rate"] == 1.0
     assert steps == [
         {
             "iteration": 0,
             "loss_before": 0.30,
+            "candidate_loss_after": 0.22,
+            "candidate_loss_delta": -0.08,
+            "candidate_acceptance_status": "accepted",
             "feedback": "Need more cost sensitivity",
             "edited_prompt": "choose with more cost sensitivity",
             "edited_prompt_changed": True,
@@ -196,6 +239,9 @@ def test_non_dry_run_writes_textgrad_steps_artifact(tmp_path, monkeypatch):
         {
             "iteration": 1,
             "loss_before": 0.22,
+            "candidate_loss_after": None,
+            "candidate_loss_delta": None,
+            "candidate_acceptance_status": "unchanged",
             "feedback": "No further prompt change needed",
             "edited_prompt": "choose with more cost sensitivity",
             "edited_prompt_changed": False,
@@ -203,6 +249,11 @@ def test_non_dry_run_writes_textgrad_steps_artifact(tmp_path, monkeypatch):
     ]
     assert manifest["metrics"]["textgrad_call_count"] == 2
     assert manifest["metrics"]["prompt_update_count"] == 1
+    assert manifest["metrics"]["candidate_update_count"] == 1
+    assert manifest["metrics"]["candidate_evaluated_count"] == 1
+    assert manifest["metrics"]["candidate_accepted_count"] == 1
+    assert manifest["metrics"]["candidate_rejected_count"] == 0
+    assert manifest["metrics"]["candidate_pending_count"] == 0
     assert manifest["artifacts"]["textgrad_steps_json"] == str(
         Path("experiments/results/w3w4_textgrad%2Flocal%20run%2001_textgrad_steps.json")
     )
