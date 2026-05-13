@@ -45,6 +45,13 @@
   "lane": "causal",
   "metrics": {
     "best_loss": 0.1905558631940567,
+    "candidate_acceptance_rate": 1.0,
+    "candidate_accepted_count": 1,
+    "candidate_evaluated_count": 1,
+    "candidate_pending_count": 1,
+    "candidate_rejected_count": 0,
+    "candidate_update_count": 2,
+    "candidate_update_status": "accepted",
     "final_loss": 0.1905558631940567,
     "improvement_ratio": 0.39380446861638835,
     "initial_loss": 0.3143471921660694,

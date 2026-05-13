@@ -3,6 +3,12 @@
     "42": {
       "best_improvement_ratio": 0.4699952255077141,
       "best_loss_min": 0.17510542612414481,
+      "candidate_acceptance_rate": 0.6666666666666666,
+      "candidate_accepted_count": 4,
+      "candidate_evaluated_count": 6,
+      "candidate_pending_count": 6,
+      "candidate_rejected_count": 2,
+      "candidate_update_count": 12,
       "cell_count": 6,
       "improved_count": 4,
       "mean_best_loss": 0.20519826390624932,
@@ -13,6 +19,12 @@
     "7": {
       "best_improvement_ratio": 0.6159959325690528,
       "best_loss_min": 0.10876563277967326,
+      "candidate_acceptance_rate": 0.6666666666666666,
+      "candidate_accepted_count": 4,
+      "candidate_evaluated_count": 6,
+      "candidate_pending_count": 6,
+      "candidate_rejected_count": 2,
+      "candidate_update_count": 12,
       "cell_count": 6,
       "improved_count": 4,
       "mean_best_loss": 0.19049385936470706,
@@ -23,6 +35,12 @@
     "99": {
       "best_improvement_ratio": 0.44687039387350014,
       "best_loss_min": 0.1759127435770318,
+      "candidate_acceptance_rate": 0.6666666666666666,
+      "candidate_accepted_count": 4,
+      "candidate_evaluated_count": 6,
+      "candidate_pending_count": 6,
+      "candidate_rejected_count": 2,
+      "candidate_update_count": 12,
       "cell_count": 6,
       "improved_count": 4,
       "mean_best_loss": 0.3024831354189989,
@@ -35,6 +53,12 @@
     "compact": {
       "best_improvement_ratio": 0.6159959325690528,
       "best_loss_min": 0.13046485514592812,
+      "candidate_acceptance_rate": 0.8333333333333334,
+      "candidate_accepted_count": 5,
+      "candidate_evaluated_count": 6,
+      "candidate_pending_count": 6,
+      "candidate_rejected_count": 1,
+      "candidate_update_count": 12,
       "cell_count": 6,
       "improved_count": 5,
       "mean_best_loss": 0.27583068646936654,
@@ -45,6 +69,12 @@
     "default": {
       "best_improvement_ratio": 0.4699952255077141,
       "best_loss_min": 0.1759127435770318,
+      "candidate_acceptance_rate": 0.6666666666666666,
+      "candidate_accepted_count": 4,
+      "candidate_evaluated_count": 6,
+      "candidate_pending_count": 6,
+      "candidate_rejected_count": 2,
+      "candidate_update_count": 12,
       "cell_count": 6,
       "improved_count": 4,
       "mean_best_loss": 0.2426772946121634,
@@ -55,6 +85,12 @@
     "structured": {
       "best_improvement_ratio": 0.4988517913929381,
       "best_loss_min": 0.10876563277967326,
+      "candidate_acceptance_rate": 0.5,
+      "candidate_accepted_count": 3,
+      "candidate_evaluated_count": 6,
+      "candidate_pending_count": 6,
+      "candidate_rejected_count": 3,
+      "candidate_update_count": 12,
       "cell_count": 6,
       "improved_count": 3,
       "mean_best_loss": 0.17966727760842535,
@@ -67,6 +103,12 @@
     "1024": {
       "best_improvement_ratio": 0.6159959325690528,
       "best_loss_min": 0.13046485514592812,
+      "candidate_acceptance_rate": 0.6666666666666666,
+      "candidate_accepted_count": 6,
+      "candidate_evaluated_count": 9,
+      "candidate_pending_count": 9,
+      "candidate_rejected_count": 3,
+      "candidate_update_count": 18,
       "cell_count": 9,
       "improved_count": 6,
       "mean_best_loss": 0.22851661674150087,
@@ -77,6 +119,12 @@
     "2048": {
       "best_improvement_ratio": 0.4988517913929381,
       "best_loss_min": 0.10876563277967326,
+      "candidate_acceptance_rate": 0.6666666666666666,
+      "candidate_accepted_count": 6,
+      "candidate_evaluated_count": 9,
+      "candidate_pending_count": 9,
+      "candidate_rejected_count": 3,
+      "candidate_update_count": 18,
       "cell_count": 9,
       "improved_count": 6,
       "mean_best_loss": 0.23693355571846933,
@@ -88,6 +136,13 @@
   "case_summaries": [
     {
       "best_loss": 0.13046485514592812,
+      "candidate_acceptance_rate": 1.0,
+      "candidate_accepted_count": 1,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 0,
+      "candidate_update_count": 2,
+      "candidate_update_status": "accepted",
       "dataset_seed": 7,
       "diagnosis": {
         "flags": [],
@@ -112,6 +167,13 @@
     },
     {
       "best_loss": 0.21725798236646401,
+      "candidate_acceptance_rate": 1.0,
+      "candidate_accepted_count": 1,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 0,
+      "candidate_update_count": 2,
+      "candidate_update_status": "accepted",
       "dataset_seed": 7,
       "diagnosis": {
         "flags": [],
@@ -136,9 +198,17 @@
     },
     {
       "best_loss": 0.24355583627790764,
+      "candidate_acceptance_rate": 0.0,
+      "candidate_accepted_count": 0,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 1,
+      "candidate_update_count": 2,
+      "candidate_update_status": "rejected",
       "dataset_seed": 7,
       "diagnosis": {
         "flags": [
+          "candidate_update_rejected",
           "textgrad_direction_no_measured_gain"
         ],
         "primary_hypothesis": "textgrad_direction_no_measured_gain"
@@ -162,9 +232,17 @@
     },
     {
       "best_loss": 0.24355583627790764,
+      "candidate_acceptance_rate": 0.0,
+      "candidate_accepted_count": 0,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 1,
+      "candidate_update_count": 2,
+      "candidate_update_status": "rejected",
       "dataset_seed": 7,
       "diagnosis": {
         "flags": [
+          "candidate_update_rejected",
           "textgrad_direction_no_measured_gain"
         ],
         "primary_hypothesis": "textgrad_direction_no_measured_gain"
@@ -188,6 +266,13 @@
     },
     {
       "best_loss": 0.19936301334036166,
+      "candidate_acceptance_rate": 1.0,
+      "candidate_accepted_count": 1,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 0,
+      "candidate_update_count": 2,
+      "candidate_update_status": "accepted",
       "dataset_seed": 7,
       "diagnosis": {
         "flags": [],
@@ -212,6 +297,13 @@
     },
     {
       "best_loss": 0.10876563277967326,
+      "candidate_acceptance_rate": 1.0,
+      "candidate_accepted_count": 1,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 0,
+      "candidate_update_count": 2,
+      "candidate_update_status": "accepted",
       "dataset_seed": 7,
       "diagnosis": {
         "flags": [],
@@ -236,6 +328,13 @@
     },
     {
       "best_loss": 0.17510542612414481,
+      "candidate_acceptance_rate": 1.0,
+      "candidate_accepted_count": 1,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 0,
+      "candidate_update_count": 2,
+      "candidate_update_status": "accepted",
       "dataset_seed": 42,
       "diagnosis": {
         "flags": [],
@@ -260,6 +359,13 @@
     },
     {
       "best_loss": 0.1905558631940567,
+      "candidate_acceptance_rate": 1.0,
+      "candidate_accepted_count": 1,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 0,
+      "candidate_update_count": 2,
+      "candidate_update_status": "accepted",
       "dataset_seed": 42,
       "diagnosis": {
         "flags": [],
@@ -284,6 +390,13 @@
     },
     {
       "best_loss": 0.2672993807727302,
+      "candidate_acceptance_rate": 1.0,
+      "candidate_accepted_count": 1,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 0,
+      "candidate_update_count": 2,
+      "candidate_update_status": "accepted",
       "dataset_seed": 42,
       "diagnosis": {
         "flags": [],
@@ -308,6 +421,13 @@
     },
     {
       "best_loss": 0.2259660474393969,
+      "candidate_acceptance_rate": 1.0,
+      "candidate_accepted_count": 1,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 0,
+      "candidate_update_count": 2,
+      "candidate_update_status": "accepted",
       "dataset_seed": 42,
       "diagnosis": {
         "flags": [],
@@ -332,9 +452,17 @@
     },
     {
       "best_loss": 0.18613143295358367,
+      "candidate_acceptance_rate": 0.0,
+      "candidate_accepted_count": 0,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 1,
+      "candidate_update_count": 2,
+      "candidate_update_status": "rejected",
       "dataset_seed": 42,
       "diagnosis": {
         "flags": [
+          "candidate_update_rejected",
           "textgrad_direction_no_measured_gain"
         ],
         "primary_hypothesis": "textgrad_direction_no_measured_gain"
@@ -358,9 +486,17 @@
     },
     {
       "best_loss": 0.18613143295358367,
+      "candidate_acceptance_rate": 0.0,
+      "candidate_accepted_count": 0,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 1,
+      "candidate_update_count": 2,
+      "candidate_update_status": "rejected",
       "dataset_seed": 42,
       "diagnosis": {
         "flags": [
+          "candidate_update_rejected",
           "textgrad_direction_no_measured_gain"
         ],
         "primary_hypothesis": "textgrad_direction_no_measured_gain"
@@ -384,6 +520,13 @@
     },
     {
       "best_loss": 0.3353402257231152,
+      "candidate_acceptance_rate": 1.0,
+      "candidate_accepted_count": 1,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 0,
+      "candidate_update_count": 2,
+      "candidate_update_status": "accepted",
       "dataset_seed": 99,
       "diagnosis": {
         "flags": [],
@@ -408,9 +551,17 @@
     },
     {
       "best_loss": 0.6062597662624905,
+      "candidate_acceptance_rate": 0.0,
+      "candidate_accepted_count": 0,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 1,
+      "candidate_update_count": 2,
+      "candidate_update_status": "rejected",
       "dataset_seed": 99,
       "diagnosis": {
         "flags": [
+          "candidate_update_rejected",
           "textgrad_direction_no_measured_gain"
         ],
         "primary_hypothesis": "textgrad_direction_no_measured_gain"
@@ -434,6 +585,13 @@
     },
     {
       "best_loss": 0.2997739233280061,
+      "candidate_acceptance_rate": 1.0,
+      "candidate_accepted_count": 1,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 0,
+      "candidate_update_count": 2,
+      "candidate_update_status": "accepted",
       "dataset_seed": 99,
       "diagnosis": {
         "flags": [],
@@ -458,6 +616,13 @@
     },
     {
       "best_loss": 0.1759127435770318,
+      "candidate_acceptance_rate": 1.0,
+      "candidate_accepted_count": 1,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 0,
+      "candidate_update_count": 2,
+      "candidate_update_status": "accepted",
       "dataset_seed": 99,
       "diagnosis": {
         "flags": [],
@@ -482,9 +647,17 @@
     },
     {
       "best_loss": 0.21961545700773039,
+      "candidate_acceptance_rate": 0.0,
+      "candidate_accepted_count": 0,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 1,
+      "candidate_update_count": 2,
+      "candidate_update_status": "rejected",
       "dataset_seed": 99,
       "diagnosis": {
         "flags": [
+          "candidate_update_rejected",
           "textgrad_direction_no_measured_gain"
         ],
         "primary_hypothesis": "textgrad_direction_no_measured_gain"
@@ -508,6 +681,13 @@
     },
     {
       "best_loss": 0.17799669661561948,
+      "candidate_acceptance_rate": 1.0,
+      "candidate_accepted_count": 1,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 1,
+      "candidate_rejected_count": 0,
+      "candidate_update_count": 2,
+      "candidate_update_status": "accepted",
       "dataset_seed": 99,
       "diagnosis": {
         "flags": [],
@@ -533,9 +713,10 @@
   ],
   "diagnostic_conclusion": [
     "The complete r1 matrix has 12 improved cells and 6 updated_no_improvement cells, so TextGrad has signal but is not robust enough for a paper-grade effectiveness claim.",
+    "Across r1, 12 evaluated TextGrad candidates were accepted and 6 were rejected; each 2-iteration run also has one pending final candidate that is not counted as accepted or rejected.",
     "Increasing TextGrad token budget from 1024 to 2048 is not monotonic; both budgets have 6 improved and 3 negative cells in r1.",
     "Prompt baseline strongly affects both initial loss and update direction: compact has the highest r1 improvement count, structured has low initial loss but more update failures, and default is mixed across seeds.",
-    "Negative cells usually retain the initial prompt as best_loss while the final edited prompt is worse, indicating that an explicit candidate-acceptance gate should be treated as a core method component."
+    "Negative cells retain the initial prompt as best_loss while the final edited prompt is worse, so explicit candidate acceptance is a core method component rather than a reporting detail."
   ],
   "manifest_refs": [
     "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-compact-tg1024-r1.json",
@@ -559,6 +740,12 @@
   ],
   "matrix_id": "textgrad-paper-gate-r1-baseline-matrix-001",
   "paper_gate": {
+    "candidate_acceptance_rate": 0.6666666666666666,
+    "candidate_accepted_count": 12,
+    "candidate_evaluated_count": 18,
+    "candidate_pending_count": 18,
+    "candidate_rejected_count": 6,
+    "candidate_update_count": 36,
     "improved_run_count": 12,
     "missing_cells": [
       "missing_cell:seed7:compact:tg1024:r2",
@@ -606,16 +793,23 @@
   "research_implication": {
     "claim_boundary": "r1 baseline matrix only; repeats r2-r3 are still missing, so this is not a complete CCF-A-level TextGrad effectiveness claim",
     "next_priority": [
-      "Add an explicit TextGrad candidate-acceptance/holdout gate and report accepted-vs-rejected update rates.",
-      "Run r2-r3 repeats only after the acceptance gate metric is separated from raw candidate-update quality.",
-      "For paper tables, report initial_loss, best_loss, final_loss, improvement_ratio, and update_rejected/accepted state separately."
+      "Report initial_loss, best_loss, final_loss, and candidate accepted/rejected/pending counts in every TextGrad table.",
+      "Use candidate acceptance as the method-level safeguard against harmful prompt updates.",
+      "Run r2-r3 repeats after acceptance metrics are included in manifests and matrix summaries."
     ]
   },
   "schema_version": "circe-textgrad-matrix-v1",
   "scope": "eval5 repeat1 complete matrix across seeds, prompt baselines, and textgrad token budgets",
   "summary": {
     "best_improvement_ratio": 0.6159959325690528,
+    "candidate_acceptance_rate": 0.6666666666666666,
+    "candidate_accepted_count": 12,
+    "candidate_evaluated_count": 18,
+    "candidate_pending_count": 18,
+    "candidate_rejected_count": 6,
+    "candidate_update_count": 36,
     "diagnosis_counts": {
+      "candidate_update_rejected": 6,
       "textgrad_direction_no_measured_gain": 6
     },
     "negative_result_count": 6,
