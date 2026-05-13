@@ -1,0 +1,13 @@
+{
+  "claim_boundary": "single local matrix smoke; not paper-grade TextGrad effectiveness evidence",
+  "manifest_refs": [
+    "experiments/results/manifests/textgrad-matrix-local-eval1-001.json"
+  ],
+  "matrix_id": "textgrad-matrix-001",
+  "schema_version": "circe-textgrad-matrix-v1",
+  "summary": {
+    "best_improvement_ratio": 0.0,
+    "negative_result_count": 1,
+    "run_count": 1
+  }
+}
