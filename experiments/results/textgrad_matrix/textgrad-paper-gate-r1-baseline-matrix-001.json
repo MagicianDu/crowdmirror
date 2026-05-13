@@ -1,0 +1,624 @@
+{
+  "by_dataset_seed": {
+    "42": {
+      "best_improvement_ratio": 0.4699952255077141,
+      "best_loss_min": 0.17510542612414481,
+      "cell_count": 6,
+      "improved_count": 4,
+      "mean_best_loss": 0.20519826390624932,
+      "mean_improvement_ratio": 0.27996711067891794,
+      "mean_initial_loss": 0.3089419390952408,
+      "negative_count": 2
+    },
+    "7": {
+      "best_improvement_ratio": 0.6159959325690528,
+      "best_loss_min": 0.10876563277967326,
+      "cell_count": 6,
+      "improved_count": 4,
+      "mean_best_loss": 0.19049385936470706,
+      "mean_improvement_ratio": 0.25946607501103436,
+      "mean_initial_loss": 0.2667791106860524,
+      "negative_count": 2
+    },
+    "99": {
+      "best_improvement_ratio": 0.44687039387350014,
+      "best_loss_min": 0.1759127435770318,
+      "cell_count": 6,
+      "improved_count": 4,
+      "mean_best_loss": 0.3024831354189989,
+      "mean_improvement_ratio": 0.18371669506183122,
+      "mean_initial_loss": 0.37865171257078006,
+      "negative_count": 2
+    }
+  },
+  "by_prompt_baseline": {
+    "compact": {
+      "best_improvement_ratio": 0.6159959325690528,
+      "best_loss_min": 0.13046485514592812,
+      "cell_count": 6,
+      "improved_count": 5,
+      "mean_best_loss": 0.27583068646936654,
+      "mean_improvement_ratio": 0.37669321480030615,
+      "mean_initial_loss": 0.420118528887509,
+      "negative_count": 1
+    },
+    "default": {
+      "best_improvement_ratio": 0.4699952255077141,
+      "best_loss_min": 0.1759127435770318,
+      "cell_count": 6,
+      "improved_count": 4,
+      "mean_best_loss": 0.2426772946121634,
+      "mean_improvement_ratio": 0.21816086804829782,
+      "mean_initial_loss": 0.3266609809620321,
+      "negative_count": 2
+    },
+    "structured": {
+      "best_improvement_ratio": 0.4988517913929381,
+      "best_loss_min": 0.10876563277967326,
+      "cell_count": 6,
+      "improved_count": 3,
+      "mean_best_loss": 0.17966727760842535,
+      "mean_improvement_ratio": 0.12829579790317955,
+      "mean_initial_loss": 0.20759325250253222,
+      "negative_count": 3
+    }
+  },
+  "by_textgrad_max_tokens": {
+    "1024": {
+      "best_improvement_ratio": 0.6159959325690528,
+      "best_loss_min": 0.13046485514592812,
+      "cell_count": 9,
+      "improved_count": 6,
+      "mean_best_loss": 0.22851661674150087,
+      "mean_improvement_ratio": 0.22150238101169428,
+      "mean_initial_loss": 0.3181242541173578,
+      "negative_count": 3
+    },
+    "2048": {
+      "best_improvement_ratio": 0.4988517913929381,
+      "best_loss_min": 0.10876563277967326,
+      "cell_count": 9,
+      "improved_count": 6,
+      "mean_best_loss": 0.23693355571846933,
+      "mean_improvement_ratio": 0.2605975394894947,
+      "mean_initial_loss": 0.3181242541173578,
+      "negative_count": 3
+    }
+  },
+  "case_summaries": [
+    {
+      "best_loss": 0.13046485514592812,
+      "dataset_seed": 7,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "final_ate_mae": 0.015060730746938266,
+      "final_ece": 0.10034339365205158,
+      "final_loss": 0.13046485514592812,
+      "final_minus_initial_loss": -0.209283773088039,
+      "improvement_ratio": 0.6159959325690528,
+      "initial_ate_mae": 0.1224818413677152,
+      "initial_ece": 0.09478494549853671,
+      "initial_loss": 0.3397486282339671,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-compact-tg1024-r1.json",
+      "prompt_baseline": "compact",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-compact-tg1024-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed7-eval5-compact-tg1024-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-compact-tg1024-r1_textgrad_steps.json",
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 1024
+    },
+    {
+      "best_loss": 0.21725798236646401,
+      "dataset_seed": 7,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "final_ate_mae": 0.0551239610238729,
+      "final_ece": 0.10701006031871821,
+      "final_loss": 0.21725798236646401,
+      "final_minus_initial_loss": -0.1224906458675031,
+      "improvement_ratio": 0.36053315801219427,
+      "initial_ate_mae": 0.1224818413677152,
+      "initial_ece": 0.09478494549853671,
+      "initial_loss": 0.3397486282339671,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-compact-tg2048-r1.json",
+      "prompt_baseline": "compact",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-compact-tg2048-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed7-eval5-compact-tg2048-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-compact-tg2048-r1_textgrad_steps.json",
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 2048
+    },
+    {
+      "best_loss": 0.24355583627790764,
+      "dataset_seed": 7,
+      "diagnosis": {
+        "flags": [
+          "textgrad_direction_no_measured_gain"
+        ],
+        "primary_hypothesis": "textgrad_direction_no_measured_gain"
+      },
+      "final_ate_mae": 0.14448184136771525,
+      "final_ece": 0.0944415518464851,
+      "final_loss": 0.3834052345819156,
+      "final_minus_initial_loss": 0.13984939830400797,
+      "improvement_ratio": 0.0,
+      "initial_ate_mae": 0.08438544538968547,
+      "initial_ece": 0.0747849454985367,
+      "initial_loss": 0.24355583627790764,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-default-tg1024-r1.json",
+      "prompt_baseline": "default",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-default-tg1024-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed7-eval5-default-tg1024-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-default-tg1024-r1_textgrad_steps.json",
+      "textgrad_effect_status": "updated_no_improvement",
+      "textgrad_max_tokens": 1024
+    },
+    {
+      "best_loss": 0.24355583627790764,
+      "dataset_seed": 7,
+      "diagnosis": {
+        "flags": [
+          "textgrad_direction_no_measured_gain"
+        ],
+        "primary_hypothesis": "textgrad_direction_no_measured_gain"
+      },
+      "final_ate_mae": 0.15312396102387288,
+      "final_ece": 0.12145161216520338,
+      "final_loss": 0.42769953421294915,
+      "final_minus_initial_loss": 0.1841436979350415,
+      "improvement_ratio": 0.0,
+      "initial_ate_mae": 0.08438544538968547,
+      "initial_ece": 0.0747849454985367,
+      "initial_loss": 0.24355583627790764,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-default-tg2048-r1.json",
+      "prompt_baseline": "default",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-default-tg2048-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed7-eval5-default-tg2048-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-default-tg2048-r1_textgrad_steps.json",
+      "textgrad_effect_status": "updated_no_improvement",
+      "textgrad_max_tokens": 2048
+    },
+    {
+      "best_loss": 0.19936301334036166,
+      "dataset_seed": 7,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "final_ate_mae": 0.04346073074693828,
+      "final_ece": 0.1124415518464851,
+      "final_loss": 0.19936301334036166,
+      "final_minus_initial_loss": -0.017669854205920932,
+      "improvement_ratio": 0.08141556809202094,
+      "initial_ate_mae": 0.06112396102387295,
+      "initial_ece": 0.09478494549853668,
+      "initial_loss": 0.2170328675462826,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-structured-tg1024-r1.json",
+      "prompt_baseline": "structured",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-structured-tg1024-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed7-eval5-structured-tg1024-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-structured-tg1024-r1_textgrad_steps.json",
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 1024
+    },
+    {
+      "best_loss": 0.10876563277967326,
+      "dataset_seed": 7,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "final_ate_mae": 0.037221179882529064,
+      "final_ece": 0.03432327301461513,
+      "final_loss": 0.10876563277967326,
+      "final_minus_initial_loss": -0.10826723476660934,
+      "improvement_ratio": 0.4988517913929381,
+      "initial_ate_mae": 0.06112396102387295,
+      "initial_ece": 0.09478494549853668,
+      "initial_loss": 0.2170328675462826,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-structured-tg2048-r1.json",
+      "prompt_baseline": "structured",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-structured-tg2048-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed7-eval5-structured-tg2048-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-structured-tg2048-r1_textgrad_steps.json",
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 2048
+    },
+    {
+      "best_loss": 0.17510542612414481,
+      "dataset_seed": 42,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "final_ate_mae": 0.027076618758742045,
+      "final_ece": 0.12095218860666074,
+      "final_loss": 0.17510542612414481,
+      "final_minus_initial_loss": -0.13924176604192456,
+      "improvement_ratio": 0.4429553357307014,
+      "initial_ate_mae": 0.12886454831433994,
+      "initial_ece": 0.056618095537389515,
+      "initial_loss": 0.3143471921660694,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed42-eval5-compact-tg1024-r1.json",
+      "prompt_baseline": "compact",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed42-eval5-compact-tg1024-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed42-eval5-compact-tg1024-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed42-eval5-compact-tg1024-r1_textgrad_steps.json",
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 1024
+    },
+    {
+      "best_loss": 0.1905558631940567,
+      "dataset_seed": 42,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "final_ate_mae": 0.06146850396036465,
+      "final_ece": 0.06761885527332741,
+      "final_loss": 0.1905558631940567,
+      "final_minus_initial_loss": -0.12379132897201267,
+      "improvement_ratio": 0.39380446861638835,
+      "initial_ate_mae": 0.12886454831433994,
+      "initial_ece": 0.056618095537389515,
+      "initial_loss": 0.3143471921660694,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed42-eval5-compact-tg2048-r1.json",
+      "prompt_baseline": "compact",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed42-eval5-compact-tg2048-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed42-eval5-compact-tg2048-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed42-eval5-compact-tg2048-r1_textgrad_steps.json",
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 2048
+    },
+    {
+      "best_loss": 0.2672993807727302,
+      "dataset_seed": 42,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "final_ate_mae": 0.12086454831433997,
+      "final_ece": 0.02557028414405027,
+      "final_loss": 0.2672993807727302,
+      "final_minus_initial_loss": -0.15904781139333923,
+      "improvement_ratio": 0.3730476342187037,
+      "initial_ate_mae": 0.18486454831433996,
+      "initial_ece": 0.056618095537389515,
+      "initial_loss": 0.4263471921660694,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed42-eval5-default-tg1024-r1.json",
+      "prompt_baseline": "default",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed42-eval5-default-tg1024-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed42-eval5-default-tg1024-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed42-eval5-default-tg1024-r1_textgrad_steps.json",
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 1024
+    },
+    {
+      "best_loss": 0.2259660474393969,
+      "dataset_seed": 42,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "final_ate_mae": 0.08686454831433998,
+      "final_ece": 0.05223695081071693,
+      "final_loss": 0.2259660474393969,
+      "final_minus_initial_loss": -0.2003811447266725,
+      "improvement_ratio": 0.4699952255077141,
+      "initial_ate_mae": 0.18486454831433996,
+      "initial_ece": 0.056618095537389515,
+      "initial_loss": 0.4263471921660694,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed42-eval5-default-tg2048-r1.json",
+      "prompt_baseline": "default",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed42-eval5-default-tg2048-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed42-eval5-default-tg2048-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed42-eval5-default-tg2048-r1_textgrad_steps.json",
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 2048
+    },
+    {
+      "best_loss": 0.18613143295358367,
+      "dataset_seed": 42,
+      "diagnosis": {
+        "flags": [
+          "textgrad_direction_no_measured_gain"
+        ],
+        "primary_hypothesis": "textgrad_direction_no_measured_gain"
+      },
+      "final_ate_mae": 0.06662850396036471,
+      "final_ece": 0.07395142887072285,
+      "final_loss": 0.2072084367914523,
+      "final_minus_initial_loss": 0.02107700383786862,
+      "improvement_ratio": 0.0,
+      "initial_ate_mae": 0.04028057440476672,
+      "initial_ece": 0.10557028414405023,
+      "initial_loss": 0.18613143295358367,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed42-eval5-structured-tg1024-r1.json",
+      "prompt_baseline": "structured",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed42-eval5-structured-tg1024-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed42-eval5-structured-tg1024-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed42-eval5-structured-tg1024-r1_textgrad_steps.json",
+      "textgrad_effect_status": "updated_no_improvement",
+      "textgrad_max_tokens": 1024
+    },
+    {
+      "best_loss": 0.18613143295358367,
+      "dataset_seed": 42,
+      "diagnosis": {
+        "flags": [
+          "textgrad_direction_no_measured_gain"
+        ],
+        "primary_hypothesis": "textgrad_direction_no_measured_gain"
+      },
+      "final_ate_mae": 0.08246850396036473,
+      "final_ece": 0.0723811447266726,
+      "final_loss": 0.23731815264740208,
+      "final_minus_initial_loss": 0.05118671969381841,
+      "improvement_ratio": 0.0,
+      "initial_ate_mae": 0.04028057440476672,
+      "initial_ece": 0.10557028414405023,
+      "initial_loss": 0.18613143295358367,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed42-eval5-structured-tg2048-r1.json",
+      "prompt_baseline": "structured",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed42-eval5-structured-tg2048-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed42-eval5-structured-tg2048-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed42-eval5-structured-tg2048-r1_textgrad_steps.json",
+      "textgrad_effect_status": "updated_no_improvement",
+      "textgrad_max_tokens": 2048
+    },
+    {
+      "best_loss": 0.3353402257231152,
+      "dataset_seed": 99,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "final_ate_mae": 0.06262490692851208,
+      "final_ece": 0.21009041186609106,
+      "final_loss": 0.3353402257231152,
+      "final_minus_initial_loss": -0.2709195405393752,
+      "improvement_ratio": 0.44687039387350014,
+      "initial_ate_mae": 0.24150842239762413,
+      "initial_ece": 0.12324292146724225,
+      "initial_loss": 0.6062597662624905,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed99-eval5-compact-tg1024-r1.json",
+      "prompt_baseline": "compact",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed99-eval5-compact-tg1024-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed99-eval5-compact-tg1024-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed99-eval5-compact-tg1024-r1_textgrad_steps.json",
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 1024
+    },
+    {
+      "best_loss": 0.6062597662624905,
+      "dataset_seed": 99,
+      "diagnosis": {
+        "flags": [
+          "textgrad_direction_no_measured_gain"
+        ],
+        "primary_hypothesis": "textgrad_direction_no_measured_gain"
+      },
+      "final_ate_mae": 0.2895084223976242,
+      "final_ece": 0.12324292146724225,
+      "final_loss": 0.7022597662624906,
+      "final_minus_initial_loss": 0.0960000000000002,
+      "improvement_ratio": 0.0,
+      "initial_ate_mae": 0.24150842239762413,
+      "initial_ece": 0.12324292146724225,
+      "initial_loss": 0.6062597662624905,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed99-eval5-compact-tg2048-r1.json",
+      "prompt_baseline": "compact",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed99-eval5-compact-tg2048-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed99-eval5-compact-tg2048-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed99-eval5-compact-tg2048-r1_textgrad_steps.json",
+      "textgrad_effect_status": "updated_no_improvement",
+      "textgrad_max_tokens": 2048
+    },
+    {
+      "best_loss": 0.2997739233280061,
+      "dataset_seed": 99,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "final_ate_mae": 0.11150842239762418,
+      "final_ece": 0.07675707853275775,
+      "final_loss": 0.2997739233280061,
+      "final_minus_initial_loss": -0.010305991114113233,
+      "improvement_ratio": 0.03323656462126955,
+      "initial_ate_mae": 0.12150842239762416,
+      "initial_ece": 0.06706306964687106,
+      "initial_loss": 0.31007991444211935,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed99-eval5-default-tg1024-r1.json",
+      "prompt_baseline": "default",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed99-eval5-default-tg1024-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed99-eval5-default-tg1024-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed99-eval5-default-tg1024-r1_textgrad_steps.json",
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 1024
+    },
+    {
+      "best_loss": 0.1759127435770318,
+      "dataset_seed": 99,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "final_ate_mae": 0.04957783252213702,
+      "final_ece": 0.07675707853275773,
+      "final_loss": 0.1759127435770318,
+      "final_minus_initial_loss": -0.13416717086508756,
+      "improvement_ratio": 0.4326857839420995,
+      "initial_ate_mae": 0.12150842239762416,
+      "initial_ece": 0.06706306964687106,
+      "initial_loss": 0.31007991444211935,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed99-eval5-default-tg2048-r1.json",
+      "prompt_baseline": "default",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed99-eval5-default-tg2048-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed99-eval5-default-tg2048-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed99-eval5-default-tg2048-r1_textgrad_steps.json",
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 2048
+    },
+    {
+      "best_loss": 0.21961545700773039,
+      "dataset_seed": 99,
+      "diagnosis": {
+        "flags": [
+          "textgrad_direction_no_measured_gain"
+        ],
+        "primary_hypothesis": "textgrad_direction_no_measured_gain"
+      },
+      "final_ate_mae": 0.21970842239762417,
+      "final_ece": 0.13990958813390889,
+      "final_loss": 0.5793264329291572,
+      "final_minus_initial_loss": 0.3597109759214268,
+      "improvement_ratio": 0.0,
+      "initial_ate_mae": 0.07142918923748633,
+      "initial_ece": 0.07675707853275775,
+      "initial_loss": 0.21961545700773039,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed99-eval5-structured-tg1024-r1.json",
+      "prompt_baseline": "structured",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed99-eval5-structured-tg1024-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed99-eval5-structured-tg1024-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed99-eval5-structured-tg1024-r1_textgrad_steps.json",
+      "textgrad_effect_status": "updated_no_improvement",
+      "textgrad_max_tokens": 1024
+    },
+    {
+      "best_loss": 0.17799669661561948,
+      "dataset_seed": 99,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "final_ate_mae": 0.07490842239762416,
+      "final_ece": 0.028179851820371176,
+      "final_loss": 0.17799669661561948,
+      "final_minus_initial_loss": -0.041618760392110904,
+      "improvement_ratio": 0.1895074279341182,
+      "initial_ate_mae": 0.07142918923748633,
+      "initial_ece": 0.07675707853275775,
+      "initial_loss": 0.21961545700773039,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed99-eval5-structured-tg2048-r1.json",
+      "prompt_baseline": "structured",
+      "repeat": 1,
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed99-eval5-structured-tg2048-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed99-eval5-structured-tg2048-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed99-eval5-structured-tg2048-r1_textgrad_steps.json",
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 2048
+    }
+  ],
+  "diagnostic_conclusion": [
+    "The complete r1 matrix has 12 improved cells and 6 updated_no_improvement cells, so TextGrad has signal but is not robust enough for a paper-grade effectiveness claim.",
+    "Increasing TextGrad token budget from 1024 to 2048 is not monotonic; both budgets have 6 improved and 3 negative cells in r1.",
+    "Prompt baseline strongly affects both initial loss and update direction: compact has the highest r1 improvement count, structured has low initial loss but more update failures, and default is mixed across seeds.",
+    "Negative cells usually retain the initial prompt as best_loss while the final edited prompt is worse, indicating that an explicit candidate-acceptance gate should be treated as a core method component."
+  ],
+  "manifest_refs": [
+    "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-compact-tg1024-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-compact-tg2048-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-default-tg1024-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-default-tg2048-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-structured-tg1024-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-structured-tg2048-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed42-eval5-compact-tg1024-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed42-eval5-compact-tg2048-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed42-eval5-default-tg1024-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed42-eval5-default-tg2048-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed42-eval5-structured-tg1024-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed42-eval5-structured-tg2048-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed99-eval5-compact-tg1024-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed99-eval5-compact-tg2048-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed99-eval5-default-tg1024-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed99-eval5-default-tg2048-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed99-eval5-structured-tg1024-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed99-eval5-structured-tg2048-r1.json"
+  ],
+  "matrix_id": "textgrad-paper-gate-r1-baseline-matrix-001",
+  "paper_gate": {
+    "improved_run_count": 12,
+    "missing_cells": [
+      "missing_cell:seed7:compact:tg1024:r2",
+      "missing_cell:seed7:compact:tg1024:r3",
+      "missing_cell:seed7:compact:tg2048:r2",
+      "missing_cell:seed7:compact:tg2048:r3",
+      "missing_cell:seed7:default:tg1024:r2",
+      "missing_cell:seed7:default:tg1024:r3",
+      "missing_cell:seed7:default:tg2048:r2",
+      "missing_cell:seed7:default:tg2048:r3",
+      "missing_cell:seed7:structured:tg1024:r2",
+      "missing_cell:seed7:structured:tg1024:r3",
+      "missing_cell:seed7:structured:tg2048:r2",
+      "missing_cell:seed7:structured:tg2048:r3",
+      "missing_cell:seed42:compact:tg1024:r2",
+      "missing_cell:seed42:compact:tg1024:r3",
+      "missing_cell:seed42:compact:tg2048:r2",
+      "missing_cell:seed42:compact:tg2048:r3",
+      "missing_cell:seed42:default:tg1024:r2",
+      "missing_cell:seed42:default:tg1024:r3",
+      "missing_cell:seed42:default:tg2048:r2",
+      "missing_cell:seed42:default:tg2048:r3",
+      "missing_cell:seed42:structured:tg1024:r2",
+      "missing_cell:seed42:structured:tg1024:r3",
+      "missing_cell:seed42:structured:tg2048:r2",
+      "missing_cell:seed42:structured:tg2048:r3",
+      "missing_cell:seed99:compact:tg1024:r2",
+      "missing_cell:seed99:compact:tg1024:r3",
+      "missing_cell:seed99:compact:tg2048:r2",
+      "missing_cell:seed99:compact:tg2048:r3",
+      "missing_cell:seed99:default:tg1024:r2",
+      "missing_cell:seed99:default:tg1024:r3",
+      "missing_cell:seed99:default:tg2048:r2",
+      "missing_cell:seed99:default:tg2048:r3",
+      "missing_cell:seed99:structured:tg1024:r2",
+      "missing_cell:seed99:structured:tg1024:r3",
+      "missing_cell:seed99:structured:tg2048:r2",
+      "missing_cell:seed99:structured:tg2048:r3"
+    ],
+    "negative_result_count": 6,
+    "observed_run_count": 18,
+    "required_run_count": 54,
+    "status": "insufficient_evidence"
+  },
+  "research_implication": {
+    "claim_boundary": "r1 baseline matrix only; repeats r2-r3 are still missing, so this is not a complete CCF-A-level TextGrad effectiveness claim",
+    "next_priority": [
+      "Add an explicit TextGrad candidate-acceptance/holdout gate and report accepted-vs-rejected update rates.",
+      "Run r2-r3 repeats only after the acceptance gate metric is separated from raw candidate-update quality.",
+      "For paper tables, report initial_loss, best_loss, final_loss, improvement_ratio, and update_rejected/accepted state separately."
+    ]
+  },
+  "schema_version": "circe-textgrad-matrix-v1",
+  "scope": "eval5 repeat1 complete matrix across seeds, prompt baselines, and textgrad token budgets",
+  "summary": {
+    "best_improvement_ratio": 0.6159959325690528,
+    "diagnosis_counts": {
+      "textgrad_direction_no_measured_gain": 6
+    },
+    "negative_result_count": 6,
+    "run_count": 18
+  }
+}
