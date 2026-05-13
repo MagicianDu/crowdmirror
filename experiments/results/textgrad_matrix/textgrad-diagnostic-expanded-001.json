@@ -1,0 +1,148 @@
+{
+  "case_summaries": [
+    {
+      "best_loss": 0.0360197782301237,
+      "dataset_seed": null,
+      "diagnosis": {
+        "flags": [
+          "eval_size_too_small_to_judge",
+          "textgrad_output_budget_saturated",
+          "suspected_prompt_truncation"
+        ],
+        "primary_hypothesis": "textgrad_output_budget_saturated"
+      },
+      "eval_size": 1,
+      "improvement_ratio": 0.0,
+      "initial_loss": 0.0360197782301237,
+      "min_edited_prompt_chars": 128,
+      "prompt_baseline": null,
+      "run_id": "textgrad-matrix-local-eval1-001",
+      "suspected_prompt_truncation_count": 2,
+      "textgrad_effect_status": "updated_no_improvement",
+      "textgrad_max_tokens": 1024,
+      "textgrad_output_budget_saturated": null
+    },
+    {
+      "best_loss": 0.2016946998298821,
+      "dataset_seed": 42,
+      "diagnosis": {
+        "flags": [
+          "eval_size_too_small_to_judge"
+        ],
+        "primary_hypothesis": "eval_size_too_small_to_judge"
+      },
+      "eval_size": 1,
+      "improvement_ratio": 0.37088035419544907,
+      "initial_loss": 0.32059831730726585,
+      "min_edited_prompt_chars": 1812,
+      "prompt_baseline": "default",
+      "run_id": "textgrad-diag-local-seed42-eval1-default-tg1024-rerun",
+      "suspected_prompt_truncation_count": 0,
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 1024,
+      "textgrad_output_budget_saturated": false
+    },
+    {
+      "best_loss": 0.1129324103765369,
+      "dataset_seed": 42,
+      "diagnosis": {
+        "flags": [
+          "eval_size_too_small_to_judge"
+        ],
+        "primary_hypothesis": "eval_size_too_small_to_judge"
+      },
+      "eval_size": 1,
+      "improvement_ratio": 0.6477448436876825,
+      "initial_loss": 0.32059831730726585,
+      "min_edited_prompt_chars": 1608,
+      "prompt_baseline": "default",
+      "run_id": "textgrad-diag-local-seed42-eval1-default-tg2048",
+      "suspected_prompt_truncation_count": 0,
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 2048,
+      "textgrad_output_budget_saturated": false
+    },
+    {
+      "best_loss": 0.21742320182675529,
+      "dataset_seed": 42,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "eval_size": 2,
+      "improvement_ratio": 0.4925603013544568,
+      "initial_loss": 0.42847101322009445,
+      "min_edited_prompt_chars": 1329,
+      "prompt_baseline": "default",
+      "run_id": "textgrad-diag-local-seed42-eval2-default-tg1024",
+      "suspected_prompt_truncation_count": 0,
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 1024,
+      "textgrad_output_budget_saturated": false
+    },
+    {
+      "best_loss": 0.17080510628936557,
+      "dataset_seed": 42,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "eval_size": 2,
+      "improvement_ratio": 0.6013613499645835,
+      "initial_loss": 0.42847101322009445,
+      "min_edited_prompt_chars": 1563,
+      "prompt_baseline": "default",
+      "run_id": "textgrad-diag-local-seed42-eval2-default-tg2048",
+      "suspected_prompt_truncation_count": 0,
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 2048,
+      "textgrad_output_budget_saturated": false
+    },
+    {
+      "best_loss": 0.14058438359712597,
+      "dataset_seed": 7,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "eval_size": 2,
+      "improvement_ratio": 0.34619801417400115,
+      "initial_loss": 0.2150259354436111,
+      "min_edited_prompt_chars": 1390,
+      "prompt_baseline": "compact",
+      "run_id": "textgrad-diag-local-seed7-eval2-compact-tg2048",
+      "suspected_prompt_truncation_count": 0,
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 2048,
+      "textgrad_output_budget_saturated": false
+    }
+  ],
+  "claim_boundary": "expanded local diagnostic matrix; useful for root-cause triage but not paper-grade TextGrad effectiveness evidence",
+  "diagnostic_conclusion": [
+    "Controlled rerun of eval1 seed42 default tg1024 improved, so the earlier no-improvement result is not stable under rerun.",
+    "The earlier negative run showed full TextGrad token-budget use and an edited prompt ending at an incomplete phrase, so output truncation remains the strongest explanation for that isolated result.",
+    "eval_size=1 is too small for paper-grade claims, but it is not sufficient to explain failure because eval1 improved when the prompt update completed.",
+    "Changing dataset seed and compact prompt baseline did not block improvement in the bounded local smoke.",
+    "Next paper-grade gate is repeated cells with eval_size>=5 and at least three seeds before claiming TextGrad effectiveness."
+  ],
+  "manifest_refs": [
+    "experiments/results/manifests/textgrad-matrix-local-eval1-001.json",
+    "experiments/results/manifests/textgrad-diag-local-seed42-eval1-default-tg1024-rerun.json",
+    "experiments/results/manifests/textgrad-diag-local-seed42-eval1-default-tg2048.json",
+    "experiments/results/manifests/textgrad-diag-local-seed42-eval2-default-tg1024.json",
+    "experiments/results/manifests/textgrad-diag-local-seed42-eval2-default-tg2048.json",
+    "experiments/results/manifests/textgrad-diag-local-seed7-eval2-compact-tg2048.json"
+  ],
+  "matrix_id": "textgrad-diagnostic-expanded-001",
+  "schema_version": "circe-textgrad-matrix-v1",
+  "summary": {
+    "best_improvement_ratio": 0.6477448436876825,
+    "diagnosis_counts": {
+      "eval_size_too_small_to_judge": 3,
+      "suspected_prompt_truncation": 1,
+      "textgrad_output_budget_saturated": 1
+    },
+    "negative_result_count": 1,
+    "run_count": 6
+  }
+}

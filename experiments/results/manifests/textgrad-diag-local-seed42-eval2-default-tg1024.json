@@ -1,0 +1,70 @@
+{
+  "artifacts": {
+    "result_json": "experiments/results/w3w4_textgrad-diag-local-seed42-eval2-default-tg1024.json",
+    "textgrad_steps_json": "experiments/results/w3w4_textgrad-diag-local-seed42-eval2-default-tg1024_textgrad_steps.json"
+  },
+  "claim_boundary": "local-model calibration evidence; not cross-provider evidence",
+  "command": [
+    "python",
+    "experiments/w3w4_causal_calibration.py",
+    "--max-iter",
+    "2",
+    "--eval-size",
+    "2",
+    "--local",
+    "--sim-max-tokens",
+    "256",
+    "--textgrad-max-tokens",
+    "1024",
+    "--request-timeout",
+    "180",
+    "--base-url",
+    "http://127.0.0.1:1234/v1",
+    "--model",
+    "google/gemma-4-31b",
+    "--run-id",
+    "textgrad-diag-local-seed42-eval2-default-tg1024",
+    "--manifest-dir",
+    "experiments/results/manifests"
+  ],
+  "completed_at": "2026-05-13T06:09:42.191331+00:00",
+  "config": {
+    "dataset_seed": 42,
+    "eval_size": 2,
+    "local": true,
+    "max_iterations": 2,
+    "model": "google/gemma-4-31b",
+    "prompt_baseline": "default",
+    "provider": "openai",
+    "request_timeout": 180.0,
+    "simulator_max_tokens": 256,
+    "textgrad_max_tokens": 1024
+  },
+  "lane": "causal",
+  "metrics": {
+    "best_loss": 0.21742320182675529,
+    "final_loss": 0.21742320182675529,
+    "improvement_ratio": 0.4925603013544568,
+    "initial_loss": 0.42847101322009445,
+    "min_edited_prompt_chars": 1329,
+    "n_iterations": 2,
+    "prompt_update_count": 2,
+    "suspected_prompt_truncation_count": 0,
+    "textgrad_call_count": 2,
+    "textgrad_effect_status": "improved",
+    "textgrad_input_tokens": 1404,
+    "textgrad_output_budget_saturated": false,
+    "textgrad_output_tokens": 1047,
+    "total_llm_calls": 10
+  },
+  "mode": "local",
+  "notes": [
+    "Causal calibration compares predicted mode probabilities and Swissmetro ATE.",
+    "TextGrad steps record prompt feedback and edited prompts; effectiveness is judged by subsequent loss re-evaluation.",
+    "Dry-run mode uses mocked LLM responses and only validates execution plumbing."
+  ],
+  "run_id": "textgrad-diag-local-seed42-eval2-default-tg1024",
+  "schema_version": "circe-evidence-v1",
+  "started_at": "2026-05-13T06:09:42.191331+00:00",
+  "status": "completed"
+}
