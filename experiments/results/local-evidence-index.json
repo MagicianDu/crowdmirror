@@ -1,0 +1,31 @@
+{
+  "claimable_improvement_count": 0,
+  "completed_evidence_count": 1,
+  "entries": [
+    {
+      "artifact_refs": [
+        "experiments/results/w3w4_local-gemma-w3w4-canary-001.json"
+      ],
+      "claim_boundary": "local-model calibration evidence; not cross-provider evidence",
+      "lane": "causal",
+      "manifest_path": "experiments/results/manifests/local-gemma-w3w4-canary-001.json",
+      "metrics": {
+        "best_loss": 0.4055871739728345,
+        "final_loss": 0.4055871739728345,
+        "improvement_ratio": 0.0,
+        "initial_loss": 0.4055871739728345,
+        "n_iterations": 1,
+        "total_llm_calls": 4
+      },
+      "mode": "local",
+      "run_id": "local-gemma-w3w4-canary-001",
+      "status": "completed",
+      "unsupported_warnings": [
+        "research_manifest_scope_not_product_scenario",
+        "research_manifest_has_no_measured_improvement"
+      ]
+    }
+  ],
+  "manifest_dir": "experiments/results/manifests",
+  "schema_version": "circe-local-evidence-index-v1"
+}
