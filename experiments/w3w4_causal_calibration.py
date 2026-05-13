@@ -191,6 +191,12 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
         "textgrad_input_tokens": result.textgrad_input_tokens,
         "textgrad_output_tokens": result.textgrad_output_tokens,
         "prompt_update_count": _prompt_update_count(textgrad_steps),
+        "textgrad_effect_status": _textgrad_effect_status(
+            initial_loss=result.initial_loss,
+            best_loss=result.best_loss,
+            textgrad_call_count=result.textgrad_call_count,
+            prompt_update_count=_prompt_update_count(textgrad_steps),
+        ),
         "textgrad_steps": textgrad_steps,
         "elapsed_seconds": elapsed,
         "history": [
@@ -260,6 +266,15 @@ def build_causal_manifest(
         "total_llm_calls": int(result_summary["total_llm_calls"]),
         "textgrad_call_count": int(result_summary["textgrad_call_count"]),
         "prompt_update_count": int(result_summary["prompt_update_count"]),
+        "textgrad_effect_status": result_summary.get(
+            "textgrad_effect_status",
+            _textgrad_effect_status(
+                initial_loss=initial,
+                best_loss=best,
+                textgrad_call_count=int(result_summary["textgrad_call_count"]),
+                prompt_update_count=int(result_summary["prompt_update_count"]),
+            ),
+        ),
     }
     for token_metric in ("textgrad_input_tokens", "textgrad_output_tokens"):
         if token_metric in result_summary:
@@ -331,6 +346,12 @@ def _run_dry(config, train_pairs, test_pairs):
         "textgrad_input_tokens": result.textgrad_input_tokens,
         "textgrad_output_tokens": result.textgrad_output_tokens,
         "prompt_update_count": _prompt_update_count(textgrad_steps),
+        "textgrad_effect_status": _textgrad_effect_status(
+            initial_loss=result.initial_loss,
+            best_loss=result.best_loss,
+            textgrad_call_count=result.textgrad_call_count,
+            prompt_update_count=_prompt_update_count(textgrad_steps),
+        ),
         "textgrad_steps": textgrad_steps,
     }
     return summary
@@ -424,6 +445,22 @@ def _textgrad_steps_from_history(history) -> list[dict]:
 
 def _prompt_update_count(textgrad_steps: list[dict]) -> int:
     return sum(1 for step in textgrad_steps if step.get("edited_prompt_changed"))
+
+
+def _textgrad_effect_status(
+    *,
+    initial_loss: float,
+    best_loss: float,
+    textgrad_call_count: int,
+    prompt_update_count: int,
+) -> str:
+    if textgrad_call_count <= 0:
+        return "not_run"
+    if best_loss < initial_loss:
+        return "improved"
+    if prompt_update_count > 0:
+        return "updated_no_improvement"
+    return "no_prompt_change"
 
 
 def _safe_run_id_token(run_id: str) -> str:

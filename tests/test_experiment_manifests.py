@@ -69,6 +69,29 @@ def test_build_causal_manifest_records_textgrad_evidence_artifact():
     assert any("TextGrad" in note for note in manifest["notes"])
 
 
+def test_build_causal_manifest_records_textgrad_effect_status():
+    manifest = build_causal_manifest(
+        run_id="textgrad-effect-status",
+        mode="local",
+        command=["python", "experiments/w3w4_causal_calibration.py", "--local"],
+        config={"max_iterations": 2, "eval_size": 1},
+        result_summary={
+            "initial_loss": 0.036,
+            "best_loss": 0.036,
+            "final_loss": 0.036,
+            "n_iterations": 2,
+            "total_llm_calls": 6,
+            "textgrad_call_count": 2,
+            "prompt_update_count": 2,
+            "textgrad_effect_status": "updated_no_improvement",
+        },
+        result_path="experiments/results/w3w4_local.json",
+        textgrad_steps_path="experiments/results/w3w4_local_textgrad_steps.json",
+    )
+
+    assert manifest["metrics"]["textgrad_effect_status"] == "updated_no_improvement"
+
+
 def test_build_causal_manifest_rejects_missing_required_metrics():
     with pytest.raises(ValueError, match="result_summary missing required metrics"):
         build_causal_manifest(
