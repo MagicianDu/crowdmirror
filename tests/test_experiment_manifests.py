@@ -334,13 +334,12 @@ def test_non_dry_run_manifest_records_repeat_axis(tmp_path, monkeypatch):
         base_url="http://127.0.0.1:1234/v1",
         model="local-model",
         eval_size=3,
-        run_id="repeat-local",
+        run_id="repeat-local-r3",
         manifest_dir=str(manifest_dir),
-        repeat=3,
     )
 
-    result_summary = _read_json(tmp_path / "experiments/results/w3w4_repeat-local.json")
-    manifest = _read_json(manifest_dir / "repeat-local.json")
+    result_summary = _read_json(tmp_path / "experiments/results/w3w4_repeat-local-r3.json")
+    manifest = _read_json(manifest_dir / "repeat-local-r3.json")
     assert result_summary["repeat"] == 3
     assert manifest["config"]["repeat"] == 3
     assert "--repeat" not in manifest["command"]

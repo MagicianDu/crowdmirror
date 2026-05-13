@@ -77,8 +77,7 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
                    textgrad_max_tokens: int = DEFAULT_TEXTGRAD_MAX_TOKENS,
                    request_timeout: float | None = None,
                    dataset_seed: int = DEFAULT_DATASET_SEED,
-                   prompt_baseline: str = DEFAULT_PROMPT_BASELINE,
-                   repeat: int = DEFAULT_REPEAT):
+                   prompt_baseline: str = DEFAULT_PROMPT_BASELINE):
     print("=" * 60)
     print("CIRCE W3-W4: Individual Causal Calibration")
     print("=" * 60)
@@ -102,6 +101,7 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
     # Configure calibration
     mode = "dry-run" if dry_run else "local" if local else "live"
     manifest_run_id = run_id or f"w3w4-{mode}-{int(time.time())}"
+    repeat = _repeat_from_run_id(manifest_run_id)
     command = _build_command(
         max_iterations=max_iterations,
         dry_run=dry_run,
@@ -695,6 +695,13 @@ def _format_timeout(value: float) -> str:
     if float(value).is_integer():
         return str(int(value))
     return str(value)
+
+
+def _repeat_from_run_id(run_id: str) -> int:
+    repeat_token = str(run_id).rsplit("-r", 1)
+    if len(repeat_token) == 2 and repeat_token[1].isdigit():
+        return int(repeat_token[1])
+    return DEFAULT_REPEAT
 
 
 if __name__ == "__main__":

@@ -1,8 +1,10 @@
 from experiments.textgrad_benchmark_matrix import (
     build_paper_gate_plan,
     build_matrix_plan,
+    classify_paper_gate_manifest,
     diagnose_manifest,
     evaluate_paper_gate,
+    summarize_paper_gate_evidence,
     summarize_matrix,
 )
 
@@ -241,6 +243,37 @@ def test_evaluate_paper_gate_infers_repeat_from_run_id_when_config_omits_it():
     assert gate["observed_run_count"] == 2
 
 
+def test_evaluate_paper_gate_prefers_repeat_from_run_id_over_stale_config():
+    manifests = [
+        {
+            "run_id": "paper-local-seed42-eval5-compact-tg1024-r2",
+            "config": {
+                "eval_size": 5,
+                "dataset_seed": 42,
+                "prompt_baseline": "compact",
+                "textgrad_max_tokens": 1024,
+                "repeat": 1,
+            },
+            "metrics": {
+                "improvement_ratio": 0.1,
+                "textgrad_effect_status": "improved",
+            },
+        },
+    ]
+
+    gate = evaluate_paper_gate(
+        manifests,
+        required_seeds=(42,),
+        required_prompt_baselines=("compact",),
+        required_textgrad_token_budgets=(1024,),
+        required_repeats=2,
+    )
+
+    assert gate["observed_run_count"] == 1
+    assert "missing_cell:seed42:compact:tg1024:r1" in gate["missing_cells"]
+    assert "missing_cell:seed42:compact:tg1024:r2" not in gate["missing_cells"]
+
+
 def test_evaluate_paper_gate_passes_when_required_cells_improve():
     manifests = []
     for seed in (42, 7, 99):
@@ -278,3 +311,103 @@ def test_evaluate_paper_gate_passes_when_required_cells_improve():
     assert gate["status"] == "passed"
     assert gate["improved_run_count"] == 24
     assert gate["negative_result_count"] == 0
+
+
+def test_classify_paper_gate_manifest_marks_v2_and_legacy_pending_evidence():
+    assert classify_paper_gate_manifest(
+        {
+            "run_id": "textgrad-paper-gate-v2-local-seed42-eval5-default-tg1024-r2",
+            "metrics": {"candidate_pending_count": 0},
+        }
+    ) == {"evidence_generation": "current_v2", "legacy": False}
+
+    assert classify_paper_gate_manifest(
+        {
+            "run_id": "textgrad-paper-gate-local-seed42-eval5-default-tg1024-r1",
+            "metrics": {"candidate_pending_count": 1},
+        }
+    ) == {
+        "evidence_generation": "legacy_pending_candidate_evidence",
+        "legacy": True,
+    }
+
+
+def test_summarize_paper_gate_evidence_exposes_claim_boundaries_and_axes():
+    manifests = [
+        {
+            "run_id": "textgrad-paper-gate-local-seed42-eval5-default-tg1024-r1",
+            "config": {
+                "eval_size": 5,
+                "dataset_seed": 42,
+                "prompt_baseline": "default",
+                "textgrad_max_tokens": 1024,
+                "repeat": 1,
+            },
+            "metrics": {
+                "improvement_ratio": 0.2,
+                "textgrad_effect_status": "improved",
+                "candidate_update_count": 1,
+                "candidate_evaluated_count": 0,
+                "candidate_accepted_count": 0,
+                "candidate_rejected_count": 0,
+                "candidate_pending_count": 1,
+            },
+        },
+        {
+            "run_id": "textgrad-paper-gate-v2-local-seed42-eval5-default-tg1024-r2",
+            "config": {
+                "eval_size": 5,
+                "dataset_seed": 42,
+                "prompt_baseline": "default",
+                "textgrad_max_tokens": 1024,
+                "repeat": 2,
+            },
+            "metrics": {
+                "improvement_ratio": 0.0,
+                "textgrad_effect_status": "updated_no_improvement",
+                "candidate_update_count": 1,
+                "candidate_evaluated_count": 1,
+                "candidate_accepted_count": 0,
+                "candidate_rejected_count": 1,
+                "candidate_pending_count": 0,
+            },
+        },
+        {
+            "run_id": "textgrad-paper-gate-v2-local-seed42-eval5-default-tg1024-r3",
+            "config": {
+                "eval_size": 5,
+                "dataset_seed": 42,
+                "prompt_baseline": "default",
+                "textgrad_max_tokens": 1024,
+                "repeat": 3,
+            },
+            "metrics": {
+                "improvement_ratio": 0.1,
+                "textgrad_effect_status": "improved",
+                "candidate_update_count": 1,
+                "candidate_evaluated_count": 1,
+                "candidate_accepted_count": 1,
+                "candidate_rejected_count": 0,
+                "candidate_pending_count": 0,
+            },
+        },
+    ]
+
+    summary = summarize_paper_gate_evidence(
+        manifests,
+        required_seeds=(42,),
+        required_prompt_baselines=("default",),
+        required_textgrad_token_budgets=(1024,),
+    )
+
+    assert summary["schema_version"] == "circe-textgrad-paper-gate-v2"
+    assert summary["paper_gate"]["status"] == "failed"
+    assert summary["paper_conclusion"] == "coverage_complete_textgrad_unstable"
+    assert summary["evidence_generation_counts"] == {
+        "current_v2": 2,
+        "legacy_pending_candidate_evidence": 1,
+    }
+    assert summary["baseline_summaries"]["default"]["run_count"] == 3
+    assert summary["token_budget_summaries"]["1024"]["negative_result_count"] == 1
+    assert summary["seed_summaries"]["42"]["candidate_rejected_count"] == 1
+    assert any("legacy runs contain pending" in boundary for boundary in summary["claim_boundaries"])

@@ -16,8 +16,14 @@ PAPER_GATE_PROMPT_BASELINES = ("default", "compact", "structured")
 PAPER_GATE_TEXTGRAD_TOKEN_BUDGETS = (1024, 2048)
 PAPER_GATE_REPEATS = 3
 MATRIX_SCHEMA_VERSION = "circe-textgrad-matrix-v1"
+PAPER_GATE_V2_SCHEMA_VERSION = "circe-textgrad-paper-gate-v2"
 MATRIX_CLAIM_BOUNDARY = (
     "bounded TextGrad benchmark matrix plan; not paper-grade TextGrad effectiveness evidence"
+)
+PAPER_GATE_V2_CLAIM_BOUNDARY = (
+    "Paper-gate evidence supports bounded TextGrad calibration diagnostics only "
+    "within the recorded Swissmetro semi-synthetic setup; negative or rejected "
+    "candidate updates must not be presented as calibration effectiveness."
 )
 
 
@@ -182,6 +188,79 @@ def evaluate_paper_gate(
     }
 
 
+def classify_paper_gate_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
+    run_id = str(manifest.get("run_id", ""))
+    metrics = manifest.get("metrics", {})
+    pending = int(metrics.get("candidate_pending_count", 0) or 0)
+    if run_id.startswith("textgrad-paper-gate-v2-"):
+        return {
+            "evidence_generation": "current_v2",
+            "legacy": False,
+        }
+    if pending > 0:
+        return {
+            "evidence_generation": "legacy_pending_candidate_evidence",
+            "legacy": True,
+        }
+    return {
+        "evidence_generation": "legacy_complete_candidate_evidence",
+        "legacy": True,
+    }
+
+
+def summarize_paper_gate_evidence(
+    manifests: list[dict[str, Any]],
+    *,
+    required_seeds: tuple[int, ...] = PAPER_GATE_SEEDS,
+    required_prompt_baselines: tuple[str, ...] = PAPER_GATE_PROMPT_BASELINES,
+    required_textgrad_token_budgets: tuple[int, ...] = PAPER_GATE_TEXTGRAD_TOKEN_BUDGETS,
+    required_repeats: int = PAPER_GATE_REPEATS,
+    min_eval_size: int = PAPER_GATE_EVAL_SIZE,
+) -> dict[str, Any]:
+    classifications = [
+        classify_paper_gate_manifest(manifest) for manifest in manifests
+    ]
+    generation_counts: dict[str, int] = {}
+    for classification in classifications:
+        generation = classification["evidence_generation"]
+        generation_counts[generation] = generation_counts.get(generation, 0) + 1
+
+    paper_gate = evaluate_paper_gate(
+        manifests,
+        required_seeds=required_seeds,
+        required_prompt_baselines=required_prompt_baselines,
+        required_textgrad_token_budgets=required_textgrad_token_budgets,
+        required_repeats=required_repeats,
+        min_eval_size=min_eval_size,
+    )
+    matrix_summary = summarize_matrix(manifests)
+    conclusion = _paper_gate_conclusion(paper_gate)
+    return {
+        "schema_version": PAPER_GATE_V2_SCHEMA_VERSION,
+        "paper_gate": paper_gate,
+        "matrix_summary": matrix_summary,
+        "evidence_generation_counts": dict(sorted(generation_counts.items())),
+        "baseline_summaries": _summarize_by_config_axis(
+            manifests,
+            axis="prompt_baseline",
+        ),
+        "token_budget_summaries": _summarize_by_config_axis(
+            manifests,
+            axis="textgrad_max_tokens",
+        ),
+        "seed_summaries": _summarize_by_config_axis(
+            manifests,
+            axis="dataset_seed",
+        ),
+        "claim_boundary": PAPER_GATE_V2_CLAIM_BOUNDARY,
+        "paper_conclusion": conclusion,
+        "claim_boundaries": _paper_gate_claim_boundaries(
+            paper_gate=paper_gate,
+            conclusion=conclusion,
+        ),
+    }
+
+
 def diagnose_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
     config = manifest.get("config", {})
     metrics = manifest.get("metrics", {})
@@ -280,6 +359,53 @@ def _candidate_acceptance_totals(manifests: list[dict[str, Any]]) -> dict[str, A
     }
 
 
+def _summarize_by_config_axis(
+    manifests: list[dict[str, Any]],
+    *,
+    axis: str,
+) -> dict[str, dict[str, Any]]:
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for manifest in manifests:
+        config = manifest.get("config", {})
+        key = str(config.get(axis))
+        grouped.setdefault(key, []).append(manifest)
+    return {
+        key: summarize_matrix(grouped[key])
+        for key in sorted(grouped)
+    }
+
+
+def _paper_gate_conclusion(paper_gate: dict[str, Any]) -> str:
+    if paper_gate["observed_run_count"] < paper_gate["required_run_count"]:
+        return "insufficient_coverage"
+    if paper_gate["negative_result_count"] > 0:
+        return "coverage_complete_textgrad_unstable"
+    return "coverage_complete_no_negative_cells"
+
+
+def _paper_gate_claim_boundaries(
+    *,
+    paper_gate: dict[str, Any],
+    conclusion: str,
+) -> list[str]:
+    boundaries = [PAPER_GATE_V2_CLAIM_BOUNDARY]
+    if conclusion == "insufficient_coverage":
+        boundaries.append(
+            "The paper gate is not complete, so TextGrad effectiveness claims are unsupported."
+        )
+    if paper_gate["negative_result_count"] > 0:
+        boundaries.append(
+            "Observed rejected candidate updates require acceptance-gated prompt updates; "
+            "raw TextGrad updates are not stable enough for an unqualified effectiveness claim."
+        )
+    if paper_gate["candidate_pending_count"] > 0:
+        boundaries.append(
+            "Some legacy runs contain pending candidate updates from the old loop semantics; "
+            "they are retained as historical evidence and must be labeled separately."
+        )
+    return boundaries
+
+
 def _run_id(
     *,
     run_prefix: str,
@@ -348,13 +474,13 @@ def _manifest_cell(manifest: dict[str, Any]) -> tuple[int, str, int, int]:
 
 
 def _manifest_repeat(manifest: dict[str, Any]) -> int:
-    config = manifest.get("config", {})
-    if "repeat" in config:
-        return int(config.get("repeat") or 1)
     run_id = str(manifest.get("run_id", ""))
     repeat_token = run_id.rsplit("-r", 1)
     if len(repeat_token) == 2 and repeat_token[1].isdigit():
         return int(repeat_token[1])
+    config = manifest.get("config", {})
+    if "repeat" in config:
+        return int(config.get("repeat") or 1)
     return 1
 
 
