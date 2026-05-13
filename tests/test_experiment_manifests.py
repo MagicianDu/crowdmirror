@@ -426,8 +426,10 @@ def test_dry_run_summary_includes_textgrad_audit_fields(monkeypatch):
 
     summary = causal._run_dry(config, pairs[:400], pairs[400:])
 
-    assert summary["textgrad_call_count"] == 2
-    assert summary["prompt_update_count"] >= 1
+    assert summary["textgrad_call_count"] == 1
+    assert summary["prompt_update_count"] == 1
+    assert summary["candidate_evaluated_count"] == 1
+    assert summary["candidate_pending_count"] == 0
     assert summary["textgrad_steps"]
     assert summary["textgrad_steps"][0]["feedback"] == (
         "The prompt needs more cost sensitivity."

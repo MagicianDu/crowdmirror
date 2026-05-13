@@ -89,6 +89,23 @@ def test_calibration_result_has_metrics(sample_pairs, mock_simulator, mock_textg
     assert result.total_llm_calls >= 0
 
 
+def test_calibration_loop_does_not_generate_unobserved_final_candidate(
+    sample_pairs,
+    mock_simulator,
+    mock_textgrad,
+):
+    config = CalibrationConfig(max_iterations=2, patience=5)
+    loop = CalibrationLoop(config=config, dataset=sample_pairs)
+
+    result = loop.run()
+
+    assert len(result.history) == 2
+    assert result.history[0].gradient_step is not None
+    assert result.history[-1].gradient_step is None
+    assert result.textgrad_call_count == 1
+    assert mock_textgrad.generate_gradient.call_count == 1
+
+
 def test_evaluate_uses_soft_factual_probability_targets(mock_textgrad):
     pair = CounterfactualPair(
         scenario_id="soft-target",

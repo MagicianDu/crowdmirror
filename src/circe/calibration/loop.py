@@ -101,7 +101,10 @@ class CalibrationLoop:
             else:
                 no_improve_count += 1
 
-            if no_improve_count >= self.config.patience:
+            if (
+                no_improve_count >= self.config.patience
+                or iteration == self.config.max_iterations - 1
+            ):
                 history.append(record)
                 break
 
