@@ -10,6 +10,11 @@ DATASET_SEEDS = (42,)
 PROMPT_BASELINES = ("default",)
 TEXTGRAD_TOKEN_BUDGETS = (1024,)
 MODES = ("dry-run", "local")
+PAPER_GATE_EVAL_SIZE = 5
+PAPER_GATE_SEEDS = (42, 7, 99)
+PAPER_GATE_PROMPT_BASELINES = ("default", "compact", "structured")
+PAPER_GATE_TEXTGRAD_TOKEN_BUDGETS = (1024, 2048)
+PAPER_GATE_REPEATS = 3
 MATRIX_SCHEMA_VERSION = "circe-textgrad-matrix-v1"
 MATRIX_CLAIM_BOUNDARY = (
     "bounded TextGrad benchmark matrix plan; not paper-grade TextGrad effectiveness evidence"
@@ -80,6 +85,97 @@ def summarize_matrix(manifests: list[dict[str, Any]]) -> dict[str, Any]:
         "best_improvement_ratio": max(improvement_ratios, default=0.0),
         "negative_result_count": negative_result_count,
         "diagnosis_counts": dict(sorted(diagnosis_counts.items())),
+    }
+
+
+def build_paper_gate_plan(
+    run_prefix: str = "textgrad-paper-gate",
+    *,
+    dataset_seeds: tuple[int, ...] = PAPER_GATE_SEEDS,
+    prompt_baselines: tuple[str, ...] = PAPER_GATE_PROMPT_BASELINES,
+    textgrad_token_budgets: tuple[int, ...] = PAPER_GATE_TEXTGRAD_TOKEN_BUDGETS,
+    repeats: int = PAPER_GATE_REPEATS,
+    eval_size: int = PAPER_GATE_EVAL_SIZE,
+) -> list[dict[str, Any]]:
+    if eval_size < PAPER_GATE_EVAL_SIZE:
+        raise ValueError("paper gate eval_size must be at least 5")
+    if repeats <= 0:
+        raise ValueError("repeats must be positive")
+
+    plan = []
+    for seed in dataset_seeds:
+        for prompt_baseline in prompt_baselines:
+            for textgrad_budget in textgrad_token_budgets:
+                for repeat in range(1, repeats + 1):
+                    plan.append(
+                        {
+                            "run_id": (
+                                f"{run_prefix}-local-seed{seed}-eval{eval_size}-"
+                                f"{prompt_baseline}-tg{textgrad_budget}-r{repeat}"
+                            ),
+                            "mode": "local",
+                            "dataset_seed": seed,
+                            "eval_size": eval_size,
+                            "max_iterations": 2,
+                            "prompt_baseline": prompt_baseline,
+                            "simulator_max_tokens": 256,
+                            "textgrad_max_tokens": textgrad_budget,
+                            "request_timeout": 240,
+                            "repeat": repeat,
+                            "variant": f"{prompt_baseline}-tg{textgrad_budget}",
+                        }
+                    )
+    return plan
+
+
+def evaluate_paper_gate(
+    manifests: list[dict[str, Any]],
+    *,
+    required_seeds: tuple[int, ...] = PAPER_GATE_SEEDS,
+    required_prompt_baselines: tuple[str, ...] = PAPER_GATE_PROMPT_BASELINES,
+    required_textgrad_token_budgets: tuple[int, ...] = PAPER_GATE_TEXTGRAD_TOKEN_BUDGETS,
+    required_repeats: int = PAPER_GATE_REPEATS,
+    min_eval_size: int = PAPER_GATE_EVAL_SIZE,
+) -> dict[str, Any]:
+    required_cells = _required_cells(
+        required_seeds=required_seeds,
+        required_prompt_baselines=required_prompt_baselines,
+        required_textgrad_token_budgets=required_textgrad_token_budgets,
+        required_repeats=required_repeats,
+    )
+    observed_cells = {
+        _manifest_cell(manifest)
+        for manifest in manifests
+        if int(manifest.get("config", {}).get("eval_size", 0) or 0) >= min_eval_size
+    }
+    observed_seeds = {cell[0] for cell in observed_cells}
+    missing_cells = sorted(required_cells - observed_cells)
+    improved_run_count = sum(
+        1 for manifest in manifests
+        if manifest.get("metrics", {}).get("textgrad_effect_status") == "improved"
+    )
+    negative_result_count = sum(
+        1 for manifest in manifests if _is_negative_textgrad_result(manifest)
+    )
+
+    if missing_cells:
+        status = "insufficient_evidence"
+    elif negative_result_count > 0:
+        status = "failed"
+    else:
+        status = "passed"
+
+    return {
+        "status": status,
+        "observed_run_count": len(observed_cells),
+        "required_run_count": len(required_cells),
+        "missing_cells": _missing_cell_labels(
+            missing_cells,
+            required_seeds,
+            observed_seeds,
+        ),
+        "improved_run_count": improved_run_count,
+        "negative_result_count": negative_result_count,
     }
 
 
@@ -191,3 +287,49 @@ def _primary_hypothesis(flags: list[str]) -> str:
         if flag in flags:
             return flag
     return "no_obvious_matrix_diagnostic"
+
+
+def _required_cells(
+    *,
+    required_seeds: tuple[int, ...],
+    required_prompt_baselines: tuple[str, ...],
+    required_textgrad_token_budgets: tuple[int, ...],
+    required_repeats: int,
+) -> set[tuple[int, str, int, int]]:
+    return {
+        (seed, prompt_baseline, budget, repeat)
+        for seed in required_seeds
+        for prompt_baseline in required_prompt_baselines
+        for budget in required_textgrad_token_budgets
+        for repeat in range(1, required_repeats + 1)
+    }
+
+
+def _manifest_cell(manifest: dict[str, Any]) -> tuple[int, str, int, int]:
+    config = manifest.get("config", {})
+    return (
+        int(config.get("dataset_seed")),
+        str(config.get("prompt_baseline")),
+        int(config.get("textgrad_max_tokens")),
+        int(config.get("repeat", 1)),
+    )
+
+
+def _missing_cell_labels(
+    missing_cells: list[tuple[int, str, int, int]],
+    required_seeds: tuple[int, ...],
+    observed_seeds: set[int],
+) -> list[str]:
+    labels: list[str] = []
+    missing_seeds = {
+        seed
+        for seed in required_seeds
+        if seed not in observed_seeds
+    }
+    for seed in sorted(missing_seeds):
+        labels.append(f"missing_seed:{seed}")
+    labels.extend(
+        f"missing_cell:seed{seed}:{baseline}:tg{budget}:r{repeat}"
+        for seed, baseline, budget, repeat in missing_cells
+    )
+    return labels

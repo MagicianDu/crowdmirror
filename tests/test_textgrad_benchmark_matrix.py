@@ -1,6 +1,8 @@
 from experiments.textgrad_benchmark_matrix import (
+    build_paper_gate_plan,
     build_matrix_plan,
     diagnose_manifest,
+    evaluate_paper_gate,
     summarize_matrix,
 )
 
@@ -100,3 +102,93 @@ def test_summarize_matrix_counts_diagnosis_flags():
         "suspected_prompt_truncation": 1,
         "textgrad_output_budget_saturated": 1,
     }
+
+
+def test_build_paper_gate_plan_requires_eval5_seeds_repeats_and_comparison_axes():
+    plan = build_paper_gate_plan(
+        run_prefix="paper",
+        dataset_seeds=(42, 7, 99),
+        prompt_baselines=("default", "compact"),
+        textgrad_token_budgets=(1024, 2048),
+        repeats=2,
+    )
+
+    assert len(plan) == 3 * 2 * 2 * 2
+    assert all(case["eval_size"] == 5 for case in plan)
+    assert {case["dataset_seed"] for case in plan} == {42, 7, 99}
+    assert {case["prompt_baseline"] for case in plan} == {"default", "compact"}
+    assert {case["textgrad_max_tokens"] for case in plan} == {1024, 2048}
+    assert {case["repeat"] for case in plan} == {1, 2}
+    assert "paper-local-seed42-eval5-default-tg2048-r2" in {
+        case["run_id"] for case in plan
+    }
+
+
+def test_evaluate_paper_gate_reports_insufficient_evidence_until_matrix_complete():
+    gate = evaluate_paper_gate(
+        [
+            {
+                "run_id": "paper-local-seed42-eval5-default-tg2048-r1",
+                "config": {
+                    "eval_size": 5,
+                    "dataset_seed": 42,
+                    "prompt_baseline": "default",
+                    "textgrad_max_tokens": 2048,
+                    "repeat": 1,
+                },
+                "metrics": {
+                    "improvement_ratio": 0.2,
+                    "textgrad_effect_status": "improved",
+                },
+            }
+        ],
+        required_seeds=(42, 7, 99),
+        required_prompt_baselines=("default", "compact"),
+        required_textgrad_token_budgets=(1024, 2048),
+        required_repeats=2,
+    )
+
+    assert gate["status"] == "insufficient_evidence"
+    assert gate["observed_run_count"] == 1
+    assert gate["required_run_count"] == 24
+    assert "missing_seed:7" in gate["missing_cells"]
+    assert "missing_seed:42" not in gate["missing_cells"]
+
+
+def test_evaluate_paper_gate_passes_when_required_cells_improve():
+    manifests = []
+    for seed in (42, 7, 99):
+        for prompt_baseline in ("default", "compact"):
+            for budget in (1024, 2048):
+                for repeat in (1, 2):
+                    manifests.append(
+                        {
+                            "run_id": (
+                                f"paper-local-seed{seed}-eval5-"
+                                f"{prompt_baseline}-tg{budget}-r{repeat}"
+                            ),
+                            "config": {
+                                "eval_size": 5,
+                                "dataset_seed": seed,
+                                "prompt_baseline": prompt_baseline,
+                                "textgrad_max_tokens": budget,
+                                "repeat": repeat,
+                            },
+                            "metrics": {
+                                "improvement_ratio": 0.1,
+                                "textgrad_effect_status": "improved",
+                            },
+                        }
+                    )
+
+    gate = evaluate_paper_gate(
+        manifests,
+        required_seeds=(42, 7, 99),
+        required_prompt_baselines=("default", "compact"),
+        required_textgrad_token_budgets=(1024, 2048),
+        required_repeats=2,
+    )
+
+    assert gate["status"] == "passed"
+    assert gate["improved_run_count"] == 24
+    assert gate["negative_result_count"] == 0
