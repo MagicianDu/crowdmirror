@@ -17,6 +17,7 @@ class LLMClientConfig:
     model: str = "google/gemma-4-31b"
     max_tokens: int = 2000
     temperature: float = 0.0
+    timeout_seconds: float | None = None
 
 
 class LLMClient:
@@ -24,13 +25,19 @@ class LLMClient:
         self.config = config
         if config.provider == "anthropic":
             import anthropic
-            self.client = anthropic.Anthropic()
+            kwargs = {}
+            if config.timeout_seconds is not None:
+                kwargs["timeout"] = config.timeout_seconds
+            self.client = anthropic.Anthropic(**kwargs)
         else:
             from openai import OpenAI
-            self.client = OpenAI(
-                base_url=config.base_url or "http://localhost:1234/v1",
-                api_key="lm-studio",
-            )
+            kwargs = {
+                "base_url": config.base_url or "http://localhost:1234/v1",
+                "api_key": "lm-studio",
+            }
+            if config.timeout_seconds is not None:
+                kwargs["timeout"] = config.timeout_seconds
+            self.client = OpenAI(**kwargs)
 
     def chat(self, system: str, user: str) -> LLMResponse:
         if self.config.provider == "anthropic":

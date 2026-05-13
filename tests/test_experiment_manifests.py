@@ -10,6 +10,7 @@ import experiments.w3w4_causal_calibration as causal
 import experiments.w5w6_emergence_calibration as emergence
 from experiments.w3w4_causal_calibration import build_causal_manifest
 from experiments.w5w6_emergence_calibration import build_emergence_manifest
+from circe.dgp.counterfactual import CounterfactualPair
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -27,6 +28,8 @@ def test_build_causal_manifest_records_loss_metrics():
             "final_loss": 0.22,
             "n_iterations": 3,
             "total_llm_calls": 63,
+            "textgrad_call_count": 2,
+            "prompt_update_count": 2,
         },
         result_path="experiments/results/w3w4_calibration_result.json",
     )
@@ -36,6 +39,34 @@ def test_build_causal_manifest_records_loss_metrics():
         manifest["artifacts"]["result_json"]
         == "experiments/results/w3w4_calibration_result.json"
     )
+
+
+def test_build_causal_manifest_records_textgrad_evidence_artifact():
+    manifest = build_causal_manifest(
+        run_id="causal-textgrad-test",
+        mode="local",
+        command=["python", "experiments/w3w4_causal_calibration.py", "--local"],
+        config={"max_iterations": 3, "eval_size": 5},
+        result_summary={
+            "initial_loss": 0.30,
+            "best_loss": 0.20,
+            "final_loss": 0.22,
+            "n_iterations": 3,
+            "total_llm_calls": 63,
+            "textgrad_call_count": 2,
+            "prompt_update_count": 1,
+        },
+        result_path="experiments/results/w3w4_calibration_result.json",
+        textgrad_steps_path="experiments/results/w3w4_calibration_textgrad_steps.json",
+    )
+
+    assert manifest["metrics"]["textgrad_call_count"] == 2
+    assert manifest["metrics"]["prompt_update_count"] == 1
+    assert (
+        manifest["artifacts"]["textgrad_steps_json"]
+        == "experiments/results/w3w4_calibration_textgrad_steps.json"
+    )
+    assert any("TextGrad" in note for note in manifest["notes"])
 
 
 def test_build_causal_manifest_rejects_missing_required_metrics():
@@ -50,6 +81,8 @@ def test_build_causal_manifest_rejects_missing_required_metrics():
                 "best_loss": 0.20,
                 "n_iterations": 3,
                 "total_llm_calls": 63,
+                "textgrad_call_count": 2,
+                "prompt_update_count": 1,
             },
             result_path="experiments/results/w3w4_causal_test.json",
         )
@@ -101,6 +134,86 @@ def test_non_dry_run_writes_unique_result_artifact_and_truthful_command(
     ]
 
 
+def test_non_dry_run_writes_textgrad_steps_artifact(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(causal, "generate_counterfactual_dataset", _fake_pairs)
+    monkeypatch.setattr(causal, "CalibrationLoop", _FakeCalibrationLoop)
+
+    manifest_dir = tmp_path / "manifests"
+    causal.run_experiment(
+        max_iterations=4,
+        dry_run=False,
+        local=True,
+        base_url="http://127.0.0.1:1234/v1",
+        model="local-model",
+        eval_size=7,
+        run_id="textgrad/local run 01",
+        manifest_dir=str(manifest_dir),
+    )
+
+    result_path = tmp_path / "experiments/results/w3w4_textgrad%2Flocal%20run%2001.json"
+    steps_path = (
+        tmp_path
+        / "experiments/results/w3w4_textgrad%2Flocal%20run%2001_textgrad_steps.json"
+    )
+    manifest = _read_json(manifest_dir / "textgrad%2Flocal%20run%2001.json")
+    result_summary = _read_json(result_path)
+    steps = _read_json(steps_path)
+
+    assert result_summary["textgrad_call_count"] == 2
+    assert result_summary["prompt_update_count"] == 1
+    assert steps == [
+        {
+            "iteration": 0,
+            "loss_before": 0.30,
+            "feedback": "Need more cost sensitivity",
+            "edited_prompt": "choose with more cost sensitivity",
+            "edited_prompt_changed": True,
+        },
+        {
+            "iteration": 1,
+            "loss_before": 0.22,
+            "feedback": "No further prompt change needed",
+            "edited_prompt": "choose with more cost sensitivity",
+            "edited_prompt_changed": False,
+        },
+    ]
+    assert manifest["metrics"]["textgrad_call_count"] == 2
+    assert manifest["metrics"]["prompt_update_count"] == 1
+    assert manifest["artifacts"]["textgrad_steps_json"] == str(
+        Path("experiments/results/w3w4_textgrad%2Flocal%20run%2001_textgrad_steps.json")
+    )
+
+
+def test_non_dry_run_manifest_records_local_generation_limits(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(causal, "generate_counterfactual_dataset", _fake_pairs)
+    monkeypatch.setattr(causal, "CalibrationLoop", _FakeCalibrationLoop)
+
+    manifest_dir = tmp_path / "manifests"
+    causal.run_experiment(
+        max_iterations=2,
+        dry_run=False,
+        local=True,
+        base_url="http://127.0.0.1:1234/v1",
+        model="local-model",
+        eval_size=3,
+        run_id="limited-local",
+        manifest_dir=str(manifest_dir),
+        simulator_max_tokens=128,
+        textgrad_max_tokens=512,
+        request_timeout=45.0,
+    )
+
+    manifest = _read_json(manifest_dir / "limited-local.json")
+    assert manifest["config"]["simulator_max_tokens"] == 128
+    assert manifest["config"]["textgrad_max_tokens"] == 512
+    assert manifest["config"]["request_timeout"] == 45.0
+    assert "--sim-max-tokens" in manifest["command"]
+    assert "--textgrad-max-tokens" in manifest["command"]
+    assert "--request-timeout" in manifest["command"]
+
+
 def test_dry_run_writes_result_artifact_and_truthful_command(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(causal, "generate_counterfactual_dataset", _fake_pairs)
@@ -113,6 +226,8 @@ def test_dry_run_writes_result_artifact_and_truthful_command(tmp_path, monkeypat
             "final_loss": 0.22,
             "n_iterations": 3,
             "total_llm_calls": 63,
+            "textgrad_call_count": 2,
+            "prompt_update_count": 2,
         },
     )
 
@@ -167,6 +282,20 @@ def test_w3w4_script_help_runs_from_repo_root():
     )
     assert result.returncode == 0, result.stderr
     assert "--run-id" in result.stdout
+
+
+def test_dry_run_summary_includes_textgrad_audit_fields(monkeypatch):
+    pairs = _fake_counterfactual_pairs()
+    config = causal.CalibrationConfig(max_iterations=2, eval_sample_size=2, patience=5)
+
+    summary = causal._run_dry(config, pairs[:400], pairs[400:])
+
+    assert summary["textgrad_call_count"] == 2
+    assert summary["prompt_update_count"] >= 1
+    assert summary["textgrad_steps"]
+    assert summary["textgrad_steps"][0]["feedback"] == (
+        "The prompt needs more cost sensitivity."
+    )
 
 
 def test_build_emergence_manifest_records_edm_metrics():
@@ -466,12 +595,47 @@ def _fake_pairs(**kwargs):
     return [SimpleNamespace(ate=i / 1000) for i in range(500)]
 
 
+def _fake_counterfactual_pairs():
+    return [
+        CounterfactualPair(
+            scenario_id=f"s{i}",
+            factual_attrs={
+                "sm_cost": 0.6,
+                "sm_tt": 0.8,
+                "train_tt": 1.0,
+                "train_cost": 0.5,
+                "train_he": 10,
+                "sm_he": 5,
+                "car_tt": 1.2,
+                "car_cost": 0.3,
+            },
+            counterfactual_attrs={
+                "sm_cost": 1.2,
+                "sm_tt": 0.8,
+                "train_tt": 1.0,
+                "train_cost": 0.5,
+                "train_he": 10,
+                "sm_he": 5,
+                "car_tt": 1.2,
+                "car_cost": 0.3,
+            },
+            intervention={"sm_cost_increase": 2.0},
+            factual_probs={"train": 0.3, "swissmetro": 0.5, "car": 0.2},
+            counterfactual_probs={"train": 0.4, "swissmetro": 0.35, "car": 0.25},
+            ate=-0.1,
+        )
+        for i in range(20)
+    ]
+
+
 class _FakeCalibrationLoop:
     def __init__(self, config, dataset):
         self.config = config
         self.dataset = dataset
 
     def run(self):
+        from circe.calibration.textgrad import GradientStep
+
         return SimpleNamespace(
             best_prompt="choose with calibrated cost sensitivity",
             best_loss=0.20,
@@ -479,14 +643,38 @@ class _FakeCalibrationLoop:
             final_loss=0.22,
             n_iterations=4,
             total_llm_calls=84,
+            simulator_llm_call_count=82,
+            textgrad_call_count=2,
+            textgrad_input_tokens=900,
+            textgrad_output_tokens=300,
             history=[
                 SimpleNamespace(
-                    iteration=1,
+                    iteration=0,
                     loss=SimpleNamespace(total_loss=0.30, ece=0.10, ate_mae=0.20),
+                    prompt="choose with default sensitivity",
+                    gradient_step=GradientStep(
+                        iteration=0,
+                        feedback="Need more cost sensitivity",
+                        edited_prompt="choose with more cost sensitivity",
+                        loss_before=0.30,
+                    ),
                 ),
                 SimpleNamespace(
-                    iteration=4,
+                    iteration=1,
+                    loss=SimpleNamespace(total_loss=0.22, ece=0.08, ate_mae=0.14),
+                    prompt="choose with more cost sensitivity",
+                    gradient_step=GradientStep(
+                        iteration=1,
+                        feedback="No further prompt change needed",
+                        edited_prompt="choose with more cost sensitivity",
+                        loss_before=0.22,
+                    ),
+                ),
+                SimpleNamespace(
+                    iteration=2,
                     loss=SimpleNamespace(total_loss=0.20, ece=0.07, ate_mae=0.13),
+                    prompt="choose with more cost sensitivity",
+                    gradient_step=None,
                 ),
             ],
         )

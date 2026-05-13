@@ -36,12 +36,16 @@ from circe.simulator.llm_choice import LLMChoiceSimulator, SimulatorConfig
 
 RESULTS_DIR = Path("experiments/results")
 SCRIPT_COMMAND = ["python", "experiments/w3w4_causal_calibration.py"]
+DEFAULT_SIMULATOR_MAX_TOKENS = 2000
+DEFAULT_TEXTGRAD_MAX_TOKENS = 4000
 REQUIRED_RESULT_METRICS = (
     "initial_loss",
     "best_loss",
     "final_loss",
     "n_iterations",
     "total_llm_calls",
+    "textgrad_call_count",
+    "prompt_update_count",
 )
 
 
@@ -49,7 +53,10 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
                    local: bool = False, base_url: str = "http://localhost:1234/v1",
                    model: str = "google/gemma-4-31b", eval_size: int = 10,
                    run_id: str | None = None,
-                   manifest_dir: str = "experiments/results/manifests"):
+                   manifest_dir: str = "experiments/results/manifests",
+                   simulator_max_tokens: int = DEFAULT_SIMULATOR_MAX_TOKENS,
+                   textgrad_max_tokens: int = DEFAULT_TEXTGRAD_MAX_TOKENS,
+                   request_timeout: float | None = None):
     print("=" * 60)
     print("CIRCE W3-W4: Individual Causal Calibration")
     print("=" * 60)
@@ -79,6 +86,9 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
         eval_size=eval_size,
         run_id=manifest_run_id,
         manifest_dir=manifest_dir,
+        simulator_max_tokens=simulator_max_tokens,
+        textgrad_max_tokens=textgrad_max_tokens,
+        request_timeout=request_timeout,
     )
 
     if local:
@@ -99,16 +109,24 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
         gamma=2.0,
         simulator_model=sim_model,
         textgrad_model=tg_model,
+        simulator_max_tokens=simulator_max_tokens,
+        textgrad_max_tokens=textgrad_max_tokens,
         eval_sample_size=eval_size,
         provider=provider,
         base_url=base_url,
+        request_timeout=request_timeout,
     )
 
     if dry_run:
         print("\n[DRY RUN MODE — using mock responses]")
         summary = _run_dry(config, train_pairs, test_pairs)
         output_path = _write_result_summary(manifest_run_id, summary)
+        textgrad_steps_path = _write_textgrad_steps(
+            manifest_run_id,
+            summary.get("textgrad_steps", []),
+        )
         print(f"Results saved to {output_path}")
+        print(f"TextGrad steps saved to {textgrad_steps_path}")
         manifest = build_causal_manifest(
             run_id=manifest_run_id,
             mode="dry-run",
@@ -116,9 +134,13 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
             config={
                 "max_iterations": config.max_iterations,
                 "eval_size": config.eval_sample_size,
+                "simulator_max_tokens": config.simulator_max_tokens,
+                "textgrad_max_tokens": config.textgrad_max_tokens,
+                "request_timeout": config.request_timeout,
             },
             result_summary=summary,
             result_path=str(output_path),
+            textgrad_steps_path=str(textgrad_steps_path),
         )
         manifest_path = _manifest_path(manifest_dir, manifest_run_id)
         write_manifest(manifest_path, manifest)
@@ -156,6 +178,7 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
         print(f"... ({len(result.best_prompt)} chars total)")
 
     # Save results
+    textgrad_steps = _textgrad_steps_from_history(result.history)
     output_data = {
         "best_prompt": result.best_prompt,
         "best_loss": result.best_loss,
@@ -163,6 +186,12 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
         "final_loss": result.final_loss,
         "n_iterations": result.n_iterations,
         "total_llm_calls": result.total_llm_calls,
+        "simulator_llm_call_count": result.simulator_llm_call_count,
+        "textgrad_call_count": result.textgrad_call_count,
+        "textgrad_input_tokens": result.textgrad_input_tokens,
+        "textgrad_output_tokens": result.textgrad_output_tokens,
+        "prompt_update_count": _prompt_update_count(textgrad_steps),
+        "textgrad_steps": textgrad_steps,
         "elapsed_seconds": elapsed,
         "history": [
             {"iteration": r.iteration, "total_loss": r.loss.total_loss,
@@ -171,7 +200,9 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
         ],
     }
     output_path = _write_result_summary(manifest_run_id, output_data)
+    textgrad_steps_path = _write_textgrad_steps(manifest_run_id, textgrad_steps)
     print(f"\nResults saved to {output_path}")
+    print(f"TextGrad steps saved to {textgrad_steps_path}")
     manifest = build_causal_manifest(
         run_id=manifest_run_id,
         mode=mode,
@@ -182,9 +213,13 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
             "local": local,
             "provider": provider,
             "model": sim_model,
+            "simulator_max_tokens": simulator_max_tokens,
+            "textgrad_max_tokens": textgrad_max_tokens,
+            "request_timeout": request_timeout,
         },
         result_summary=output_data,
         result_path=str(output_path),
+        textgrad_steps_path=str(textgrad_steps_path),
     )
     manifest_path = _manifest_path(manifest_dir, manifest_run_id)
     write_manifest(manifest_path, manifest)
@@ -203,6 +238,7 @@ def build_causal_manifest(
     config: dict,
     result_summary: dict,
     result_path: str,
+    textgrad_steps_path: str | None = None,
 ) -> dict:
     missing_metrics = [
         metric for metric in REQUIRED_RESULT_METRICS if metric not in result_summary
@@ -215,23 +251,35 @@ def build_causal_manifest(
     initial = float(result_summary["initial_loss"])
     best = float(result_summary["best_loss"])
     improvement_ratio = (initial - best) / initial if initial > 0 else 0.0
+    metrics = {
+        "initial_loss": initial,
+        "best_loss": best,
+        "final_loss": float(result_summary["final_loss"]),
+        "improvement_ratio": improvement_ratio,
+        "n_iterations": int(result_summary["n_iterations"]),
+        "total_llm_calls": int(result_summary["total_llm_calls"]),
+        "textgrad_call_count": int(result_summary["textgrad_call_count"]),
+        "prompt_update_count": int(result_summary["prompt_update_count"]),
+    }
+    for token_metric in ("textgrad_input_tokens", "textgrad_output_tokens"):
+        if token_metric in result_summary:
+            metrics[token_metric] = int(result_summary[token_metric])
+
+    artifacts = {"result_json": result_path}
+    if textgrad_steps_path is not None:
+        artifacts["textgrad_steps_json"] = textgrad_steps_path
+
     return build_run_manifest(
         run_id=run_id,
         lane="causal",
         mode=mode,
         command=command,
         config=config,
-        metrics={
-            "initial_loss": initial,
-            "best_loss": best,
-            "final_loss": float(result_summary["final_loss"]),
-            "improvement_ratio": improvement_ratio,
-            "n_iterations": int(result_summary["n_iterations"]),
-            "total_llm_calls": int(result_summary["total_llm_calls"]),
-        },
-        artifacts={"result_json": result_path},
+        metrics=metrics,
+        artifacts=artifacts,
         notes=[
             "Causal calibration compares predicted mode probabilities and Swissmetro ATE.",
+            "TextGrad steps record prompt feedback and edited prompts; effectiveness is judged by subsequent loss re-evaluation.",
             "Dry-run mode uses mocked LLM responses and only validates execution plumbing.",
         ],
     )
@@ -266,6 +314,7 @@ def _run_dry(config, train_pairs, test_pairs):
         loop = CalibrationLoop(config=config, dataset=train_pairs[:20])
         result = loop.run()
 
+    textgrad_steps = _textgrad_steps_from_history(result.history)
     print(f"  Pipeline OK: {result.n_iterations} iterations, {call_count[0]} mock LLM calls")
     print(f"  Initial loss: {result.initial_loss:.4f}")
     print(f"  Final loss: {result.final_loss:.4f}")
@@ -275,7 +324,14 @@ def _run_dry(config, train_pairs, test_pairs):
         "best_loss": result.best_loss,
         "final_loss": result.final_loss,
         "n_iterations": result.n_iterations,
-        "total_llm_calls": call_count[0],
+        "total_llm_calls": result.total_llm_calls,
+        "mock_llm_call_count": call_count[0],
+        "simulator_llm_call_count": result.simulator_llm_call_count,
+        "textgrad_call_count": result.textgrad_call_count,
+        "textgrad_input_tokens": result.textgrad_input_tokens,
+        "textgrad_output_tokens": result.textgrad_output_tokens,
+        "prompt_update_count": _prompt_update_count(textgrad_steps),
+        "textgrad_steps": textgrad_steps,
     }
     return summary
 
@@ -290,6 +346,9 @@ def _build_command(
     eval_size: int,
     run_id: str,
     manifest_dir: str,
+    simulator_max_tokens: int = DEFAULT_SIMULATOR_MAX_TOKENS,
+    textgrad_max_tokens: int = DEFAULT_TEXTGRAD_MAX_TOKENS,
+    request_timeout: float | None = None,
 ) -> list[str]:
     command = [
         *SCRIPT_COMMAND,
@@ -302,6 +361,12 @@ def _build_command(
         command.append("--dry-run")
     if local:
         command.append("--local")
+    if simulator_max_tokens != DEFAULT_SIMULATOR_MAX_TOKENS:
+        command.extend(["--sim-max-tokens", str(simulator_max_tokens)])
+    if textgrad_max_tokens != DEFAULT_TEXTGRAD_MAX_TOKENS:
+        command.extend(["--textgrad-max-tokens", str(textgrad_max_tokens)])
+    if request_timeout is not None:
+        command.extend(["--request-timeout", _format_timeout(request_timeout)])
     command.extend(
         [
             "--base-url",
@@ -328,11 +393,50 @@ def _write_result_summary(run_id: str, result_summary: dict) -> Path:
     return output_path
 
 
+def _write_textgrad_steps(run_id: str, textgrad_steps: list[dict]) -> Path:
+    output_path = RESULTS_DIR / f"w3w4_{_safe_run_id_token(run_id)}_textgrad_steps.json"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(textgrad_steps, indent=2))
+    return output_path
+
+
+def _textgrad_steps_from_history(history) -> list[dict]:
+    steps = []
+    for record in history:
+        step = getattr(record, "gradient_step", None)
+        if step is None:
+            continue
+        prompt_before = getattr(record, "prompt", "")
+        edited_prompt = getattr(step, "edited_prompt", "")
+        steps.append(
+            {
+                "iteration": int(getattr(step, "iteration", record.iteration)),
+                "loss_before": float(
+                    getattr(step, "loss_before", record.loss.total_loss)
+                ),
+                "feedback": getattr(step, "feedback", ""),
+                "edited_prompt": edited_prompt,
+                "edited_prompt_changed": edited_prompt != prompt_before,
+            }
+        )
+    return steps
+
+
+def _prompt_update_count(textgrad_steps: list[dict]) -> int:
+    return sum(1 for step in textgrad_steps if step.get("edited_prompt_changed"))
+
+
 def _safe_run_id_token(run_id: str) -> str:
     token = quote(run_id, safe="._-")
     if not token or token in {".", ".."}:
         raise ValueError("run_id must contain at least one path-safe character")
     return token
+
+
+def _format_timeout(value: float) -> str:
+    if float(value).is_integer():
+        return str(int(value))
+    return str(value)
 
 
 if __name__ == "__main__":
@@ -345,6 +449,9 @@ if __name__ == "__main__":
     parser.add_argument("--eval-size", type=int, default=10, help="Pairs per evaluation")
     parser.add_argument("--run-id", default=None)
     parser.add_argument("--manifest-dir", default="experiments/results/manifests")
+    parser.add_argument("--sim-max-tokens", type=int, default=DEFAULT_SIMULATOR_MAX_TOKENS)
+    parser.add_argument("--textgrad-max-tokens", type=int, default=DEFAULT_TEXTGRAD_MAX_TOKENS)
+    parser.add_argument("--request-timeout", type=float, default=None)
     args = parser.parse_args()
     run_experiment(
         max_iterations=args.max_iter,
@@ -355,4 +462,7 @@ if __name__ == "__main__":
         eval_size=args.eval_size,
         run_id=args.run_id,
         manifest_dir=args.manifest_dir,
+        simulator_max_tokens=args.sim_max_tokens,
+        textgrad_max_tokens=args.textgrad_max_tokens,
+        request_timeout=args.request_timeout,
     )

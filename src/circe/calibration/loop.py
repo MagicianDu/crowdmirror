@@ -16,9 +16,12 @@ class CalibrationConfig:
     gamma: float = 2.0
     simulator_model: str = "google/gemma-4-31b"
     textgrad_model: str = "google/gemma-4-31b"
+    simulator_max_tokens: int = 2000
+    textgrad_max_tokens: int = 4000
     eval_sample_size: int = 50
     provider: str = "openai"
     base_url: str | None = None
+    request_timeout: float | None = None
 
 
 @dataclass
@@ -37,6 +40,10 @@ class CalibrationResult:
     final_loss: float
     n_iterations: int
     total_llm_calls: int
+    simulator_llm_call_count: int
+    textgrad_call_count: int
+    textgrad_input_tokens: int
+    textgrad_output_tokens: int
     history: list[IterationRecord]
 
 
@@ -51,15 +58,19 @@ class CalibrationLoop:
         self.simulator = LLMChoiceSimulator(
             SimulatorConfig(
                 model=self.config.simulator_model,
+                max_tokens=self.config.simulator_max_tokens,
                 provider=self.config.provider,
                 base_url=self.config.base_url,
+                timeout_seconds=self.config.request_timeout,
             )
         )
         self.textgrad = TextGradEngine(
             TextGradConfig(
                 model=self.config.textgrad_model,
+                max_tokens=self.config.textgrad_max_tokens,
                 provider=self.config.provider,
                 base_url=self.config.base_url,
+                timeout_seconds=self.config.request_timeout,
             )
         )
 
@@ -101,7 +112,9 @@ class CalibrationLoop:
 
             self.simulator.system_prompt = step.edited_prompt
 
-        total_calls = self.simulator._call_count
+        simulator_calls = _safe_int(getattr(self.simulator, "_call_count", 0))
+        textgrad_calls = sum(1 for record in history if record.gradient_step is not None)
+        total_calls = simulator_calls + textgrad_calls
 
         return CalibrationResult(
             best_prompt=best_prompt,
@@ -110,6 +123,14 @@ class CalibrationLoop:
             final_loss=history[-1].loss.total_loss if history else 0.0,
             n_iterations=len(history),
             total_llm_calls=total_calls,
+            simulator_llm_call_count=simulator_calls,
+            textgrad_call_count=textgrad_calls,
+            textgrad_input_tokens=_safe_int(
+                getattr(self.textgrad, "total_input_tokens", 0)
+            ),
+            textgrad_output_tokens=_safe_int(
+                getattr(self.textgrad, "total_output_tokens", 0)
+            ),
             history=history,
         )
 
@@ -202,3 +223,11 @@ class CalibrationLoop:
             gamma=self.config.gamma,
         )
         return loss, error_examples
+
+
+def _safe_int(value) -> int:
+    if isinstance(value, bool):
+        return int(value)
+    if isinstance(value, (int, float)):
+        return int(value)
+    return 0

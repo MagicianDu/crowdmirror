@@ -14,6 +14,7 @@ class SimulatorConfig:
     temperature: float = 0.0
     provider: str = "openai"
     base_url: str | None = None
+    timeout_seconds: float | None = None
 
 
 class LLMChoiceSimulator:
@@ -25,6 +26,7 @@ class LLMChoiceSimulator:
             model=self.config.model,
             max_tokens=self.config.max_tokens,
             temperature=self.config.temperature,
+            timeout_seconds=self.config.timeout_seconds,
         ))
         self.system_prompt = CHOICE_SYSTEM_PROMPT
         self.total_input_tokens = 0

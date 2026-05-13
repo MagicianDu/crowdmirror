@@ -18,6 +18,7 @@ class TextGradConfig:
     temperature: float = 0.3
     provider: str = "openai"
     base_url: str | None = None
+    timeout_seconds: float | None = None
 
 
 @dataclass
@@ -74,6 +75,7 @@ class TextGradEngine:
             model=self.config.model,
             max_tokens=self.config.max_tokens,
             temperature=self.config.temperature,
+            timeout_seconds=self.config.timeout_seconds,
         ))
         self._iteration = 0
         self.total_input_tokens = 0
