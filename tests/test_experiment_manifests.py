@@ -237,6 +237,68 @@ def test_non_dry_run_manifest_records_local_generation_limits(tmp_path, monkeypa
     assert "--request-timeout" in manifest["command"]
 
 
+def test_non_dry_run_manifest_records_seed_and_prompt_baseline(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    captured = {}
+
+    def fake_pairs(**kwargs):
+        captured.update(kwargs)
+        return _fake_pairs(**kwargs)
+
+    monkeypatch.setattr(causal, "generate_counterfactual_dataset", fake_pairs)
+    monkeypatch.setattr(causal, "CalibrationLoop", _FakeCalibrationLoop)
+
+    manifest_dir = tmp_path / "manifests"
+    causal.run_experiment(
+        max_iterations=2,
+        dry_run=False,
+        local=True,
+        base_url="http://127.0.0.1:1234/v1",
+        model="local-model",
+        eval_size=3,
+        run_id="seed-baseline-local",
+        manifest_dir=str(manifest_dir),
+        dataset_seed=7,
+        prompt_baseline="compact",
+    )
+
+    manifest = _read_json(manifest_dir / "seed-baseline-local.json")
+    assert captured["seed"] == 7
+    assert manifest["config"]["dataset_seed"] == 7
+    assert manifest["config"]["prompt_baseline"] == "compact"
+    assert "--dataset-seed" in manifest["command"]
+    assert "--prompt-baseline" in manifest["command"]
+
+
+def test_result_summary_records_textgrad_diagnostics_from_history(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(causal, "generate_counterfactual_dataset", _fake_pairs)
+    monkeypatch.setattr(causal, "CalibrationLoop", _FakeTruncatedCalibrationLoop)
+
+    manifest_dir = tmp_path / "manifests"
+    causal.run_experiment(
+        max_iterations=2,
+        dry_run=False,
+        local=True,
+        base_url="http://127.0.0.1:1234/v1",
+        model="local-model",
+        eval_size=3,
+        run_id="diagnostic-local",
+        manifest_dir=str(manifest_dir),
+        textgrad_max_tokens=1024,
+    )
+
+    result_summary = _read_json(
+        tmp_path / "experiments/results/w3w4_diagnostic-local.json"
+    )
+    manifest = _read_json(manifest_dir / "diagnostic-local.json")
+
+    assert result_summary["suspected_prompt_truncation_count"] == 1
+    assert result_summary["textgrad_output_budget_saturated"] is False
+    assert manifest["metrics"]["suspected_prompt_truncation_count"] == 1
+    assert manifest["metrics"]["textgrad_output_budget_saturated"] is False
+
+
 def test_dry_run_writes_result_artifact_and_truthful_command(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(causal, "generate_counterfactual_dataset", _fake_pairs)
@@ -698,6 +760,53 @@ class _FakeCalibrationLoop:
                     loss=SimpleNamespace(total_loss=0.20, ece=0.07, ate_mae=0.13),
                     prompt="choose with more cost sensitivity",
                     gradient_step=None,
+                ),
+            ],
+        )
+
+
+class _FakeTruncatedCalibrationLoop(_FakeCalibrationLoop):
+    def run(self):
+        from circe.calibration.textgrad import GradientStep
+
+        return SimpleNamespace(
+            best_prompt="choose with calibrated cost sensitivity",
+            best_loss=0.20,
+            initial_loss=0.30,
+            final_loss=0.22,
+            n_iterations=2,
+            total_llm_calls=84,
+            simulator_llm_call_count=82,
+            textgrad_call_count=2,
+            textgrad_input_tokens=900,
+            textgrad_output_tokens=300,
+            history=[
+                SimpleNamespace(
+                    iteration=0,
+                    loss=SimpleNamespace(total_loss=0.30, ece=0.10, ate_mae=0.20),
+                    prompt="choose with default sensitivity",
+                    gradient_step=GradientStep(
+                        iteration=0,
+                        feedback="Need more cost sensitivity",
+                        edited_prompt="You are an expert. Your task",
+                        loss_before=0.30,
+                    ),
+                ),
+                SimpleNamespace(
+                    iteration=1,
+                    loss=SimpleNamespace(total_loss=0.22, ece=0.08, ate_mae=0.14),
+                    prompt="You are an expert. Your task",
+                    gradient_step=GradientStep(
+                        iteration=1,
+                        feedback="No further prompt change needed",
+                        edited_prompt=(
+                            "Choose with calibrated cost sensitivity. Return only JSON "
+                            "probabilities for train, swissmetro, and car. Weigh travel "
+                            "time, travel cost, headway, and convenience, then output "
+                            "smooth probabilities that sum to 1.0."
+                        ),
+                        loss_before=0.22,
+                    ),
                 ),
             ],
         )

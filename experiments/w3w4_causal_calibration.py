@@ -32,12 +32,30 @@ from circe.dgp.counterfactual import generate_counterfactual_dataset
 from circe.calibration.loop import CalibrationLoop, CalibrationConfig
 from circe.calibration.loss import compute_causal_loss
 from circe.simulator.llm_choice import LLMChoiceSimulator, SimulatorConfig
+from circe.simulator.prompt_templates import CHOICE_SYSTEM_PROMPT
 
 
 RESULTS_DIR = Path("experiments/results")
 SCRIPT_COMMAND = ["python", "experiments/w3w4_causal_calibration.py"]
 DEFAULT_SIMULATOR_MAX_TOKENS = 2000
 DEFAULT_TEXTGRAD_MAX_TOKENS = 4000
+DEFAULT_DATASET_SEED = 42
+DEFAULT_PROMPT_BASELINE = "default"
+PROMPT_BASELINES = {
+    "default": CHOICE_SYSTEM_PROMPT,
+    "compact": (
+        "You simulate transportation choices. Return only strict JSON probabilities "
+        "for train, swissmetro, and car. Weigh travel time, cost, headway, and "
+        "convenience. Higher cost or travel time should lower utility; probabilities "
+        "must be non-negative and sum to 1.0."
+    ),
+    "structured": (
+        "You are a discrete-choice transportation simulator. For each alternative, "
+        "compare travel time, monetary cost, headway, and convenience. Infer a "
+        "relative utility, convert utilities into smooth probabilities, and return "
+        "only JSON with train, swissmetro, and car probabilities summing to 1.0."
+    ),
+}
 REQUIRED_RESULT_METRICS = (
     "initial_loss",
     "best_loss",
@@ -56,7 +74,9 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
                    manifest_dir: str = "experiments/results/manifests",
                    simulator_max_tokens: int = DEFAULT_SIMULATOR_MAX_TOKENS,
                    textgrad_max_tokens: int = DEFAULT_TEXTGRAD_MAX_TOKENS,
-                   request_timeout: float | None = None):
+                   request_timeout: float | None = None,
+                   dataset_seed: int = DEFAULT_DATASET_SEED,
+                   prompt_baseline: str = DEFAULT_PROMPT_BASELINE):
     print("=" * 60)
     print("CIRCE W3-W4: Individual Causal Calibration")
     print("=" * 60)
@@ -64,7 +84,10 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
     # Generate ground-truth counterfactual dataset
     print("\n--- Generating counterfactual dataset ---")
     pairs = generate_counterfactual_dataset(
-        n_scenarios=100, n_interventions=5, intervention_type="sm_cost_increase"
+        n_scenarios=100,
+        n_interventions=5,
+        intervention_type="sm_cost_increase",
+        seed=dataset_seed,
     )
     print(f"Generated {len(pairs)} counterfactual pairs")
     print(f"ATE range: [{min(p.ate for p in pairs):.4f}, {max(p.ate for p in pairs):.4f}]")
@@ -89,6 +112,8 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
         simulator_max_tokens=simulator_max_tokens,
         textgrad_max_tokens=textgrad_max_tokens,
         request_timeout=request_timeout,
+        dataset_seed=dataset_seed,
+        prompt_baseline=prompt_baseline,
     )
 
     if local:
@@ -115,6 +140,7 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
         provider=provider,
         base_url=base_url,
         request_timeout=request_timeout,
+        initial_prompt=_prompt_for_baseline(prompt_baseline),
     )
 
     if dry_run:
@@ -137,6 +163,8 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
                 "simulator_max_tokens": config.simulator_max_tokens,
                 "textgrad_max_tokens": config.textgrad_max_tokens,
                 "request_timeout": config.request_timeout,
+                "dataset_seed": dataset_seed,
+                "prompt_baseline": prompt_baseline,
             },
             result_summary=summary,
             result_path=str(output_path),
@@ -179,6 +207,14 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
 
     # Save results
     textgrad_steps = _textgrad_steps_from_history(result.history)
+    suspected_prompt_truncation_count = _suspected_prompt_truncation_count(
+        textgrad_steps
+    )
+    textgrad_output_budget_saturated = _textgrad_output_budget_saturated(
+        textgrad_output_tokens=result.textgrad_output_tokens,
+        textgrad_call_count=result.textgrad_call_count,
+        textgrad_max_tokens=textgrad_max_tokens,
+    )
     output_data = {
         "best_prompt": result.best_prompt,
         "best_loss": result.best_loss,
@@ -191,6 +227,9 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
         "textgrad_input_tokens": result.textgrad_input_tokens,
         "textgrad_output_tokens": result.textgrad_output_tokens,
         "prompt_update_count": _prompt_update_count(textgrad_steps),
+        "suspected_prompt_truncation_count": suspected_prompt_truncation_count,
+        "textgrad_output_budget_saturated": textgrad_output_budget_saturated,
+        "min_edited_prompt_chars": _min_edited_prompt_chars(textgrad_steps),
         "textgrad_effect_status": _textgrad_effect_status(
             initial_loss=result.initial_loss,
             best_loss=result.best_loss,
@@ -198,6 +237,8 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
             prompt_update_count=_prompt_update_count(textgrad_steps),
         ),
         "textgrad_steps": textgrad_steps,
+        "dataset_seed": dataset_seed,
+        "prompt_baseline": prompt_baseline,
         "elapsed_seconds": elapsed,
         "history": [
             {"iteration": r.iteration, "total_loss": r.loss.total_loss,
@@ -222,6 +263,8 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
             "simulator_max_tokens": simulator_max_tokens,
             "textgrad_max_tokens": textgrad_max_tokens,
             "request_timeout": request_timeout,
+            "dataset_seed": dataset_seed,
+            "prompt_baseline": prompt_baseline,
         },
         result_summary=output_data,
         result_path=str(output_path),
@@ -276,9 +319,18 @@ def build_causal_manifest(
             ),
         ),
     }
-    for token_metric in ("textgrad_input_tokens", "textgrad_output_tokens"):
+    for token_metric in (
+        "textgrad_input_tokens",
+        "textgrad_output_tokens",
+        "suspected_prompt_truncation_count",
+        "min_edited_prompt_chars",
+    ):
         if token_metric in result_summary:
             metrics[token_metric] = int(result_summary[token_metric])
+    if "textgrad_output_budget_saturated" in result_summary:
+        metrics["textgrad_output_budget_saturated"] = bool(
+            result_summary["textgrad_output_budget_saturated"]
+        )
 
     artifacts = {"result_json": result_path}
     if textgrad_steps_path is not None:
@@ -330,6 +382,14 @@ def _run_dry(config, train_pairs, test_pairs):
         result = loop.run()
 
     textgrad_steps = _textgrad_steps_from_history(result.history)
+    suspected_prompt_truncation_count = _suspected_prompt_truncation_count(
+        textgrad_steps
+    )
+    textgrad_output_budget_saturated = _textgrad_output_budget_saturated(
+        textgrad_output_tokens=result.textgrad_output_tokens,
+        textgrad_call_count=result.textgrad_call_count,
+        textgrad_max_tokens=config.textgrad_max_tokens,
+    )
     print(f"  Pipeline OK: {result.n_iterations} iterations, {call_count[0]} mock LLM calls")
     print(f"  Initial loss: {result.initial_loss:.4f}")
     print(f"  Final loss: {result.final_loss:.4f}")
@@ -346,6 +406,9 @@ def _run_dry(config, train_pairs, test_pairs):
         "textgrad_input_tokens": result.textgrad_input_tokens,
         "textgrad_output_tokens": result.textgrad_output_tokens,
         "prompt_update_count": _prompt_update_count(textgrad_steps),
+        "suspected_prompt_truncation_count": suspected_prompt_truncation_count,
+        "textgrad_output_budget_saturated": textgrad_output_budget_saturated,
+        "min_edited_prompt_chars": _min_edited_prompt_chars(textgrad_steps),
         "textgrad_effect_status": _textgrad_effect_status(
             initial_loss=result.initial_loss,
             best_loss=result.best_loss,
@@ -370,6 +433,8 @@ def _build_command(
     simulator_max_tokens: int = DEFAULT_SIMULATOR_MAX_TOKENS,
     textgrad_max_tokens: int = DEFAULT_TEXTGRAD_MAX_TOKENS,
     request_timeout: float | None = None,
+    dataset_seed: int = DEFAULT_DATASET_SEED,
+    prompt_baseline: str = DEFAULT_PROMPT_BASELINE,
 ) -> list[str]:
     command = [
         *SCRIPT_COMMAND,
@@ -388,6 +453,10 @@ def _build_command(
         command.extend(["--textgrad-max-tokens", str(textgrad_max_tokens)])
     if request_timeout is not None:
         command.extend(["--request-timeout", _format_timeout(request_timeout)])
+    if dataset_seed != DEFAULT_DATASET_SEED:
+        command.extend(["--dataset-seed", str(dataset_seed)])
+    if prompt_baseline != DEFAULT_PROMPT_BASELINE:
+        command.extend(["--prompt-baseline", prompt_baseline])
     command.extend(
         [
             "--base-url",
@@ -447,6 +516,55 @@ def _prompt_update_count(textgrad_steps: list[dict]) -> int:
     return sum(1 for step in textgrad_steps if step.get("edited_prompt_changed"))
 
 
+def _suspected_prompt_truncation_count(textgrad_steps: list[dict]) -> int:
+    return sum(
+        1
+        for step in textgrad_steps
+        if _looks_like_truncated_prompt(step.get("edited_prompt", ""))
+    )
+
+
+def _looks_like_truncated_prompt(prompt: str) -> bool:
+    stripped = prompt.strip()
+    if not stripped:
+        return True
+    lower = stripped.lower()
+    if len(stripped) < 200:
+        return True
+    if "json" not in lower or "probab" not in lower:
+        return True
+    incomplete_suffixes = (
+        "your task",
+        "utility calculation",
+        "step 2:",
+        "convenience",
+        "####",
+        "-",
+        ":",
+    )
+    return lower.endswith(incomplete_suffixes)
+
+
+def _textgrad_output_budget_saturated(
+    *,
+    textgrad_output_tokens: int,
+    textgrad_call_count: int,
+    textgrad_max_tokens: int,
+) -> bool:
+    if textgrad_call_count <= 0 or textgrad_max_tokens <= 0:
+        return False
+    return textgrad_output_tokens >= textgrad_call_count * textgrad_max_tokens
+
+
+def _min_edited_prompt_chars(textgrad_steps: list[dict]) -> int:
+    lengths = [
+        len(step.get("edited_prompt", ""))
+        for step in textgrad_steps
+        if step.get("edited_prompt") is not None
+    ]
+    return min(lengths, default=0)
+
+
 def _textgrad_effect_status(
     *,
     initial_loss: float,
@@ -470,6 +588,15 @@ def _safe_run_id_token(run_id: str) -> str:
     return token
 
 
+def _prompt_for_baseline(prompt_baseline: str) -> str:
+    try:
+        return PROMPT_BASELINES[prompt_baseline]
+    except KeyError as exc:
+        raise ValueError(
+            f"prompt_baseline must be one of {sorted(PROMPT_BASELINES)}"
+        ) from exc
+
+
 def _format_timeout(value: float) -> str:
     if float(value).is_integer():
         return str(int(value))
@@ -489,6 +616,12 @@ if __name__ == "__main__":
     parser.add_argument("--sim-max-tokens", type=int, default=DEFAULT_SIMULATOR_MAX_TOKENS)
     parser.add_argument("--textgrad-max-tokens", type=int, default=DEFAULT_TEXTGRAD_MAX_TOKENS)
     parser.add_argument("--request-timeout", type=float, default=None)
+    parser.add_argument("--dataset-seed", type=int, default=DEFAULT_DATASET_SEED)
+    parser.add_argument(
+        "--prompt-baseline",
+        choices=sorted(PROMPT_BASELINES),
+        default=DEFAULT_PROMPT_BASELINE,
+    )
     args = parser.parse_args()
     run_experiment(
         max_iterations=args.max_iter,
@@ -502,4 +635,6 @@ if __name__ == "__main__":
         simulator_max_tokens=args.sim_max_tokens,
         textgrad_max_tokens=args.textgrad_max_tokens,
         request_timeout=args.request_timeout,
+        dataset_seed=args.dataset_seed,
+        prompt_baseline=args.prompt_baseline,
     )

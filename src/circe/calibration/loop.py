@@ -22,6 +22,7 @@ class CalibrationConfig:
     provider: str = "openai"
     base_url: str | None = None
     request_timeout: float | None = None
+    initial_prompt: str | None = None
 
 
 @dataclass
@@ -64,6 +65,8 @@ class CalibrationLoop:
                 timeout_seconds=self.config.request_timeout,
             )
         )
+        if self.config.initial_prompt is not None:
+            self.simulator.system_prompt = self.config.initial_prompt
         self.textgrad = TextGradEngine(
             TextGradConfig(
                 model=self.config.textgrad_model,
