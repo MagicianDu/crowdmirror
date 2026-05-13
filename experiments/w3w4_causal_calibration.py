@@ -41,6 +41,7 @@ DEFAULT_SIMULATOR_MAX_TOKENS = 2000
 DEFAULT_TEXTGRAD_MAX_TOKENS = 4000
 DEFAULT_DATASET_SEED = 42
 DEFAULT_PROMPT_BASELINE = "default"
+DEFAULT_REPEAT = 1
 PROMPT_BASELINES = {
     "default": CHOICE_SYSTEM_PROMPT,
     "compact": (
@@ -76,7 +77,8 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
                    textgrad_max_tokens: int = DEFAULT_TEXTGRAD_MAX_TOKENS,
                    request_timeout: float | None = None,
                    dataset_seed: int = DEFAULT_DATASET_SEED,
-                   prompt_baseline: str = DEFAULT_PROMPT_BASELINE):
+                   prompt_baseline: str = DEFAULT_PROMPT_BASELINE,
+                   repeat: int = DEFAULT_REPEAT):
     print("=" * 60)
     print("CIRCE W3-W4: Individual Causal Calibration")
     print("=" * 60)
@@ -165,6 +167,7 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
                 "request_timeout": config.request_timeout,
                 "dataset_seed": dataset_seed,
                 "prompt_baseline": prompt_baseline,
+                "repeat": repeat,
             },
             result_summary=summary,
             result_path=str(output_path),
@@ -240,6 +243,7 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
         "textgrad_steps": textgrad_steps,
         "dataset_seed": dataset_seed,
         "prompt_baseline": prompt_baseline,
+        "repeat": repeat,
         "elapsed_seconds": elapsed,
         "history": [
             {"iteration": r.iteration, "total_loss": r.loss.total_loss,
@@ -267,6 +271,7 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
             "request_timeout": request_timeout,
             "dataset_seed": dataset_seed,
             "prompt_baseline": prompt_baseline,
+            "repeat": repeat,
         },
         result_summary=output_data,
         result_path=str(output_path),

@@ -59,5 +59,6 @@
   "candidate_rejected_count": 0,
   "candidate_pending_count": 1,
   "candidate_acceptance_rate": 1.0,
-  "candidate_update_status": "accepted"
+  "candidate_update_status": "accepted",
+  "repeat": 1
 }

@@ -199,6 +199,48 @@ def test_evaluate_paper_gate_reports_insufficient_evidence_until_matrix_complete
     assert "missing_seed:42" not in gate["missing_cells"]
 
 
+def test_evaluate_paper_gate_infers_repeat_from_run_id_when_config_omits_it():
+    manifests = [
+        {
+            "run_id": "paper-local-seed42-eval5-compact-tg1024-r1",
+            "config": {
+                "eval_size": 5,
+                "dataset_seed": 42,
+                "prompt_baseline": "compact",
+                "textgrad_max_tokens": 1024,
+            },
+            "metrics": {
+                "improvement_ratio": 0.1,
+                "textgrad_effect_status": "improved",
+            },
+        },
+        {
+            "run_id": "paper-local-seed42-eval5-compact-tg1024-r2",
+            "config": {
+                "eval_size": 5,
+                "dataset_seed": 42,
+                "prompt_baseline": "compact",
+                "textgrad_max_tokens": 1024,
+            },
+            "metrics": {
+                "improvement_ratio": 0.1,
+                "textgrad_effect_status": "improved",
+            },
+        },
+    ]
+
+    gate = evaluate_paper_gate(
+        manifests,
+        required_seeds=(42,),
+        required_prompt_baselines=("compact",),
+        required_textgrad_token_budgets=(1024,),
+        required_repeats=2,
+    )
+
+    assert gate["status"] == "passed"
+    assert gate["observed_run_count"] == 2
+
+
 def test_evaluate_paper_gate_passes_when_required_cells_improve():
     manifests = []
     for seed in (42, 7, 99):

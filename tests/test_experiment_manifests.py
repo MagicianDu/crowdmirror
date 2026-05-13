@@ -321,6 +321,31 @@ def test_non_dry_run_manifest_records_seed_and_prompt_baseline(tmp_path, monkeyp
     assert "--prompt-baseline" in manifest["command"]
 
 
+def test_non_dry_run_manifest_records_repeat_axis(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(causal, "generate_counterfactual_dataset", _fake_pairs)
+    monkeypatch.setattr(causal, "CalibrationLoop", _FakeCalibrationLoop)
+
+    manifest_dir = tmp_path / "manifests"
+    causal.run_experiment(
+        max_iterations=2,
+        dry_run=False,
+        local=True,
+        base_url="http://127.0.0.1:1234/v1",
+        model="local-model",
+        eval_size=3,
+        run_id="repeat-local",
+        manifest_dir=str(manifest_dir),
+        repeat=3,
+    )
+
+    result_summary = _read_json(tmp_path / "experiments/results/w3w4_repeat-local.json")
+    manifest = _read_json(manifest_dir / "repeat-local.json")
+    assert result_summary["repeat"] == 3
+    assert manifest["config"]["repeat"] == 3
+    assert "--repeat" not in manifest["command"]
+
+
 def test_result_summary_records_textgrad_diagnostics_from_history(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(causal, "generate_counterfactual_dataset", _fake_pairs)

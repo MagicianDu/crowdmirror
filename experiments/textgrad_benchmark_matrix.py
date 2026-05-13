@@ -343,8 +343,19 @@ def _manifest_cell(manifest: dict[str, Any]) -> tuple[int, str, int, int]:
         int(config.get("dataset_seed")),
         str(config.get("prompt_baseline")),
         int(config.get("textgrad_max_tokens")),
-        int(config.get("repeat", 1)),
+        _manifest_repeat(manifest),
     )
+
+
+def _manifest_repeat(manifest: dict[str, Any]) -> int:
+    config = manifest.get("config", {})
+    if "repeat" in config:
+        return int(config.get("repeat") or 1)
+    run_id = str(manifest.get("run_id", ""))
+    repeat_token = run_id.rsplit("-r", 1)
+    if len(repeat_token) == 2 and repeat_token[1].isdigit():
+        return int(repeat_token[1])
+    return 1
 
 
 def _missing_cell_labels(
