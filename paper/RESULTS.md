@@ -57,6 +57,17 @@ contracts, but they do not establish live LLM model-quality improvement.
    - These values close the metric-computability gap for the smoke gate only;
      they are synthetic fixture evidence, not paper-grade domain coverage.
 
+6. Policy reaction public-data intake readiness
+   - The policy-reaction source catalog identifies HPS/HTOPS public-use data as
+     an auditable candidate source for food subsidy, living-cost, and inflation
+     pressure reaction benchmarks.
+   - The intake manifest records source URL, access mode, unit of analysis,
+     candidate policy fields, segment fields, target fields, and claim boundary
+     in strict JSON.
+   - This is public-data intake readiness only. It is not a model-quality
+     result, not validation of a policy-reaction predictor, and not a China
+     policy prediction.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -69,6 +80,8 @@ contracts, but they do not establish live LLM model-quality improvement.
   produced manifests, but only as plumbing evidence.
 - Local/live improvement claims require a committed manifest or archived run
   artifact with `mode` equal to `local` or `live`.
+- CIRCE can record an offline, strict-JSON public-data intake manifest for the
+  HPS/HTOPS food-cost policy-reaction benchmark source.
 
 ## Not Yet Claimed
 
@@ -83,6 +96,8 @@ contracts, but they do not establish live LLM model-quality improvement.
   model/provider context, and artifact path.
 - No TextGrad effectiveness claim is made unless the manifest reports
   acceptance-gated candidate accounting with zero pending candidates.
+- No policy-reaction model-quality result, China policy prediction, or field
+  validation claim is made from the public-data intake catalog or manifest.
 
 ## Evidence Review Checklist
 
