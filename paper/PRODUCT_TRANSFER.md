@@ -14,6 +14,12 @@ but a Product pricing canary using synthetic personas must remain `missing` for
 its own LLM choice calibration unless a manifest validates that exact product
 scenario, model, metric, and scope.
 
+Product transfer is gated by manifest evidence. CrowdMirror may expose Research
+calibration metadata, including accepted and rejected candidate counts, but it
+must not present product scenarios as calibrated until the referenced Research
+artifact passes the acceptance-gated benchmark and matches the product scenario
+scope.
+
 ## Evidence Classes
 
 | Evidence class | Manifest mode | Product use | Claim boundary |
@@ -22,6 +28,7 @@ scenario, model, metric, and scope.
 | Local model canary | `local` | Shows a local LLM path, model id, metrics, and artifacts under a bounded setup | local-model calibration evidence; not cross-provider evidence |
 | Live model run | `live` | May support a provider-specific benchmark claim when metrics and artifacts are committed | live-model evidence; not cross-domain generalization |
 | Product scenario calibration | `local` or `live` plus matching product scenario metadata | May support a bounded Product calibration card | Only valid for the recorded scenario, model, and metric |
+| PopulationBench-lite gate | `local` or `live` plus acceptance-gated candidate accounting | Shows method-level benchmark coverage for distributional fit, counterfactual direction, segment stability, and auditability | Reproducible local-method evidence; not field validation |
 
 ## Product Surfaces
 

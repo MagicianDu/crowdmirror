@@ -57,6 +57,20 @@ where `epsilon > 0` is fixed before the run. Dry-run manifests can satisfy the
 manifest constraint only for deterministic plumbing claims; they do not enter
 model-quality paper or Product claims.
 
+The technical contribution is not raw prompt optimization. CIRCE treats
+TextGrad-style feedback as a candidate generator inside an acceptance-gated
+population calibration loop: an LLM proposes a prompt update, the simulator
+evaluates the candidate on declared counterfactual evidence, and the system
+accepts the candidate only when the measured population loss improves under the
+same benchmark configuration. Rejected candidates are retained as negative
+evidence rather than silently applied.
+
+PopulationBench-lite is the current reviewer-facing benchmark gate for this
+claim. It requires distributional choice fit, counterfactual direction,
+segment-level stability, and manifest auditability. Passing the gate can support
+a bounded local-method claim; it does not establish field validity or
+customer-scenario forecasting accuracy.
+
 ## Assumptions
 
 1. The benchmark lane declares `x`, `a`, `z`, metric definitions, weights,

@@ -34,6 +34,23 @@ contracts, but they do not establish live LLM model-quality improvement.
      configuration and only after the associated manifest or archived artifact
      is available for review.
 
+4. Acceptance-gated TextGrad evidence
+   - Paper-gate v2 achieved matrix coverage but failed as an unrestricted
+     improvement claim because a material fraction of candidate updates were
+     rejected or negative.
+   - Wave 8 evaluates TextGrad as a candidate generator inside an explicit
+     accept/reject/revert method, with `initial_loss`, `best_loss`,
+     `final_loss`, candidate counts, and update policy recorded in manifests.
+   - The current v3 smoke artifact is positive local Gemma evidence for one
+     recorded cell, not paper-grade coverage.
+
+5. PopulationBench-lite benchmark gate
+   - The benchmark spec defines four reviewer-facing tasks: distributional
+     choice fit, counterfactual direction, segment stability, and auditability.
+   - The spec is a research gate for reproducible local evidence. It is not
+     field validation and cannot by itself support commercial forecasting
+     claims.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -58,6 +75,8 @@ contracts, but they do not establish live LLM model-quality improvement.
 - No causal or emergence metric improvement is claimed unless a non-dry-run
   manifest records the initial metric, best metric, command, configuration,
   model/provider context, and artifact path.
+- No TextGrad effectiveness claim is made unless the manifest reports
+  acceptance-gated candidate accounting with zero pending candidates.
 
 ## Evidence Review Checklist
 
