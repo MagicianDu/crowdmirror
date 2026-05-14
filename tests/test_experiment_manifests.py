@@ -112,6 +112,8 @@ def test_build_causal_manifest_records_candidate_acceptance_metrics():
             "candidate_rejected_count": 1,
             "candidate_pending_count": 0,
             "candidate_acceptance_rate": 0.5,
+            "candidate_update_policy": "accept_if_loss_improves_else_revert",
+            "textgrad_effect_status": "mixed",
         },
         result_path="experiments/results/w3w4_candidate_acceptance.json",
         textgrad_steps_path="experiments/results/w3w4_candidate_acceptance_steps.json",
@@ -124,6 +126,11 @@ def test_build_causal_manifest_records_candidate_acceptance_metrics():
     assert manifest["metrics"]["candidate_rejected_count"] == 1
     assert manifest["metrics"]["candidate_pending_count"] == 0
     assert manifest["metrics"]["candidate_acceptance_rate"] == 0.5
+    assert (
+        manifest["metrics"]["candidate_update_policy"]
+        == "accept_if_loss_improves_else_revert"
+    )
+    assert manifest["metrics"]["textgrad_effect_status"] == "mixed"
 
 
 def test_build_causal_manifest_rejects_missing_required_metrics():

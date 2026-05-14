@@ -17,6 +17,7 @@ PAPER_GATE_TEXTGRAD_TOKEN_BUDGETS = (1024, 2048)
 PAPER_GATE_REPEATS = 3
 MATRIX_SCHEMA_VERSION = "circe-textgrad-matrix-v1"
 PAPER_GATE_V2_SCHEMA_VERSION = "circe-textgrad-paper-gate-v2"
+PAPER_GATE_V3_SCHEMA_VERSION = "circe-textgrad-paper-gate-v3"
 MATRIX_CLAIM_BOUNDARY = (
     "bounded TextGrad benchmark matrix plan; not paper-grade TextGrad effectiveness evidence"
 )
@@ -159,7 +160,7 @@ def evaluate_paper_gate(
     missing_cells = sorted(required_cells - observed_cells)
     improved_run_count = sum(
         1 for manifest in manifests
-        if manifest.get("metrics", {}).get("textgrad_effect_status") == "improved"
+        if _is_improved_textgrad_result(manifest)
     )
     negative_result_count = sum(
         1 for manifest in manifests if _is_negative_textgrad_result(manifest)
@@ -184,6 +185,7 @@ def evaluate_paper_gate(
         ),
         "improved_run_count": improved_run_count,
         "negative_result_count": negative_result_count,
+        **_acceptance_gate_summary(manifests),
         **candidate_acceptance,
     }
 
@@ -192,6 +194,11 @@ def classify_paper_gate_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
     run_id = str(manifest.get("run_id", ""))
     metrics = manifest.get("metrics", {})
     pending = int(metrics.get("candidate_pending_count", 0) or 0)
+    if run_id.startswith("textgrad-paper-gate-v3-"):
+        return {
+            "evidence_generation": "current_v3",
+            "legacy": False,
+        }
     if run_id.startswith("textgrad-paper-gate-v2-"):
         return {
             "evidence_generation": "current_v2",
@@ -236,7 +243,7 @@ def summarize_paper_gate_evidence(
     matrix_summary = summarize_matrix(manifests)
     conclusion = _paper_gate_conclusion(paper_gate)
     return {
-        "schema_version": PAPER_GATE_V2_SCHEMA_VERSION,
+        "schema_version": _paper_gate_schema_version(classifications),
         "paper_gate": paper_gate,
         "matrix_summary": matrix_summary,
         "evidence_generation_counts": dict(sorted(generation_counts.items())),
@@ -324,13 +331,88 @@ def write_matrix_index(
 
 def _is_negative_textgrad_result(manifest: dict[str, Any]) -> bool:
     metrics = manifest.get("metrics", {})
-    if metrics.get("textgrad_effect_status") == "updated_no_improvement":
+    if metrics.get("textgrad_effect_status") in {
+        "updated_no_improvement",
+        "rejected_no_improvement",
+    }:
         return True
     return (
         int(metrics.get("textgrad_call_count", 0)) > 0
         and int(metrics.get("prompt_update_count", 0)) > 0
         and float(metrics.get("improvement_ratio", 0.0)) <= 0.0
     )
+
+
+def _is_improved_textgrad_result(manifest: dict[str, Any]) -> bool:
+    metrics = manifest.get("metrics", {})
+    effect_status = metrics.get("textgrad_effect_status")
+    if effect_status in {"improved", "accepted_improvement"}:
+        return True
+    if effect_status == "mixed":
+        return float(metrics.get("improvement_ratio", 0.0) or 0.0) > 0.0
+    return False
+
+
+def _acceptance_gate_summary(manifests: list[dict[str, Any]]) -> dict[str, Any]:
+    summary: dict[str, Any] = {}
+    for field in ("initial_loss", "best_loss", "final_loss"):
+        value = _mean_metric(manifests, field)
+        if value is not None:
+            summary[field] = value
+
+    policy = _shared_metric_string(manifests, "candidate_update_policy")
+    if policy is not None:
+        summary["candidate_update_policy"] = policy
+
+    effect_status = _combined_metric_string(manifests, "textgrad_effect_status")
+    if effect_status is not None:
+        summary["textgrad_effect_status"] = effect_status
+    return summary
+
+
+def _mean_metric(manifests: list[dict[str, Any]], field: str) -> float | None:
+    values = [
+        float(manifest.get("metrics", {})[field])
+        for manifest in manifests
+        if field in manifest.get("metrics", {})
+    ]
+    if not values:
+        return None
+    return sum(values) / len(values)
+
+
+def _shared_metric_string(manifests: list[dict[str, Any]], field: str) -> str | None:
+    values = {
+        str(manifest.get("metrics", {})[field])
+        for manifest in manifests
+        if field in manifest.get("metrics", {})
+    }
+    if len(values) == 1:
+        return next(iter(values))
+    return None
+
+
+def _combined_metric_string(manifests: list[dict[str, Any]], field: str) -> str | None:
+    values = [
+        str(manifest.get("metrics", {})[field])
+        for manifest in manifests
+        if field in manifest.get("metrics", {})
+    ]
+    if not values:
+        return None
+    unique_values = set(values)
+    if len(unique_values) == 1:
+        return values[0]
+    return "mixed"
+
+
+def _paper_gate_schema_version(classifications: list[dict[str, Any]]) -> str:
+    if any(
+        classification["evidence_generation"] == "current_v3"
+        for classification in classifications
+    ):
+        return PAPER_GATE_V3_SCHEMA_VERSION
+    return PAPER_GATE_V2_SCHEMA_VERSION
 
 
 def _candidate_acceptance_totals(manifests: list[dict[str, Any]]) -> dict[str, Any]:
@@ -389,6 +471,15 @@ def _paper_gate_claim_boundaries(
     conclusion: str,
 ) -> list[str]:
     boundaries = [PAPER_GATE_V2_CLAIM_BOUNDARY]
+    if (
+        paper_gate.get("candidate_update_policy")
+        == "accept_if_loss_improves_else_revert"
+    ):
+        boundaries.append(
+            "Current paper-gate evidence uses an acceptance-gated prompt update "
+            "policy: TextGrad proposes candidates, and measured loss decides "
+            "whether each candidate is accepted or reverted."
+        )
     if conclusion == "insufficient_coverage":
         boundaries.append(
             "The paper gate is not complete, so TextGrad effectiveness claims are unsupported."

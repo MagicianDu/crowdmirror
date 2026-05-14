@@ -218,7 +218,17 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
         textgrad_call_count=result.textgrad_call_count,
         textgrad_max_tokens=textgrad_max_tokens,
     )
-    candidate_acceptance = _candidate_acceptance_summary(textgrad_steps)
+    candidate_acceptance = _candidate_acceptance_from_result(result, textgrad_steps)
+    textgrad_effect_status = getattr(
+        result,
+        "textgrad_effect_status",
+        _textgrad_effect_status(
+            initial_loss=result.initial_loss,
+            best_loss=result.best_loss,
+            textgrad_call_count=result.textgrad_call_count,
+            prompt_update_count=_prompt_update_count(textgrad_steps),
+        ),
+    )
     output_data = {
         "best_prompt": result.best_prompt,
         "best_loss": result.best_loss,
@@ -234,12 +244,7 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
         "suspected_prompt_truncation_count": suspected_prompt_truncation_count,
         "textgrad_output_budget_saturated": textgrad_output_budget_saturated,
         "min_edited_prompt_chars": _min_edited_prompt_chars(textgrad_steps),
-        "textgrad_effect_status": _textgrad_effect_status(
-            initial_loss=result.initial_loss,
-            best_loss=result.best_loss,
-            textgrad_call_count=result.textgrad_call_count,
-            prompt_update_count=_prompt_update_count(textgrad_steps),
-        ),
+        "textgrad_effect_status": textgrad_effect_status,
         "textgrad_steps": textgrad_steps,
         "dataset_seed": dataset_seed,
         "prompt_baseline": prompt_baseline,
@@ -352,6 +357,8 @@ def build_causal_manifest(
         metrics["candidate_acceptance_rate"] = None if rate is None else float(rate)
     if "candidate_update_status" in result_summary:
         metrics["candidate_update_status"] = result_summary["candidate_update_status"]
+    if "candidate_update_policy" in result_summary:
+        metrics["candidate_update_policy"] = str(result_summary["candidate_update_policy"])
 
     artifacts = {"result_json": result_path}
     if textgrad_steps_path is not None:
@@ -411,7 +418,17 @@ def _run_dry(config, train_pairs, test_pairs):
         textgrad_call_count=result.textgrad_call_count,
         textgrad_max_tokens=config.textgrad_max_tokens,
     )
-    candidate_acceptance = _candidate_acceptance_summary(textgrad_steps)
+    candidate_acceptance = _candidate_acceptance_from_result(result, textgrad_steps)
+    textgrad_effect_status = getattr(
+        result,
+        "textgrad_effect_status",
+        _textgrad_effect_status(
+            initial_loss=result.initial_loss,
+            best_loss=result.best_loss,
+            textgrad_call_count=result.textgrad_call_count,
+            prompt_update_count=_prompt_update_count(textgrad_steps),
+        ),
+    )
     print(f"  Pipeline OK: {result.n_iterations} iterations, {call_count[0]} mock LLM calls")
     print(f"  Initial loss: {result.initial_loss:.4f}")
     print(f"  Final loss: {result.final_loss:.4f}")
@@ -431,12 +448,7 @@ def _run_dry(config, train_pairs, test_pairs):
         "suspected_prompt_truncation_count": suspected_prompt_truncation_count,
         "textgrad_output_budget_saturated": textgrad_output_budget_saturated,
         "min_edited_prompt_chars": _min_edited_prompt_chars(textgrad_steps),
-        "textgrad_effect_status": _textgrad_effect_status(
-            initial_loss=result.initial_loss,
-            best_loss=result.best_loss,
-            textgrad_call_count=result.textgrad_call_count,
-            prompt_update_count=_prompt_update_count(textgrad_steps),
-        ),
+        "textgrad_effect_status": textgrad_effect_status,
         "textgrad_steps": textgrad_steps,
     }
     summary.update(candidate_acceptance)
@@ -528,7 +540,14 @@ def _textgrad_steps_from_history(history) -> list[dict]:
         candidate_loss_delta = None
         candidate_status = "unchanged"
         if edited_prompt != prompt_before:
-            if next_record is None:
+            direct_status = getattr(record, "candidate_status", None)
+            direct_candidate_loss = getattr(record, "candidate_loss", None)
+            if direct_status in {"accepted", "rejected", "pending"}:
+                candidate_status = direct_status
+                if direct_candidate_loss is not None:
+                    candidate_loss_after = float(direct_candidate_loss)
+                    candidate_loss_delta = round(candidate_loss_after - loss_before, 12)
+            elif next_record is None:
                 candidate_status = "pending"
             else:
                 candidate_loss_after = float(next_record.loss.total_loss)
@@ -587,6 +606,39 @@ def _candidate_acceptance_summary(textgrad_steps: list[dict]) -> dict:
             pending_count=pending_count,
         ),
     }
+
+
+def _candidate_acceptance_from_result(result, textgrad_steps: list[dict]) -> dict:
+    required_attrs = (
+        "candidate_update_count",
+        "candidate_evaluated_count",
+        "candidate_accepted_count",
+        "candidate_rejected_count",
+        "candidate_pending_count",
+        "candidate_acceptance_rate",
+    )
+    if not all(hasattr(result, attr) for attr in required_attrs):
+        return _candidate_acceptance_summary(textgrad_steps)
+
+    accepted_count = int(getattr(result, "candidate_accepted_count"))
+    rejected_count = int(getattr(result, "candidate_rejected_count"))
+    pending_count = int(getattr(result, "candidate_pending_count"))
+    summary = {
+        "candidate_update_count": int(getattr(result, "candidate_update_count")),
+        "candidate_evaluated_count": int(getattr(result, "candidate_evaluated_count")),
+        "candidate_accepted_count": accepted_count,
+        "candidate_rejected_count": rejected_count,
+        "candidate_pending_count": pending_count,
+        "candidate_acceptance_rate": getattr(result, "candidate_acceptance_rate"),
+        "candidate_update_status": _candidate_update_status(
+            accepted_count=accepted_count,
+            rejected_count=rejected_count,
+            pending_count=pending_count,
+        ),
+    }
+    if hasattr(result, "candidate_update_policy"):
+        summary["candidate_update_policy"] = getattr(result, "candidate_update_policy")
+    return summary
 
 
 def _candidate_update_status(

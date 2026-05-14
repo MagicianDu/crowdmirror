@@ -411,3 +411,50 @@ def test_summarize_paper_gate_evidence_exposes_claim_boundaries_and_axes():
     assert summary["token_budget_summaries"]["1024"]["negative_result_count"] == 1
     assert summary["seed_summaries"]["42"]["candidate_rejected_count"] == 1
     assert any("legacy runs contain pending" in boundary for boundary in summary["claim_boundaries"])
+
+
+def test_summarize_paper_gate_v3_reports_acceptance_gated_fields():
+    summary = summarize_paper_gate_evidence(
+        [
+            {
+                "run_id": "textgrad-paper-gate-v3-local-seed42-eval5-default-tg2048-r1",
+                "config": {
+                    "eval_size": 5,
+                    "dataset_seed": 42,
+                    "prompt_baseline": "default",
+                    "textgrad_max_tokens": 2048,
+                    "repeat": 1,
+                },
+                "metrics": {
+                    "initial_loss": 0.20,
+                    "best_loss": 0.18,
+                    "final_loss": 0.18,
+                    "improvement_ratio": 0.10,
+                    "textgrad_effect_status": "accepted_improvement",
+                    "candidate_update_count": 1,
+                    "candidate_evaluated_count": 1,
+                    "candidate_accepted_count": 1,
+                    "candidate_rejected_count": 0,
+                    "candidate_pending_count": 0,
+                    "candidate_acceptance_rate": 1.0,
+                    "candidate_update_policy": "accept_if_loss_improves_else_revert",
+                },
+            }
+        ],
+        required_seeds=(42,),
+        required_prompt_baselines=("default",),
+        required_textgrad_token_budgets=(2048,),
+        required_repeats=1,
+    )
+
+    assert summary["paper_gate"]["candidate_pending_count"] == 0
+    assert summary["paper_gate"]["candidate_accepted_count"] == 1
+    assert summary["paper_gate"]["initial_loss"] == 0.20
+    assert summary["paper_gate"]["best_loss"] == 0.18
+    assert summary["paper_gate"]["final_loss"] == 0.18
+    assert (
+        summary["paper_gate"]["candidate_update_policy"]
+        == "accept_if_loss_improves_else_revert"
+    )
+    assert summary["paper_gate"]["textgrad_effect_status"] == "accepted_improvement"
+    assert any("acceptance-gated" in boundary for boundary in summary["claim_boundaries"])
