@@ -50,6 +50,10 @@ contracts, but they do not establish live LLM model-quality improvement.
    - The spec is a research gate for reproducible local evidence. It is not
      field validation and cannot by itself support commercial forecasting
      claims.
+   - The current smoke artifact marks auditability as passed for the recorded
+     local Gemma v3 manifest, while distributional choice fit, counterfactual
+     direction, and segment stability remain blocked because those metrics are
+     not yet recorded.
 
 ## Accepted Claims
 
