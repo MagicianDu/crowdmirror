@@ -1,32 +1,54 @@
 {
   "artifact_id": "populationbench-lite-smoke-001",
+  "benchmark_data": {
+    "provenance": [
+      "synthetic_populationbench_lite_smoke_fixture"
+    ],
+    "record_count": 2,
+    "status": "provided"
+  },
+  "benchmark_metrics": {
+    "ate_direction_accuracy": 1.0,
+    "ate_direction_counts": {
+      "correct": 2,
+      "total": 2
+    },
+    "choice_distribution_jsd": 0.005796652704995218,
+    "choice_distribution_jsd_record_count": 2,
+    "segment_rank_correlation": 1.0,
+    "segment_rank_correlation_by_segment": {
+      "budget": 1.0,
+      "premium": 1.0
+    },
+    "worst_segment_rank_correlation": 1.0
+  },
   "claim_boundary": "PopulationBench-lite smoke gate checks reproducible local evidence readiness; it is not field validation.",
   "evidence_axes": {
     "model": "google/gemma-4-31b",
     "prompt_baseline": "default",
     "seed": 42
   },
-  "overall_status": "blocked_for_paper_claim",
+  "overall_status": "passed",
   "schema_version": "populationbench-lite-v0",
   "source_run_id": "textgrad-paper-gate-v3-smoke-local-seed42-eval5-default-tg2048-r1",
   "tasks": [
     {
       "metric": "choice_distribution_jsd",
-      "reason": "choice_distribution_jsd_not_recorded",
-      "status": "blocked",
-      "task_id": "distributional_choice_fit"
+      "status": "passed",
+      "task_id": "distributional_choice_fit",
+      "value": 0.005796652704995218
     },
     {
       "metric": "ate_direction_accuracy",
-      "reason": "ate_direction_accuracy_not_recorded",
-      "status": "blocked",
-      "task_id": "counterfactual_direction"
+      "status": "passed",
+      "task_id": "counterfactual_direction",
+      "value": 1.0
     },
     {
       "metric": "segment_rank_correlation",
-      "reason": "segment_rank_correlation_not_recorded",
-      "status": "blocked",
-      "task_id": "segment_stability"
+      "status": "passed",
+      "task_id": "segment_stability",
+      "value": 1.0
     },
     {
       "metric": "strict_json_manifest_completeness",

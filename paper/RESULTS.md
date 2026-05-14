@@ -50,10 +50,12 @@ contracts, but they do not establish live LLM model-quality improvement.
    - The spec is a research gate for reproducible local evidence. It is not
      field validation and cannot by itself support commercial forecasting
      claims.
-   - The current smoke artifact marks auditability as passed for the recorded
-     local Gemma v3 manifest, while distributional choice fit, counterfactual
-     direction, and segment stability remain blocked because those metrics are
-     not yet recorded.
+   - The current smoke artifact computes all three formerly blocked metrics
+     from `benchmarks/fixtures/populationbench_lite_smoke_records.json`:
+     `choice_distribution_jsd=0.005796652704995218`,
+     `ate_direction_accuracy=1.0`, and `segment_rank_correlation=1.0`.
+   - These values close the metric-computability gap for the smoke gate only;
+     they are synthetic fixture evidence, not paper-grade domain coverage.
 
 ## Accepted Claims
 

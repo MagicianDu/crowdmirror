@@ -1,0 +1,32 @@
+[
+  {
+    "actual_choice_share": {
+      "hotel_a": 0.8,
+      "hotel_b": 0.2
+    },
+    "predicted_ate": -0.03,
+    "predicted_choice_share": {
+      "hotel_a": 0.7,
+      "hotel_b": 0.3
+    },
+    "provenance": "synthetic_populationbench_lite_smoke_fixture",
+    "record_id": "budget-seed11",
+    "segment": "budget",
+    "true_ate": -0.05
+  },
+  {
+    "actual_choice_share": {
+      "hotel_a": 0.35,
+      "hotel_b": 0.65
+    },
+    "predicted_ate": 0.02,
+    "predicted_choice_share": {
+      "hotel_a": 0.4,
+      "hotel_b": 0.6
+    },
+    "provenance": "synthetic_populationbench_lite_smoke_fixture",
+    "record_id": "premium-seed11",
+    "segment": "premium",
+    "true_ate": 0.04
+  }
+]

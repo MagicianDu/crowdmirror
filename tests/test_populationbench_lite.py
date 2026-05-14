@@ -1,8 +1,10 @@
 import json
+from pathlib import Path
 
 from benchmarks.populationbench_lite import (
     build_populationbench_lite_gate,
     build_populationbench_lite_spec,
+    compute_populationbench_lite_metrics,
     write_populationbench_lite_gate,
 )
 
@@ -64,6 +66,46 @@ def test_populationbench_lite_gate_marks_auditability_and_metric_gaps():
     )
 
 
+def test_populationbench_lite_metrics_are_computed_from_records():
+    metrics = compute_populationbench_lite_metrics(_benchmark_records())
+
+    assert 0 < metrics["choice_distribution_jsd"] < 0.02
+    assert metrics["choice_distribution_jsd_record_count"] == 2
+    assert metrics["ate_direction_accuracy"] == 1.0
+    assert metrics["ate_direction_counts"] == {"correct": 2, "total": 2}
+    assert metrics["segment_rank_correlation"] == 1.0
+    assert metrics["worst_segment_rank_correlation"] == 1.0
+    assert metrics["segment_rank_correlation_by_segment"] == {
+        "budget": 1.0,
+        "premium": 1.0,
+    }
+
+
+def test_populationbench_lite_gate_passes_when_metrics_are_computed_from_records():
+    gate = build_populationbench_lite_gate(
+        _acceptance_gated_manifest(),
+        benchmark_records=_benchmark_records(),
+    )
+
+    assert gate["overall_status"] == "passed"
+    task_status = {
+        task["task_id"]: task["status"]
+        for task in gate["tasks"]
+    }
+    assert task_status == {
+        "distributional_choice_fit": "passed",
+        "counterfactual_direction": "passed",
+        "segment_stability": "passed",
+        "auditability": "passed",
+    }
+    assert gate["benchmark_data"] == {
+        "status": "provided",
+        "record_count": 2,
+        "provenance": ["synthetic_populationbench_lite_smoke_fixture"],
+    }
+    assert gate["benchmark_metrics"]["ate_direction_accuracy"] == 1.0
+
+
 def test_write_populationbench_lite_gate_writes_strict_json(tmp_path):
     path = tmp_path / "populationbench-lite-smoke.json"
 
@@ -71,12 +113,14 @@ def test_write_populationbench_lite_gate_writes_strict_json(tmp_path):
         path,
         manifest=_acceptance_gated_manifest(),
         artifact_id="populationbench-lite-test",
+        benchmark_records=_benchmark_records(),
     )
 
     assert written_path == path
     payload = json.loads(path.read_text())
     assert payload["artifact_id"] == "populationbench-lite-test"
     assert payload["tasks"][-1]["task_id"] == "auditability"
+    assert payload["overall_status"] == "passed"
 
 
 def _acceptance_gated_manifest() -> dict:
@@ -99,3 +143,9 @@ def _acceptance_gated_manifest() -> dict:
             "candidate_pending_count": 0,
         },
     }
+
+
+def _benchmark_records() -> list[dict]:
+    return json.loads(
+        Path("benchmarks/fixtures/populationbench_lite_smoke_records.json").read_text()
+    )
