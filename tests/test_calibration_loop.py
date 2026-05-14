@@ -106,6 +106,110 @@ def test_calibration_loop_does_not_generate_unobserved_final_candidate(
     assert mock_textgrad.generate_gradient.call_count == 1
 
 
+def test_rejected_candidate_reverts_to_accepted_prompt(
+    sample_pairs,
+    mock_simulator,
+    mock_textgrad,
+):
+    from circe.calibration.loss import CausalLossResult
+
+    observed_losses = [0.20, 0.35, 0.20]
+
+    def fake_evaluate(_pairs):
+        value = observed_losses.pop(0)
+        return (
+            CausalLossResult(
+                total_loss=value,
+                l_fit=value,
+                l_causal=0.0,
+                ece=value,
+                ate_mae=0.0,
+            ),
+            [],
+        )
+
+    config = CalibrationConfig(
+        max_iterations=2,
+        patience=5,
+        initial_prompt="base prompt",
+    )
+    loop = CalibrationLoop(config=config, dataset=sample_pairs)
+    loop._evaluate = fake_evaluate
+    mock_textgrad.generate_gradient.return_value.edited_prompt = "bad candidate"
+
+    result = loop.run()
+
+    assert result.initial_loss == 0.20
+    assert result.best_loss == 0.20
+    assert result.final_loss == 0.20
+    assert result.best_prompt == "base prompt"
+    assert result.history[0].candidate_status == "rejected"
+    assert result.history[0].candidate_loss == 0.35
+    assert result.candidate_update_count == 1
+    assert result.candidate_evaluated_count == 1
+    assert result.candidate_accepted_count == 0
+    assert result.candidate_rejected_count == 1
+    assert result.candidate_pending_count == 0
+    assert result.candidate_acceptance_rate == 0.0
+
+
+def test_accepted_candidate_does_not_degrade_historical_best(
+    sample_pairs,
+    mock_simulator,
+    mock_textgrad,
+):
+    from circe.calibration.loss import CausalLossResult
+    from circe.calibration.textgrad import GradientStep
+
+    observed_losses = [0.20, 0.18, 0.30, 0.25, 0.25]
+
+    def fake_evaluate(_pairs):
+        value = observed_losses.pop(0)
+        return (
+            CausalLossResult(
+                total_loss=value,
+                l_fit=value,
+                l_causal=0.0,
+                ece=value,
+                ate_mae=0.0,
+            ),
+            [],
+        )
+
+    mock_textgrad.generate_gradient.side_effect = [
+        GradientStep(
+            iteration=0,
+            feedback="first improvement",
+            edited_prompt="best candidate",
+            loss_before=0.20,
+        ),
+        GradientStep(
+            iteration=1,
+            feedback="local improvement only",
+            edited_prompt="less bad candidate",
+            loss_before=0.30,
+        ),
+    ]
+    loop = CalibrationLoop(
+        config=CalibrationConfig(
+            max_iterations=3,
+            patience=5,
+            initial_prompt="base prompt",
+        ),
+        dataset=sample_pairs,
+    )
+    loop._evaluate = fake_evaluate
+
+    result = loop.run()
+
+    assert result.history[0].candidate_status == "accepted"
+    assert result.history[1].candidate_status == "accepted"
+    assert result.best_loss == 0.18
+    assert result.best_prompt == "best candidate"
+    assert result.final_loss == 0.25
+    assert result.candidate_acceptance_rate == 1.0
+
+
 def test_evaluate_uses_soft_factual_probability_targets(mock_textgrad):
     pair = CounterfactualPair(
         scenario_id="soft-target",

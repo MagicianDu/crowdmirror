@@ -1,7 +1,6 @@
 """Calibration loop orchestrator: simulate → evaluate → gradient → edit → repeat."""
 
-from dataclasses import dataclass, field
-import numpy as np
+from dataclasses import dataclass
 from circe.simulator.llm_choice import LLMChoiceSimulator, SimulatorConfig
 from circe.calibration.textgrad import TextGradEngine, TextGradConfig, GradientStep
 from circe.calibration.loss import compute_causal_loss, CausalLossResult
@@ -31,6 +30,9 @@ class IterationRecord:
     loss: CausalLossResult
     prompt: str
     gradient_step: GradientStep | None = None
+    candidate_prompt: str | None = None
+    candidate_loss: float | None = None
+    candidate_status: str = "not_generated"
 
 
 @dataclass
@@ -45,6 +47,14 @@ class CalibrationResult:
     textgrad_call_count: int
     textgrad_input_tokens: int
     textgrad_output_tokens: int
+    candidate_update_count: int
+    candidate_evaluated_count: int
+    candidate_accepted_count: int
+    candidate_rejected_count: int
+    candidate_pending_count: int
+    candidate_acceptance_rate: float | None
+    candidate_update_policy: str
+    textgrad_effect_status: str
     history: list[IterationRecord]
 
 
@@ -114,13 +124,44 @@ class CalibrationLoop:
                 error_examples=error_examples[:5],
             )
             record.gradient_step = step
-            history.append(record)
+            record.candidate_prompt = step.edited_prompt
 
+            accepted_prompt = self.simulator.system_prompt
             self.simulator.system_prompt = step.edited_prompt
+            candidate_loss, _candidate_errors = self._evaluate(eval_pairs)
+            record.candidate_loss = candidate_loss.total_loss
+
+            if candidate_loss.total_loss < loss_result.total_loss:
+                record.candidate_status = "accepted"
+                if candidate_loss.total_loss < best_loss:
+                    best_loss = candidate_loss.total_loss
+                    best_prompt = step.edited_prompt
+                    no_improve_count = 0
+            else:
+                record.candidate_status = "rejected"
+                self.simulator.system_prompt = accepted_prompt
+
+            history.append(record)
 
         simulator_calls = _safe_int(getattr(self.simulator, "_call_count", 0))
         textgrad_calls = sum(1 for record in history if record.gradient_step is not None)
         total_calls = simulator_calls + textgrad_calls
+        candidate_records = [
+            record for record in history if record.gradient_step is not None
+        ]
+        accepted_count = sum(
+            1 for record in candidate_records if record.candidate_status == "accepted"
+        )
+        rejected_count = sum(
+            1 for record in candidate_records if record.candidate_status == "rejected"
+        )
+        pending_count = sum(
+            1 for record in candidate_records if record.candidate_status == "pending"
+        )
+        evaluated_count = accepted_count + rejected_count
+        acceptance_rate = (
+            accepted_count / evaluated_count if evaluated_count else None
+        )
 
         return CalibrationResult(
             best_prompt=best_prompt,
@@ -136,6 +177,17 @@ class CalibrationLoop:
             ),
             textgrad_output_tokens=_safe_int(
                 getattr(self.textgrad, "total_output_tokens", 0)
+            ),
+            candidate_update_count=len(candidate_records),
+            candidate_evaluated_count=evaluated_count,
+            candidate_accepted_count=accepted_count,
+            candidate_rejected_count=rejected_count,
+            candidate_pending_count=pending_count,
+            candidate_acceptance_rate=acceptance_rate,
+            candidate_update_policy="accept_if_loss_improves_else_revert",
+            textgrad_effect_status=_textgrad_effect_status(
+                accepted_count=accepted_count,
+                rejected_count=rejected_count,
             ),
             history=history,
         )
@@ -237,3 +289,13 @@ def _safe_int(value) -> int:
     if isinstance(value, (int, float)):
         return int(value)
     return 0
+
+
+def _textgrad_effect_status(*, accepted_count: int, rejected_count: int) -> str:
+    if accepted_count and rejected_count:
+        return "mixed"
+    if accepted_count:
+        return "accepted_improvement"
+    if rejected_count:
+        return "rejected_no_improvement"
+    return "no_candidate"
