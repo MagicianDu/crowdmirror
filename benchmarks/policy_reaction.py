@@ -86,6 +86,16 @@ def build_policy_reaction_records_from_hps_rows(
     return records
 
 
+def build_observed_policy_reaction_from_hps_row(
+    row: dict[str, Any],
+) -> dict[str, float]:
+    return _observed_policy_reaction_from_hps_row(row)
+
+
+def segment_hps_public_row(row: dict[str, Any]) -> str:
+    return _segment_from_hps_row(row)
+
+
 def compute_policy_reaction_metrics(records: list[dict[str, Any]]) -> dict[str, Any]:
     if not records:
         raise ValueError("policy reaction metrics require at least one record")

@@ -83,6 +83,21 @@ contracts, but they do not establish live LLM model-quality improvement.
    - The artifact status is `public_data_smoke`; it is not field validation, not
      paper-grade real-data coverage, and not a calibrated China policy forecast.
 
+8. Official HPS/HTOPS public-use ingestion evidence
+   - The HTOPS/HPS 2506 CSV zip was downloaded from the Census public-use
+     dataset endpoint and hashed as
+     `8d14cf52f5c3bc4fab5e74e3136cb753ab1195a06314725f00761035158172d4`.
+   - The ingestion artifact reads `HTOPS_HPS_2506_PUF.csv` from the official
+     zip, validates required source columns, and reports `puf_row_count=7485`,
+     `usable_row_count=7317`, and `skipped_row_count=168`.
+   - The resulting segment coverage is `general_population_cost_pressure=4658`,
+     `fixed_income_inflation_stressed=1431`,
+     `working_family_price_stressed=1105`, and
+     `low_income_food_insecure=123`.
+   - This is official public-use survey ingestion evidence only. It is not an
+     LLM prediction-quality result, not field validation, and not a calibrated
+     China policy forecast.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -101,6 +116,8 @@ contracts, but they do not establish live LLM model-quality improvement.
   benchmark with distributional fit, direction, and segment-stability metrics.
 - CIRCE can convert HPS/HTOPS-shaped public rows with cataloged policy and
   segment fields into strict-JSON policy-reaction benchmark records.
+- CIRCE can ingest the official HTOPS/HPS 2506 public-use CSV zip and produce
+  strict-JSON aggregate evidence for policy-reaction segment coverage.
 
 ## Not Yet Claimed
 
@@ -122,6 +139,9 @@ contracts, but they do not establish live LLM model-quality improvement.
 - No claim is made that the public-row converter smoke fixture is a downloaded
   official HPS/HTOPS public-use file; it is a converter contract for the next
   real-data ingestion step.
+- No LLM model-quality, causal policy effect, or field-validation claim is made
+  from the official public-use ingestion artifact; it is a data-readiness and
+  evidence-chain audit artifact.
 
 ## Evidence Review Checklist
 

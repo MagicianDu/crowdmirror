@@ -12,6 +12,18 @@
   "claim_boundary": "Public-data intake readiness only: this catalog records an auditable U.S. public-use survey source for food-cost and living-cost policy-reaction benchmark construction; it is not a model-quality result, not field validation, and not a China policy prediction.",
   "dataset_access_mode": "public_use_file_required",
   "license_or_access": "Public-use Census microdata and public tables with accompanying user notes/data dictionaries; access requires using the released public-use files rather than network calls at runtime.",
+  "official_htops_2506_puf_field_aliases": {
+    "EMP1_household_loss_employment_income_last_4_weeks": "WRKLOSSRV",
+    "FD1_food_sufficiency_last_7_days": "CURFOODSUF",
+    "FD2_child_recent_food_insufficiency_unaffordable_last_7_days": "CHILDFOOD",
+    "INFLATE2_stress_from_price_increases_last_2_months": "PRICESTRESS",
+    "SPN4_difficulty_paying_usual_household_expenses_last_2_months": "EXPNS_DIF",
+    "analysis_weight": "PWEIGHT",
+    "employment_status": "ANYWORK",
+    "household_has_children": "THHLD_NUMKID_TOPICAL",
+    "household_income_bracket": "RFAM_INCOME",
+    "respondent_age_group": "TAGE1"
+  },
   "schema_version": "circe-policy-data-intake-v1",
   "segment_fields": [
     "collection_period",
