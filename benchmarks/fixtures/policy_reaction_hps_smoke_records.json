@@ -1,0 +1,74 @@
+[
+  {
+    "record_id": "hps-smoke-001",
+    "source_id": "hps_htops_food_cost_core",
+    "segment": "low_income_food_insecure",
+    "observed_policy_reaction": {
+      "baseline_no_new_support": 0.1,
+      "food_subsidy_expansion": 0.7,
+      "cash_cost_of_living_rebate": 0.2
+    },
+    "predicted_policy_reaction": {
+      "baseline_no_new_support": 0.15,
+      "food_subsidy_expansion": 0.65,
+      "cash_cost_of_living_rebate": 0.2
+    },
+    "true_ate": 0.2,
+    "predicted_ate": 0.15,
+    "provenance": "hps_htops_public_data_shaped_smoke_fixture"
+  },
+  {
+    "record_id": "hps-smoke-002",
+    "source_id": "hps_htops_food_cost_core",
+    "segment": "working_family_price_stressed",
+    "observed_policy_reaction": {
+      "baseline_no_new_support": 0.18,
+      "food_subsidy_expansion": 0.45,
+      "cash_cost_of_living_rebate": 0.37
+    },
+    "predicted_policy_reaction": {
+      "baseline_no_new_support": 0.2,
+      "food_subsidy_expansion": 0.43,
+      "cash_cost_of_living_rebate": 0.37
+    },
+    "true_ate": 0.08,
+    "predicted_ate": 0.04,
+    "provenance": "hps_htops_public_data_shaped_smoke_fixture"
+  },
+  {
+    "record_id": "hps-smoke-003",
+    "source_id": "hps_htops_food_cost_core",
+    "segment": "fixed_income_inflation_stressed",
+    "observed_policy_reaction": {
+      "baseline_no_new_support": 0.24,
+      "food_subsidy_expansion": 0.34,
+      "cash_cost_of_living_rebate": 0.42
+    },
+    "predicted_policy_reaction": {
+      "baseline_no_new_support": 0.22,
+      "food_subsidy_expansion": 0.35,
+      "cash_cost_of_living_rebate": 0.43
+    },
+    "true_ate": -0.05,
+    "predicted_ate": -0.02,
+    "provenance": "hps_htops_public_data_shaped_smoke_fixture"
+  },
+  {
+    "record_id": "hps-smoke-004",
+    "source_id": "hps_htops_food_cost_core",
+    "segment": "low_income_food_insecure",
+    "observed_policy_reaction": {
+      "baseline_no_new_support": 0.12,
+      "food_subsidy_expansion": 0.68,
+      "cash_cost_of_living_rebate": 0.2
+    },
+    "predicted_policy_reaction": {
+      "baseline_no_new_support": 0.14,
+      "food_subsidy_expansion": 0.66,
+      "cash_cost_of_living_rebate": 0.2
+    },
+    "true_ate": 0.18,
+    "predicted_ate": 0.12,
+    "provenance": "hps_htops_public_data_shaped_smoke_fixture"
+  }
+]
