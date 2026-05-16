@@ -56,3 +56,61 @@ def test_load_policy_reaction_records_rejects_empty_payload(tmp_path):
 
     with pytest.raises(ValueError, match="non-empty JSON list"):
         load_policy_reaction_records(path)
+
+
+def test_build_policy_reaction_benchmark_artifact_is_strict_json():
+    from experiments.policy_reaction_benchmark import (
+        build_policy_reaction_benchmark_artifact,
+    )
+
+    records = load_policy_reaction_records(
+        Path("benchmarks/fixtures/policy_reaction_hps_smoke_records.json")
+    )
+    artifact = build_policy_reaction_benchmark_artifact(
+        records,
+        artifact_id="policy-reaction-hps-smoke-001",
+        source_manifest_path=(
+            "experiments/results/policy_data_intake/hps-htops-food-cost-intake.json"
+        ),
+    )
+
+    assert artifact["schema_version"] == "policy-reaction-benchmark-v0"
+    assert artifact["artifact_id"] == "policy-reaction-hps-smoke-001"
+    assert artifact["overall_status"] == "passed"
+    assert artifact["calibration_status"] == "public_data_smoke"
+    assert artifact["source_manifest_path"] == (
+        "experiments/results/policy_data_intake/hps-htops-food-cost-intake.json"
+    )
+    assert artifact["benchmark_data"] == {
+        "record_count": 4,
+        "source_ids": ["hps_htops_food_cost_core"],
+        "provenance": ["hps_htops_public_data_shaped_smoke_fixture"],
+    }
+    assert artifact["benchmark_metrics"]["choice_distribution_jsd"] < 0.01
+    assert artifact["benchmark_metrics"]["ate_direction_accuracy"] == 1.0
+    assert artifact["benchmark_metrics"]["segment_rank_correlation"] == 1.0
+    assert artifact["claim_boundary"].endswith("not field validation.")
+    json.dumps(artifact, allow_nan=False)
+
+
+def test_write_policy_reaction_benchmark_artifact(tmp_path):
+    from experiments.policy_reaction_benchmark import (
+        write_policy_reaction_benchmark_artifact,
+    )
+
+    records = load_policy_reaction_records(
+        Path("benchmarks/fixtures/policy_reaction_hps_smoke_records.json")
+    )
+    output_path = tmp_path / "policy-reaction-benchmark.json"
+
+    written = write_policy_reaction_benchmark_artifact(
+        output_path,
+        records=records,
+        artifact_id="policy-reaction-hps-smoke-test",
+        source_manifest_path="experiments/results/policy_data_intake/hps-htops-food-cost-intake.json",
+    )
+
+    assert written == output_path
+    persisted = json.loads(output_path.read_text())
+    assert persisted["artifact_id"] == "policy-reaction-hps-smoke-test"
+    assert persisted["overall_status"] == "passed"

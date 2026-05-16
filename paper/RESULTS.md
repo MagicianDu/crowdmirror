@@ -68,6 +68,16 @@ contracts, but they do not establish live LLM model-quality improvement.
      result, not validation of a policy-reaction predictor, and not a China
      policy prediction.
 
+7. Policy-reaction benchmark smoke gate
+   - The HPS/HTOPS-shaped smoke artifact computes distributional policy-reaction
+     fit, counterfactual direction, segment rank stability, and strict JSON
+     auditability from `benchmarks/fixtures/policy_reaction_hps_smoke_records.json`.
+   - The current smoke metrics are `choice_distribution_jsd=0.001478641375608338`,
+     `ate_direction_accuracy=1.0`, and `segment_rank_correlation=1.0` across
+     three policy-reaction segments.
+   - The artifact status is `public_data_smoke`; it is not field validation, not
+     paper-grade real-data coverage, and not a calibrated China policy forecast.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -82,6 +92,8 @@ contracts, but they do not establish live LLM model-quality improvement.
   artifact with `mode` equal to `local` or `live`.
 - CIRCE can record an offline, strict-JSON public-data intake manifest for the
   HPS/HTOPS food-cost policy-reaction benchmark source.
+- CIRCE can compute a strict-JSON HPS/HTOPS-shaped policy-reaction smoke
+  benchmark with distributional fit, direction, and segment-stability metrics.
 
 ## Not Yet Claimed
 
@@ -98,6 +110,8 @@ contracts, but they do not establish live LLM model-quality improvement.
   acceptance-gated candidate accounting with zero pending candidates.
 - No policy-reaction model-quality result, China policy prediction, or field
   validation claim is made from the public-data intake catalog or manifest.
+- No policy-reaction field validation or paper-grade benchmark coverage is made
+  from the current `public_data_smoke` fixture artifact.
 
 ## Evidence Review Checklist
 
