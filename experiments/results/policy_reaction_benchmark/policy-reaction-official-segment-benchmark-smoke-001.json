@@ -1,0 +1,98 @@
+{
+  "artifact_id": "policy-reaction-official-segment-benchmark-smoke-001",
+  "benchmark_metrics": {
+    "matched_segment_count": 4,
+    "mean_choice_distribution_jsd": 0.0005714499184702117,
+    "segment_rank_correlation": 1.0,
+    "weighted_choice_distribution_jsd": 0.0012863075023781803,
+    "worst_segment_choice_distribution_jsd": 0.0019366687119405392,
+    "worst_segment_rank_correlation": 1.0
+  },
+  "calibration_status": "official_public_data_alignment_smoke",
+  "claim_boundaries": [
+    "Official public-use segment alignment smoke benchmark only; not field validation.",
+    "The official side is an observed distribution proxy derived from public-use HTOPS/HPS survey fields.",
+    "The prediction side must come from a separately auditable LLM cohort or product segment report.",
+    "This artifact does not establish causal policy effects or China policy forecast validity."
+  ],
+  "claim_boundary": "Official public-use segment alignment smoke benchmark only; not field validation.",
+  "overall_status": "passed",
+  "prediction_artifact_id": "policy-reaction-segment-predictions-smoke-001",
+  "prediction_model": "fixture/official-segment-alignment-smoke",
+  "schema_version": "policy-reaction-official-segment-benchmark-v1",
+  "segment_coverage": {
+    "coverage_rate": 1.0,
+    "extra_predicted_segments": [],
+    "matched_segment_count": 4,
+    "missing_predicted_segments": [],
+    "observed_segment_count": 4,
+    "predicted_segment_count": 4
+  },
+  "segment_metrics": {
+    "fixed_income_inflation_stressed": {
+      "choice_distribution_jsd": 0.00022748899408745697,
+      "official_distribution": {
+        "baseline_no_new_support": 0.3770806189894462,
+        "cash_cost_of_living_rebate": 0.446742412641228,
+        "food_subsidy_expansion": 0.17617696836932573
+      },
+      "official_row_count": 1431,
+      "official_weighted_row_mass": 42698653.840810634,
+      "predicted_distribution": {
+        "baseline_no_new_support": 0.36,
+        "cash_cost_of_living_rebate": 0.46,
+        "food_subsidy_expansion": 0.18
+      },
+      "rank_correlation": 1.0
+    },
+    "general_population_cost_pressure": {
+      "choice_distribution_jsd": 0.0019366687119405392,
+      "official_distribution": {
+        "baseline_no_new_support": 0.5457439071084339,
+        "cash_cost_of_living_rebate": 0.26602977815176876,
+        "food_subsidy_expansion": 0.18822631473979745
+      },
+      "official_row_count": 4658,
+      "official_weighted_row_mass": 160036222.564329,
+      "predicted_distribution": {
+        "baseline_no_new_support": 0.5,
+        "cash_cost_of_living_rebate": 0.31,
+        "food_subsidy_expansion": 0.19
+      },
+      "rank_correlation": 1.0
+    },
+    "low_income_food_insecure": {
+      "choice_distribution_jsd": 7.030752579881695e-05,
+      "official_distribution": {
+        "baseline_no_new_support": 0.17573130207551607,
+        "cash_cost_of_living_rebate": 0.2884992723068895,
+        "food_subsidy_expansion": 0.5357694256175946
+      },
+      "official_row_count": 123,
+      "official_weighted_row_mass": 8262982.894993074,
+      "predicted_distribution": {
+        "baseline_no_new_support": 0.18,
+        "cash_cost_of_living_rebate": 0.28,
+        "food_subsidy_expansion": 0.54
+      },
+      "rank_correlation": 1.0
+    },
+    "working_family_price_stressed": {
+      "choice_distribution_jsd": 5.133444205403367e-05,
+      "official_distribution": {
+        "baseline_no_new_support": 0.3474257849859868,
+        "cash_cost_of_living_rebate": 0.42556675387737825,
+        "food_subsidy_expansion": 0.22700746113663497
+      },
+      "official_row_count": 1105,
+      "official_weighted_row_mass": 41708041.095031805,
+      "predicted_distribution": {
+        "baseline_no_new_support": 0.35,
+        "cash_cost_of_living_rebate": 0.43,
+        "food_subsidy_expansion": 0.22
+      },
+      "rank_correlation": 1.0
+    }
+  },
+  "source_ingestion_artifact_id": "policy-reaction-htops-2506-public-ingestion-001"
+}

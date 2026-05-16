@@ -98,6 +98,18 @@ contracts, but they do not establish live LLM model-quality improvement.
      LLM prediction-quality result, not field validation, and not a calibrated
      China policy forecast.
 
+9. Official segment-alignment benchmark contract
+   - The official segment benchmark compares the HTOPS/HPS ingestion artifact's
+     observed policy-reaction proxy distributions with a separate segment
+     prediction artifact.
+   - The current smoke artifact uses a fixture prediction artifact to validate
+     the benchmark contract and computes weighted JSD
+     `0.0012863075023781803`, worst-segment JSD `0.0019366687119405392`,
+     and segment rank correlation `1.0` across four matched official segments.
+   - This closes the computability gap for official-data alignment metrics. It
+     is not yet a Product LLM quality result because the prediction side is a
+     fixture, not a committed Product cohort run.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -118,6 +130,8 @@ contracts, but they do not establish live LLM model-quality improvement.
   segment fields into strict-JSON policy-reaction benchmark records.
 - CIRCE can ingest the official HTOPS/HPS 2506 public-use CSV zip and produce
   strict-JSON aggregate evidence for policy-reaction segment coverage.
+- CIRCE can compute strict-JSON official-data segment-alignment metrics when
+  given a compatible segment prediction artifact.
 
 ## Not Yet Claimed
 
@@ -142,6 +156,9 @@ contracts, but they do not establish live LLM model-quality improvement.
 - No LLM model-quality, causal policy effect, or field-validation claim is made
   from the official public-use ingestion artifact; it is a data-readiness and
   evidence-chain audit artifact.
+- No Product LLM quality claim is made from the current official segment
+  benchmark smoke artifact because its prediction side is a fixture contract,
+  not an actual Product cohort output.
 
 ## Evidence Review Checklist
 
