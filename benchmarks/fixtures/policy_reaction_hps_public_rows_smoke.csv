@@ -1,0 +1,5 @@
+record_id,collection_period,state_or_division,household_has_children,household_income_bracket,employment_status,FD1_food_sufficiency_last_7_days,FD2_child_recent_food_insufficiency_unaffordable_last_7_days,SPN4_difficulty_paying_usual_household_expenses_last_2_months,INFLATE2_stress_from_price_increases_last_2_months,EMP1_household_loss_employment_income_last_4_weeks,predicted_baseline_no_new_support,predicted_food_subsidy_expansion,predicted_cash_cost_of_living_rebate
+hps-public-row-001,2025-06,division_2,yes,less_than_25000,employed,sometimes_not_enough,sometimes_not_enough,very_difficult,moderately_stressed,yes,0.14,0.66,0.20
+hps-public-row-002,2025-06,division_4,yes,25000_34999,employed,sometimes_not_enough,no,somewhat_difficult,very_stressed,no,0.19,0.42,0.39
+hps-public-row-003,2025-06,division_7,no,35000_49999,retired,enough_but_not_always_kinds_wanted,no,a_little_difficult,very_stressed,no,0.22,0.35,0.43
+hps-public-row-004,2025-06,division_2,yes,less_than_25000,employed,sometimes_not_enough,sometimes_not_enough,very_difficult,moderately_stressed,yes,0.14,0.64,0.22

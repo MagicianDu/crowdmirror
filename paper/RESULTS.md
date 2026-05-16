@@ -75,6 +75,11 @@ contracts, but they do not establish live LLM model-quality improvement.
    - The current smoke metrics are `choice_distribution_jsd=0.001478641375608338`,
      `ate_direction_accuracy=1.0`, and `segment_rank_correlation=1.0` across
      three policy-reaction segments.
+   - The public-row converter smoke artifact reads HPS/HTOPS-shaped rows from
+     `benchmarks/fixtures/policy_reaction_hps_public_rows_smoke.csv`, converts
+     cataloged survey fields into benchmark records, and computes
+     `choice_distribution_jsd=0.011460912342538824`,
+     `ate_direction_accuracy=1.0`, and `segment_rank_correlation=1.0`.
    - The artifact status is `public_data_smoke`; it is not field validation, not
      paper-grade real-data coverage, and not a calibrated China policy forecast.
 
@@ -94,6 +99,8 @@ contracts, but they do not establish live LLM model-quality improvement.
   HPS/HTOPS food-cost policy-reaction benchmark source.
 - CIRCE can compute a strict-JSON HPS/HTOPS-shaped policy-reaction smoke
   benchmark with distributional fit, direction, and segment-stability metrics.
+- CIRCE can convert HPS/HTOPS-shaped public rows with cataloged policy and
+  segment fields into strict-JSON policy-reaction benchmark records.
 
 ## Not Yet Claimed
 
@@ -112,6 +119,9 @@ contracts, but they do not establish live LLM model-quality improvement.
   validation claim is made from the public-data intake catalog or manifest.
 - No policy-reaction field validation or paper-grade benchmark coverage is made
   from the current `public_data_smoke` fixture artifact.
+- No claim is made that the public-row converter smoke fixture is a downloaded
+  official HPS/HTOPS public-use file; it is a converter contract for the next
+  real-data ingestion step.
 
 ## Evidence Review Checklist
 

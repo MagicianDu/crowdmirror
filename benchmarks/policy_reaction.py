@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import json
 import math
 from pathlib import Path
@@ -8,6 +9,25 @@ from typing import Any
 
 OBSERVED_FIELD = "observed_policy_reaction"
 PREDICTED_FIELD = "predicted_policy_reaction"
+POLICY_IDS = (
+    "baseline_no_new_support",
+    "food_subsidy_expansion",
+    "cash_cost_of_living_rebate",
+)
+HPS_PUBLIC_ROW_REQUIRED_FIELDS = (
+    "record_id",
+    "household_has_children",
+    "household_income_bracket",
+    "employment_status",
+    "FD1_food_sufficiency_last_7_days",
+    "FD2_child_recent_food_insufficiency_unaffordable_last_7_days",
+    "SPN4_difficulty_paying_usual_household_expenses_last_2_months",
+    "INFLATE2_stress_from_price_increases_last_2_months",
+    "EMP1_household_loss_employment_income_last_4_weeks",
+    "predicted_baseline_no_new_support",
+    "predicted_food_subsidy_expansion",
+    "predicted_cash_cost_of_living_rebate",
+)
 
 
 def load_policy_reaction_records(path: str | Path) -> list[dict[str, Any]]:
@@ -18,6 +38,52 @@ def load_policy_reaction_records(path: str | Path) -> list[dict[str, Any]]:
         if not isinstance(record, dict):
             raise ValueError(f"policy reaction record {index} must be a JSON object")
     return payload
+
+
+def load_hps_public_rows(path: str | Path) -> list[dict[str, Any]]:
+    input_path = Path(path)
+    if input_path.suffix.lower() == ".csv":
+        with input_path.open(newline="") as handle:
+            rows = list(csv.DictReader(handle))
+    else:
+        rows = json.loads(input_path.read_text())
+    if not isinstance(rows, list) or not rows:
+        raise ValueError("HPS public rows must be a non-empty list")
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            raise ValueError(f"HPS public row {index} must be an object")
+        _validate_hps_public_row(row, index)
+    return rows
+
+
+def build_policy_reaction_records_from_hps_rows(
+    rows: list[dict[str, Any]],
+    *,
+    source_id: str = "hps_htops_food_cost_core",
+    provenance: str = "hps_htops_public_row_converter_smoke_fixture",
+) -> list[dict[str, Any]]:
+    if not rows:
+        raise ValueError("HPS public rows must be non-empty")
+
+    records = []
+    for index, row in enumerate(rows):
+        _validate_hps_public_row(row, index)
+        record_id = _row_string(row, "record_id", index)
+        observed = _observed_policy_reaction_from_hps_row(row)
+        predicted = _predicted_policy_reaction_from_hps_row(row, record_id)
+        records.append(
+            {
+                "record_id": record_id,
+                "source_id": source_id,
+                "segment": _segment_from_hps_row(row),
+                OBSERVED_FIELD: observed,
+                PREDICTED_FIELD: predicted,
+                "true_ate": _support_lift(observed),
+                "predicted_ate": _support_lift(predicted),
+                "provenance": provenance,
+            }
+        )
+    return records
 
 
 def compute_policy_reaction_metrics(records: list[dict[str, Any]]) -> dict[str, Any]:
@@ -75,6 +141,230 @@ def compute_policy_reaction_metrics(records: list[dict[str, Any]]) -> dict[str, 
     }
     _assert_strict_json(metrics)
     return metrics
+
+
+def _validate_hps_public_row(row: dict[str, Any], index: int) -> None:
+    missing = [
+        field
+        for field in HPS_PUBLIC_ROW_REQUIRED_FIELDS
+        if field not in row or row[field] in (None, "")
+    ]
+    if missing:
+        raise ValueError(f"HPS public row {index} missing fields: {', '.join(missing)}")
+
+
+def _observed_policy_reaction_from_hps_row(
+    row: dict[str, Any],
+) -> dict[str, float]:
+    food_stress = _max_score(
+        _food_sufficiency_score(row["FD1_food_sufficiency_last_7_days"]),
+        _child_food_score(
+            row["FD2_child_recent_food_insufficiency_unaffordable_last_7_days"]
+        ),
+    )
+    child_food_stress = _child_food_score(
+        row["FD2_child_recent_food_insufficiency_unaffordable_last_7_days"]
+    )
+    expense_stress = _expense_difficulty_score(
+        row["SPN4_difficulty_paying_usual_household_expenses_last_2_months"]
+    )
+    inflation_stress = _inflation_stress_score(
+        row["INFLATE2_stress_from_price_increases_last_2_months"]
+    )
+    price_stress = _max_score(expense_stress, inflation_stress)
+    income_loss = _yes_no_score(
+        row["EMP1_household_loss_employment_income_last_4_weeks"]
+    )
+
+    baseline_score = max(0.25, 2.5 - 1.25 * _max_score(food_stress, price_stress))
+    baseline_score -= 0.35 * income_loss
+    baseline_score = max(0.25, baseline_score)
+    scores = {
+        "baseline_no_new_support": baseline_score,
+        "food_subsidy_expansion": 0.5 + 4.0 * food_stress + 1.5 * child_food_stress,
+        "cash_cost_of_living_rebate": (
+            0.5 + 1.8 * price_stress + 0.5 * expense_stress + 0.3 * income_loss
+        ),
+    }
+    return _normalize_scores(scores)
+
+
+def _predicted_policy_reaction_from_hps_row(
+    row: dict[str, Any],
+    record_id: str,
+) -> dict[str, float]:
+    distribution = {
+        "baseline_no_new_support": _finite_probability(
+            _parse_float(row["predicted_baseline_no_new_support"]),
+            PREDICTED_FIELD,
+            record_id,
+        ),
+        "food_subsidy_expansion": _finite_probability(
+            _parse_float(row["predicted_food_subsidy_expansion"]),
+            PREDICTED_FIELD,
+            record_id,
+        ),
+        "cash_cost_of_living_rebate": _finite_probability(
+            _parse_float(row["predicted_cash_cost_of_living_rebate"]),
+            PREDICTED_FIELD,
+            record_id,
+        ),
+    }
+    return _normalize_scores(distribution)
+
+
+def _segment_from_hps_row(row: dict[str, Any]) -> str:
+    income = str(row["household_income_bracket"]).lower()
+    food_stress = _food_sufficiency_score(row["FD1_food_sufficiency_last_7_days"])
+    price_stress = _max_score(
+        _expense_difficulty_score(
+            row["SPN4_difficulty_paying_usual_household_expenses_last_2_months"]
+        ),
+        _inflation_stress_score(
+            row["INFLATE2_stress_from_price_increases_last_2_months"]
+        ),
+    )
+    employment_status = str(row["employment_status"]).lower()
+    has_children = _yes_no_score(row["household_has_children"]) > 0
+
+    if "less_than_25000" in income and food_stress >= 0.5:
+        return "low_income_food_insecure"
+    if has_children and price_stress >= 0.6:
+        return "working_family_price_stressed"
+    if employment_status in {"retired", "not_in_labor_force"} and price_stress >= 0.6:
+        return "fixed_income_inflation_stressed"
+    return "general_population_cost_pressure"
+
+
+def _support_lift(distribution: dict[str, float]) -> float:
+    return (
+        distribution["food_subsidy_expansion"]
+        + distribution["cash_cost_of_living_rebate"]
+        - distribution["baseline_no_new_support"]
+    )
+
+
+def _row_string(row: dict[str, Any], field_name: str, index: int) -> str:
+    value = row.get(field_name)
+    if not isinstance(value, str) or not value:
+        raise ValueError(f"HPS public row {index} missing {field_name}")
+    return value
+
+
+def _food_sufficiency_score(value: Any) -> float:
+    return _categorical_score(
+        value,
+        {
+            "1": 0.0,
+            "enough_of_kinds_wanted": 0.0,
+            "food_sufficient": 0.0,
+            "2": 0.25,
+            "enough_but_not_always_kinds_wanted": 0.25,
+            "3": 0.75,
+            "sometimes_not_enough": 0.75,
+            "4": 1.0,
+            "often_not_enough": 1.0,
+        },
+        field_name="FD1_food_sufficiency_last_7_days",
+    )
+
+
+def _child_food_score(value: Any) -> float:
+    return _categorical_score(
+        value,
+        {
+            "0": 0.0,
+            "no": 0.0,
+            "none": 0.0,
+            "1": 0.5,
+            "yes": 0.75,
+            "sometimes_not_enough": 0.75,
+            "often_not_enough": 1.0,
+        },
+        field_name="FD2_child_recent_food_insufficiency_unaffordable_last_7_days",
+    )
+
+
+def _expense_difficulty_score(value: Any) -> float:
+    return _categorical_score(
+        value,
+        {
+            "1": 0.0,
+            "not_at_all_difficult": 0.0,
+            "2": 0.25,
+            "a_little_difficult": 0.25,
+            "3": 0.6,
+            "somewhat_difficult": 0.6,
+            "4": 1.0,
+            "very_difficult": 1.0,
+        },
+        field_name="SPN4_difficulty_paying_usual_household_expenses_last_2_months",
+    )
+
+
+def _inflation_stress_score(value: Any) -> float:
+    return _categorical_score(
+        value,
+        {
+            "1": 0.0,
+            "not_at_all_stressed": 0.0,
+            "2": 0.25,
+            "a_little_stressed": 0.25,
+            "3": 0.6,
+            "moderately_stressed": 0.6,
+            "4": 1.0,
+            "very_stressed": 1.0,
+        },
+        field_name="INFLATE2_stress_from_price_increases_last_2_months",
+    )
+
+
+def _yes_no_score(value: Any) -> float:
+    return _categorical_score(
+        value,
+        {
+            "0": 0.0,
+            "no": 0.0,
+            "false": 0.0,
+            "2": 0.0,
+            "1": 1.0,
+            "yes": 1.0,
+            "true": 1.0,
+        },
+        field_name="yes_no_field",
+    )
+
+
+def _categorical_score(
+    value: Any,
+    scores: dict[str, float],
+    *,
+    field_name: str,
+) -> float:
+    key = str(value).strip().lower()
+    if key not in scores:
+        raise ValueError(f"unsupported HPS value for {field_name}: {value}")
+    return scores[key]
+
+
+def _max_score(*values: float) -> float:
+    return max(values)
+
+
+def _normalize_scores(scores: dict[str, float]) -> dict[str, float]:
+    total = sum(scores.values())
+    if total <= 0:
+        raise ValueError("policy reaction scores must have positive mass")
+    return {policy_id: scores[policy_id] / total for policy_id in POLICY_IDS}
+
+
+def _parse_float(value: Any) -> float:
+    if isinstance(value, bool):
+        raise ValueError("boolean value cannot be parsed as probability")
+    try:
+        return float(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"cannot parse probability value: {value}") from exc
 
 
 def _non_empty_string(record: dict[str, Any], field_name: str, record_id: str) -> str:

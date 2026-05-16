@@ -11,7 +11,9 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from benchmarks.policy_reaction import (
+    build_policy_reaction_records_from_hps_rows,
     compute_policy_reaction_metrics,
+    load_hps_public_rows,
     load_policy_reaction_records,
 )
 
@@ -29,6 +31,7 @@ def build_policy_reaction_benchmark_artifact(
     source_manifest_path: str,
 ) -> dict[str, Any]:
     metrics = compute_policy_reaction_metrics(records)
+    row_boundary = _benchmark_row_boundary(metrics["provenance"])
     artifact = {
         "schema_version": POLICY_REACTION_BENCHMARK_SCHEMA_VERSION,
         "artifact_id": artifact_id,
@@ -59,7 +62,7 @@ def build_policy_reaction_benchmark_artifact(
         "claim_boundary": POLICY_REACTION_BENCHMARK_CLAIM_BOUNDARY,
         "claim_boundaries": [
             POLICY_REACTION_BENCHMARK_CLAIM_BOUNDARY,
-            "HPS/HTOPS-shaped smoke records are not paper-grade field validation.",
+            row_boundary,
             "This artifact is not a calibrated China policy forecast.",
         ],
     }
@@ -87,11 +90,33 @@ def write_policy_reaction_benchmark_artifact(
     return output_path
 
 
+def write_policy_reaction_benchmark_artifact_from_hps_rows(
+    path: str | Path,
+    *,
+    rows_path: str | Path,
+    artifact_id: str,
+    source_manifest_path: str,
+) -> Path:
+    rows = load_hps_public_rows(rows_path)
+    records = build_policy_reaction_records_from_hps_rows(rows)
+    return write_policy_reaction_benchmark_artifact(
+        path,
+        records=records,
+        artifact_id=artifact_id,
+        source_manifest_path=source_manifest_path,
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--records",
         default="benchmarks/fixtures/policy_reaction_hps_smoke_records.json",
+    )
+    parser.add_argument(
+        "--hps-public-rows",
+        default=None,
+        help="Optional HPS/HTOPS-shaped public row CSV or JSON to convert before scoring.",
     )
     parser.add_argument(
         "--source-manifest",
@@ -107,7 +132,11 @@ def main() -> int:
     parser.add_argument("--artifact-id", default="policy-reaction-hps-smoke-001")
     args = parser.parse_args()
 
-    records = load_policy_reaction_records(args.records)
+    if args.hps_public_rows:
+        rows = load_hps_public_rows(args.hps_public_rows)
+        records = build_policy_reaction_records_from_hps_rows(rows)
+    else:
+        records = load_policy_reaction_records(args.records)
     output_path = write_policy_reaction_benchmark_artifact(
         args.output,
         records=records,
@@ -131,6 +160,15 @@ def main() -> int:
 
 def _assert_strict_json(payload: dict[str, Any]) -> None:
     json.dumps(payload, allow_nan=False)
+
+
+def _benchmark_row_boundary(provenance: list[str]) -> str:
+    if "hps_htops_public_row_converter_smoke_fixture" in provenance:
+        return (
+            "HPS/HTOPS public-row converter smoke records are not paper-grade "
+            "field validation."
+        )
+    return "HPS/HTOPS-shaped smoke records are not paper-grade field validation."
 
 
 if __name__ == "__main__":
