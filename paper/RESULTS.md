@@ -110,6 +110,21 @@ contracts, but they do not establish live LLM model-quality improvement.
      is not yet a Product LLM quality result because the prediction side is a
      fixture, not a committed Product cohort run.
 
+10. Product LLM official segment-alignment smoke result
+   - The Product worktree produced a local `openai/gpt-oss-20b` 12-persona,
+     3-strategy policy cohort with 36 successful local LLM calls and exported
+     `policy-reaction-segment-predictions-v1`.
+   - The Research official segment benchmark consumed that Product artifact and
+     passed segment coverage across all four HTOPS/HPS-derived official
+     segments.
+   - The observed alignment metrics are weak: weighted JSD
+     `0.18508191023524456`, worst-segment JSD `0.20176098754129515`,
+     mean JSD `0.14176641355525532`, segment rank correlation `-0.25`, and
+     worst-segment rank correlation `-1.0`.
+   - This is a useful negative/diagnostic Product-to-Research evidence chain:
+     the workflow is auditable, but the current local LLM cohort is not
+     calibrated to the official public-use observed distribution.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -132,6 +147,8 @@ contracts, but they do not establish live LLM model-quality improvement.
   strict-JSON aggregate evidence for policy-reaction segment coverage.
 - CIRCE can compute strict-JSON official-data segment-alignment metrics when
   given a compatible segment prediction artifact.
+- CIRCE can evaluate a real Product LLM cohort prediction artifact against the
+  official HTOPS/HPS segment benchmark and preserve negative alignment results.
 
 ## Not Yet Claimed
 
@@ -159,6 +176,9 @@ contracts, but they do not establish live LLM model-quality improvement.
 - No Product LLM quality claim is made from the current official segment
   benchmark smoke artifact because its prediction side is a fixture contract,
   not an actual Product cohort output.
+- No positive Product LLM calibration claim is made from the current
+  `openai/gpt-oss-20b` 12x3 official segment benchmark result; the metrics are
+  diagnostic evidence of a calibration gap.
 
 ## Evidence Review Checklist
 
