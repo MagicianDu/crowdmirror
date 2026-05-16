@@ -1,0 +1,46 @@
+{
+  "artifact_id": "policy-reaction-calibration-gate-gpt-oss-20b-12x3-001",
+  "best_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibrated-001",
+  "best_loss": 1.4452916659122088e-06,
+  "candidate_accepted_count": 1,
+  "candidate_evaluated_count": 1,
+  "candidate_pending_count": 0,
+  "candidate_rejected_count": 0,
+  "candidate_update_policy": "accept_if_weighted_jsd_decreases_and_segment_coverage_is_complete",
+  "candidate_updates": [
+    {
+      "benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibrated-001",
+      "benchmark_metrics": {
+        "matched_segment_count": 4,
+        "mean_choice_distribution_jsd": 5.675826770678496e-07,
+        "segment_rank_correlation": 1.0,
+        "weighted_choice_distribution_jsd": 1.4452916659122088e-06,
+        "worst_segment_choice_distribution_jsd": 2.2703303298088253e-06,
+        "worst_segment_rank_correlation": 1.0
+      },
+      "best_loss_after": 1.4452916659122088e-06,
+      "best_loss_before": 0.18508191023524456,
+      "candidate_index": 0,
+      "coverage_rate": 1.0,
+      "loss": 1.4452916659122088e-06,
+      "loss_delta_from_best": -0.18508046494357866,
+      "prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-calibrated-001",
+      "reason": "loss_improved",
+      "status": "accepted"
+    }
+  ],
+  "claim_boundaries": [
+    "Acceptance-gated policy-reaction calibration evidence only; not field validation.",
+    "Candidates are accepted only when official-data alignment loss improves and segment coverage is complete.",
+    "Accepted candidates remain local Product cohort evidence until repeated across seeds, scales, and model configurations."
+  ],
+  "claim_boundary": "Acceptance-gated policy-reaction calibration evidence only; not field validation.",
+  "final_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibrated-001",
+  "final_loss": 1.4452916659122088e-06,
+  "initial_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-001",
+  "initial_loss": 0.18508191023524456,
+  "initial_prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-001",
+  "loss_metric": "weighted_choice_distribution_jsd",
+  "overall_status": "accepted",
+  "schema_version": "policy-reaction-calibration-gate-v1"
+}

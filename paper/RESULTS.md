@@ -125,6 +125,25 @@ contracts, but they do not establish live LLM model-quality improvement.
      the workflow is auditable, but the current local LLM cohort is not
      calibrated to the official public-use observed distribution.
 
+11. Acceptance-gated official calibration candidate
+   - The Product worktree then ran the same local `openai/gpt-oss-20b` 12x3
+     cohort with `calibration_profile=official_htops_2506`, which adds the
+     official HTOPS/HPS segment observed distributions as prompt-level
+     calibration anchors.
+   - The official segment benchmark improved from initial weighted JSD
+     `0.18508191023524456` to candidate weighted JSD
+     `0.0000014452916659122088`; segment rank correlation improved from
+     `-0.25` to `1.0`.
+   - The calibration gate accepted the candidate and records
+     `initial_loss=0.18508191023524456`,
+     `best_loss=0.0000014452916659122088`,
+     `final_loss=0.0000014452916659122088`,
+     `candidate_accepted_count=1`, and `candidate_rejected_count=0`.
+   - This is acceptance-gated local evidence that Research can make Product
+     outputs conform to an official public-data benchmark. It is not yet
+     generalization evidence because it has one model, one seed, one scale, and
+     uses the same official source as the prompt anchor.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -149,6 +168,9 @@ contracts, but they do not establish live LLM model-quality improvement.
   given a compatible segment prediction artifact.
 - CIRCE can evaluate a real Product LLM cohort prediction artifact against the
   official HTOPS/HPS segment benchmark and preserve negative alignment results.
+- CIRCE can accept a Research-informed Product prompt/persona calibration
+  candidate only when official-data alignment loss improves under a strict JSON
+  calibration gate.
 
 ## Not Yet Claimed
 
@@ -179,6 +201,10 @@ contracts, but they do not establish live LLM model-quality improvement.
 - No positive Product LLM calibration claim is made from the current
   `openai/gpt-oss-20b` 12x3 official segment benchmark result; the metrics are
   diagnostic evidence of a calibration gap.
+- No general policy-simulation accuracy claim is made from the accepted
+  `official_htops_2506` calibration candidate until it is repeated across
+  seeds, cohort scales, prompts, and model configurations, and until leakage
+  boundaries between calibration anchors and evaluation targets are addressed.
 
 ## Evidence Review Checklist
 
