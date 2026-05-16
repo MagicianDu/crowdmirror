@@ -144,6 +144,32 @@ contracts, but they do not establish live LLM model-quality improvement.
      generalization evidence because it has one model, one seed, one scale, and
      uses the same official source as the prompt anchor.
 
+12. Leakage-aware official row-split evaluation
+   - The official HTOPS/HPS 2506 public-use rows are now deterministically split
+     by `sha256(SCRAMID) mod 2` into calibration and evaluation projections.
+     The split artifact records `puf_row_count=7485`,
+     `calibration_row_count=3845`, `evaluation_row_count=3640`, and
+     `unassigned_row_count=0`.
+   - The evaluation projection preserves the
+     `policy-reaction-public-data-ingestion-v1` schema so the official segment
+     benchmark can consume it as a held-out target. The evaluation projection
+     reports `usable_row_count=3561` across the same four policy-reaction
+     segments.
+   - On the held-out evaluation projection, the uncalibrated Product
+     `openai/gpt-oss-20b` 12x3 artifact reports weighted JSD
+     `0.18814846781521002`, worst-segment JSD `0.20538128218199306`,
+     mean JSD `0.1414090526039107`, segment rank correlation `-0.25`, and
+     worst-segment rank correlation `-1.0`.
+   - On the same held-out projection, the current calibrated Product artifact
+     reports weighted JSD `0.000025466162714366303`, worst-segment JSD
+     `0.0004027469503724598`, mean JSD `0.00011978496001786317`, segment rank
+     correlation `1.0`, and worst-segment rank correlation `1.0`.
+   - This improves the evidence chain from same-artifact fitting to row-level
+     holdout evaluation. It still does not establish generalization because the
+     prompt anchors and evaluation rows come from the same public source and
+     release; the next gate is to derive Product calibration priors only from
+     the calibration projection, then evaluate only on the held-out projection.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -171,6 +197,9 @@ contracts, but they do not establish live LLM model-quality improvement.
 - CIRCE can accept a Research-informed Product prompt/persona calibration
   candidate only when official-data alignment loss improves under a strict JSON
   calibration gate.
+- CIRCE can create deterministic official-data calibration/evaluation row
+  splits and evaluate Product segment predictions on a held-out official
+  projection while preserving strict JSON evidence contracts.
 
 ## Not Yet Claimed
 
@@ -205,6 +234,9 @@ contracts, but they do not establish live LLM model-quality improvement.
   `official_htops_2506` calibration candidate until it is repeated across
   seeds, cohort scales, prompts, and model configurations, and until leakage
   boundaries between calibration anchors and evaluation targets are addressed.
+- No cross-source or cross-period generalization claim is made from the
+  row-split evaluation because the calibration and evaluation projections are
+  both derived from HTOPS/HPS 2506.
 
 ## Evidence Review Checklist
 
