@@ -1,6 +1,7 @@
 """Unified LLM client supporting Anthropic and OpenAI-compatible APIs."""
 
 from dataclasses import dataclass
+import os
 
 
 @dataclass
@@ -31,9 +32,10 @@ class LLMClient:
             self.client = anthropic.Anthropic(**kwargs)
         else:
             from openai import OpenAI
+            base_url = config.base_url or "http://localhost:1234/v1"
             kwargs = {
-                "base_url": config.base_url or "http://localhost:1234/v1",
-                "api_key": "lm-studio",
+                "base_url": base_url,
+                "api_key": _openai_compatible_api_key(base_url),
             }
             if config.timeout_seconds is not None:
                 kwargs["timeout"] = config.timeout_seconds
@@ -75,3 +77,14 @@ class LLMClient:
             input_tokens=response.usage.prompt_tokens,
             output_tokens=response.usage.completion_tokens,
         )
+
+
+def _openai_compatible_api_key(base_url: str) -> str:
+    if "openrouter.ai" not in base_url:
+        return "lm-studio"
+    api_key = os.environ.get("OPENROUTER_API_KEY")
+    if not api_key:
+        raise ValueError(
+            "OPENROUTER_API_KEY is required when base_url points to OpenRouter"
+        )
+    return api_key
