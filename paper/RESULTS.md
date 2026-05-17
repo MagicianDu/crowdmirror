@@ -170,6 +170,32 @@ contracts, but they do not establish live LLM model-quality improvement.
      release; the next gate is to derive Product calibration priors only from
      the calibration projection, then evaluate only on the held-out projection.
 
+13. Calibration-split anchored held-out Product gate
+   - The Product worktree ran a new local `openai/gpt-oss-20b` 12x3 cohort with
+     `calibration_profile=official_htops_2506_calibration_split`. The prompt
+     priors are loaded only from
+     `policy-reaction-htops-2506-calibration-ingestion-001.json`, whose
+     `source_split` is `calibration`.
+   - The exported Product artifact
+     `policy-reaction-segment-predictions-gpt-oss-20b-12x3-calibration-split-001`
+     covers all four official segments and is evaluated only against
+     `policy-reaction-htops-2506-evaluation-ingestion-001.json`.
+   - The held-out evaluation benchmark reports weighted JSD
+     `0.00011289095369171064`, worst-segment JSD
+     `0.0015928065281891066`, mean JSD `0.00047800531351438507`, segment rank
+     correlation `1.0`, and worst-segment rank correlation `1.0`.
+   - The held-out calibration gate compares against the uncalibrated held-out
+     baseline and accepts the candidate with
+     `initial_loss=0.18814846781521002`,
+     `best_loss=0.00011289095369171064`,
+     `final_loss=0.00011289095369171064`,
+     `candidate_accepted_count=1`, and `candidate_rejected_count=0`.
+   - This is the first complete Research/Product evidence chain where the
+     prompt anchor comes from the calibration projection and the acceptance
+     metric comes from the held-out evaluation projection. It remains local,
+     same-source, same-release evidence rather than cross-source or
+     customer-field validation.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -200,6 +226,9 @@ contracts, but they do not establish live LLM model-quality improvement.
 - CIRCE can create deterministic official-data calibration/evaluation row
   splits and evaluate Product segment predictions on a held-out official
   projection while preserving strict JSON evidence contracts.
+- CIRCE can connect a Product LLM cohort calibrated only from the official
+  calibration projection to a Research acceptance gate evaluated only on the
+  official held-out projection.
 
 ## Not Yet Claimed
 
