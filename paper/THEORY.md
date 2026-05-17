@@ -65,6 +65,18 @@ accepts the candidate only when the measured population loss improves under the
 same benchmark configuration. Rejected candidates are retained as negative
 evidence rather than silently applied.
 
+Prompt updates are represented as structured patches over explicit simulator
+components, such as `global_instruction`, `segment_prompt`, `persona_prompt`,
+`policy_interpretation_prompt`, `calibration_anchor`, and `response_contract`.
+The patch generator can be TextGrad, an LLM critic, a residual-rule generator,
+or a search procedure, but it is not allowed to directly overwrite the whole
+simulator prompt as an uninspected string. Each patch records its target,
+operation, source split, reason, expected effect, and supporting residuals. A
+patch generated from evaluation targets is inadmissible; evaluation evidence is
+used only by the acceptance gate. This makes automated prompt refinement
+fine-grained and reversible while preserving the same acceptance rule as other
+CIRCE updates.
+
 PopulationBench-lite is the current reviewer-facing benchmark gate for this
 claim. It requires distributional choice fit, counterfactual direction,
 segment-level stability, and manifest auditability. Passing the gate can support
