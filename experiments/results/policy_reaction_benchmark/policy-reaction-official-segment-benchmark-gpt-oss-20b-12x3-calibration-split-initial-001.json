@@ -1,0 +1,98 @@
+{
+  "artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-initial-001",
+  "benchmark_metrics": {
+    "matched_segment_count": 4,
+    "mean_choice_distribution_jsd": 0.1423293026128619,
+    "segment_rank_correlation": -0.25,
+    "weighted_choice_distribution_jsd": 0.18230076050456098,
+    "worst_segment_choice_distribution_jsd": 0.19832880119161886,
+    "worst_segment_rank_correlation": -1.0
+  },
+  "calibration_status": "official_public_data_alignment_smoke",
+  "claim_boundaries": [
+    "Official public-use segment alignment smoke benchmark only; not field validation.",
+    "The official side is an observed distribution proxy derived from public-use HTOPS/HPS survey fields.",
+    "The prediction side must come from a separately auditable LLM cohort or product segment report.",
+    "This artifact does not establish causal policy effects or China policy forecast validity."
+  ],
+  "claim_boundary": "Official public-use segment alignment smoke benchmark only; not field validation.",
+  "overall_status": "passed",
+  "prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-001",
+  "prediction_model": "openai/gpt-oss-20b",
+  "schema_version": "policy-reaction-official-segment-benchmark-v1",
+  "segment_coverage": {
+    "coverage_rate": 1.0,
+    "extra_predicted_segments": [],
+    "matched_segment_count": 4,
+    "missing_predicted_segments": [],
+    "observed_segment_count": 4,
+    "predicted_segment_count": 4
+  },
+  "segment_metrics": {
+    "fixed_income_inflation_stressed": {
+      "choice_distribution_jsd": 0.19832880119161886,
+      "official_distribution": {
+        "baseline_no_new_support": 0.37466738519758513,
+        "cash_cost_of_living_rebate": 0.4451949415433129,
+        "food_subsidy_expansion": 0.1801376732591019
+      },
+      "official_row_count": 733,
+      "official_weighted_row_mass": 21752351.108852506,
+      "predicted_distribution": {
+        "baseline_no_new_support": 0.05,
+        "cash_cost_of_living_rebate": 0.333333,
+        "food_subsidy_expansion": 0.616667
+      },
+      "rank_correlation": -0.5
+    },
+    "general_population_cost_pressure": {
+      "choice_distribution_jsd": 0.19122495899902128,
+      "official_distribution": {
+        "baseline_no_new_support": 0.5407649099682325,
+        "cash_cost_of_living_rebate": 0.2683282865775664,
+        "food_subsidy_expansion": 0.19090680345420122
+      },
+      "official_row_count": 2365,
+      "official_weighted_row_mass": 81550562.53983773,
+      "predicted_distribution": {
+        "baseline_no_new_support": 0.10055589944410055,
+        "cash_cost_of_living_rebate": 0.33888866111133886,
+        "food_subsidy_expansion": 0.5605554394445605
+      },
+      "rank_correlation": -1.0
+    },
+    "low_income_food_insecure": {
+      "choice_distribution_jsd": 0.035700635957567436,
+      "official_distribution": {
+        "baseline_no_new_support": 0.18842101146294965,
+        "cash_cost_of_living_rebate": 0.2699197622209377,
+        "food_subsidy_expansion": 0.5416592263161126
+      },
+      "official_row_count": 71,
+      "official_weighted_row_mass": 4158638.1149091995,
+      "predicted_distribution": {
+        "baseline_no_new_support": 0.05,
+        "cash_cost_of_living_rebate": 0.35,
+        "food_subsidy_expansion": 0.6
+      },
+      "rank_correlation": 1.0
+    },
+    "working_family_price_stressed": {
+      "choice_distribution_jsd": 0.14406281430324,
+      "official_distribution": {
+        "baseline_no_new_support": 0.35041257678959686,
+        "cash_cost_of_living_rebate": 0.42848700179437366,
+        "food_subsidy_expansion": 0.22110042141602956
+      },
+      "official_row_count": 587,
+      "official_weighted_row_mass": 21460678.488937113,
+      "predicted_distribution": {
+        "baseline_no_new_support": 0.05,
+        "cash_cost_of_living_rebate": 0.4,
+        "food_subsidy_expansion": 0.55
+      },
+      "rank_correlation": -0.5
+    }
+  },
+  "source_ingestion_artifact_id": "policy-reaction-htops-2506-split-ingestion-001-calibration"
+}

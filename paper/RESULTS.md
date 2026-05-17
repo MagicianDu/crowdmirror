@@ -196,6 +196,33 @@ contracts, but they do not establish live LLM model-quality improvement.
      same-source, same-release evidence rather than cross-source or
      customer-field validation.
 
+14. Calibration-split prompt/persona patch gate
+   - The Research worktree now derives a prompt/persona patch candidate from
+     the calibration projection benchmark
+     `policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-initial-001`.
+     The calibration benchmark compares the uncalibrated Product predictions
+     against `policy-reaction-htops-2506-calibration-ingestion-001` and reports
+     weighted JSD `0.18230076050456098`, mean JSD
+     `0.1423293026128619`, worst-segment JSD `0.19832880119161886`,
+     segment rank correlation `-0.25`, and worst-segment rank correlation
+     `-1.0`.
+   - The derived candidate contains eight structured patches: four segment
+     residual patches and four persona-level calibration-anchor parameter
+     patches. All candidate patches record `source_split=calibration`.
+   - The prompt/persona patch gate
+     `policy-reaction-prompt-patch-gate-gpt-oss-20b-12x3-calibration-split-heldout-001`
+     evaluates the candidate only through the held-out benchmark
+     `policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-heldout-001`.
+     It accepts the candidate with
+     `initial_loss=0.18814846781521002`,
+     `best_loss=0.00011289095369171064`,
+     `final_loss=0.00011289095369171064`,
+     `candidate_accepted_count=1`, and `candidate_rejected_count=0`.
+   - This converts the Product calibration profile into an inspectable
+     prompt/persona patch evidence object. The claim remains same-source,
+     same-release, local Product evidence; it does not establish field validity
+     or cross-source policy-simulation accuracy.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -229,6 +256,9 @@ contracts, but they do not establish live LLM model-quality improvement.
 - CIRCE can connect a Product LLM cohort calibrated only from the official
   calibration projection to a Research acceptance gate evaluated only on the
   official held-out projection.
+- CIRCE can derive structured prompt/persona patch candidates from a
+  calibration projection and accept them only through a held-out prompt patch
+  gate with inspectable residual and parameter patch records.
 
 ## Not Yet Claimed
 
@@ -266,6 +296,8 @@ contracts, but they do not establish live LLM model-quality improvement.
 - No cross-source or cross-period generalization claim is made from the
   row-split evaluation because the calibration and evaluation projections are
   both derived from HTOPS/HPS 2506.
+- No prompt/persona patch gate claim is made beyond the recorded Product
+  scenario, model, cohort scale, public-source release, and held-out split.
 
 ## Evidence Review Checklist
 
