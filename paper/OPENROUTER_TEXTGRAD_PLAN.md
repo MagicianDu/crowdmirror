@@ -96,10 +96,12 @@ TextGrad 不能直接被包装成正向效果。可接受的表述是：
 
 1. 按 segment/persona 计算 residual：预测分布与 held-out observed distribution 的差。
 2. 把 residual 转成结构化反馈：哪个 segment 高估/低估了哪类政策选择。
-3. 由候选生成器提出 prompt patch：可以是 LLM、规则模板、网格搜索或人工编辑。
+3. 由候选生成器自动提出 prompt/persona patch：可以是 LLM critique、规则模板、
+   参数搜索或贝叶斯/进化搜索。
 4. 在固定 evaluation split 上重新评估。
 5. 只有 loss 改善且 coverage 完整时接受，否则回滚。
 
-因此核心不是 TextGrad 这个名字，而是“反馈 -> 候选 prompt 更新 -> 独立验收 -> 接受/拒绝”
-这个显式方法组件。TextGrad 的价值在于自动生成更有解释力的候选更新；如果它不稳定，
-仍可用规则化 prompt patch 或人工 review 替代。
+因此核心不是 TextGrad 这个名字，而是“反馈 -> 候选 prompt/persona 更新 -> 独立验收
+-> 接受/拒绝”这个显式方法组件。TextGrad 的价值在于自动生成更有解释力的候选更新；
+如果它不稳定，仍可用规则化 prompt patch、参数搜索或其他自动候选生成器替代。人工
+review 只用于审计和解释，不作为主校准机制。

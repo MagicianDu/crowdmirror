@@ -12,7 +12,8 @@
 ## 核心贡献
 
 1. **结构化生成式智能体架构**：Persona→Utility→Choice 三层分离
-2. **双层校准框架**：TextGrad 结构纠偏 + post-hoc 概率校准
+2. **验收门校准框架**：TextGrad、residual rule、参数搜索共同生成候选 patch，
+   由 held-out loss gate 自动接受或拒绝
 3. **PopulationBench**：首个跨 domain 群体行为模拟基准（消费/道德/政策/健康）
 4. **范式贡献**：推进 CSS 从 ABM 到 GBM 的范式转移
 
@@ -26,7 +27,7 @@
 ```
 src/
 ├── simulator/      # 三层生成式智能体（schema, persona, utility, choice）
-├── calibration/    # TextGrad + post-hoc 校准
+├── calibration/    # 多候选 prompt/persona patch + acceptance gate 校准
 └── evaluation/     # 指标与违例检测器
 experiments/        # 实验脚本（按 domain 组织）
 data/               # 数据加载与预处理（multi-domain adapters）

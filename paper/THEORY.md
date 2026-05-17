@@ -77,6 +77,18 @@ used only by the acceptance gate. This makes automated prompt refinement
 fine-grained and reversible while preserving the same acceptance rule as other
 CIRCE updates.
 
+The current implementation further separates candidate generation from
+candidate acceptance. A calibration round may produce multiple candidates from
+different generators, for example TextGrad critique, residual-rule patching, or
+parameter search over persona-level sensitivity anchors. Each candidate is
+evaluated on the held-out split with complete segment coverage. CIRCE accepts at
+most the candidate with the lowest held-out loss among candidates that improve
+over the previous accepted state; all other candidates are recorded as rejected
+with a reason such as `loss_not_improved`, `segment_coverage_incomplete`, or
+`not_best_improving_candidate`. This makes prompt tuning automatic without
+granting any single generator, including TextGrad, direct authority to modify
+the accepted simulator state.
+
 PopulationBench-lite is the current reviewer-facing benchmark gate for this
 claim. It requires distributional choice fit, counterfactual direction,
 segment-level stability, and manifest auditability. Passing the gate can support

@@ -4,8 +4,11 @@ import pytest
 
 from circe.calibration.prompt_patch import (
     PromptPatch,
+    PromptPatchCandidate,
     apply_prompt_patch,
+    build_multi_candidate_prompt_patch_gate,
     build_prompt_patch_gate,
+    generate_parameter_prompt_patches,
     generate_residual_prompt_patches,
 )
 
@@ -157,3 +160,184 @@ def test_prompt_patch_gate_rejects_non_improving_candidate_and_reverts():
     assert gate["final_loss"] == 0.20
     assert gate["final_prompt_components"] == components
     assert gate["candidate_prompt_components"] != components
+
+
+def test_parameter_generator_creates_calibration_anchor_patch():
+    patches = generate_parameter_prompt_patches(
+        segment_parameter_deltas={
+            "low_income_food_insecure": {
+                "food_price_sensitivity": 0.18,
+                "institutional_trust": -0.07,
+                "noise_floor": 0.01,
+            }
+        },
+        threshold=0.05,
+    )
+
+    assert len(patches) == 1
+    patch = patches[0]
+    assert patch.target == "calibration_anchor.low_income_food_insecure"
+    assert patch.operation == "tighten"
+    assert patch.expected_effect == {
+        "food_price_sensitivity": "increase",
+        "institutional_trust": "decrease",
+    }
+    assert "food_price_sensitivity += 0.180000" in patch.patch
+    assert patch.evidence["generator"] == "parameter_search"
+
+
+def test_multi_candidate_gate_selects_best_heldout_candidate():
+    components = {
+        "segment_prompt": {
+            "low_income_food_insecure": "base segment prompt",
+        },
+        "calibration_anchor": {
+            "low_income_food_insecure": "base anchor",
+        },
+    }
+    residual_candidate = PromptPatchCandidate(
+        candidate_id="residual-low-income",
+        generator="residual_rule",
+        rationale="food subsidy under-predicted",
+        patches=[
+            PromptPatch(
+                target="segment_prompt.low_income_food_insecure",
+                operation="tighten",
+                reason="food subsidy under-predicted",
+                patch="Increase food subsidy salience.",
+                expected_effect={"food_subsidy_expansion": "increase"},
+            )
+        ],
+    )
+    parameter_candidate = PromptPatchCandidate(
+        candidate_id="parameter-low-income",
+        generator="parameter_search",
+        rationale="parameter search found stronger price sensitivity",
+        patches=generate_parameter_prompt_patches(
+            segment_parameter_deltas={
+                "low_income_food_insecure": {"food_price_sensitivity": 0.20}
+            }
+        ),
+    )
+
+    gate = build_multi_candidate_prompt_patch_gate(
+        components,
+        [residual_candidate, parameter_candidate],
+        artifact_id="multi-candidate-gate-test",
+        initial_loss=0.20,
+        candidate_evaluations={
+            "residual-low-income": {
+                "loss": 0.18,
+                "coverage_rate": 1.0,
+                "evaluation_split": "heldout",
+            },
+            "parameter-low-income": {
+                "loss": 0.12,
+                "coverage_rate": 1.0,
+                "evaluation_split": "heldout",
+            },
+        },
+    )
+
+    assert gate["schema_version"] == "circe-prompt-patch-multi-candidate-gate-v1"
+    assert gate["overall_status"] == "accepted"
+    assert gate["initial_loss"] == 0.20
+    assert gate["best_loss"] == 0.12
+    assert gate["final_loss"] == 0.12
+    assert gate["accepted_candidate_id"] == "parameter-low-income"
+    assert gate["candidate_evaluated_count"] == 2
+    assert gate["candidate_accepted_count"] == 1
+    assert gate["candidate_rejected_count"] == 1
+    assert gate["generator_counts"] == {"parameter_search": 1, "residual_rule": 1}
+    assert gate["candidate_updates"][0]["status"] == "rejected"
+    assert gate["candidate_updates"][0]["reason"] == "not_best_improving_candidate"
+    assert gate["candidate_updates"][1]["status"] == "accepted"
+    assert (
+        "food_price_sensitivity += 0.200000"
+        in gate["candidate_updates"][1]["candidate_prompt_components"][
+            "calibration_anchor"
+        ]["low_income_food_insecure"]
+    )
+    assert (
+        "food_price_sensitivity += 0.200000"
+        in gate["final_prompt_components"]["calibration_anchor"][
+            "low_income_food_insecure"
+        ]
+    )
+    assert gate["final_prompt_components"] != components
+    json.dumps(gate, allow_nan=False)
+
+
+def test_multi_candidate_gate_rejects_non_improving_candidates_and_reverts():
+    components = {
+        "segment_prompt": {"general_population": "base prompt"},
+    }
+    candidate = PromptPatchCandidate(
+        candidate_id="textgrad-general",
+        generator="textgrad",
+        rationale="LLM critique candidate",
+        patches=[
+            PromptPatch(
+                target="segment_prompt.general_population",
+                operation="tighten",
+                reason="LLM critique",
+                patch="Make reaction more deterministic.",
+                expected_effect={"baseline_no_new_support": "increase"},
+            )
+        ],
+    )
+
+    gate = build_multi_candidate_prompt_patch_gate(
+        components,
+        [candidate],
+        artifact_id="multi-candidate-reject-test",
+        initial_loss=0.20,
+        candidate_evaluations={
+            "textgrad-general": {
+                "loss": 0.24,
+                "coverage_rate": 1.0,
+                "evaluation_split": "heldout",
+            }
+        },
+    )
+
+    assert gate["overall_status"] == "rejected"
+    assert gate["accepted_candidate_id"] is None
+    assert gate["best_loss"] == 0.20
+    assert gate["final_loss"] == 0.20
+    assert gate["candidate_accepted_count"] == 0
+    assert gate["candidate_rejected_count"] == 1
+    assert gate["candidate_updates"][0]["reason"] == "loss_not_improved"
+    assert gate["final_prompt_components"] == components
+
+
+def test_multi_candidate_gate_rejects_calibration_split_evaluation():
+    candidate = PromptPatchCandidate(
+        candidate_id="leaky-candidate",
+        generator="residual_rule",
+        rationale="bad evaluation split",
+        patches=[
+            PromptPatch(
+                target="segment_prompt.general_population",
+                operation="tighten",
+                reason="bad split",
+                patch="Leak calibration targets.",
+                expected_effect={"baseline_no_new_support": "increase"},
+            )
+        ],
+    )
+
+    with pytest.raises(ValueError, match="heldout"):
+        build_multi_candidate_prompt_patch_gate(
+            {"segment_prompt": {"general_population": "base"}},
+            [candidate],
+            artifact_id="leaky-candidate-test",
+            initial_loss=0.20,
+            candidate_evaluations={
+                "leaky-candidate": {
+                    "loss": 0.10,
+                    "coverage_rate": 1.0,
+                    "evaluation_split": "calibration",
+                }
+            },
+        )
