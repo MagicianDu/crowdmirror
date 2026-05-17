@@ -6,7 +6,7 @@
     "API keys are read from environment variables and must not be written to command lines, manifests, or result artifacts."
   ],
   "claim_boundary": "OpenRouter free-model TextGrad candidate-generation diagnostics only; accepted candidates require recorded loss-gate improvement and are not field validation.",
-  "created_at": "2026-05-17T14:12:25.032175Z",
+  "created_at": "2026-05-17T14:11:13.001991Z",
   "matrix_id": "openrouter-textgrad-free-smoke-001",
   "models": [
     "meta-llama/llama-3.3-70b-instruct:free",
@@ -31,7 +31,7 @@
         "--dataset-seed",
         "42",
         "--prompt-baseline",
-        "structured",
+        "weak",
         "--sim-max-tokens",
         "256",
         "--textgrad-max-tokens",
@@ -39,7 +39,7 @@
         "--request-timeout",
         "180",
         "--run-id",
-        "openrouter-textgrad-free-smoke-001-openai-gpt-oss-120b-free-eval2-seed42-structured",
+        "openrouter-textgrad-free-smoke-001-openai-gpt-oss-120b-free-eval2-seed42-weak",
         "--manifest-dir",
         "experiments/results/manifests"
       ],
@@ -49,9 +49,9 @@
       "max_iterations": 2,
       "mode": "local-openrouter",
       "model": "openai/gpt-oss-120b:free",
-      "prompt_baseline": "structured",
+      "prompt_baseline": "weak",
       "request_timeout": 180,
-      "run_id": "openrouter-textgrad-free-smoke-001-openai-gpt-oss-120b-free-eval2-seed42-structured",
+      "run_id": "openrouter-textgrad-free-smoke-001-openai-gpt-oss-120b-free-eval2-seed42-weak",
       "simulator_max_tokens": 256,
       "textgrad_max_tokens": 1024
     },
@@ -72,7 +72,7 @@
         "--dataset-seed",
         "42",
         "--prompt-baseline",
-        "structured",
+        "weak",
         "--sim-max-tokens",
         "256",
         "--textgrad-max-tokens",
@@ -80,7 +80,7 @@
         "--request-timeout",
         "180",
         "--run-id",
-        "openrouter-textgrad-free-smoke-001-qwen-qwen3-coder-free-eval2-seed42-structured",
+        "openrouter-textgrad-free-smoke-001-qwen-qwen3-coder-free-eval2-seed42-weak",
         "--manifest-dir",
         "experiments/results/manifests"
       ],
@@ -90,9 +90,9 @@
       "max_iterations": 2,
       "mode": "local-openrouter",
       "model": "qwen/qwen3-coder:free",
-      "prompt_baseline": "structured",
+      "prompt_baseline": "weak",
       "request_timeout": 180,
-      "run_id": "openrouter-textgrad-free-smoke-001-qwen-qwen3-coder-free-eval2-seed42-structured",
+      "run_id": "openrouter-textgrad-free-smoke-001-qwen-qwen3-coder-free-eval2-seed42-weak",
       "simulator_max_tokens": 256,
       "textgrad_max_tokens": 1024
     },
@@ -113,7 +113,7 @@
         "--dataset-seed",
         "42",
         "--prompt-baseline",
-        "structured",
+        "weak",
         "--sim-max-tokens",
         "256",
         "--textgrad-max-tokens",
@@ -121,7 +121,7 @@
         "--request-timeout",
         "180",
         "--run-id",
-        "openrouter-textgrad-free-smoke-001-meta-llama-llama-3-3-70b-instruct-free-eval2-seed42-structured",
+        "openrouter-textgrad-free-smoke-001-meta-llama-llama-3-3-70b-instruct-free-eval2-seed42-weak",
         "--manifest-dir",
         "experiments/results/manifests"
       ],
@@ -131,15 +131,37 @@
       "max_iterations": 2,
       "mode": "local-openrouter",
       "model": "meta-llama/llama-3.3-70b-instruct:free",
-      "prompt_baseline": "structured",
+      "prompt_baseline": "weak",
       "request_timeout": 180,
-      "run_id": "openrouter-textgrad-free-smoke-001-meta-llama-llama-3-3-70b-instruct-free-eval2-seed42-structured",
+      "run_id": "openrouter-textgrad-free-smoke-001-meta-llama-llama-3-3-70b-instruct-free-eval2-seed42-weak",
       "simulator_max_tokens": 256,
       "textgrad_max_tokens": 1024
     }
   ],
-  "results": [],
+  "results": [
+    {
+      "model": "openai/gpt-oss-120b:free",
+      "returncode": 2,
+      "run_id": "openrouter-textgrad-free-smoke-001-openai-gpt-oss-120b-free-eval2-seed42-weak",
+      "stderr_tail": "usage: w3w4_causal_calibration.py [-h] [--max-iter MAX_ITER] [--dry-run]\n                                  [--local] [--base-url BASE_URL]\n                                  [--model MODEL] [--eval-size EVAL_SIZE]\n                                  [--run-id RUN_ID]\n                                  [--manifest-dir MANIFEST_DIR]\n                                  [--sim-max-tokens SIM_MAX_TOKENS]\n                                  [--textgrad-max-tokens TEXTGRAD_MAX_TOKENS]\n                                  [--request-timeout REQUEST_TIMEOUT]\n                                  [--dataset-seed DATASET_SEED]\n                                  [--prompt-baseline {compact,default,structured}]\nw3w4_causal_calibration.py: error: argument --prompt-baseline: invalid choice: 'weak' (choose from compact, default, structured)\n",
+      "stdout_tail": ""
+    },
+    {
+      "model": "qwen/qwen3-coder:free",
+      "returncode": 2,
+      "run_id": "openrouter-textgrad-free-smoke-001-qwen-qwen3-coder-free-eval2-seed42-weak",
+      "stderr_tail": "usage: w3w4_causal_calibration.py [-h] [--max-iter MAX_ITER] [--dry-run]\n                                  [--local] [--base-url BASE_URL]\n                                  [--model MODEL] [--eval-size EVAL_SIZE]\n                                  [--run-id RUN_ID]\n                                  [--manifest-dir MANIFEST_DIR]\n                                  [--sim-max-tokens SIM_MAX_TOKENS]\n                                  [--textgrad-max-tokens TEXTGRAD_MAX_TOKENS]\n                                  [--request-timeout REQUEST_TIMEOUT]\n                                  [--dataset-seed DATASET_SEED]\n                                  [--prompt-baseline {compact,default,structured}]\nw3w4_causal_calibration.py: error: argument --prompt-baseline: invalid choice: 'weak' (choose from compact, default, structured)\n",
+      "stdout_tail": ""
+    },
+    {
+      "model": "meta-llama/llama-3.3-70b-instruct:free",
+      "returncode": 2,
+      "run_id": "openrouter-textgrad-free-smoke-001-meta-llama-llama-3-3-70b-instruct-free-eval2-seed42-weak",
+      "stderr_tail": "usage: w3w4_causal_calibration.py [-h] [--max-iter MAX_ITER] [--dry-run]\n                                  [--local] [--base-url BASE_URL]\n                                  [--model MODEL] [--eval-size EVAL_SIZE]\n                                  [--run-id RUN_ID]\n                                  [--manifest-dir MANIFEST_DIR]\n                                  [--sim-max-tokens SIM_MAX_TOKENS]\n                                  [--textgrad-max-tokens TEXTGRAD_MAX_TOKENS]\n                                  [--request-timeout REQUEST_TIMEOUT]\n                                  [--dataset-seed DATASET_SEED]\n                                  [--prompt-baseline {compact,default,structured}]\nw3w4_causal_calibration.py: error: argument --prompt-baseline: invalid choice: 'weak' (choose from compact, default, structured)\n",
+      "stdout_tail": ""
+    }
+  ],
   "run_count": 3,
   "schema_version": "circe-openrouter-textgrad-matrix-v1",
-  "status": "planned"
+  "status": "failed"
 }

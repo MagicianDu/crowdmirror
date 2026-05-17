@@ -20,7 +20,7 @@ def test_build_openrouter_textgrad_plan_records_model_axis():
         models=("openai/gpt-oss-120b:free", "qwen/qwen3-coder:free"),
         eval_sizes=(2,),
         dataset_seeds=(42,),
-        prompt_baselines=("weak",),
+        prompt_baselines=("structured",),
     )
 
     assert len(plan) == 2
@@ -32,6 +32,7 @@ def test_build_openrouter_textgrad_plan_records_model_axis():
     assert all(item["mode"] == "local-openrouter" for item in plan)
     assert all("--base-url" in item["command"] for item in plan)
     assert all("OPENROUTER_API_KEY" not in " ".join(item["command"]) for item in plan)
+    assert all("structured" in item["command"] for item in plan)
 
 
 def test_run_openrouter_matrix_requires_api_key(tmp_path, monkeypatch):
@@ -64,7 +65,7 @@ def test_run_openrouter_matrix_writes_index_without_leaking_key(
         models=("openai/gpt-oss-120b:free",),
         eval_sizes=(2,),
         dataset_seeds=(42,),
-        prompt_baselines=("weak",),
+        prompt_baselines=("structured",),
     )
 
     output = tmp_path / "openrouter-smoke-test.json"
