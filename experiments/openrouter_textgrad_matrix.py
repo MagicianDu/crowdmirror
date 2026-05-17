@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 from typing import Any
@@ -30,6 +31,8 @@ CLAIM_BOUNDARY = (
     "accepted candidates require recorded loss-gate improvement and are not "
     "field validation."
 )
+OPENROUTER_KEY_RE = re.compile(r"sk-or-v1-[A-Za-z0-9_-]+")
+USER_ID_RE = re.compile(r"([\"']user_id[\"']\s*:\s*[\"'])[^\"']+([\"'])")
 
 
 def build_openrouter_textgrad_plan(
@@ -116,16 +119,21 @@ def build_openrouter_textgrad_index(
     status: str,
     results: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
+    recorded_results = results or []
+    status_counts = _count_result_statuses(recorded_results)
     index = {
         "schema_version": SCHEMA_VERSION,
         "matrix_id": matrix_id,
         "status": status,
         "created_at": _utc_now(),
         "run_count": len(plan),
+        "completed_count": status_counts["completed"],
+        "rate_limited_count": status_counts["rate_limited"],
+        "failed_count": status_counts["failed"],
         "base_url": OPENROUTER_BASE_URL,
         "models": sorted({item["model"] for item in plan}),
         "plan": plan,
-        "results": results or [],
+        "results": recorded_results,
         "claim_boundary": CLAIM_BOUNDARY,
         "claim_boundaries": [
             CLAIM_BOUNDARY,
@@ -198,13 +206,14 @@ def run_openrouter_textgrad_matrix(
             {
                 "run_id": item["run_id"],
                 "model": item["model"],
+                "status": _classify_run_status(completed),
                 "returncode": completed.returncode,
-                "stdout_tail": completed.stdout[-2000:],
-                "stderr_tail": completed.stderr[-2000:],
+                "stdout_tail": _artifact_tail(completed.stdout),
+                "stderr_tail": _artifact_tail(completed.stderr),
             }
         )
 
-    status = "completed" if all(item["returncode"] == 0 for item in results) else "failed"
+    status = _matrix_status(results)
     index = build_openrouter_textgrad_index(
         matrix_id=matrix_id,
         plan=plan,
@@ -308,6 +317,54 @@ def _pythonpath(existing: str) -> str:
     if existing:
         parts.append(existing)
     return os.pathsep.join(parts)
+
+
+def _classify_run_status(completed: subprocess.CompletedProcess[str]) -> str:
+    if completed.returncode == 0:
+        return "completed"
+
+    combined_output = f"{completed.stdout}\n{completed.stderr}".lower()
+    rate_limit_markers = (
+        "ratelimiterror",
+        "rate limit",
+        "rate-limited",
+        "error code: 429",
+        "retry-after",
+        "retry_after",
+    )
+    if any(marker in combined_output for marker in rate_limit_markers):
+        return "rate_limited"
+    return "failed"
+
+
+def _artifact_tail(value: str) -> str:
+    return _sanitize_artifact_text(value)[-2000:]
+
+
+def _sanitize_artifact_text(value: str) -> str:
+    sanitized = OPENROUTER_KEY_RE.sub("[REDACTED_OPENROUTER_KEY]", value)
+    return USER_ID_RE.sub(r"\1[REDACTED_USER_ID]\2", sanitized)
+
+
+def _matrix_status(results: list[dict[str, Any]]) -> str:
+    statuses = [item.get("status") for item in results]
+    if statuses and all(status == "completed" for status in statuses):
+        return "completed"
+    if any(status == "completed" for status in statuses):
+        return "partial"
+    if statuses and all(status == "rate_limited" for status in statuses):
+        return "rate_limited"
+    return "failed"
+
+
+def _count_result_statuses(results: list[dict[str, Any]]) -> dict[str, int]:
+    return {
+        "completed": sum(1 for item in results if item.get("status") == "completed"),
+        "rate_limited": sum(
+            1 for item in results if item.get("status") == "rate_limited"
+        ),
+        "failed": sum(1 for item in results if item.get("status") == "failed"),
+    }
 
 
 def _utc_now() -> str:

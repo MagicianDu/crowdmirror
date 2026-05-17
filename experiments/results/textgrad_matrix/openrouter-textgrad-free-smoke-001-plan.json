@@ -6,7 +6,9 @@
     "API keys are read from environment variables and must not be written to command lines, manifests, or result artifacts."
   ],
   "claim_boundary": "OpenRouter free-model TextGrad candidate-generation diagnostics only; accepted candidates require recorded loss-gate improvement and are not field validation.",
-  "created_at": "2026-05-17T14:12:25.032175Z",
+  "completed_count": 0,
+  "created_at": "2026-05-17T14:28:53.334397Z",
+  "failed_count": 0,
   "matrix_id": "openrouter-textgrad-free-smoke-001",
   "models": [
     "meta-llama/llama-3.3-70b-instruct:free",
@@ -138,6 +140,7 @@
       "textgrad_max_tokens": 1024
     }
   ],
+  "rate_limited_count": 0,
   "results": [],
   "run_count": 3,
   "schema_version": "circe-openrouter-textgrad-matrix-v1",

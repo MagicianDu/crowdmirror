@@ -81,6 +81,61 @@ def test_run_openrouter_matrix_writes_index_without_leaking_key(
     assert calls[0][1]["env"]["PYTHONPATH"].split(os.pathsep)[:2] == ["src", "."]
 
 
+def test_run_openrouter_matrix_records_partial_rate_limited_runs(
+    tmp_path,
+    monkeypatch,
+):
+    responses = iter(
+        [
+            SimpleNamespace(returncode=0, stdout="completed", stderr=""),
+            SimpleNamespace(
+                returncode=1,
+                stdout="started",
+                stderr=(
+                    "openai.RateLimitError: Error code: 429 - temporarily "
+                    "rate-limited upstream {'user_id': 'user_sensitive'} "
+                    "sk-or-v1-sensitive"
+                ),
+            ),
+            SimpleNamespace(returncode=1, stdout="", stderr="plain failure"),
+        ]
+    )
+
+    monkeypatch.setenv("OPENROUTER_API_KEY", "secret-key")
+    monkeypatch.setattr(
+        "experiments.openrouter_textgrad_matrix.subprocess.run",
+        lambda *args, **kwargs: next(responses),
+    )
+
+    index = run_openrouter_textgrad_matrix(
+        matrix_id="openrouter-partial-test",
+        output_dir=str(tmp_path),
+        models=(
+            "openai/gpt-oss-120b:free",
+            "qwen/qwen3-coder:free",
+            "meta-llama/llama-3.3-70b-instruct:free",
+        ),
+        eval_sizes=(2,),
+        dataset_seeds=(42,),
+        prompt_baselines=("structured",),
+    )
+
+    assert index["status"] == "partial"
+    assert index["completed_count"] == 1
+    assert index["rate_limited_count"] == 1
+    assert index["failed_count"] == 1
+    assert [item["status"] for item in index["results"]] == [
+        "completed",
+        "rate_limited",
+        "failed",
+    ]
+    assert "user_sensitive" not in json.dumps(index)
+    assert "sk-or-v1-sensitive" not in json.dumps(index)
+    assert "[REDACTED_USER_ID]" in json.dumps(index)
+    assert "[REDACTED_OPENROUTER_KEY]" in json.dumps(index)
+    assert "secret-key" not in json.dumps(index)
+
+
 def test_openrouter_matrix_script_writes_plan(tmp_path):
     output = tmp_path / "openrouter-plan.json"
     completed = __import__("subprocess").run(

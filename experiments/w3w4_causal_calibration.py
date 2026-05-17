@@ -271,6 +271,7 @@ def run_experiment(max_iterations: int = 10, dry_run: bool = False,
             "local": local,
             "provider": provider,
             "model": sim_model,
+            "base_url": base_url,
             "simulator_max_tokens": simulator_max_tokens,
             "textgrad_max_tokens": textgrad_max_tokens,
             "request_timeout": request_timeout,
@@ -364,7 +365,7 @@ def build_causal_manifest(
     if textgrad_steps_path is not None:
         artifacts["textgrad_steps_json"] = textgrad_steps_path
 
-    return build_run_manifest(
+    manifest = build_run_manifest(
         run_id=run_id,
         lane="causal",
         mode=mode,
@@ -378,6 +379,22 @@ def build_causal_manifest(
             "Dry-run mode uses mocked LLM responses and only validates execution plumbing.",
         ],
     )
+    manifest["claim_boundary"] = _causal_claim_boundary(mode, config)
+    return manifest
+
+
+def _causal_claim_boundary(mode: str, config: dict) -> str:
+    if mode == "dry-run":
+        return "dry-run plumbing evidence only"
+    base_url = str(config.get("base_url", ""))
+    if "openrouter.ai" in base_url:
+        return (
+            "OpenRouter-hosted model calibration evidence; free-model availability "
+            "can change; not field validation."
+        )
+    if mode == "local":
+        return "local-model calibration evidence; not cross-provider evidence"
+    return "live-model calibration evidence; not cross-domain generalization"
 
 
 def _run_dry(config, train_pairs, test_pairs):

@@ -133,6 +133,38 @@ def test_build_causal_manifest_records_candidate_acceptance_metrics():
     assert manifest["metrics"]["textgrad_effect_status"] == "mixed"
 
 
+def test_build_causal_manifest_marks_openrouter_claim_boundary():
+    manifest = build_causal_manifest(
+        run_id="openrouter-claim-boundary",
+        mode="local",
+        command=[
+            "python",
+            "experiments/w3w4_causal_calibration.py",
+            "--local",
+            "--base-url",
+            "https://openrouter.ai/api/v1",
+        ],
+        config={
+            "max_iterations": 2,
+            "eval_size": 2,
+            "base_url": "https://openrouter.ai/api/v1",
+        },
+        result_summary={
+            "initial_loss": 0.30,
+            "best_loss": 0.30,
+            "final_loss": 0.60,
+            "n_iterations": 2,
+            "total_llm_calls": 13,
+            "textgrad_call_count": 1,
+            "prompt_update_count": 1,
+        },
+        result_path="experiments/results/w3w4_openrouter.json",
+    )
+
+    assert "OpenRouter-hosted" in manifest["claim_boundary"]
+    assert "not field validation" in manifest["claim_boundary"]
+
+
 def test_build_causal_manifest_rejects_missing_required_metrics():
     with pytest.raises(ValueError, match="result_summary missing required metrics"):
         build_causal_manifest(
