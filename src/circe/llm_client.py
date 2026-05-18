@@ -80,11 +80,23 @@ class LLMClient:
 
 
 def _openai_compatible_api_key(base_url: str) -> str:
-    if "openrouter.ai" not in base_url:
-        return "lm-studio"
-    api_key = os.environ.get("OPENROUTER_API_KEY")
+    if "openrouter.ai" in base_url:
+        return _required_api_key(
+            "OPENROUTER_API_KEY",
+            provider_name="OpenRouter",
+        )
+    if "api.deepseek.com" in base_url:
+        return _required_api_key(
+            "DEEPSEEK_API_KEY",
+            provider_name="DeepSeek",
+        )
+    return "lm-studio"
+
+
+def _required_api_key(env_name: str, *, provider_name: str) -> str:
+    api_key = os.environ.get(env_name)
     if not api_key:
         raise ValueError(
-            "OPENROUTER_API_KEY is required when base_url points to OpenRouter"
+            f"{env_name} is required when base_url points to {provider_name}"
         )
     return api_key

@@ -26,13 +26,19 @@ Research 的 OpenAI-compatible LLM client 已支持：
 - LM Studio 默认继续使用 `api_key=lm-studio`。
 - 当 `base_url=https://openrouter.ai/api/v1` 时，从环境变量
   `OPENROUTER_API_KEY` 读取鉴权密钥。
+- 当 `base_url=https://api.deepseek.com` 时，从环境变量
+  `DEEPSEEK_API_KEY` 读取鉴权密钥；推荐优先验证 `deepseek-v4-pro`
+  作为高质量候选生成器，`deepseek-v4-flash` 作为低成本 simulator。
 - 如果未设置 `OPENROUTER_API_KEY`，OpenRouter 调用会直接失败，避免误用
   `lm-studio` 作为远端 key。
+- 如果未设置 `DEEPSEEK_API_KEY`，DeepSeek 调用也会直接失败，避免把远端
+  DeepSeek 请求误记为本地 LM Studio evidence。
 
 执行前需在当前 shell 注入密钥：
 
 ```bash
 export OPENROUTER_API_KEY=...
+export DEEPSEEK_API_KEY=...
 ```
 
 不要把 key 写入仓库、manifest 或结果文件。

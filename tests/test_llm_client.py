@@ -34,3 +34,26 @@ def test_openrouter_client_requires_api_key(monkeypatch):
         assert "OPENROUTER_API_KEY" in str(exc)
     else:
         raise AssertionError("expected missing OpenRouter API key to fail")
+
+
+def test_deepseek_client_reads_api_key_from_environment(monkeypatch):
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "test-deepseek-key")
+
+    with patch("openai.OpenAI") as openai_cls:
+        LLMClient(LLMClientConfig(base_url="https://api.deepseek.com"))
+
+    openai_cls.assert_called_once_with(
+        base_url="https://api.deepseek.com",
+        api_key="test-deepseek-key",
+    )
+
+
+def test_deepseek_client_requires_api_key(monkeypatch):
+    monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
+
+    try:
+        LLMClient(LLMClientConfig(base_url="https://api.deepseek.com"))
+    except ValueError as exc:
+        assert "DEEPSEEK_API_KEY" in str(exc)
+    else:
+        raise AssertionError("expected missing DeepSeek API key to fail")
