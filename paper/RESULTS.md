@@ -289,6 +289,46 @@ contracts, but they do not establish live LLM model-quality improvement.
      artifact. The immediate implication is that provider strength alone does
      not replace explicit calibration and acceptance gates.
 
+9. **DeepSeek v4-flash calibration-split held-out smoke**
+   - The Product worktree then ran the same 12-persona, 3-policy cohort with
+     `model=deepseek-v4-flash`, run id
+     `llm-cohort-policy-deepseek-v4-flash-12x3-calibration-split-001`, and
+     the `official_htops_2506_calibration_split` profile loaded only from the
+     calibration projection artifact.
+   - The completed Product manifest records `36` attempted calls, `36`
+     successful calls, `0` failed calls, and exports
+     `policy-reaction-segment-predictions-deepseek-v4-flash-12x3-calibration-split-001`.
+   - The held-out Research benchmark
+     `policy-reaction-official-segment-benchmark-deepseek-v4-flash-12x3-calibration-split-heldout-001`
+     reports full segment coverage, weighted choice-distribution JSD
+     `0.01038096736167976`, mean JSD `0.010054275892773183`, and segment rank
+     correlation `0.75`.
+   - This is a positive calibration-transfer smoke relative to the uncalibrated
+     DeepSeek v4-flash weighted JSD `0.15922332682959597`, but it is still much
+     weaker than the matched calibration-split `openai/gpt-oss-20b` held-out
+     weighted JSD `0.00011289095369171064`. The safe claim is that explicit
+     calibration split prompting improves DeepSeek v4-flash alignment in this
+     small run; it is not a cross-provider superiority claim.
+
+10. **DeepSeek v4-pro candidate-update smoke**
+    - The Research worktree ran W3/W4 causal calibration with
+      `model=deepseek-v4-pro`, `eval_size=2`, `max_iter=2`, dataset seed `42`,
+      and run id `w3w4-deepseek-v4-pro-eval2-seed42-structured-smoke-001`.
+    - The run completed with `13` total LLM calls, initial loss
+      `0.3003150770148567`, best loss `0.3003150770148567`, and final loss
+      `0.4522002190868819`.
+    - Candidate accounting records `candidate_accepted_count=0`,
+      `candidate_rejected_count=1`, `candidate_acceptance_rate=0.0`, and
+      `textgrad_effect_status=rejected_no_improvement`. Output budget
+      saturation was false, so the negative result is not explained by prompt
+      truncation in this smoke.
+    - This result is useful because it proves the stronger DeepSeek v4-pro
+      candidate-generation path is executable and auditable, but it provides no
+      evidence that the current TextGrad-style prompt update improves loss.
+      DeepSeek v4-pro should therefore be carried forward as a candidate
+      generator to compare against structured persona-parameter calibration,
+      not reported as an effective optimizer yet.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -328,6 +368,12 @@ contracts, but they do not establish live LLM model-quality improvement.
 - CIRCE can route a paid DeepSeek v4-flash Product cohort through the same
   Product-to-Research segment prediction and held-out benchmark artifacts
   without writing provider keys into manifests.
+- CIRCE can evaluate DeepSeek v4-flash under both uncalibrated and
+  calibration-split Product prompts against the same HTOPS/HPS held-out
+  benchmark, preserving provider, model, split, and artifact boundaries.
+- CIRCE can execute a DeepSeek v4-pro candidate-update smoke and record
+  acceptance-gated negative results without treating rejected prompt updates as
+  improvements.
 
 ## Not Yet Claimed
 
@@ -342,6 +388,9 @@ contracts, but they do not establish live LLM model-quality improvement.
   model/provider context, and artifact path.
 - No TextGrad effectiveness claim is made unless the manifest reports
   acceptance-gated candidate accounting with zero pending candidates.
+- No DeepSeek v4-pro prompt-update effectiveness claim is made from the current
+  W3/W4 smoke because the only evaluated candidate was rejected and final loss
+  worsened.
 - No policy-reaction model-quality result, China policy prediction, or field
   validation claim is made from the public-data intake catalog or manifest.
 - No policy-reaction field validation or paper-grade benchmark coverage is made
