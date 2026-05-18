@@ -290,25 +290,33 @@ contracts, but they do not establish live LLM model-quality improvement.
      not replace explicit calibration and acceptance gates.
 
 9. **DeepSeek v4-flash calibration-split held-out smoke**
-   - The Product worktree then ran the same 12-persona, 3-policy cohort with
-     `model=deepseek-v4-flash`, run id
-     `llm-cohort-policy-deepseek-v4-flash-12x3-calibration-split-001`, and
-     the `official_htops_2506_calibration_split` profile loaded only from the
-     calibration projection artifact.
-   - The completed Product manifest records `36` attempted calls, `36`
-     successful calls, `0` failed calls, and exports
-     `policy-reaction-segment-predictions-deepseek-v4-flash-12x3-calibration-split-001`.
-   - The held-out Research benchmark
-     `policy-reaction-official-segment-benchmark-deepseek-v4-flash-12x3-calibration-split-heldout-001`
-     reports full segment coverage, weighted choice-distribution JSD
-     `0.01038096736167976`, mean JSD `0.010054275892773183`, and segment rank
-     correlation `0.75`.
-   - This is a positive calibration-transfer smoke relative to the uncalibrated
+   - The Product worktree then ran `model=deepseek-v4-flash` with the
+     `official_htops_2506_calibration_split` profile loaded only from the
+     calibration projection artifact. Three Product manifests are now recorded:
+     `llm-cohort-policy-deepseek-v4-flash-12x3-calibration-split-001`,
+     `llm-cohort-policy-deepseek-v4-flash-12x3-calibration-split-seed17-001`,
+     and `llm-cohort-policy-deepseek-v4-flash-16x3-calibration-split-seed11-001`.
+   - The first two runs use 12 personas and 3 policies, each with `36` attempted
+     calls, `36` successful calls, and `0` failed calls. The third run increases
+     the cohort to 16 personas and records `48` attempted calls, `48` successful
+     calls, and `0` failed calls.
+   - The corresponding held-out Research benchmarks are
+     `policy-reaction-official-segment-benchmark-deepseek-v4-flash-12x3-calibration-split-heldout-001`,
+     `policy-reaction-official-segment-benchmark-deepseek-v4-flash-12x3-calibration-split-seed17-heldout-001`,
+     and
+     `policy-reaction-official-segment-benchmark-deepseek-v4-flash-16x3-calibration-split-seed11-heldout-001`.
+   - All three held-out artifacts report full segment coverage and segment rank
+     correlation `0.75`. Weighted choice-distribution JSD is stable across the
+     repeats: `0.01038096736167976`, `0.010887103272666527`, and
+     `0.011115634336425139`, with mean `0.010794568323590475`, minimum
+     `0.01038096736167976`, maximum `0.011115634336425139`, and population
+     standard deviation `0.00030698092073803995`.
+   - This is a stable calibration-transfer smoke relative to the uncalibrated
      DeepSeek v4-flash weighted JSD `0.15922332682959597`, but it is still much
      weaker than the matched calibration-split `openai/gpt-oss-20b` held-out
      weighted JSD `0.00011289095369171064`. The safe claim is that explicit
-     calibration split prompting improves DeepSeek v4-flash alignment in this
-     small run; it is not a cross-provider superiority claim.
+     calibration split prompting improves DeepSeek v4-flash alignment in these
+     small runs; it is not a cross-provider superiority claim.
 
 10. **DeepSeek v4-pro candidate-update smoke**
     - The Research worktree ran W3/W4 causal calibration with
