@@ -30,6 +30,7 @@ def load_json_artifact(path: str | Path) -> dict[str, Any]:
 def build_policy_reaction_runtime_patch_effect(
     *,
     baseline_heldout_benchmark: dict[str, Any],
+    baseline_product_manifest: dict[str, Any],
     runtime_patch_heldout_benchmark: dict[str, Any],
     prompt_patch_gate: dict[str, Any],
     product_workflow_report: dict[str, Any],
@@ -47,6 +48,10 @@ def build_policy_reaction_runtime_patch_effect(
     _validate_same_heldout_target(
         baseline_heldout_benchmark,
         runtime_patch_heldout_benchmark,
+    )
+    _validate_baseline_product_manifest(
+        baseline_product_manifest,
+        product_workflow_report,
     )
     _validate_prompt_patch_gate(prompt_patch_gate)
     _validate_product_workflow_report(product_workflow_report, prompt_patch_gate)
@@ -76,6 +81,8 @@ def build_policy_reaction_runtime_patch_effect(
         "baseline_prediction_artifact_id": baseline_heldout_benchmark.get(
             "prediction_artifact_id"
         ),
+        "baseline_product_run_id": baseline_product_manifest["run_id"],
+        "baseline_product_scale": baseline_product_manifest["scale"],
         "runtime_patch_prediction_artifact_id": runtime_patch_heldout_benchmark.get(
             "prediction_artifact_id"
         ),
@@ -85,6 +92,8 @@ def build_policy_reaction_runtime_patch_effect(
         "prompt_patch_gate_artifact_id": prompt_patch_gate["artifact_id"],
         "accepted_candidate_id": prompt_patch_gate["accepted_candidate_id"],
         "product_runtime_run_id": product_workflow_report["source_run_id"],
+        "product_runtime_model": product_workflow_report.get("model"),
+        "product_runtime_scale": product_workflow_report.get("scale", {}),
         "source_split_contract": {
             "candidate_generation": prompt_patch_gate["source_split_contract"][
                 "candidate_generation"
@@ -116,6 +125,7 @@ def write_policy_reaction_runtime_patch_effect(
     path: str | Path,
     *,
     baseline_heldout_benchmark_path: str | Path,
+    baseline_product_manifest_path: str | Path,
     runtime_patch_heldout_benchmark_path: str | Path,
     prompt_patch_gate_path: str | Path,
     product_workflow_report_path: str | Path,
@@ -124,6 +134,7 @@ def write_policy_reaction_runtime_patch_effect(
 ) -> Path:
     artifact = build_policy_reaction_runtime_patch_effect(
         baseline_heldout_benchmark=load_json_artifact(baseline_heldout_benchmark_path),
+        baseline_product_manifest=load_json_artifact(baseline_product_manifest_path),
         runtime_patch_heldout_benchmark=load_json_artifact(
             runtime_patch_heldout_benchmark_path
         ),
@@ -149,6 +160,7 @@ def main() -> int:
             "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-heldout-001.json"
         ),
     )
+    parser.add_argument("--baseline-product-manifest", required=True)
     parser.add_argument(
         "--runtime-patch-heldout-benchmark",
         required=True,
@@ -181,6 +193,7 @@ def main() -> int:
     output_path = write_policy_reaction_runtime_patch_effect(
         args.output,
         baseline_heldout_benchmark_path=args.baseline_heldout_benchmark,
+        baseline_product_manifest_path=args.baseline_product_manifest,
         runtime_patch_heldout_benchmark_path=args.runtime_patch_heldout_benchmark,
         prompt_patch_gate_path=args.prompt_patch_gate,
         product_workflow_report_path=args.product_workflow_report,
@@ -233,6 +246,31 @@ def _validate_same_heldout_target(
         "source_ingestion_artifact_id"
     ]:
         raise ValueError("runtime patch comparison requires the same held-out target")
+
+
+def _validate_baseline_product_manifest(
+    baseline_manifest: dict[str, Any],
+    product_workflow_report: dict[str, Any],
+) -> None:
+    if baseline_manifest.get("schema_version") != "crowdmirror-llm-cohort-gate-v1":
+        raise ValueError("baseline Product manifest has unsupported schema_version")
+    if baseline_manifest.get("status") != "completed":
+        raise ValueError("baseline Product manifest must be completed")
+    if not baseline_manifest.get("run_id"):
+        raise ValueError("baseline Product manifest missing run_id")
+    if not isinstance(baseline_manifest.get("scale"), dict):
+        raise ValueError("baseline Product manifest missing scale")
+    if "prompt_patch_context" in baseline_manifest or "prompt_patch_context" in (
+        baseline_manifest.get("report", {})
+    ):
+        raise ValueError(
+            "baseline Product manifest must not include prompt patch context"
+        )
+    runtime_scale = product_workflow_report.get("scale")
+    if baseline_manifest["scale"] != runtime_scale:
+        raise ValueError(
+            "baseline and runtime Product manifests must use the same Product scale"
+        )
 
 
 def _validate_prompt_patch_gate(gate: dict[str, Any]) -> None:

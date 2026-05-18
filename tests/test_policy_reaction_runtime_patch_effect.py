@@ -15,6 +15,7 @@ def test_build_runtime_patch_effect_reports_heldout_improvement():
             prediction_artifact_id="baseline-predictions",
             weighted_jsd=0.20,
         ),
+        baseline_product_manifest=_baseline_product_manifest(),
         runtime_patch_heldout_benchmark=_benchmark(
             artifact_id="runtime-patch-heldout",
             prediction_artifact_id="runtime-patch-predictions",
@@ -34,11 +35,22 @@ def test_build_runtime_patch_effect_reports_heldout_improvement():
     assert artifact["absolute_loss_delta"] == 0.15
     assert artifact["relative_loss_reduction"] == 0.75
     assert artifact["baseline_prediction_artifact_id"] == "baseline-predictions"
+    assert artifact["baseline_product_run_id"] == "baseline-cohort-test"
+    assert artifact["baseline_product_scale"] == artifact["product_runtime_scale"]
     assert artifact["runtime_patch_prediction_artifact_id"] == (
         "runtime-patch-predictions"
     )
     assert artifact["prompt_patch_gate_artifact_id"] == "prompt-patch-gate-test"
     assert artifact["product_runtime_run_id"] == "runtime-patch-cohort-test"
+    assert artifact["product_runtime_model"] == "openai/gpt-oss-20b"
+    assert artifact["product_runtime_scale"] == {
+        "domain": "policy_reaction",
+        "persona_count": 12,
+        "policy_count": 3,
+        "strategy_count": 3,
+        "scenario_count": 36,
+        "seed": 11,
+    }
     assert artifact["source_split_contract"] == {
         "candidate_generation": "calibration",
         "candidate_acceptance": "heldout",
@@ -58,6 +70,7 @@ def test_build_runtime_patch_effect_marks_regression_without_overclaiming():
             prediction_artifact_id="baseline-predictions",
             weighted_jsd=0.10,
         ),
+        baseline_product_manifest=_baseline_product_manifest(),
         runtime_patch_heldout_benchmark=_benchmark(
             artifact_id="runtime-patch-heldout",
             prediction_artifact_id="runtime-patch-predictions",
@@ -85,6 +98,7 @@ def test_build_runtime_patch_effect_rejects_non_heldout_baseline():
     with pytest.raises(ValueError, match="held-out"):
         build_policy_reaction_runtime_patch_effect(
             baseline_heldout_benchmark=baseline,
+            baseline_product_manifest=_baseline_product_manifest(),
             runtime_patch_heldout_benchmark=_benchmark(
                 artifact_id="runtime-patch-heldout",
                 prediction_artifact_id="runtime-patch-predictions",
@@ -96,13 +110,45 @@ def test_build_runtime_patch_effect_rejects_non_heldout_baseline():
         )
 
 
+def test_build_runtime_patch_effect_rejects_mismatched_baseline_scale():
+    baseline_manifest = _baseline_product_manifest()
+    baseline_manifest["scale"]["seed"] = 17
+
+    with pytest.raises(ValueError, match="same Product scale"):
+        build_policy_reaction_runtime_patch_effect(
+            baseline_heldout_benchmark=_benchmark(weighted_jsd=0.20),
+            baseline_product_manifest=baseline_manifest,
+            runtime_patch_heldout_benchmark=_benchmark(weighted_jsd=0.05),
+            prompt_patch_gate=_prompt_patch_gate(),
+            product_workflow_report=_product_workflow_report(),
+            artifact_id="runtime-patch-effect-test",
+        )
+
+
+def test_build_runtime_patch_effect_rejects_patched_baseline_manifest():
+    baseline_manifest = _baseline_product_manifest()
+    baseline_manifest["prompt_patch_context"] = {"prompt_patch_gate": {"status": "accepted"}}
+
+    with pytest.raises(ValueError, match="baseline Product manifest must not include"):
+        build_policy_reaction_runtime_patch_effect(
+            baseline_heldout_benchmark=_benchmark(weighted_jsd=0.20),
+            baseline_product_manifest=baseline_manifest,
+            runtime_patch_heldout_benchmark=_benchmark(weighted_jsd=0.05),
+            prompt_patch_gate=_prompt_patch_gate(),
+            product_workflow_report=_product_workflow_report(),
+            artifact_id="runtime-patch-effect-test",
+        )
+
+
 def test_write_runtime_patch_effect(tmp_path):
     baseline_path = tmp_path / "baseline.json"
+    baseline_manifest_path = tmp_path / "baseline-manifest.json"
     runtime_path = tmp_path / "runtime.json"
     gate_path = tmp_path / "gate.json"
     workflow_path = tmp_path / "workflow.json"
     output_path = tmp_path / "effect.json"
     baseline_path.write_text(json.dumps(_benchmark(weighted_jsd=0.20)))
+    baseline_manifest_path.write_text(json.dumps(_baseline_product_manifest()))
     runtime_path.write_text(json.dumps(_benchmark(weighted_jsd=0.05)))
     gate_path.write_text(json.dumps(_prompt_patch_gate()))
     workflow_path.write_text(json.dumps(_product_workflow_report()))
@@ -110,6 +156,7 @@ def test_write_runtime_patch_effect(tmp_path):
     written = write_policy_reaction_runtime_patch_effect(
         output_path,
         baseline_heldout_benchmark_path=baseline_path,
+        baseline_product_manifest_path=baseline_manifest_path,
         runtime_patch_heldout_benchmark_path=runtime_path,
         prompt_patch_gate_path=gate_path,
         product_workflow_report_path=workflow_path,
@@ -152,6 +199,22 @@ def _benchmark(
     }
 
 
+def _baseline_product_manifest() -> dict:
+    return {
+        "schema_version": "crowdmirror-llm-cohort-gate-v1",
+        "run_id": "baseline-cohort-test",
+        "status": "completed",
+        "scale": {
+            "domain": "policy_reaction",
+            "persona_count": 12,
+            "policy_count": 3,
+            "strategy_count": 3,
+            "scenario_count": 36,
+            "seed": 11,
+        },
+    }
+
+
 def _prompt_patch_gate() -> dict:
     return {
         "schema_version": "policy-reaction-prompt-patch-gate-v1",
@@ -174,6 +237,15 @@ def _product_workflow_report() -> dict:
         "schema_version": "crowdmirror-policy-workflow-report-v1",
         "workflow_status": "research_gate_passed",
         "source_run_id": "runtime-patch-cohort-test",
+        "model": "openai/gpt-oss-20b",
+        "scale": {
+            "domain": "policy_reaction",
+            "persona_count": 12,
+            "policy_count": 3,
+            "strategy_count": 3,
+            "scenario_count": 36,
+            "seed": 11,
+        },
         "evidence_chain": {
             "prompt_patch_gate": {
                 "artifact_id": "prompt-patch-gate-test",

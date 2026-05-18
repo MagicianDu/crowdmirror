@@ -1,7 +1,7 @@
 {
   "absolute_loss_delta": -0.004203443905,
   "accepted_candidate_id": "policy-reaction-calibration-split-residual-parameter-candidate",
-  "artifact_id": "policy-reaction-runtime-patch-effect-gpt-oss-20b-12x3-calibration-split-heldout-001",
+  "artifact_id": "policy-reaction-runtime-patch-effect-gpt-oss-20b-12x3-calibration-split-seed11-heldout-001",
   "baseline_heldout_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-heldout-001",
   "baseline_loss": 0.000112890954,
   "baseline_prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-calibration-split-001",

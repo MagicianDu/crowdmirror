@@ -231,28 +231,40 @@ contracts, but they do not establish live LLM model-quality improvement.
      records `36` attempted local `openai/gpt-oss-20b` calls, `36`
      successful calls, `0` failed calls, and the accepted prompt patch context
      with `patch_count=8`.
-   - Research evaluated the Product runtime-patch segment prediction artifact
-     `policy-reaction-segment-predictions-gpt-oss-20b-12x3-calibration-split-prompt-patch-runtime-001`
-     against the same held-out HPS/HTOPS evaluation projection through
-     `policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-runtime-patch-heldout-001`.
-     The benchmark reports weighted JSD `0.00431633485886048`, mean JSD
-     `0.005839235427642576`, worst-segment JSD `0.021534012327389267`,
-     segment rank correlation `0.875`, and worst-segment rank correlation
-     `0.5`.
-   - The explicit runtime effect artifact
+   - A root-cause check found that the first runtime-effect comparison used the
+     older uncalibrated held-out benchmark as its baseline. That comparison
+     overstated the runtime patch because the fair baseline for this question
+     is the same `official_htops_2506_calibration_split` Product run without
+     prompt/persona patch injection.
+   - The corrected effect artifact
      `policy-reaction-runtime-patch-effect-gpt-oss-20b-12x3-calibration-split-heldout-001`
-     compares the original held-out baseline benchmark
-     `policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-heldout-001`
-     with the runtime-patch held-out benchmark on the same evaluation target.
-     Weighted JSD decreases from `0.188148467815` to
-     `0.004316334859`, an absolute loss delta of `0.183832132956` and a
-     relative loss reduction of `0.977058889135`.
-   - This is stronger than merely linking a Research gate in a Product report:
-     the accepted prompt/persona patch now changes Product runtime behavior and
-     improves held-out public-data segment alignment in an auditable artifact.
-     The claim remains local, same-source, same-release, and segment-level; the
-     fixed-income segment remains the largest residual, and the artifact does
-     not establish field validation, causal policy effects, or cross-source
+     now compares the matched calibration-split baseline
+     `policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-heldout-001`
+     against the runtime-patch benchmark
+     `policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-runtime-patch-heldout-001`.
+     Weighted JSD increases from `0.000112890954` to
+     `0.004316334859`, so the runtime patch regresses relative to the matched
+     calibration-split baseline.
+   - Two additional repeat axes were run through Product and evaluated in
+     Research: `12x3 seed=17` and `16x3 seed=11`. The explicit repeat effect
+     artifacts report regressions in both cases: `12x3 seed=17` increases
+     weighted JSD from `0.000111545213` to `0.002550125008`, and `16x3
+     seed=11` increases weighted JSD from `0.000109778219` to
+     `0.008459664001`.
+   - The stability matrix
+     `policy-reaction-runtime-patch-stability-gpt-oss-20b-calibration-split-heldout-001`
+     summarizes three matched baseline-vs-runtime-patch comparisons. It records
+     `effect_count=3`, `improved_count=0`, `regressed_count=3`,
+     `overall_status=stable_regression`, and mean relative loss reduction
+     `-45.052587741358`.
+   - This negative result is important for the Research/Product bridge: the
+     accepted prompt/persona patch is runnable and auditable, but direct
+     injection weakens held-out segment alignment once the stronger
+     calibration-split baseline is used. The patch gate should therefore be
+     treated as a candidate-generation and audit component, not as accepted
+     runtime evidence until the actual runtime effect gate passes. The claim
+     remains local, same-source, same-release, and segment-level; it does not
+     establish field validation, causal policy effects, or cross-source
      generalization.
 
 ## Accepted Claims

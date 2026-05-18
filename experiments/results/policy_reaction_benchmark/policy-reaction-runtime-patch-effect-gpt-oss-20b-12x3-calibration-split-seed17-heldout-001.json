@@ -1,18 +1,18 @@
 {
-  "absolute_loss_delta": -0.004203443905,
+  "absolute_loss_delta": -0.002438579795,
   "accepted_candidate_id": "policy-reaction-calibration-split-residual-parameter-candidate",
-  "artifact_id": "policy-reaction-runtime-patch-effect-gpt-oss-20b-12x3-calibration-split-heldout-001",
-  "baseline_heldout_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-heldout-001",
-  "baseline_loss": 0.000112890954,
-  "baseline_prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-calibration-split-001",
-  "baseline_product_run_id": "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-001",
+  "artifact_id": "policy-reaction-runtime-patch-effect-gpt-oss-20b-12x3-calibration-split-seed17-heldout-001",
+  "baseline_heldout_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-seed17-heldout-001",
+  "baseline_loss": 0.000111545213,
+  "baseline_prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-calibration-split-seed17-001",
+  "baseline_product_run_id": "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-seed17-001",
   "baseline_product_scale": {
     "calibration_profile": "official_htops_2506_calibration_split",
     "domain": "policy_reaction",
     "persona_count": 12,
     "policy_count": 3,
     "scenario_count": 36,
-    "seed": 11,
+    "seed": 17,
     "strategy_count": 3
   },
   "claim_boundaries": [
@@ -36,18 +36,18 @@
   "loss_metric": "weighted_choice_distribution_jsd",
   "overall_status": "regressed",
   "product_runtime_model": "openai/gpt-oss-20b",
-  "product_runtime_run_id": "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-prompt-patch-runtime-001",
+  "product_runtime_run_id": "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-prompt-patch-runtime-seed17-001",
   "product_runtime_scale": {
     "calibration_profile": "official_htops_2506_calibration_split",
     "domain": "policy_reaction",
     "persona_count": 12,
     "policy_count": 3,
     "scenario_count": 36,
-    "seed": 11,
+    "seed": 17,
     "strategy_count": 3
   },
   "prompt_patch_gate_artifact_id": "policy-reaction-prompt-patch-gate-gpt-oss-20b-12x3-calibration-split-heldout-001",
-  "relative_loss_reduction": -37.234550400549,
+  "relative_loss_reduction": -21.861805960255,
   "risk_flags": [
     "local_llm_only",
     "not_population_scale_proof",
@@ -56,9 +56,9 @@
     "runtime_patch_did_not_improve_heldout_alignment",
     "runtime_patch_effect_not_field_validation"
   ],
-  "runtime_patch_heldout_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-runtime-patch-heldout-001",
-  "runtime_patch_loss": 0.004316334859,
-  "runtime_patch_prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-calibration-split-prompt-patch-runtime-001",
+  "runtime_patch_heldout_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-runtime-patch-seed17-heldout-001",
+  "runtime_patch_loss": 0.002550125008,
+  "runtime_patch_prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-calibration-split-prompt-patch-runtime-seed17-001",
   "schema_version": "policy-reaction-runtime-patch-effect-v1",
   "source_split_contract": {
     "candidate_acceptance": "heldout",
