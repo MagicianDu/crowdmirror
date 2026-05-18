@@ -29,6 +29,9 @@ Research 的 OpenAI-compatible LLM client 已支持：
 - 当 `base_url=https://api.deepseek.com` 时，从环境变量
   `DEEPSEEK_API_KEY` 读取鉴权密钥；推荐优先验证 `deepseek-v4-pro`
   作为高质量候选生成器，`deepseek-v4-flash` 作为低成本 simulator。
+  Research client 默认通过 `extra_body={"thinking":{"type":"disabled"}}`
+  关闭 thinking，用于普通结构化 JSON 校准任务；需要推理型候选生成时再显式
+  打开 thinking 并单独记录配置。
 - 如果未设置 `OPENROUTER_API_KEY`，OpenRouter 调用会直接失败，避免误用
   `lm-studio` 作为远端 key。
 - 如果未设置 `DEEPSEEK_API_KEY`，DeepSeek 调用也会直接失败，避免把远端

@@ -267,6 +267,28 @@ contracts, but they do not establish live LLM model-quality improvement.
      establish field validation, causal policy effects, or cross-source
      generalization.
 
+8. **DeepSeek v4-flash Product cohort smoke**
+   - The Product worktree connected to the DeepSeek OpenAI-compatible endpoint
+     with `model=deepseek-v4-flash` and ran a 12-persona, 3-policy
+     policy-reaction cohort under run id
+     `llm-cohort-policy-deepseek-v4-flash-12x3-smoke-001`.
+   - The completed Product manifest records `36` attempted calls, `36`
+     successful calls, `0` failed calls, and exports the segment prediction
+     artifact
+     `policy-reaction-segment-predictions-deepseek-v4-flash-12x3-smoke-001`.
+   - The Research held-out official segment benchmark
+     `policy-reaction-official-segment-benchmark-deepseek-v4-flash-12x3-smoke-heldout-001`
+     consumes that Product prediction artifact and the HTOPS/HPS evaluation
+     split. It reports full segment coverage and weighted choice-distribution
+     JSD `0.15922332682959597`.
+   - This is a useful provider-integration and benchmarkability result, not a
+     calibration improvement result. In this smoke setting, DeepSeek v4-flash
+     remains much worse than the matched calibration-split `openai/gpt-oss-20b`
+     held-out artifact with weighted JSD `0.00011289095369171064`, while being
+     in the same rough range as the uncalibrated `openai/gpt-oss-20b` held-out
+     artifact. The immediate implication is that provider strength alone does
+     not replace explicit calibration and acceptance gates.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -303,6 +325,9 @@ contracts, but they do not establish live LLM model-quality improvement.
 - CIRCE can derive structured prompt/persona patch candidates from a
   calibration projection and accept them only through a held-out prompt patch
   gate with inspectable residual and parameter patch records.
+- CIRCE can route a paid DeepSeek v4-flash Product cohort through the same
+  Product-to-Research segment prediction and held-out benchmark artifacts
+  without writing provider keys into manifests.
 
 ## Not Yet Claimed
 

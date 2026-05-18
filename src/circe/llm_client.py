@@ -61,15 +61,18 @@ class LLMClient:
         )
 
     def _chat_openai(self, system: str, user: str) -> LLMResponse:
-        response = self.client.chat.completions.create(
-            model=self.config.model,
-            max_tokens=self.config.max_tokens,
-            temperature=self.config.temperature,
-            messages=[
+        kwargs = {
+            "model": self.config.model,
+            "max_tokens": self.config.max_tokens,
+            "temperature": self.config.temperature,
+            "messages": [
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
             ],
-        )
+        }
+        if _is_deepseek_base_url(self.config.base_url):
+            kwargs["extra_body"] = {"thinking": {"type": "disabled"}}
+        response = self.client.chat.completions.create(**kwargs)
         choice = response.choices[0].message
         content = choice.content or ""
         return LLMResponse(
@@ -91,6 +94,10 @@ def _openai_compatible_api_key(base_url: str) -> str:
             provider_name="DeepSeek",
         )
     return "lm-studio"
+
+
+def _is_deepseek_base_url(base_url: str | None) -> bool:
+    return base_url is not None and "api.deepseek.com" in base_url
 
 
 def _required_api_key(env_name: str, *, provider_name: str) -> str:

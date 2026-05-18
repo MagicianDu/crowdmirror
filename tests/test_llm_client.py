@@ -1,3 +1,4 @@
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from circe.llm_client import LLMClient, LLMClientConfig
@@ -46,6 +47,28 @@ def test_deepseek_client_reads_api_key_from_environment(monkeypatch):
         base_url="https://api.deepseek.com",
         api_key="test-deepseek-key",
     )
+
+
+def test_deepseek_chat_disables_thinking(monkeypatch):
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "test-deepseek-key")
+
+    with patch("openai.OpenAI") as openai_cls:
+        response = SimpleNamespace(
+            choices=[
+                SimpleNamespace(
+                    message=SimpleNamespace(content='{"ok": true}'),
+                )
+            ],
+            usage=SimpleNamespace(prompt_tokens=3, completion_tokens=4),
+        )
+        openai_cls.return_value.chat.completions.create.return_value = response
+        client = LLMClient(LLMClientConfig(base_url="https://api.deepseek.com"))
+        result = client.chat("system", "user")
+
+    assert result.content == '{"ok": true}'
+    openai_cls.return_value.chat.completions.create.assert_called_once()
+    kwargs = openai_cls.return_value.chat.completions.create.call_args.kwargs
+    assert kwargs["extra_body"] == {"thinking": {"type": "disabled"}}
 
 
 def test_deepseek_client_requires_api_key(monkeypatch):
