@@ -1,0 +1,47 @@
+{
+  "absolute_loss_delta": 0.183832132956,
+  "accepted_candidate_id": "policy-reaction-calibration-split-residual-parameter-candidate",
+  "artifact_id": "policy-reaction-runtime-patch-effect-gpt-oss-20b-12x3-calibration-split-heldout-001",
+  "baseline_heldout_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-heldout-001",
+  "baseline_loss": 0.188148467815,
+  "baseline_prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-001",
+  "claim_boundaries": [
+    "Runtime-patch effect is a held-out public-data alignment comparison; not field validation.",
+    "The baseline and runtime-patch benchmarks use the same held-out HPS/HTOPS evaluation projection.",
+    "This artifact compares segment-level distributional alignment only; it does not establish causal policy effects.",
+    "Official public-use segment alignment smoke benchmark only; not field validation.",
+    "The official side is an observed distribution proxy derived from public-use HTOPS/HPS survey fields.",
+    "The prediction side must come from a separately auditable LLM cohort or product segment report.",
+    "This artifact does not establish causal policy effects or China policy forecast validity.",
+    "Policy-reaction prompt/persona patch gate evidence only; candidates are generated from calibration split and accepted only on held-out evaluation.",
+    "Prompt/persona patch candidates are generated only from the HPS/HTOPS calibration projection.",
+    "The acceptance decision uses only the held-out HPS/HTOPS evaluation projection and does not establish field validation."
+  ],
+  "claim_boundary": "Runtime-patch effect is a held-out public-data alignment comparison; not field validation.",
+  "coverage": {
+    "baseline_coverage_rate": 1.0,
+    "runtime_patch_coverage_rate": 1.0
+  },
+  "heldout_source_ingestion_artifact_id": "policy-reaction-htops-2506-split-ingestion-001-evaluation",
+  "loss_metric": "weighted_choice_distribution_jsd",
+  "overall_status": "improved",
+  "product_runtime_run_id": "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-prompt-patch-runtime-001",
+  "prompt_patch_gate_artifact_id": "policy-reaction-prompt-patch-gate-gpt-oss-20b-12x3-calibration-split-heldout-001",
+  "relative_loss_reduction": 0.977058889135,
+  "risk_flags": [
+    "local_llm_only",
+    "not_population_scale_proof",
+    "research_gate_not_field_validation",
+    "research_prompt_patch_gate_not_field_validation",
+    "runtime_patch_effect_not_field_validation"
+  ],
+  "runtime_patch_heldout_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-runtime-patch-heldout-001",
+  "runtime_patch_loss": 0.004316334859,
+  "runtime_patch_prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-calibration-split-prompt-patch-runtime-001",
+  "schema_version": "policy-reaction-runtime-patch-effect-v1",
+  "source_split_contract": {
+    "candidate_acceptance": "heldout",
+    "candidate_generation": "calibration",
+    "runtime_effect_evaluation": "heldout"
+  }
+}
