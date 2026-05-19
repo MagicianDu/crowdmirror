@@ -12,6 +12,11 @@ from circe.calibration.s2pc import (
     run_constrained_parameter_beam_search,
     validate_semantic_factor_catalog,
 )
+from experiments.policy_reaction_s2pc_gate import (
+    build_policy_reaction_s2pc_candidate,
+    build_policy_reaction_s2pc_gate,
+    write_policy_reaction_s2pc_gate,
+)
 
 
 def test_default_semantic_factor_catalog_is_strict_json_and_bounded():
@@ -195,6 +200,97 @@ def test_build_s2pc_candidate_artifact_preserves_provenance():
     json.dumps(candidate, allow_nan=False)
 
 
+def test_policy_reaction_s2pc_gate_accepts_improved_heldout_candidate(tmp_path):
+    candidate = build_policy_reaction_s2pc_candidate(
+        _calibration_benchmark(),
+        candidate_id="policy-reaction-s2pc-candidate-test",
+        min_residual_magnitude=0.10,
+        top_k=1,
+        beam_width=2,
+    )
+
+    gate = build_policy_reaction_s2pc_gate(
+        candidate,
+        initial_heldout_benchmark=_heldout_benchmark("initial-heldout", loss=0.159),
+        candidate_heldout_benchmark=_heldout_benchmark(
+            "candidate-heldout",
+            loss=0.011,
+        ),
+        artifact_id="policy-reaction-s2pc-gate-test",
+    )
+
+    assert gate["schema_version"] == "policy-reaction-s2pc-gate-v1"
+    assert gate["overall_status"] == "accepted"
+    assert gate["initial_loss"] == 0.159
+    assert gate["best_loss"] == 0.011
+    assert gate["final_loss"] == 0.011
+    assert gate["candidate_accepted_count"] == 1
+    assert gate["candidate_rejected_count"] == 0
+    assert gate["source_split_contract"]["candidate_acceptance"] == "heldout"
+    json.dumps(gate, allow_nan=False)
+
+
+def test_policy_reaction_s2pc_gate_rejects_regressed_candidate():
+    candidate = build_policy_reaction_s2pc_candidate(
+        _calibration_benchmark(),
+        candidate_id="policy-reaction-s2pc-candidate-test",
+        min_residual_magnitude=0.10,
+        top_k=1,
+        beam_width=2,
+    )
+
+    gate = build_policy_reaction_s2pc_gate(
+        candidate,
+        initial_heldout_benchmark=_heldout_benchmark("initial-heldout", loss=0.011),
+        candidate_heldout_benchmark=_heldout_benchmark(
+            "candidate-heldout",
+            loss=0.020,
+        ),
+        artifact_id="policy-reaction-s2pc-gate-test",
+    )
+
+    assert gate["overall_status"] == "rejected"
+    assert gate["best_loss"] == 0.011
+    assert gate["final_loss"] == 0.011
+    assert gate["candidate_accepted_count"] == 0
+    assert gate["candidate_rejected_count"] == 1
+
+
+def test_write_policy_reaction_s2pc_gate_writes_candidate_and_gate(tmp_path):
+    candidate_output = tmp_path / "candidate.json"
+    gate_output = tmp_path / "gate.json"
+    calibration_path = tmp_path / "calibration.json"
+    initial_path = tmp_path / "initial.json"
+    candidate_heldout_path = tmp_path / "candidate-heldout.json"
+    calibration_path.write_text(json.dumps(_calibration_benchmark()))
+    initial_path.write_text(
+        json.dumps(_heldout_benchmark("initial-heldout", loss=0.159))
+    )
+    candidate_heldout_path.write_text(
+        json.dumps(_heldout_benchmark("candidate-heldout", loss=0.011))
+    )
+
+    written = write_policy_reaction_s2pc_gate(
+        gate_output,
+        candidate_output_path=candidate_output,
+        calibration_benchmark_path=calibration_path,
+        initial_heldout_benchmark_path=initial_path,
+        candidate_heldout_benchmark_path=candidate_heldout_path,
+        candidate_id="policy-reaction-s2pc-candidate-test",
+        artifact_id="policy-reaction-s2pc-gate-test",
+        min_residual_magnitude=0.10,
+        top_k=1,
+        beam_width=2,
+    )
+
+    assert written == gate_output
+    assert (
+        json.loads(candidate_output.read_text())["candidate_id"]
+        == "policy-reaction-s2pc-candidate-test"
+    )
+    assert json.loads(gate_output.read_text())["overall_status"] == "accepted"
+
+
 def _calibration_benchmark() -> dict:
     return {
         "schema_version": "policy-reaction-official-segment-benchmark-v1",
@@ -230,4 +326,21 @@ def _calibration_benchmark() -> dict:
                 },
             },
         },
+    }
+
+
+def _heldout_benchmark(artifact_id: str, *, loss: float) -> dict:
+    return {
+        "schema_version": "policy-reaction-official-segment-benchmark-v1",
+        "artifact_id": artifact_id,
+        "source_ingestion_artifact_id": "policy-reaction-htops-evaluation-ingestion",
+        "prediction_artifact_id": f"{artifact_id}-predictions",
+        "prediction_model": "deepseek-v4-flash",
+        "overall_status": "passed",
+        "benchmark_metrics": {
+            "weighted_choice_distribution_jsd": loss,
+            "segment_rank_correlation": 0.75,
+        },
+        "segment_coverage": {"coverage_rate": 1.0},
+        "segment_metrics": {},
     }
