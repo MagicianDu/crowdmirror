@@ -10,6 +10,7 @@ from typing import Any
 
 S2PC_SCHEMA_VERSION = "circe-s2pc-v1"
 S2PC_CANDIDATE_SCHEMA_VERSION = "policy-reaction-s2pc-candidate-v1"
+S2PC_L1_CANDIDATE_SET_SCHEMA_VERSION = "policy-reaction-s2pc-l1-candidate-set-v1"
 S2PC_GATE_SCHEMA_VERSION = "policy-reaction-s2pc-gate-v1"
 RESIDUAL_SCHEMA_VERSION = "circe-s2pc-residuals-v1"
 SEMANTIC_MATCH_SCHEMA_VERSION = "circe-s2pc-semantic-matches-v1"
@@ -475,6 +476,150 @@ def build_s2pc_candidate_artifact(
         "claim_boundary": (
             "S2PC candidate artifacts are candidate-generation evidence. "
             "They require heldout gate results before acceptance claims."
+        ),
+    }
+    _assert_strict_json(artifact)
+    return artifact
+
+
+def build_s2pc_l1_candidate_set_artifact(
+    *,
+    candidate_set_id: str,
+    calibration_benchmark: dict[str, Any],
+    residual_artifact: dict[str, Any],
+    semantic_matches: dict[str, Any],
+    parameter_patches: dict[str, Any],
+    search_result: dict[str, Any],
+    max_candidates: int | None = None,
+) -> dict[str, Any]:
+    _required_string({"candidate_set_id": candidate_set_id}, "candidate_set_id")
+    _validate_policy_reaction_benchmark(calibration_benchmark, "calibration_benchmark")
+    if residual_artifact.get("schema_version") != RESIDUAL_SCHEMA_VERSION:
+        raise ValueError("residual_artifact has unsupported schema_version")
+    if semantic_matches.get("schema_version") != SEMANTIC_MATCH_SCHEMA_VERSION:
+        raise ValueError("semantic_matches has unsupported schema_version")
+    if parameter_patches.get("schema_version") != PARAMETER_PATCH_SCHEMA_VERSION:
+        raise ValueError("parameter_patches has unsupported schema_version")
+    if search_result.get("schema_version") != BEAM_SEARCH_SCHEMA_VERSION:
+        raise ValueError("search_result has unsupported schema_version")
+    if max_candidates is not None and (
+        isinstance(max_candidates, bool) or max_candidates <= 0
+    ):
+        raise ValueError("max_candidates must be positive")
+    search_candidates = search_result.get("candidates")
+    if not isinstance(search_candidates, list) or not search_candidates:
+        raise ValueError("search_result requires non-empty candidates")
+
+    selected = search_candidates[:max_candidates] if max_candidates else search_candidates
+    candidates = []
+    for candidate in selected:
+        candidate_copy = copy.deepcopy(candidate)
+        candidate_rank = int(candidate_copy["candidate_index"])
+        candidates.append(
+            {
+                "candidate_id": f"{candidate_set_id}-c{candidate_rank:02d}",
+                "rank": candidate_rank,
+                "segment": candidate_copy["segment"],
+                "policy_id": candidate_copy["policy_id"],
+                "proxy_score": candidate_copy["proxy_score"],
+                "parameter_patches": candidate_copy["parameter_patches"],
+                "candidate_prompt_components": _render_candidate_prompt_components(
+                    candidate_copy
+                ),
+            }
+        )
+
+    artifact = {
+        "schema_version": S2PC_L1_CANDIDATE_SET_SCHEMA_VERSION,
+        "candidate_set_id": candidate_set_id,
+        "generator": "s2pc_l1_multi_candidate_runtime_search",
+        "calibration_benchmark_artifact_id": calibration_benchmark["artifact_id"],
+        "source_prediction_artifact_id": calibration_benchmark.get(
+            "prediction_artifact_id"
+        ),
+        "source_split_contract": {
+            "residual_mining": "calibration",
+            "semantic_factor_retrieval": "calibration",
+            "parameter_search": "calibration",
+            "candidate_acceptance": "heldout_required",
+        },
+        "residual_summary": {
+            "source_residual_artifact_id": residual_artifact[
+                "source_benchmark_artifact_id"
+            ],
+            "residual_count": residual_artifact["residual_count"],
+            "semantic_match_count": semantic_matches["match_count"],
+            "parameter_patch_count": parameter_patches["parameter_patch_count"],
+        },
+        "search_summary": {
+            "beam_width": search_result["beam_width"],
+            "candidate_count": search_result["candidate_count"],
+            "exported_candidate_count": len(candidates),
+        },
+        "candidate_count": len(candidates),
+        "candidates": candidates,
+        "claim_boundary": (
+            "S2PC L1 candidate sets are multi-candidate runtime-search inputs. "
+            "Each candidate requires heldout runtime-effect evaluation before "
+            "any effectiveness claim."
+        ),
+    }
+    _assert_strict_json(artifact)
+    return artifact
+
+
+def extract_s2pc_candidate_from_l1_set(
+    candidate_set: dict[str, Any],
+    *,
+    candidate_id: str,
+) -> dict[str, Any]:
+    if candidate_set.get("schema_version") != S2PC_L1_CANDIDATE_SET_SCHEMA_VERSION:
+        raise ValueError("candidate_set has unsupported schema_version")
+    _required_string({"candidate_id": candidate_id}, "candidate_id")
+    candidates = candidate_set.get("candidates")
+    if not isinstance(candidates, list) or not candidates:
+        raise ValueError("candidate_set requires non-empty candidates")
+    selected = None
+    for candidate in candidates:
+        if isinstance(candidate, dict) and candidate.get("candidate_id") == candidate_id:
+            selected = candidate
+            break
+    if selected is None:
+        raise ValueError("candidate_id not found in candidate_set")
+
+    artifact = {
+        "schema_version": S2PC_CANDIDATE_SCHEMA_VERSION,
+        "candidate_id": candidate_id,
+        "generator": candidate_set["generator"],
+        "calibration_benchmark_artifact_id": candidate_set[
+            "calibration_benchmark_artifact_id"
+        ],
+        "source_prediction_artifact_id": candidate_set.get(
+            "source_prediction_artifact_id"
+        ),
+        "source_split_contract": copy.deepcopy(
+            candidate_set["source_split_contract"]
+        ),
+        "residual_summary": copy.deepcopy(candidate_set["residual_summary"]),
+        "search_summary": {
+            **copy.deepcopy(candidate_set["search_summary"]),
+            "selected_candidate_rank": selected["rank"],
+            "selected_proxy_score": selected["proxy_score"],
+        },
+        "best_candidate": {
+            "candidate_index": selected["rank"],
+            "segment": selected["segment"],
+            "policy_id": selected["policy_id"],
+            "proxy_score": selected["proxy_score"],
+            "parameter_patches": copy.deepcopy(selected["parameter_patches"]),
+        },
+        "candidate_prompt_components": copy.deepcopy(
+            selected["candidate_prompt_components"]
+        ),
+        "claim_boundary": (
+            "This S2PC L1 candidate is extracted from a multi-candidate search set "
+            "for Product runtime probing. It requires heldout runtime-effect "
+            "evaluation before any effectiveness claim."
         ),
     }
     _assert_strict_json(artifact)

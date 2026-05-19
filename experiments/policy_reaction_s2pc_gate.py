@@ -19,6 +19,7 @@ from circe.calibration.s2pc import (  # noqa: E402
     S2PC_CANDIDATE_SCHEMA_VERSION,
     S2PC_GATE_SCHEMA_VERSION,
     build_s2pc_candidate_artifact,
+    build_s2pc_l1_candidate_set_artifact,
     compile_semantic_matches_to_parameter_patches,
     default_semantic_factor_catalog,
     mine_policy_reaction_residuals,
@@ -69,6 +70,34 @@ def build_policy_reaction_s2pc_candidate(
         semantic_matches=matches,
         parameter_patches=patches,
         search_result=search,
+    )
+
+
+def build_policy_reaction_s2pc_l1_candidate_set(
+    calibration_benchmark: dict[str, Any],
+    *,
+    candidate_set_id: str,
+    min_residual_magnitude: float = 0.05,
+    top_k: int = 2,
+    beam_width: int = 3,
+    max_candidates: int | None = None,
+) -> dict[str, Any]:
+    catalog = default_semantic_factor_catalog()
+    residuals = mine_policy_reaction_residuals(
+        calibration_benchmark,
+        min_magnitude=min_residual_magnitude,
+    )
+    matches = retrieve_semantic_factors(residuals, catalog, top_k=top_k)
+    patches = compile_semantic_matches_to_parameter_patches(matches, catalog)
+    search = run_constrained_parameter_beam_search(patches, beam_width=beam_width)
+    return build_s2pc_l1_candidate_set_artifact(
+        candidate_set_id=candidate_set_id,
+        calibration_benchmark=calibration_benchmark,
+        residual_artifact=residuals,
+        semantic_matches=matches,
+        parameter_patches=patches,
+        search_result=search,
+        max_candidates=max_candidates,
     )
 
 
@@ -222,11 +251,40 @@ def write_policy_reaction_s2pc_gate(
     return output
 
 
+def write_policy_reaction_s2pc_l1_candidate_set(
+    path: str | Path,
+    *,
+    calibration_benchmark_path: str | Path,
+    candidate_set_id: str,
+    min_residual_magnitude: float = 0.05,
+    top_k: int = 2,
+    beam_width: int = 3,
+    max_candidates: int | None = None,
+) -> Path:
+    artifact = build_policy_reaction_s2pc_l1_candidate_set(
+        load_json_artifact(calibration_benchmark_path),
+        candidate_set_id=candidate_set_id,
+        min_residual_magnitude=min_residual_magnitude,
+        top_k=top_k,
+        beam_width=beam_width,
+        max_candidates=max_candidates,
+    )
+    output = Path(path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(artifact, indent=2, sort_keys=True, allow_nan=False) + "\n")
+    return output
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--mode",
+        choices=["gate", "l1-candidate-set"],
+        default="gate",
+    )
     parser.add_argument("--calibration-benchmark", required=True)
-    parser.add_argument("--initial-heldout-benchmark", required=True)
-    parser.add_argument("--candidate-heldout-benchmark", required=True)
+    parser.add_argument("--initial-heldout-benchmark")
+    parser.add_argument("--candidate-heldout-benchmark")
     parser.add_argument(
         "--candidate-id",
         default="policy-reaction-s2pc-candidate-current-001",
@@ -252,8 +310,40 @@ def main() -> int:
     parser.add_argument("--min-residual-magnitude", type=float, default=0.05)
     parser.add_argument("--top-k", type=int, default=2)
     parser.add_argument("--beam-width", type=int, default=3)
+    parser.add_argument("--max-candidates", type=int)
     parser.add_argument("--loss-metric", default=DEFAULT_LOSS_METRIC)
     args = parser.parse_args()
+
+    if args.mode == "l1-candidate-set":
+        output = write_policy_reaction_s2pc_l1_candidate_set(
+            args.output,
+            calibration_benchmark_path=args.calibration_benchmark,
+            candidate_set_id=args.artifact_id,
+            min_residual_magnitude=args.min_residual_magnitude,
+            top_k=args.top_k,
+            beam_width=args.beam_width,
+            max_candidates=args.max_candidates,
+        )
+        artifact = load_json_artifact(output)
+        print(
+            json.dumps(
+                {
+                    "artifact_id": artifact["candidate_set_id"],
+                    "output": str(output),
+                    "status": "generated",
+                    "candidate_count": artifact["candidate_count"],
+                },
+                sort_keys=True,
+                allow_nan=False,
+            )
+        )
+        return 0
+
+    if not args.initial_heldout_benchmark or not args.candidate_heldout_benchmark:
+        raise ValueError(
+            "gate mode requires --initial-heldout-benchmark and "
+            "--candidate-heldout-benchmark"
+        )
 
     output = write_policy_reaction_s2pc_gate(
         args.output,

@@ -1,0 +1,672 @@
+{
+  "calibration_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-initial-001",
+  "candidate_count": 6,
+  "candidate_set_id": "policy-reaction-s2pc-l1-candidate-set-current-001",
+  "candidates": [
+    {
+      "candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c01",
+      "candidate_prompt_components": {
+        "calibration_anchor": {
+          "fixed_income_inflation_stressed": "S2PC factors=household_budget_rigidity,institutional_trust; primary_policy=food_subsidy_expansion; parameters=household_budget_rigidity=0.130958798022;response_temperature=0.852785264359;prior_anchor_strength=0.624611730696;trust_multiplier=0.974611730696"
+        },
+        "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+        "segment_prompt": {
+          "fixed_income_inflation_stressed": "Use the persona's calibrated policy-reaction parameters when estimating support probabilities for this segment."
+        }
+      },
+      "parameter_patches": [
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase",
+            "food_subsidy_expansion": "increase"
+          },
+          "factor_id": "household_budget_rigidity",
+          "factor_label": "\u5bb6\u5ead\u9884\u7b97\u521a\u6027",
+          "parameter_bounds": {
+            "max": 0.3,
+            "min": 0.0
+          },
+          "parameter_name": "household_budget_rigidity",
+          "parameter_value": 0.130958798022,
+          "policy_id": "food_subsidy_expansion",
+          "provenance": {
+            "direction": "over_predicted",
+            "magnitude": 0.436529326741,
+            "match_score": 2.436529326741,
+            "residual": -0.436529326741,
+            "source_split": "calibration"
+          },
+          "segment": "fixed_income_inflation_stressed"
+        },
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase",
+            "food_subsidy_expansion": "increase"
+          },
+          "factor_id": "household_budget_rigidity",
+          "factor_label": "\u5bb6\u5ead\u9884\u7b97\u521a\u6027",
+          "parameter_bounds": {
+            "max": 1.05,
+            "min": 0.7
+          },
+          "parameter_name": "response_temperature",
+          "parameter_value": 0.852785264359,
+          "policy_id": "food_subsidy_expansion",
+          "provenance": {
+            "direction": "over_predicted",
+            "magnitude": 0.436529326741,
+            "match_score": 2.436529326741,
+            "residual": -0.436529326741,
+            "source_split": "calibration"
+          },
+          "segment": "fixed_income_inflation_stressed"
+        },
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase",
+            "food_subsidy_expansion": "increase"
+          },
+          "factor_id": "institutional_trust",
+          "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+          "parameter_bounds": {
+            "max": 0.85,
+            "min": 0.45
+          },
+          "parameter_name": "prior_anchor_strength",
+          "parameter_value": 0.624611730696,
+          "policy_id": "food_subsidy_expansion",
+          "provenance": {
+            "direction": "over_predicted",
+            "magnitude": 0.436529326741,
+            "match_score": 2.436529326741,
+            "residual": -0.436529326741,
+            "source_split": "calibration"
+          },
+          "segment": "fixed_income_inflation_stressed"
+        },
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase",
+            "food_subsidy_expansion": "increase"
+          },
+          "factor_id": "institutional_trust",
+          "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+          "parameter_bounds": {
+            "max": 1.2,
+            "min": 0.8
+          },
+          "parameter_name": "trust_multiplier",
+          "parameter_value": 0.974611730696,
+          "policy_id": "food_subsidy_expansion",
+          "provenance": {
+            "direction": "over_predicted",
+            "magnitude": 0.436529326741,
+            "match_score": 2.436529326741,
+            "residual": -0.436529326741,
+            "source_split": "calibration"
+          },
+          "segment": "fixed_income_inflation_stressed"
+        }
+      ],
+      "policy_id": "food_subsidy_expansion",
+      "proxy_score": 4.254466026348,
+      "rank": 1,
+      "segment": "fixed_income_inflation_stressed"
+    },
+    {
+      "candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c02",
+      "candidate_prompt_components": {
+        "calibration_anchor": {
+          "general_population_cost_pressure": "S2PC factors=eligibility_uncertainty,policy_complexity_aversion; primary_policy=food_subsidy_expansion; parameters=eligibility_uncertainty_penalty=0.073929727198;policy_complexity_aversion=0.073929727198;policy_complexity_aversion=0.092412158997;response_temperature=0.879377022597"
+        },
+        "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+        "segment_prompt": {
+          "general_population_cost_pressure": "Use the persona's calibrated policy-reaction parameters when estimating support probabilities for this segment."
+        }
+      },
+      "parameter_patches": [
+        {
+          "expected_effect": {
+            "food_subsidy_expansion": "decrease"
+          },
+          "factor_id": "eligibility_uncertainty",
+          "factor_label": "\u8d44\u683c\u4e0d\u786e\u5b9a\u6027",
+          "parameter_bounds": {
+            "max": 0.2,
+            "min": 0.0
+          },
+          "parameter_name": "eligibility_uncertainty_penalty",
+          "parameter_value": 0.073929727198,
+          "policy_id": "food_subsidy_expansion",
+          "provenance": {
+            "direction": "over_predicted",
+            "magnitude": 0.36964863599,
+            "match_score": 2.86964863599,
+            "residual": -0.36964863599,
+            "source_split": "calibration"
+          },
+          "segment": "general_population_cost_pressure"
+        },
+        {
+          "expected_effect": {
+            "food_subsidy_expansion": "decrease"
+          },
+          "factor_id": "eligibility_uncertainty",
+          "factor_label": "\u8d44\u683c\u4e0d\u786e\u5b9a\u6027",
+          "parameter_bounds": {
+            "max": 0.2,
+            "min": 0.0
+          },
+          "parameter_name": "policy_complexity_aversion",
+          "parameter_value": 0.073929727198,
+          "policy_id": "food_subsidy_expansion",
+          "provenance": {
+            "direction": "over_predicted",
+            "magnitude": 0.36964863599,
+            "match_score": 2.86964863599,
+            "residual": -0.36964863599,
+            "source_split": "calibration"
+          },
+          "segment": "general_population_cost_pressure"
+        },
+        {
+          "expected_effect": {
+            "food_subsidy_expansion": "decrease"
+          },
+          "factor_id": "policy_complexity_aversion",
+          "factor_label": "\u653f\u7b56\u590d\u6742\u6027\u538c\u6076",
+          "parameter_bounds": {
+            "max": 0.25,
+            "min": 0.0
+          },
+          "parameter_name": "policy_complexity_aversion",
+          "parameter_value": 0.092412158997,
+          "policy_id": "food_subsidy_expansion",
+          "provenance": {
+            "direction": "over_predicted",
+            "magnitude": 0.36964863599,
+            "match_score": 2.86964863599,
+            "residual": -0.36964863599,
+            "source_split": "calibration"
+          },
+          "segment": "general_population_cost_pressure"
+        },
+        {
+          "expected_effect": {
+            "food_subsidy_expansion": "decrease"
+          },
+          "factor_id": "policy_complexity_aversion",
+          "factor_label": "\u653f\u7b56\u590d\u6742\u6027\u538c\u6076",
+          "parameter_bounds": {
+            "max": 1.1,
+            "min": 0.75
+          },
+          "parameter_name": "response_temperature",
+          "parameter_value": 0.879377022597,
+          "policy_id": "food_subsidy_expansion",
+          "provenance": {
+            "direction": "over_predicted",
+            "magnitude": 0.36964863599,
+            "match_score": 2.86964863599,
+            "residual": -0.36964863599,
+            "source_split": "calibration"
+          },
+          "segment": "general_population_cost_pressure"
+        }
+      ],
+      "policy_id": "food_subsidy_expansion",
+      "proxy_score": 4.243046816257,
+      "rank": 2,
+      "segment": "general_population_cost_pressure"
+    },
+    {
+      "candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c03",
+      "candidate_prompt_components": {
+        "calibration_anchor": {
+          "working_family_price_stressed": "S2PC factors=eligibility_uncertainty,policy_complexity_aversion; primary_policy=food_subsidy_expansion; parameters=eligibility_uncertainty_penalty=0.065779915717;policy_complexity_aversion=0.065779915717;policy_complexity_aversion=0.082224894646;response_temperature=0.865114852504"
+        },
+        "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+        "segment_prompt": {
+          "working_family_price_stressed": "Use the persona's calibrated policy-reaction parameters when estimating support probabilities for this segment."
+        }
+      },
+      "parameter_patches": [
+        {
+          "expected_effect": {
+            "food_subsidy_expansion": "decrease"
+          },
+          "factor_id": "eligibility_uncertainty",
+          "factor_label": "\u8d44\u683c\u4e0d\u786e\u5b9a\u6027",
+          "parameter_bounds": {
+            "max": 0.2,
+            "min": 0.0
+          },
+          "parameter_name": "eligibility_uncertainty_penalty",
+          "parameter_value": 0.065779915717,
+          "policy_id": "food_subsidy_expansion",
+          "provenance": {
+            "direction": "over_predicted",
+            "magnitude": 0.328899578584,
+            "match_score": 2.828899578584,
+            "residual": -0.328899578584,
+            "source_split": "calibration"
+          },
+          "segment": "working_family_price_stressed"
+        },
+        {
+          "expected_effect": {
+            "food_subsidy_expansion": "decrease"
+          },
+          "factor_id": "eligibility_uncertainty",
+          "factor_label": "\u8d44\u683c\u4e0d\u786e\u5b9a\u6027",
+          "parameter_bounds": {
+            "max": 0.2,
+            "min": 0.0
+          },
+          "parameter_name": "policy_complexity_aversion",
+          "parameter_value": 0.065779915717,
+          "policy_id": "food_subsidy_expansion",
+          "provenance": {
+            "direction": "over_predicted",
+            "magnitude": 0.328899578584,
+            "match_score": 2.828899578584,
+            "residual": -0.328899578584,
+            "source_split": "calibration"
+          },
+          "segment": "working_family_price_stressed"
+        },
+        {
+          "expected_effect": {
+            "food_subsidy_expansion": "decrease"
+          },
+          "factor_id": "policy_complexity_aversion",
+          "factor_label": "\u653f\u7b56\u590d\u6742\u6027\u538c\u6076",
+          "parameter_bounds": {
+            "max": 0.25,
+            "min": 0.0
+          },
+          "parameter_name": "policy_complexity_aversion",
+          "parameter_value": 0.082224894646,
+          "policy_id": "food_subsidy_expansion",
+          "provenance": {
+            "direction": "over_predicted",
+            "magnitude": 0.328899578584,
+            "match_score": 2.828899578584,
+            "residual": -0.328899578584,
+            "source_split": "calibration"
+          },
+          "segment": "working_family_price_stressed"
+        },
+        {
+          "expected_effect": {
+            "food_subsidy_expansion": "decrease"
+          },
+          "factor_id": "policy_complexity_aversion",
+          "factor_label": "\u653f\u7b56\u590d\u6742\u6027\u538c\u6076",
+          "parameter_bounds": {
+            "max": 1.1,
+            "min": 0.75
+          },
+          "parameter_name": "response_temperature",
+          "parameter_value": 0.865114852504,
+          "policy_id": "food_subsidy_expansion",
+          "provenance": {
+            "direction": "over_predicted",
+            "magnitude": 0.328899578584,
+            "match_score": 2.828899578584,
+            "residual": -0.328899578584,
+            "source_split": "calibration"
+          },
+          "segment": "working_family_price_stressed"
+        }
+      ],
+      "policy_id": "food_subsidy_expansion",
+      "proxy_score": 3.721695517011,
+      "rank": 3,
+      "segment": "working_family_price_stressed"
+    },
+    {
+      "candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c04",
+      "candidate_prompt_components": {
+        "calibration_anchor": {
+          "general_population_cost_pressure": "S2PC factors=eligibility_uncertainty,inflation_stress_sensitivity; primary_policy=baseline_no_new_support; parameters=eligibility_uncertainty_penalty=0.088041802105;policy_complexity_aversion=0.088041802105;cash_cost_of_living_rebate_bias=0.088041802105;inflation_stress_weight=0.132062703157"
+        },
+        "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+        "segment_prompt": {
+          "general_population_cost_pressure": "Use the persona's calibrated policy-reaction parameters when estimating support probabilities for this segment."
+        }
+      },
+      "parameter_patches": [
+        {
+          "expected_effect": {
+            "food_subsidy_expansion": "decrease"
+          },
+          "factor_id": "eligibility_uncertainty",
+          "factor_label": "\u8d44\u683c\u4e0d\u786e\u5b9a\u6027",
+          "parameter_bounds": {
+            "max": 0.2,
+            "min": 0.0
+          },
+          "parameter_name": "eligibility_uncertainty_penalty",
+          "parameter_value": 0.088041802105,
+          "policy_id": "baseline_no_new_support",
+          "provenance": {
+            "direction": "under_predicted",
+            "magnitude": 0.440209010524,
+            "match_score": 1.440209010524,
+            "residual": 0.440209010524,
+            "source_split": "calibration"
+          },
+          "segment": "general_population_cost_pressure"
+        },
+        {
+          "expected_effect": {
+            "food_subsidy_expansion": "decrease"
+          },
+          "factor_id": "eligibility_uncertainty",
+          "factor_label": "\u8d44\u683c\u4e0d\u786e\u5b9a\u6027",
+          "parameter_bounds": {
+            "max": 0.2,
+            "min": 0.0
+          },
+          "parameter_name": "policy_complexity_aversion",
+          "parameter_value": 0.088041802105,
+          "policy_id": "baseline_no_new_support",
+          "provenance": {
+            "direction": "under_predicted",
+            "magnitude": 0.440209010524,
+            "match_score": 1.440209010524,
+            "residual": 0.440209010524,
+            "source_split": "calibration"
+          },
+          "segment": "general_population_cost_pressure"
+        },
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase"
+          },
+          "factor_id": "inflation_stress_sensitivity",
+          "factor_label": "\u901a\u80c0\u538b\u529b\u654f\u611f\u5ea6",
+          "parameter_bounds": {
+            "max": 0.2,
+            "min": 0.0
+          },
+          "parameter_name": "cash_cost_of_living_rebate_bias",
+          "parameter_value": 0.088041802105,
+          "policy_id": "baseline_no_new_support",
+          "provenance": {
+            "direction": "under_predicted",
+            "magnitude": 0.440209010524,
+            "match_score": 1.440209010524,
+            "residual": 0.440209010524,
+            "source_split": "calibration"
+          },
+          "segment": "general_population_cost_pressure"
+        },
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase"
+          },
+          "factor_id": "inflation_stress_sensitivity",
+          "factor_label": "\u901a\u80c0\u538b\u529b\u654f\u611f\u5ea6",
+          "parameter_bounds": {
+            "max": 0.3,
+            "min": 0.0
+          },
+          "parameter_name": "inflation_stress_weight",
+          "parameter_value": 0.132062703157,
+          "policy_id": "baseline_no_new_support",
+          "provenance": {
+            "direction": "under_predicted",
+            "magnitude": 0.440209010524,
+            "match_score": 1.440209010524,
+            "residual": 0.440209010524,
+            "source_split": "calibration"
+          },
+          "segment": "general_population_cost_pressure"
+        }
+      ],
+      "policy_id": "baseline_no_new_support",
+      "proxy_score": 2.535971933882,
+      "rank": 4,
+      "segment": "general_population_cost_pressure"
+    },
+    {
+      "candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c05",
+      "candidate_prompt_components": {
+        "calibration_anchor": {
+          "fixed_income_inflation_stressed": "S2PC factors=cash_liquidity_preference,household_budget_rigidity; primary_policy=baseline_no_new_support; parameters=benefit_immediacy_weight=0.06493347704;cash_cost_of_living_rebate_bias=0.081166846299;household_budget_rigidity=0.097400215559;response_temperature=0.813633584819"
+        },
+        "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+        "segment_prompt": {
+          "fixed_income_inflation_stressed": "Use the persona's calibrated policy-reaction parameters when estimating support probabilities for this segment."
+        }
+      },
+      "parameter_patches": [
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase"
+          },
+          "factor_id": "cash_liquidity_preference",
+          "factor_label": "\u73b0\u91d1\u6d41\u52a8\u6027\u504f\u597d",
+          "parameter_bounds": {
+            "max": 0.2,
+            "min": 0.0
+          },
+          "parameter_name": "benefit_immediacy_weight",
+          "parameter_value": 0.06493347704,
+          "policy_id": "baseline_no_new_support",
+          "provenance": {
+            "direction": "under_predicted",
+            "magnitude": 0.324667385198,
+            "match_score": 1.324667385198,
+            "residual": 0.324667385198,
+            "source_split": "calibration"
+          },
+          "segment": "fixed_income_inflation_stressed"
+        },
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase"
+          },
+          "factor_id": "cash_liquidity_preference",
+          "factor_label": "\u73b0\u91d1\u6d41\u52a8\u6027\u504f\u597d",
+          "parameter_bounds": {
+            "max": 0.25,
+            "min": 0.0
+          },
+          "parameter_name": "cash_cost_of_living_rebate_bias",
+          "parameter_value": 0.081166846299,
+          "policy_id": "baseline_no_new_support",
+          "provenance": {
+            "direction": "under_predicted",
+            "magnitude": 0.324667385198,
+            "match_score": 1.324667385198,
+            "residual": 0.324667385198,
+            "source_split": "calibration"
+          },
+          "segment": "fixed_income_inflation_stressed"
+        },
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase",
+            "food_subsidy_expansion": "increase"
+          },
+          "factor_id": "household_budget_rigidity",
+          "factor_label": "\u5bb6\u5ead\u9884\u7b97\u521a\u6027",
+          "parameter_bounds": {
+            "max": 0.3,
+            "min": 0.0
+          },
+          "parameter_name": "household_budget_rigidity",
+          "parameter_value": 0.097400215559,
+          "policy_id": "baseline_no_new_support",
+          "provenance": {
+            "direction": "under_predicted",
+            "magnitude": 0.324667385198,
+            "match_score": 1.324667385198,
+            "residual": 0.324667385198,
+            "source_split": "calibration"
+          },
+          "segment": "fixed_income_inflation_stressed"
+        },
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase",
+            "food_subsidy_expansion": "increase"
+          },
+          "factor_id": "household_budget_rigidity",
+          "factor_label": "\u5bb6\u5ead\u9884\u7b97\u521a\u6027",
+          "parameter_bounds": {
+            "max": 1.05,
+            "min": 0.7
+          },
+          "parameter_name": "response_temperature",
+          "parameter_value": 0.813633584819,
+          "policy_id": "baseline_no_new_support",
+          "provenance": {
+            "direction": "under_predicted",
+            "magnitude": 0.324667385198,
+            "match_score": 1.324667385198,
+            "residual": 0.324667385198,
+            "source_split": "calibration"
+          },
+          "segment": "fixed_income_inflation_stressed"
+        }
+      ],
+      "policy_id": "baseline_no_new_support",
+      "proxy_score": 1.720305184837,
+      "rank": 5,
+      "segment": "fixed_income_inflation_stressed"
+    },
+    {
+      "candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c06",
+      "candidate_prompt_components": {
+        "calibration_anchor": {
+          "working_family_price_stressed": "S2PC factors=benefit_immediacy,cash_liquidity_preference; primary_policy=baseline_no_new_support; parameters=benefit_immediacy_weight=0.060082515358;prior_anchor_strength=0.605144401876;benefit_immediacy_weight=0.060082515358;cash_cost_of_living_rebate_bias=0.075103144197"
+        },
+        "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+        "segment_prompt": {
+          "working_family_price_stressed": "Use the persona's calibrated policy-reaction parameters when estimating support probabilities for this segment."
+        }
+      },
+      "parameter_patches": [
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase",
+            "food_subsidy_expansion": "increase"
+          },
+          "factor_id": "benefit_immediacy",
+          "factor_label": "\u5373\u65f6\u6536\u76ca\u504f\u597d",
+          "parameter_bounds": {
+            "max": 0.2,
+            "min": 0.0
+          },
+          "parameter_name": "benefit_immediacy_weight",
+          "parameter_value": 0.060082515358,
+          "policy_id": "baseline_no_new_support",
+          "provenance": {
+            "direction": "under_predicted",
+            "magnitude": 0.30041257679,
+            "match_score": 1.30041257679,
+            "residual": 0.30041257679,
+            "source_split": "calibration"
+          },
+          "segment": "working_family_price_stressed"
+        },
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase",
+            "food_subsidy_expansion": "increase"
+          },
+          "factor_id": "benefit_immediacy",
+          "factor_label": "\u5373\u65f6\u6536\u76ca\u504f\u597d",
+          "parameter_bounds": {
+            "max": 0.85,
+            "min": 0.5
+          },
+          "parameter_name": "prior_anchor_strength",
+          "parameter_value": 0.605144401876,
+          "policy_id": "baseline_no_new_support",
+          "provenance": {
+            "direction": "under_predicted",
+            "magnitude": 0.30041257679,
+            "match_score": 1.30041257679,
+            "residual": 0.30041257679,
+            "source_split": "calibration"
+          },
+          "segment": "working_family_price_stressed"
+        },
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase"
+          },
+          "factor_id": "cash_liquidity_preference",
+          "factor_label": "\u73b0\u91d1\u6d41\u52a8\u6027\u504f\u597d",
+          "parameter_bounds": {
+            "max": 0.2,
+            "min": 0.0
+          },
+          "parameter_name": "benefit_immediacy_weight",
+          "parameter_value": 0.060082515358,
+          "policy_id": "baseline_no_new_support",
+          "provenance": {
+            "direction": "under_predicted",
+            "magnitude": 0.30041257679,
+            "match_score": 1.30041257679,
+            "residual": 0.30041257679,
+            "source_split": "calibration"
+          },
+          "segment": "working_family_price_stressed"
+        },
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase"
+          },
+          "factor_id": "cash_liquidity_preference",
+          "factor_label": "\u73b0\u91d1\u6d41\u52a8\u6027\u504f\u597d",
+          "parameter_bounds": {
+            "max": 0.25,
+            "min": 0.0
+          },
+          "parameter_name": "cash_cost_of_living_rebate_bias",
+          "parameter_value": 0.075103144197,
+          "policy_id": "baseline_no_new_support",
+          "provenance": {
+            "direction": "under_predicted",
+            "magnitude": 0.30041257679,
+            "match_score": 1.30041257679,
+            "residual": 0.30041257679,
+            "source_split": "calibration"
+          },
+          "segment": "working_family_price_stressed"
+        }
+      ],
+      "policy_id": "baseline_no_new_support",
+      "proxy_score": 1.562641172334,
+      "rank": 6,
+      "segment": "working_family_price_stressed"
+    }
+  ],
+  "claim_boundary": "S2PC L1 candidate sets are multi-candidate runtime-search inputs. Each candidate requires heldout runtime-effect evaluation before any effectiveness claim.",
+  "generator": "s2pc_l1_multi_candidate_runtime_search",
+  "residual_summary": {
+    "parameter_patch_count": 44,
+    "residual_count": 11,
+    "semantic_match_count": 22,
+    "source_residual_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-initial-001"
+  },
+  "schema_version": "policy-reaction-s2pc-l1-candidate-set-v1",
+  "search_summary": {
+    "beam_width": 6,
+    "candidate_count": 6,
+    "exported_candidate_count": 6
+  },
+  "source_prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-001",
+  "source_split_contract": {
+    "candidate_acceptance": "heldout_required",
+    "parameter_search": "calibration",
+    "residual_mining": "calibration",
+    "semantic_factor_retrieval": "calibration"
+  }
+}

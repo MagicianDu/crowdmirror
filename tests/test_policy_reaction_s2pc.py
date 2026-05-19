@@ -3,10 +3,13 @@ import json
 import pytest
 
 from circe.calibration.s2pc import (
+    S2PC_L1_CANDIDATE_SET_SCHEMA_VERSION,
     S2PC_SCHEMA_VERSION,
     build_s2pc_candidate_artifact,
+    build_s2pc_l1_candidate_set_artifact,
     compile_semantic_matches_to_parameter_patches,
     default_semantic_factor_catalog,
+    extract_s2pc_candidate_from_l1_set,
     mine_policy_reaction_residuals,
     retrieve_semantic_factors,
     run_constrained_parameter_beam_search,
@@ -15,6 +18,7 @@ from circe.calibration.s2pc import (
 from experiments.policy_reaction_s2pc_gate import (
     build_policy_reaction_s2pc_candidate,
     build_policy_reaction_s2pc_gate,
+    write_policy_reaction_s2pc_l1_candidate_set,
     write_policy_reaction_s2pc_gate,
 )
 
@@ -200,6 +204,65 @@ def test_build_s2pc_candidate_artifact_preserves_provenance():
     json.dumps(candidate, allow_nan=False)
 
 
+def test_build_s2pc_l1_candidate_set_keeps_multiple_runtime_candidates():
+    residuals = mine_policy_reaction_residuals(
+        _calibration_benchmark(),
+        min_magnitude=0.05,
+    )
+    matches = retrieve_semantic_factors(
+        residuals,
+        default_semantic_factor_catalog(),
+        top_k=2,
+    )
+    patches = compile_semantic_matches_to_parameter_patches(
+        matches,
+        default_semantic_factor_catalog(),
+    )
+    search = run_constrained_parameter_beam_search(patches, beam_width=3)
+
+    candidate_set = build_s2pc_l1_candidate_set_artifact(
+        candidate_set_id="policy-reaction-s2pc-l1-candidate-set-test",
+        calibration_benchmark=_calibration_benchmark(),
+        residual_artifact=residuals,
+        semantic_matches=matches,
+        parameter_patches=patches,
+        search_result=search,
+    )
+
+    assert candidate_set["schema_version"] == S2PC_L1_CANDIDATE_SET_SCHEMA_VERSION
+    assert candidate_set["candidate_set_id"] == (
+        "policy-reaction-s2pc-l1-candidate-set-test"
+    )
+    assert candidate_set["generator"] == "s2pc_l1_multi_candidate_runtime_search"
+    assert candidate_set["candidate_count"] == 3
+    assert candidate_set["candidates"][0]["candidate_prompt_components"][
+        "calibration_anchor"
+    ]
+    assert candidate_set["source_split_contract"]["candidate_acceptance"] == (
+        "heldout_required"
+    )
+    json.dumps(candidate_set, allow_nan=False)
+
+
+def test_extract_s2pc_candidate_from_l1_set_is_product_runtime_compatible():
+    candidate_set = _build_l1_candidate_set_fixture()
+    selected_id = candidate_set["candidates"][1]["candidate_id"]
+
+    candidate = extract_s2pc_candidate_from_l1_set(
+        candidate_set,
+        candidate_id=selected_id,
+    )
+
+    assert candidate["schema_version"] == "policy-reaction-s2pc-candidate-v1"
+    assert candidate["candidate_id"] == selected_id
+    assert candidate["generator"] == "s2pc_l1_multi_candidate_runtime_search"
+    assert candidate["candidate_prompt_components"]
+    assert candidate["source_split_contract"]["candidate_acceptance"] == (
+        "heldout_required"
+    )
+    json.dumps(candidate, allow_nan=False)
+
+
 def test_policy_reaction_s2pc_gate_accepts_improved_heldout_candidate(tmp_path):
     candidate = build_policy_reaction_s2pc_candidate(
         _calibration_benchmark(),
@@ -291,6 +354,27 @@ def test_write_policy_reaction_s2pc_gate_writes_candidate_and_gate(tmp_path):
     assert json.loads(gate_output.read_text())["overall_status"] == "accepted"
 
 
+def test_write_policy_reaction_s2pc_l1_candidate_set(tmp_path):
+    calibration_path = tmp_path / "calibration.json"
+    output = tmp_path / "candidate-set.json"
+    calibration_path.write_text(json.dumps(_calibration_benchmark()))
+
+    written = write_policy_reaction_s2pc_l1_candidate_set(
+        output,
+        calibration_benchmark_path=calibration_path,
+        candidate_set_id="policy-reaction-s2pc-l1-candidate-set-test",
+        min_residual_magnitude=0.05,
+        top_k=2,
+        beam_width=3,
+    )
+
+    assert written == output
+    persisted = json.loads(output.read_text())
+    assert persisted["schema_version"] == "policy-reaction-s2pc-l1-candidate-set-v1"
+    assert persisted["candidate_count"] == 3
+    assert persisted["candidates"][0]["candidate_prompt_components"]
+
+
 def _calibration_benchmark() -> dict:
     return {
         "schema_version": "policy-reaction-official-segment-benchmark-v1",
@@ -344,3 +428,28 @@ def _heldout_benchmark(artifact_id: str, *, loss: float) -> dict:
         "segment_coverage": {"coverage_rate": 1.0},
         "segment_metrics": {},
     }
+
+
+def _build_l1_candidate_set_fixture() -> dict:
+    residuals = mine_policy_reaction_residuals(
+        _calibration_benchmark(),
+        min_magnitude=0.05,
+    )
+    matches = retrieve_semantic_factors(
+        residuals,
+        default_semantic_factor_catalog(),
+        top_k=2,
+    )
+    patches = compile_semantic_matches_to_parameter_patches(
+        matches,
+        default_semantic_factor_catalog(),
+    )
+    search = run_constrained_parameter_beam_search(patches, beam_width=3)
+    return build_s2pc_l1_candidate_set_artifact(
+        candidate_set_id="policy-reaction-s2pc-l1-candidate-set-test",
+        calibration_benchmark=_calibration_benchmark(),
+        residual_artifact=residuals,
+        semantic_matches=matches,
+        parameter_patches=patches,
+        search_result=search,
+    )
