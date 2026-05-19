@@ -10,6 +10,10 @@ from typing import Any
 S2PC_SCHEMA_VERSION = "circe-s2pc-v1"
 S2PC_CANDIDATE_SCHEMA_VERSION = "policy-reaction-s2pc-candidate-v1"
 S2PC_GATE_SCHEMA_VERSION = "policy-reaction-s2pc-gate-v1"
+RESIDUAL_SCHEMA_VERSION = "circe-s2pc-residuals-v1"
+POLICY_REACTION_BENCHMARK_SCHEMA_VERSION = (
+    "policy-reaction-official-segment-benchmark-v1"
+)
 DEFAULT_LOSS_METRIC = "weighted_choice_distribution_jsd"
 
 
@@ -195,6 +199,59 @@ def validate_semantic_factor_catalog(catalog: dict[str, Any]) -> None:
     _assert_strict_json(catalog)
 
 
+def mine_policy_reaction_residuals(
+    calibration_benchmark: dict[str, Any],
+    *,
+    min_magnitude: float = 0.0,
+) -> dict[str, Any]:
+    _validate_policy_reaction_benchmark(calibration_benchmark, "calibration_benchmark")
+    if _source_split(calibration_benchmark) != "calibration":
+        raise ValueError("S2PC residual mining requires calibration split")
+    residuals = []
+    for segment, metrics in sorted(calibration_benchmark["segment_metrics"].items()):
+        official = _policy_distribution(
+            metrics.get("official_distribution"),
+            f"{segment}.official_distribution",
+        )
+        predicted = _policy_distribution(
+            metrics.get("predicted_distribution"),
+            f"{segment}.predicted_distribution",
+        )
+        for policy_id in sorted(set(official) | set(predicted)):
+            official_probability = official.get(policy_id, 0.0)
+            predicted_probability = predicted.get(policy_id, 0.0)
+            residual = round(official_probability - predicted_probability, 12)
+            magnitude = round(abs(residual), 12)
+            if magnitude < min_magnitude:
+                continue
+            residuals.append(
+                {
+                    "segment": segment,
+                    "policy_id": policy_id,
+                    "official_probability": official_probability,
+                    "predicted_probability": predicted_probability,
+                    "residual": residual,
+                    "direction": _residual_direction(residual),
+                    "magnitude": magnitude,
+                }
+            )
+    artifact = {
+        "schema_version": RESIDUAL_SCHEMA_VERSION,
+        "source_benchmark_artifact_id": calibration_benchmark["artifact_id"],
+        "source_prediction_artifact_id": calibration_benchmark.get(
+            "prediction_artifact_id"
+        ),
+        "source_split": "calibration",
+        "residual_count": len(residuals),
+        "residuals": residuals,
+        "claim_boundary": (
+            "S2PC residuals are calibration-split candidate-generation evidence only."
+        ),
+    }
+    _assert_strict_json(artifact)
+    return artifact
+
+
 def _factor(
     factor_id: str,
     label: str,
@@ -216,6 +273,54 @@ def _factor(
             "not as causal proof."
         ),
     }
+
+
+def _validate_policy_reaction_benchmark(
+    artifact: dict[str, Any],
+    label: str,
+) -> None:
+    if artifact.get("schema_version") != POLICY_REACTION_BENCHMARK_SCHEMA_VERSION:
+        raise ValueError(f"{label} has unsupported schema_version")
+    if not artifact.get("artifact_id"):
+        raise ValueError(f"{label} missing artifact_id")
+    if not isinstance(artifact.get("segment_metrics"), dict):
+        raise ValueError(f"{label} missing segment_metrics")
+
+
+def _source_split(artifact: dict[str, Any]) -> str:
+    source = str(artifact.get("source_ingestion_artifact_id", "")).lower()
+    if "calibration" in source:
+        return "calibration"
+    if "evaluation" in source or "heldout" in source or "held-out" in source:
+        return "heldout"
+    return "unknown"
+
+
+def _policy_distribution(raw: Any, context: str) -> dict[str, float]:
+    if not isinstance(raw, dict) or not raw:
+        raise ValueError(f"{context} must be a non-empty object")
+    values = {}
+    for policy_id, value in raw.items():
+        values[str(policy_id)] = _non_negative_probability(
+            value,
+            f"{context}.{policy_id}",
+        )
+    return values
+
+
+def _non_negative_probability(value: Any, field_name: str) -> float:
+    number = _finite_number(value, field_name)
+    if number < 0.0:
+        raise ValueError(f"{field_name} must be non-negative")
+    return number
+
+
+def _residual_direction(residual: float) -> str:
+    if residual > 0.0:
+        return "under_predicted"
+    if residual < 0.0:
+        return "over_predicted"
+    return "matched"
 
 
 def _required_string(payload: dict[str, Any], field_name: str) -> str:
