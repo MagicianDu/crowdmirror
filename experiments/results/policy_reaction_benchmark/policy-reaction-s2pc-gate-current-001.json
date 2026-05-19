@@ -1,0 +1,169 @@
+{
+  "absolute_loss_delta": 0.148842359468,
+  "artifact_id": "policy-reaction-s2pc-gate-current-001",
+  "best_loss": 0.010380967362,
+  "candidate_accepted_count": 1,
+  "candidate_artifact": {
+    "best_candidate": {
+      "candidate_index": 1,
+      "parameter_patches": [
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase",
+            "food_subsidy_expansion": "increase"
+          },
+          "factor_id": "household_budget_rigidity",
+          "factor_label": "\u5bb6\u5ead\u9884\u7b97\u521a\u6027",
+          "parameter_bounds": {
+            "max": 0.3,
+            "min": 0.0
+          },
+          "parameter_name": "household_budget_rigidity",
+          "parameter_value": 0.130958798022,
+          "policy_id": "food_subsidy_expansion",
+          "provenance": {
+            "direction": "over_predicted",
+            "magnitude": 0.436529326741,
+            "match_score": 2.436529326741,
+            "residual": -0.436529326741,
+            "source_split": "calibration"
+          },
+          "segment": "fixed_income_inflation_stressed"
+        },
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase",
+            "food_subsidy_expansion": "increase"
+          },
+          "factor_id": "household_budget_rigidity",
+          "factor_label": "\u5bb6\u5ead\u9884\u7b97\u521a\u6027",
+          "parameter_bounds": {
+            "max": 1.05,
+            "min": 0.7
+          },
+          "parameter_name": "response_temperature",
+          "parameter_value": 0.852785264359,
+          "policy_id": "food_subsidy_expansion",
+          "provenance": {
+            "direction": "over_predicted",
+            "magnitude": 0.436529326741,
+            "match_score": 2.436529326741,
+            "residual": -0.436529326741,
+            "source_split": "calibration"
+          },
+          "segment": "fixed_income_inflation_stressed"
+        },
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase",
+            "food_subsidy_expansion": "increase"
+          },
+          "factor_id": "institutional_trust",
+          "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+          "parameter_bounds": {
+            "max": 0.85,
+            "min": 0.45
+          },
+          "parameter_name": "prior_anchor_strength",
+          "parameter_value": 0.624611730696,
+          "policy_id": "food_subsidy_expansion",
+          "provenance": {
+            "direction": "over_predicted",
+            "magnitude": 0.436529326741,
+            "match_score": 2.436529326741,
+            "residual": -0.436529326741,
+            "source_split": "calibration"
+          },
+          "segment": "fixed_income_inflation_stressed"
+        },
+        {
+          "expected_effect": {
+            "cash_cost_of_living_rebate": "increase",
+            "food_subsidy_expansion": "increase"
+          },
+          "factor_id": "institutional_trust",
+          "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+          "parameter_bounds": {
+            "max": 1.2,
+            "min": 0.8
+          },
+          "parameter_name": "trust_multiplier",
+          "parameter_value": 0.974611730696,
+          "policy_id": "food_subsidy_expansion",
+          "provenance": {
+            "direction": "over_predicted",
+            "magnitude": 0.436529326741,
+            "match_score": 2.436529326741,
+            "residual": -0.436529326741,
+            "source_split": "calibration"
+          },
+          "segment": "fixed_income_inflation_stressed"
+        }
+      ],
+      "policy_id": "food_subsidy_expansion",
+      "proxy_score": 4.254466026348,
+      "segment": "fixed_income_inflation_stressed"
+    },
+    "calibration_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-initial-001",
+    "candidate_id": "policy-reaction-s2pc-candidate-current-001",
+    "candidate_prompt_components": {
+      "calibration_anchor": {
+        "fixed_income_inflation_stressed": "S2PC factors=household_budget_rigidity,institutional_trust; primary_policy=food_subsidy_expansion; parameters=household_budget_rigidity=0.130958798022;response_temperature=0.852785264359;prior_anchor_strength=0.624611730696;trust_multiplier=0.974611730696"
+      },
+      "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+      "segment_prompt": {
+        "fixed_income_inflation_stressed": "Use the persona's calibrated policy-reaction parameters when estimating support probabilities for this segment."
+      }
+    },
+    "claim_boundary": "S2PC candidate artifacts are candidate-generation evidence. They require heldout gate results before acceptance claims.",
+    "generator": "s2pc_l0_deterministic_catalog_beam_search",
+    "residual_summary": {
+      "parameter_patch_count": 44,
+      "residual_count": 11,
+      "semantic_match_count": 22,
+      "source_residual_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-initial-001"
+    },
+    "schema_version": "policy-reaction-s2pc-candidate-v1",
+    "search_summary": {
+      "beam_width": 3,
+      "best_proxy_score": 4.254466026348,
+      "candidate_count": 3
+    },
+    "source_prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-001",
+    "source_split_contract": {
+      "candidate_acceptance": "heldout_required",
+      "parameter_search": "calibration",
+      "residual_mining": "calibration",
+      "semantic_factor_retrieval": "calibration"
+    }
+  },
+  "candidate_heldout_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-deepseek-v4-flash-12x3-calibration-split-heldout-001",
+  "candidate_id": "policy-reaction-s2pc-candidate-current-001",
+  "candidate_loss": 0.010380967362,
+  "candidate_pending_count": 0,
+  "candidate_prediction_artifact_id": "policy-reaction-segment-predictions-deepseek-v4-flash-12x3-calibration-split-001",
+  "candidate_rejected_count": 0,
+  "candidate_update_policy": "accept_if_heldout_loss_improves_and_coverage_complete_else_reject",
+  "claim_boundaries": [
+    "S2PC L0 gate is deterministic calibration-generated candidate evidence; held-out acceptance is required before Product runtime use.",
+    "S2PC L0 does not use LLM-generated semantic factors.",
+    "Candidate acceptance requires matched held-out benchmark improvement."
+  ],
+  "claim_boundary": "S2PC L0 gate is deterministic calibration-generated candidate evidence; held-out acceptance is required before Product runtime use.",
+  "coverage_rate": 1.0,
+  "final_loss": 0.010380967362,
+  "generator": "s2pc_l0_deterministic_catalog_beam_search",
+  "initial_heldout_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-deepseek-v4-flash-12x3-smoke-heldout-001",
+  "initial_loss": 0.15922332683,
+  "initial_prediction_artifact_id": "policy-reaction-segment-predictions-deepseek-v4-flash-12x3-smoke-001",
+  "loss_metric": "weighted_choice_distribution_jsd",
+  "overall_status": "accepted",
+  "relative_loss_reduction": 0.934802471671,
+  "schema_version": "policy-reaction-s2pc-gate-v1",
+  "source_split_contract": {
+    "candidate_acceptance": "heldout",
+    "parameter_search": "calibration",
+    "residual_mining": "calibration",
+    "semantic_factor_retrieval": "calibration"
+  }
+}

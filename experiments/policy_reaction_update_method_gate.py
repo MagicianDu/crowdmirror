@@ -506,6 +506,12 @@ def _default_current_method_records(*, loss_metric: str) -> list[dict[str, Any]]
             ),
             loss_metric=loss_metric,
         ),
+        build_s2pc_gate_method_record(
+            method_id="s2pc_l0_current_policy_reaction_candidate",
+            s2pc_gate=load_json_artifact(
+                benchmark_dir / "policy-reaction-s2pc-gate-current-001.json"
+            ),
+        ),
         build_textgrad_manifest_method_record(
             method_id="deepseek_v4_pro_textgrad_w3w4_candidate_update",
             generator="deepseek_v4_pro_textgrad_candidate_update",

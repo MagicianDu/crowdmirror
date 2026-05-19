@@ -3,17 +3,18 @@
     "gpt_oss_20b_calibration_split_prompting_12x3_seed11",
     "deepseek_v4_flash_calibration_split_prompting_12x3_seed11",
     "deepseek_v4_flash_calibration_split_prompting_12x3_seed17",
-    "deepseek_v4_flash_calibration_split_prompting_16x3_seed11"
+    "deepseek_v4_flash_calibration_split_prompting_16x3_seed11",
+    "s2pc_l0_current_policy_reaction_candidate"
   ],
   "artifact_id": "policy-reaction-update-method-gate-current-001",
   "best_loss": 0.000112890954,
   "best_method_id": "gpt_oss_20b_calibration_split_prompting_12x3_seed11",
-  "candidate_acceptance_rate": 0.8,
-  "candidate_accepted_count": 4,
-  "candidate_evaluated_count": 5,
+  "candidate_acceptance_rate": 0.8333333333333334,
+  "candidate_accepted_count": 5,
+  "candidate_evaluated_count": 6,
   "candidate_pending_count": 0,
   "candidate_rejected_count": 1,
-  "candidate_update_count": 5,
+  "candidate_update_count": 6,
   "candidate_update_policy": "accept_matched_heldout_loss_improvement_with_complete_segment_coverage_else_reject_or_mark_diagnostic",
   "claim_boundaries": [
     "Policy-reaction update-method gate compares automated prompt/persona update methods using matched held-out public-data evidence where available; diagnostic-only TextGrad evidence is not accepted as policy-reaction calibration effectiveness.",
@@ -46,6 +47,15 @@
       "record_count": 1,
       "rejected_count": 0
     },
+    "s2pc_l0_deterministic_catalog_beam_search": {
+      "accepted_count": 1,
+      "best_loss": 0.010380967362,
+      "best_method_id": "s2pc_l0_current_policy_reaction_candidate",
+      "diagnostic_only_count": 0,
+      "heldout_candidate_count": 1,
+      "record_count": 1,
+      "rejected_count": 0
+    },
     "structured_persona_parameter_patch": {
       "accepted_count": 0,
       "best_loss": null,
@@ -59,10 +69,11 @@
   "initial_loss": 0.188148467815,
   "loss_metric": "weighted_choice_distribution_jsd",
   "loss_scope": "Top-level initial/best/final loss follows the best accepted held-out method record when available; per-method records preserve their matched baseline and candidate losses.",
-  "method_count": 6,
+  "method_count": 7,
   "method_generator_counts": {
     "calibration_split_prompting": 4,
     "deepseek_v4_pro_textgrad_candidate_update": 1,
+    "s2pc_l0_deterministic_catalog_beam_search": 1,
     "structured_persona_parameter_patch": 1
   },
   "method_updates": [
@@ -206,6 +217,30 @@
         "candidate_generation": "calibration"
       },
       "status": "rejected"
+    },
+    {
+      "absolute_loss_delta": 0.148842359468,
+      "best_loss": 0.010380967362,
+      "candidate_artifact_id": "policy-reaction-s2pc-gate-current-001",
+      "candidate_id": "policy-reaction-s2pc-candidate-current-001",
+      "candidate_loss": 0.010380967362,
+      "coverage_rate": 1.0,
+      "eligibility": "heldout_candidate",
+      "evidence_type": "s2pc_heldout_gate",
+      "final_loss": 0.010380967362,
+      "generator": "s2pc_l0_deterministic_catalog_beam_search",
+      "initial_loss": 0.15922332683,
+      "loss_metric": "weighted_choice_distribution_jsd",
+      "method_id": "s2pc_l0_current_policy_reaction_candidate",
+      "reason": "s2pc_heldout_loss_improved",
+      "relative_loss_reduction": 0.934802471669,
+      "source_split_contract": {
+        "candidate_acceptance": "heldout",
+        "parameter_search": "calibration",
+        "residual_mining": "calibration",
+        "semantic_factor_retrieval": "calibration"
+      },
+      "status": "accepted"
     },
     {
       "absolute_loss_delta": 0.0,
