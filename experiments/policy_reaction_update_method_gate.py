@@ -16,6 +16,7 @@ RUNTIME_PATCH_STABILITY_SCHEMA_VERSION = (
     "policy-reaction-runtime-patch-stability-v1"
 )
 S2PC_GATE_SCHEMA_VERSION = "policy-reaction-s2pc-gate-v1"
+S2PC_RUNTIME_EFFECT_SCHEMA_VERSION = "policy-reaction-s2pc-runtime-effect-v1"
 TEXTGRAD_EVIDENCE_SCHEMA_VERSION = "circe-evidence-v1"
 DEFAULT_LOSS_METRIC = "weighted_choice_distribution_jsd"
 UPDATE_METHOD_POLICY = (
@@ -228,6 +229,71 @@ def build_s2pc_gate_method_record(
             "candidate_id": s2pc_gate.get("candidate_id"),
             "source_split_contract": copy.deepcopy(
                 s2pc_gate["source_split_contract"]
+            ),
+        }
+    )
+
+
+def build_s2pc_runtime_effect_method_record(
+    *,
+    method_id: str,
+    s2pc_runtime_effect: dict[str, Any],
+) -> dict[str, Any]:
+    _validate_method_id(method_id)
+    if s2pc_runtime_effect.get("schema_version") != S2PC_RUNTIME_EFFECT_SCHEMA_VERSION:
+        raise ValueError("s2pc_runtime_effect has unsupported schema_version")
+    status = (
+        "accepted"
+        if s2pc_runtime_effect.get("overall_status") == "improved"
+        else "rejected"
+    )
+    initial_loss = _numeric(s2pc_runtime_effect.get("baseline_loss"), "baseline_loss")
+    candidate_loss = _numeric(
+        s2pc_runtime_effect.get("s2pc_runtime_loss"),
+        "s2pc_runtime_loss",
+    )
+    absolute_loss_delta = _round_float(initial_loss - candidate_loss)
+    final_loss = candidate_loss if status == "accepted" else initial_loss
+    return _strict_record(
+        {
+            "method_id": method_id,
+            "generator": "s2pc_l0_deterministic_catalog_beam_search_runtime",
+            "evidence_type": "s2pc_runtime_effect_gate",
+            "eligibility": "heldout_candidate",
+            "status": status,
+            "reason": (
+                "s2pc_runtime_loss_improved"
+                if status == "accepted"
+                else "s2pc_runtime_loss_not_improved"
+            ),
+            "loss_metric": s2pc_runtime_effect.get(
+                "loss_metric",
+                DEFAULT_LOSS_METRIC,
+            ),
+            "initial_loss": _round_float(initial_loss),
+            "candidate_loss": _round_float(candidate_loss),
+            "best_loss": _round_float(min(initial_loss, candidate_loss)),
+            "final_loss": _round_float(final_loss),
+            "absolute_loss_delta": absolute_loss_delta,
+            "relative_loss_reduction": (
+                _round_float(absolute_loss_delta / initial_loss)
+                if initial_loss > 0.0 and absolute_loss_delta is not None
+                else None
+            ),
+            "coverage_rate": _round_float(
+                _numeric(
+                    s2pc_runtime_effect.get("coverage", {}).get(
+                        "s2pc_runtime_coverage_rate"
+                    ),
+                    "s2pc_runtime_coverage_rate",
+                )
+            ),
+            "candidate_artifact_id": s2pc_runtime_effect["artifact_id"],
+            "candidate_id": s2pc_runtime_effect.get("s2pc_candidate_id"),
+            "model_id": s2pc_runtime_effect.get("product_runtime_model"),
+            "scale": s2pc_runtime_effect.get("product_runtime_scale", {}),
+            "source_split_contract": copy.deepcopy(
+                s2pc_runtime_effect["source_split_contract"]
             ),
         }
     )
@@ -510,6 +576,13 @@ def _default_current_method_records(*, loss_metric: str) -> list[dict[str, Any]]
             method_id="s2pc_l0_current_policy_reaction_candidate",
             s2pc_gate=load_json_artifact(
                 benchmark_dir / "policy-reaction-s2pc-gate-current-001.json"
+            ),
+        ),
+        build_s2pc_runtime_effect_method_record(
+            method_id="s2pc_l0_current_policy_reaction_runtime_probe",
+            s2pc_runtime_effect=load_json_artifact(
+                benchmark_dir
+                / "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-heldout-001.json"
             ),
         ),
         build_textgrad_manifest_method_record(

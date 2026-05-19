@@ -7,6 +7,7 @@ from experiments.policy_reaction_update_method_gate import (
     build_policy_reaction_update_method_gate,
     build_runtime_stability_method_record,
     build_s2pc_gate_method_record,
+    build_s2pc_runtime_effect_method_record,
     build_textgrad_manifest_method_record,
     write_policy_reaction_update_method_gate,
 )
@@ -136,6 +137,26 @@ def test_s2pc_gate_method_record_can_be_accepted():
     assert record["initial_loss"] == 0.159
     assert record["candidate_loss"] == 0.009
     assert record["source_split_contract"]["candidate_acceptance"] == "heldout"
+
+
+def test_s2pc_runtime_effect_method_record_rejects_regression():
+    record = build_s2pc_runtime_effect_method_record(
+        method_id="s2pc_l0_runtime_probe",
+        s2pc_runtime_effect=_s2pc_runtime_effect(
+            status="regressed",
+            baseline_loss=0.000112890954,
+            s2pc_runtime_loss=0.000211185317,
+        ),
+    )
+
+    assert record["method_id"] == "s2pc_l0_runtime_probe"
+    assert record["generator"] == "s2pc_l0_deterministic_catalog_beam_search_runtime"
+    assert record["status"] == "rejected"
+    assert record["reason"] == "s2pc_runtime_loss_not_improved"
+    assert record["initial_loss"] == 0.000112890954
+    assert record["candidate_loss"] == 0.000211185317
+    assert record["final_loss"] == 0.000112890954
+    assert record["source_split_contract"]["runtime_effect_evaluation"] == "heldout"
 
 
 def test_heldout_method_record_requires_same_heldout_target():
@@ -293,4 +314,47 @@ def _s2pc_gate(*, status: str, initial_loss: float, candidate_loss: float) -> di
             "candidate_acceptance": "heldout",
         },
         "claim_boundaries": ["s2pc boundary"],
+    }
+
+
+def _s2pc_runtime_effect(
+    *,
+    status: str,
+    baseline_loss: float,
+    s2pc_runtime_loss: float,
+) -> dict:
+    return {
+        "schema_version": "policy-reaction-s2pc-runtime-effect-v1",
+        "artifact_id": "s2pc-runtime-effect-test",
+        "overall_status": status,
+        "loss_metric": "weighted_choice_distribution_jsd",
+        "baseline_loss": baseline_loss,
+        "s2pc_runtime_loss": s2pc_runtime_loss,
+        "absolute_loss_delta": baseline_loss - s2pc_runtime_loss,
+        "relative_loss_reduction": (
+            (baseline_loss - s2pc_runtime_loss) / baseline_loss
+            if baseline_loss > 0
+            else None
+        ),
+        "s2pc_candidate_id": "s2pc-candidate-test",
+        "product_runtime_model": "openai/gpt-oss-20b",
+        "product_runtime_scale": {
+            "domain": "policy_reaction",
+            "persona_count": 12,
+            "policy_count": 3,
+            "strategy_count": 3,
+            "scenario_count": 36,
+            "seed": 11,
+        },
+        "source_split_contract": {
+            "residual_mining": "calibration",
+            "semantic_factor_retrieval": "calibration",
+            "parameter_search": "calibration",
+            "candidate_acceptance": "heldout_required",
+            "runtime_effect_evaluation": "heldout",
+        },
+        "coverage": {
+            "baseline_coverage_rate": 1.0,
+            "s2pc_runtime_coverage_rate": 1.0,
+        },
     }

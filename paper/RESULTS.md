@@ -343,14 +343,16 @@ contracts, but they do not establish live LLM model-quality improvement.
       candidate evidence from diagnostic-only optimizer evidence under one strict
       update policy:
       `accept_matched_heldout_loss_improvement_with_complete_segment_coverage_else_reject_or_mark_diagnostic`.
-    - The gate contains seven method records: four `calibration_split_prompting`
+    - The gate contains eight method records: four `calibration_split_prompting`
       held-out records, one `s2pc_l0_deterministic_catalog_beam_search`
-      held-out record, one `structured_persona_parameter_patch` runtime
-      stability record, and one `deepseek_v4_pro_textgrad_candidate_update`
-      diagnostic record. It reports `candidate_update_count=6`,
-      `candidate_accepted_count=5`, `candidate_rejected_count=1`,
+      candidate-generation held-out record, one
+      `s2pc_l0_deterministic_catalog_beam_search_runtime` runtime-effect
+      record, one `structured_persona_parameter_patch` runtime stability
+      record, and one `deepseek_v4_pro_textgrad_candidate_update` diagnostic
+      record. It reports `candidate_update_count=7`,
+      `candidate_accepted_count=5`, `candidate_rejected_count=2`,
       `diagnostic_only_count=1`, and
-      `candidate_acceptance_rate=0.8333333333333334`.
+      `candidate_acceptance_rate=0.7142857142857143`.
     - The best accepted record is
       `gpt_oss_20b_calibration_split_prompting_12x3_seed11`, with matched
       initial loss `0.188148467815`, best loss `0.000112890954`, and final loss
@@ -366,6 +368,12 @@ contracts, but they do not establish live LLM model-quality improvement.
       gate with initial loss `0.15922332683`, candidate loss
       `0.010380967362`, final loss `0.010380967362`, and relative loss
       reduction `0.934802471669`.
+    - The S2PC L0 runtime-effect record
+      `s2pc_l0_current_policy_reaction_runtime_probe` is rejected within the
+      method gate. It compares the matched `openai/gpt-oss-20b` 12x3
+      calibration-split baseline against the Product run that actually consumes
+      the S2PC candidate artifact; weighted JSD increases from
+      `0.000112890954` to `0.000211185317`.
     - The DeepSeek v4-pro TextGrad record is deliberately `diagnostic_only`.
       It has no policy-reaction held-out benchmark artifact, and its W3/W4 smoke
       already records initial loss `0.3003150770148567`, best loss
@@ -400,6 +408,35 @@ contracts, but they do not establish live LLM model-quality improvement.
       candidate artifacts can be generated, audited, and registered through the
       held-out method gate, not a claim that LLM-assisted or runtime-integrated
       S2PC has improved Product behavior.
+
+13. **S2PC L0 runtime-effect probe**
+    - Product now consumes the S2PC candidate artifact
+      `policy-reaction-s2pc-candidate-current-001` at runtime through
+      `--s2pc-candidate-artifact`. The Product manifest
+      `llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-s2pc-runtime-001`
+      records `36` attempted local `openai/gpt-oss-20b` calls, `36`
+      successful calls, `0` failed calls, and an explicit `s2pc_context`.
+    - The exported prediction artifact
+      `policy-reaction-segment-predictions-gpt-oss-20b-12x3-calibration-split-s2pc-runtime-001`
+      covers all four official segments and is evaluated against the same
+      held-out HTOPS/HPS evaluation projection as the matched baseline.
+    - The S2PC runtime held-out benchmark
+      `policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-s2pc-runtime-heldout-001`
+      reports weighted JSD `0.00021118531661561824`, mean JSD
+      `0.00064756581901641`, worst-segment JSD
+      `0.0015928065281891066`, and segment rank correlation `1.0`.
+    - The formal runtime-effect artifact
+      `policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-heldout-001`
+      compares this run with the matched calibration-split baseline
+      `policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-heldout-001`.
+      It records `overall_status=regressed`, baseline loss
+      `0.000112890954`, S2PC runtime loss `0.000211185317`, absolute delta
+      `-0.000098294363`, and relative loss reduction `-0.870701856842`.
+    - This is the first direct Product-runtime attribution evidence for S2PC
+      L0, and it is negative. It proves the S2PC candidate can be consumed and
+      audited by Product, but the current single-segment deterministic candidate
+      weakens held-out alignment relative to the already strong calibration-split
+      baseline.
 
 ## Accepted Claims
 
@@ -453,6 +490,9 @@ contracts, but they do not establish live LLM model-quality improvement.
 - CIRCE can generate deterministic S2PC semantic-structured persona calibration
   candidate artifacts from calibration-split residuals and register them through
   the held-out policy-reaction method gate with explicit claim boundaries.
+- CIRCE can inject an S2PC candidate artifact into the Product LLM runtime,
+  export the resulting segment prediction artifact, and evaluate the matched
+  held-out runtime effect without treating a negative result as improvement.
 
 ## Not Yet Claimed
 
@@ -500,6 +540,8 @@ contracts, but they do not establish live LLM model-quality improvement.
   scenario, model, cohort scale, public-source release, and held-out split.
 - No LLM-assisted S2PC, retrieval-augmented S2PC, or Product runtime S2PC
   effectiveness claim is made from the L0 deterministic artifact.
+- No positive S2PC Product-runtime effectiveness claim is made from the current
+  L0 runtime probe; the matched held-out effect artifact records regression.
 
 ## Evidence Review Checklist
 
