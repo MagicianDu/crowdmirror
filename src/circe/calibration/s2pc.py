@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import math
+import copy
 from typing import Any
 
 
@@ -11,6 +12,8 @@ S2PC_SCHEMA_VERSION = "circe-s2pc-v1"
 S2PC_CANDIDATE_SCHEMA_VERSION = "policy-reaction-s2pc-candidate-v1"
 S2PC_GATE_SCHEMA_VERSION = "policy-reaction-s2pc-gate-v1"
 RESIDUAL_SCHEMA_VERSION = "circe-s2pc-residuals-v1"
+SEMANTIC_MATCH_SCHEMA_VERSION = "circe-s2pc-semantic-matches-v1"
+PARAMETER_PATCH_SCHEMA_VERSION = "circe-s2pc-parameter-patches-v1"
 POLICY_REACTION_BENCHMARK_SCHEMA_VERSION = (
     "policy-reaction-official-segment-benchmark-v1"
 )
@@ -252,6 +255,111 @@ def mine_policy_reaction_residuals(
     return artifact
 
 
+def retrieve_semantic_factors(
+    residual_artifact: dict[str, Any],
+    catalog: dict[str, Any],
+    *,
+    top_k: int = 2,
+) -> dict[str, Any]:
+    if residual_artifact.get("schema_version") != RESIDUAL_SCHEMA_VERSION:
+        raise ValueError("residual_artifact has unsupported schema_version")
+    validate_semantic_factor_catalog(catalog)
+    if isinstance(top_k, bool) or top_k <= 0:
+        raise ValueError("top_k must be positive")
+    matches = []
+    for residual in residual_artifact["residuals"]:
+        if residual["direction"] == "matched":
+            continue
+        scored = []
+        for factor in catalog["factors"]:
+            score = _factor_match_score(residual, factor)
+            if score > 0.0:
+                scored.append((score, factor))
+        for score, factor in sorted(
+            scored,
+            key=lambda item: (-item[0], item[1]["factor_id"]),
+        )[:top_k]:
+            matches.append(
+                {
+                    "segment": residual["segment"],
+                    "policy_id": residual["policy_id"],
+                    "residual": residual["residual"],
+                    "direction": residual["direction"],
+                    "magnitude": residual["magnitude"],
+                    "factor_id": factor["factor_id"],
+                    "factor_label": factor["label"],
+                    "score": round(score, 12),
+                    "expected_policy_effect": copy.deepcopy(
+                        factor["expected_policy_effect"]
+                    ),
+                    "claim_boundary": factor["claim_boundary"],
+                }
+            )
+    artifact = {
+        "schema_version": SEMANTIC_MATCH_SCHEMA_VERSION,
+        "source_residual_artifact_id": residual_artifact[
+            "source_benchmark_artifact_id"
+        ],
+        "source_split": "calibration",
+        "top_k": top_k,
+        "match_count": len(matches),
+        "matches": matches,
+        "claim_boundary": (
+            "S2PC semantic matches are deterministic catalog matches, "
+            "not field validation."
+        ),
+    }
+    _assert_strict_json(artifact)
+    return artifact
+
+
+def compile_semantic_matches_to_parameter_patches(
+    semantic_matches: dict[str, Any],
+    catalog: dict[str, Any],
+) -> dict[str, Any]:
+    if semantic_matches.get("schema_version") != SEMANTIC_MATCH_SCHEMA_VERSION:
+        raise ValueError("semantic_matches has unsupported schema_version")
+    validate_semantic_factor_catalog(catalog)
+    factors_by_id = {factor["factor_id"]: factor for factor in catalog["factors"]}
+    patches = []
+    for match in semantic_matches["matches"]:
+        factor = factors_by_id[match["factor_id"]]
+        for parameter_name, bounds in sorted(factor["parameter_bounds"].items()):
+            parameter_value = _parameter_value_for_match(match, bounds)
+            patches.append(
+                {
+                    "segment": match["segment"],
+                    "policy_id": match["policy_id"],
+                    "factor_id": match["factor_id"],
+                    "factor_label": match["factor_label"],
+                    "parameter_name": parameter_name,
+                    "parameter_value": parameter_value,
+                    "parameter_bounds": copy.deepcopy(bounds),
+                    "expected_effect": copy.deepcopy(
+                        match["expected_policy_effect"]
+                    ),
+                    "provenance": {
+                        "residual": match["residual"],
+                        "direction": match["direction"],
+                        "magnitude": match["magnitude"],
+                        "match_score": match["score"],
+                        "source_split": "calibration",
+                    },
+                }
+            )
+    artifact = {
+        "schema_version": PARAMETER_PATCH_SCHEMA_VERSION,
+        "source_split": "calibration",
+        "parameter_patch_count": len(patches),
+        "parameter_patches": patches,
+        "claim_boundary": (
+            "S2PC parameter patches are bounded candidate-generation evidence only."
+        ),
+    }
+    _assert_strict_json(artifact)
+    return artifact
+
+
 def _factor(
     factor_id: str,
     label: str,
@@ -273,6 +381,38 @@ def _factor(
             "not as causal proof."
         ),
     }
+
+
+def _factor_match_score(residual: dict[str, Any], factor: dict[str, Any]) -> float:
+    score = float(residual["magnitude"])
+    if residual["segment"] in factor["segment_hints"]:
+        score += 1.0
+    if residual["policy_id"] in factor["policy_hints"]:
+        score += 1.0
+    if (
+        residual["segment"] in factor["segment_hints"]
+        and residual["policy_id"] in factor["policy_hints"]
+        and len(factor["segment_hints"]) == 1
+        and len(factor["policy_hints"]) == 1
+    ):
+        score += 0.25
+    expected = factor.get("expected_policy_effect", {}).get(residual["policy_id"])
+    if expected == "increase" and residual["direction"] == "under_predicted":
+        score += 0.5
+    if expected == "decrease" and residual["direction"] == "over_predicted":
+        score += 0.5
+    return score
+
+
+def _parameter_value_for_match(
+    match: dict[str, Any],
+    bounds: dict[str, float],
+) -> float:
+    lower = float(bounds["min"])
+    upper = float(bounds["max"])
+    span = upper - lower
+    scaled = lower + span * min(1.0, float(match["magnitude"]))
+    return round(scaled, 12)
 
 
 def _validate_policy_reaction_benchmark(

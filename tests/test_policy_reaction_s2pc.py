@@ -4,8 +4,10 @@ import pytest
 
 from circe.calibration.s2pc import (
     S2PC_SCHEMA_VERSION,
+    compile_semantic_matches_to_parameter_patches,
     default_semantic_factor_catalog,
     mine_policy_reaction_residuals,
+    retrieve_semantic_factors,
     validate_semantic_factor_catalog,
 )
 
@@ -65,6 +67,68 @@ def test_mine_policy_reaction_residuals_rejects_heldout_generation():
 
     with pytest.raises(ValueError, match="calibration split"):
         mine_policy_reaction_residuals(artifact)
+
+
+def test_retrieve_semantic_factors_matches_segment_policy_and_direction():
+    residuals = mine_policy_reaction_residuals(
+        _calibration_benchmark(),
+        min_magnitude=0.05,
+    )
+    matches = retrieve_semantic_factors(
+        residuals,
+        default_semantic_factor_catalog(),
+        top_k=2,
+    )
+
+    assert matches["schema_version"] == "circe-s2pc-semantic-matches-v1"
+    assert matches["match_count"] > 0
+    low_income_food = [
+        match
+        for match in matches["matches"]
+        if match["segment"] == "low_income_food_insecure"
+        and match["policy_id"] == "food_subsidy_expansion"
+    ]
+    assert low_income_food
+    assert low_income_food[0]["factor_id"] == "food_insecurity_salience"
+    assert low_income_food[0]["score"] > 0
+    json.dumps(matches, allow_nan=False)
+
+
+def test_compile_semantic_matches_to_parameter_patches_is_bounded():
+    residuals = mine_policy_reaction_residuals(
+        _calibration_benchmark(),
+        min_magnitude=0.10,
+    )
+    matches = retrieve_semantic_factors(
+        residuals,
+        default_semantic_factor_catalog(),
+        top_k=1,
+    )
+
+    patches = compile_semantic_matches_to_parameter_patches(
+        matches,
+        default_semantic_factor_catalog(),
+    )
+
+    assert patches["schema_version"] == "circe-s2pc-parameter-patches-v1"
+    assert patches["parameter_patch_count"] > 0
+    first = patches["parameter_patches"][0]
+    assert {
+        "segment",
+        "policy_id",
+        "factor_id",
+        "parameter_name",
+        "parameter_value",
+        "parameter_bounds",
+        "expected_effect",
+        "provenance",
+    } <= set(first)
+    assert (
+        first["parameter_bounds"]["min"]
+        <= first["parameter_value"]
+        <= first["parameter_bounds"]["max"]
+    )
+    json.dumps(patches, allow_nan=False)
 
 
 def _calibration_benchmark() -> dict:
