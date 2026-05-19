@@ -4,10 +4,12 @@ import pytest
 
 from circe.calibration.s2pc import (
     S2PC_SCHEMA_VERSION,
+    build_s2pc_candidate_artifact,
     compile_semantic_matches_to_parameter_patches,
     default_semantic_factor_catalog,
     mine_policy_reaction_residuals,
     retrieve_semantic_factors,
+    run_constrained_parameter_beam_search,
     validate_semantic_factor_catalog,
 )
 
@@ -129,6 +131,68 @@ def test_compile_semantic_matches_to_parameter_patches_is_bounded():
         <= first["parameter_bounds"]["max"]
     )
     json.dumps(patches, allow_nan=False)
+
+
+def test_run_constrained_parameter_beam_search_keeps_top_candidates():
+    residuals = mine_policy_reaction_residuals(
+        _calibration_benchmark(),
+        min_magnitude=0.10,
+    )
+    matches = retrieve_semantic_factors(
+        residuals,
+        default_semantic_factor_catalog(),
+        top_k=1,
+    )
+    patches = compile_semantic_matches_to_parameter_patches(
+        matches,
+        default_semantic_factor_catalog(),
+    )
+
+    search = run_constrained_parameter_beam_search(patches, beam_width=3)
+
+    assert search["schema_version"] == "circe-s2pc-beam-search-v1"
+    assert search["beam_width"] == 3
+    assert 1 <= search["candidate_count"] <= 3
+    assert (
+        search["candidates"][0]["proxy_score"]
+        >= search["candidates"][-1]["proxy_score"]
+    )
+    assert search["candidates"][0]["parameter_patches"]
+    json.dumps(search, allow_nan=False)
+
+
+def test_build_s2pc_candidate_artifact_preserves_provenance():
+    residuals = mine_policy_reaction_residuals(
+        _calibration_benchmark(),
+        min_magnitude=0.10,
+    )
+    matches = retrieve_semantic_factors(
+        residuals,
+        default_semantic_factor_catalog(),
+        top_k=1,
+    )
+    patches = compile_semantic_matches_to_parameter_patches(
+        matches,
+        default_semantic_factor_catalog(),
+    )
+    search = run_constrained_parameter_beam_search(patches, beam_width=2)
+
+    candidate = build_s2pc_candidate_artifact(
+        candidate_id="policy-reaction-s2pc-candidate-test",
+        calibration_benchmark=_calibration_benchmark(),
+        residual_artifact=residuals,
+        semantic_matches=matches,
+        parameter_patches=patches,
+        search_result=search,
+    )
+
+    assert candidate["schema_version"] == "policy-reaction-s2pc-candidate-v1"
+    assert candidate["candidate_id"] == "policy-reaction-s2pc-candidate-test"
+    assert candidate["generator"] == "s2pc_l0_deterministic_catalog_beam_search"
+    assert candidate["source_split_contract"]["residual_mining"] == "calibration"
+    assert candidate["best_candidate"]["parameter_patches"]
+    assert candidate["candidate_prompt_components"]["calibration_anchor"]
+    json.dumps(candidate, allow_nan=False)
 
 
 def _calibration_benchmark() -> dict:
