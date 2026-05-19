@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import math
 from pathlib import Path
@@ -14,6 +15,7 @@ OFFICIAL_SEGMENT_BENCHMARK_SCHEMA_VERSION = (
 RUNTIME_PATCH_STABILITY_SCHEMA_VERSION = (
     "policy-reaction-runtime-patch-stability-v1"
 )
+S2PC_GATE_SCHEMA_VERSION = "policy-reaction-s2pc-gate-v1"
 TEXTGRAD_EVIDENCE_SCHEMA_VERSION = "circe-evidence-v1"
 DEFAULT_LOSS_METRIC = "weighted_choice_distribution_jsd"
 UPDATE_METHOD_POLICY = (
@@ -176,6 +178,57 @@ def build_runtime_stability_method_record(
                 "candidate_generation": "calibration",
                 "candidate_acceptance": "heldout_runtime_effect_stability",
             },
+        }
+    )
+
+
+def build_s2pc_gate_method_record(
+    *,
+    method_id: str,
+    s2pc_gate: dict[str, Any],
+) -> dict[str, Any]:
+    _validate_method_id(method_id)
+    if s2pc_gate.get("schema_version") != S2PC_GATE_SCHEMA_VERSION:
+        raise ValueError("s2pc_gate has unsupported schema_version")
+    status = "accepted" if s2pc_gate.get("overall_status") == "accepted" else "rejected"
+    initial_loss = _numeric(s2pc_gate.get("initial_loss"), "initial_loss")
+    candidate_loss = _numeric(s2pc_gate.get("candidate_loss"), "candidate_loss")
+    best_loss = _numeric(s2pc_gate.get("best_loss"), "best_loss")
+    final_loss = _numeric(s2pc_gate.get("final_loss"), "final_loss")
+    coverage_rate = _numeric(s2pc_gate.get("coverage_rate"), "coverage_rate")
+    absolute_loss_delta = _round_float(initial_loss - candidate_loss)
+    return _strict_record(
+        {
+            "method_id": method_id,
+            "generator": s2pc_gate.get(
+                "generator",
+                "s2pc_l0_deterministic_catalog_beam_search",
+            ),
+            "evidence_type": "s2pc_heldout_gate",
+            "eligibility": "heldout_candidate",
+            "status": status,
+            "reason": (
+                "s2pc_heldout_loss_improved"
+                if status == "accepted"
+                else "s2pc_heldout_loss_not_improved"
+            ),
+            "loss_metric": s2pc_gate.get("loss_metric", DEFAULT_LOSS_METRIC),
+            "initial_loss": _round_float(initial_loss),
+            "candidate_loss": _round_float(candidate_loss),
+            "best_loss": _round_float(best_loss),
+            "final_loss": _round_float(final_loss),
+            "absolute_loss_delta": absolute_loss_delta,
+            "relative_loss_reduction": (
+                _round_float(absolute_loss_delta / initial_loss)
+                if initial_loss > 0.0 and absolute_loss_delta is not None
+                else None
+            ),
+            "coverage_rate": _round_float(coverage_rate),
+            "candidate_artifact_id": s2pc_gate["artifact_id"],
+            "candidate_id": s2pc_gate.get("candidate_id"),
+            "source_split_contract": copy.deepcopy(
+                s2pc_gate["source_split_contract"]
+            ),
         }
     )
 

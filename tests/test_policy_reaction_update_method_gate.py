@@ -6,6 +6,7 @@ from experiments.policy_reaction_update_method_gate import (
     build_heldout_benchmark_method_record,
     build_policy_reaction_update_method_gate,
     build_runtime_stability_method_record,
+    build_s2pc_gate_method_record,
     build_textgrad_manifest_method_record,
     write_policy_reaction_update_method_gate,
 )
@@ -116,6 +117,25 @@ def test_runtime_stability_method_record_rejects_stable_regression():
     assert record["initial_loss"] == 0.000111404795
     assert record["candidate_loss"] == 0.005108707956
     assert record["relative_loss_reduction"] == -45.052587741358
+
+
+def test_s2pc_gate_method_record_can_be_accepted():
+    record = build_s2pc_gate_method_record(
+        method_id="s2pc_l0_deepseek_flash_candidate",
+        s2pc_gate=_s2pc_gate(
+            status="accepted",
+            initial_loss=0.159,
+            candidate_loss=0.009,
+        ),
+    )
+
+    assert record["method_id"] == "s2pc_l0_deepseek_flash_candidate"
+    assert record["generator"] == "s2pc_l0_deterministic_catalog_beam_search"
+    assert record["status"] == "accepted"
+    assert record["reason"] == "s2pc_heldout_loss_improved"
+    assert record["initial_loss"] == 0.159
+    assert record["candidate_loss"] == 0.009
+    assert record["source_split_contract"]["candidate_acceptance"] == "heldout"
 
 
 def test_heldout_method_record_requires_same_heldout_target():
@@ -247,4 +267,30 @@ def _textgrad_manifest() -> dict:
             "textgrad_output_budget_saturated": False,
         },
         "claim_boundary": "local-model calibration evidence; not cross-provider evidence",
+    }
+
+
+def _s2pc_gate(*, status: str, initial_loss: float, candidate_loss: float) -> dict:
+    return {
+        "schema_version": "policy-reaction-s2pc-gate-v1",
+        "artifact_id": "policy-reaction-s2pc-gate-test",
+        "overall_status": status,
+        "candidate_id": "policy-reaction-s2pc-candidate-test",
+        "generator": "s2pc_l0_deterministic_catalog_beam_search",
+        "loss_metric": "weighted_choice_distribution_jsd",
+        "initial_loss": initial_loss,
+        "candidate_loss": candidate_loss,
+        "best_loss": min(initial_loss, candidate_loss),
+        "final_loss": candidate_loss if status == "accepted" else initial_loss,
+        "candidate_accepted_count": 1 if status == "accepted" else 0,
+        "candidate_rejected_count": 0 if status == "accepted" else 1,
+        "candidate_pending_count": 0,
+        "coverage_rate": 1.0,
+        "source_split_contract": {
+            "residual_mining": "calibration",
+            "semantic_factor_retrieval": "calibration",
+            "parameter_search": "calibration",
+            "candidate_acceptance": "heldout",
+        },
+        "claim_boundaries": ["s2pc boundary"],
     }
