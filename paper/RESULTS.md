@@ -337,6 +337,35 @@ contracts, but they do not establish live LLM model-quality improvement.
       generator to compare against structured persona-parameter calibration,
       not reported as an effective optimizer yet.
 
+11. **Policy-reaction update-method gate**
+    - The Research worktree now records the method-level comparison artifact
+      `policy-reaction-update-method-gate-current-001`. It separates held-out
+      candidate evidence from diagnostic-only optimizer evidence under one strict
+      update policy:
+      `accept_matched_heldout_loss_improvement_with_complete_segment_coverage_else_reject_or_mark_diagnostic`.
+    - The gate contains six method records: four `calibration_split_prompting`
+      held-out records, one `structured_persona_parameter_patch` runtime
+      stability record, and one `deepseek_v4_pro_textgrad_candidate_update`
+      diagnostic record. It reports `candidate_update_count=5`,
+      `candidate_accepted_count=4`, `candidate_rejected_count=1`,
+      `diagnostic_only_count=1`, and `candidate_acceptance_rate=0.8`.
+    - The best accepted record is
+      `gpt_oss_20b_calibration_split_prompting_12x3_seed11`, with matched
+      initial loss `0.188148467815`, best loss `0.000112890954`, and final loss
+      `0.000112890954`. The DeepSeek v4-flash calibration-split records are also
+      accepted relative to the uncalibrated DeepSeek v4-flash held-out baseline,
+      but their best losses remain around `0.0104` to `0.0111`.
+    - The `structured_persona_parameter_patch` method is rejected by the runtime
+      stability evidence: `gpt_oss_20b_runtime_prompt_patch_stability` records
+      initial loss `0.000111404795`, candidate/runtime loss `0.005108707956`,
+      and relative loss reduction `-45.052587741358`.
+    - The DeepSeek v4-pro TextGrad record is deliberately `diagnostic_only`.
+      It has no policy-reaction held-out benchmark artifact, and its W3/W4 smoke
+      already records initial loss `0.3003150770148567`, best loss
+      `0.3003150770148567`, final loss `0.4522002190868819`, and a rejected
+      candidate. The method gate therefore treats it as executable optimizer
+      plumbing, not accepted policy-reaction calibration evidence.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -382,6 +411,10 @@ contracts, but they do not establish live LLM model-quality improvement.
 - CIRCE can execute a DeepSeek v4-pro candidate-update smoke and record
   acceptance-gated negative results without treating rejected prompt updates as
   improvements.
+- CIRCE can compare automated prompt/persona update methods in a strict JSON
+  policy-reaction method gate that accepts only matched held-out improvements,
+  rejects regressed runtime patch evidence, and marks optimizer-only evidence as
+  diagnostic when policy-reaction held-out evaluation is missing.
 
 ## Not Yet Claimed
 
@@ -399,6 +432,9 @@ contracts, but they do not establish live LLM model-quality improvement.
 - No DeepSeek v4-pro prompt-update effectiveness claim is made from the current
   W3/W4 smoke because the only evaluated candidate was rejected and final loss
   worsened.
+- No TextGrad or DeepSeek v4-pro policy-reaction optimizer effectiveness claim
+  is made until a generated policy-reaction candidate is evaluated on the
+  held-out HPS/HTOPS benchmark and accepted by the method gate.
 - No policy-reaction model-quality result, China policy prediction, or field
   validation claim is made from the public-data intake catalog or manifest.
 - No policy-reaction field validation or paper-grade benchmark coverage is made
