@@ -637,6 +637,31 @@ contracts, but they do not establish live LLM model-quality improvement.
       rule. The selector recommendation must therefore be downgraded from
       “prefer sparse subset” to “repeat evidence still insufficient”.
 
+22. **S2PC `trust_only` parameter-level decomposition**
+    - To avoid continuing broad search on a weakly stable family, the Research
+      worktree next decomposes `trust_only` into two parameter-level variants:
+      `p01=prior_anchor_only` and `p02=trust_multiplier_only`. This is a more
+      conservative representation test than factor-level search because it asks
+      whether one of the two remaining trust parameters is sufficient by
+      itself.
+    - On the matched `12x3 seed=11` held-out comparison, the parameter-subset
+      matrix
+      `policy-reaction-s2pc-s02-parameter-subset-matrix-gpt-oss-20b-12x3-heldout-001`
+      records `candidate_count=2`, `improved_count=1`, `regressed_count=1`,
+      and best candidate
+      `policy-reaction-s2pc-s02-parameter-subset-current-001-p02`.
+    - The `p01=prior_anchor_only` variant regresses materially from baseline
+      `0.000112890954` to `0.00100526197`, with relative loss reduction
+      `-7.90471678038`.
+    - The `p02=trust_multiplier_only` variant improves slightly from baseline
+      `0.000112890954` to `0.000112585562`, with relative loss reduction
+      `0.002705185757`.
+    - This matters because the best parameter-level variant is still weaker
+      than the earlier `s02=trust_only` result (`0.000111545213`). Under the
+      current stop-loss rule, this means the new representation does not earn a
+      repeat expansion: it finds a weaker single-run positive point rather than
+      a more stable or stronger update rule.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -711,6 +736,10 @@ contracts, but they do not establish live LLM model-quality improvement.
 - CIRCE can run repeat validation directly on the narrowed `trust_only`
   sparse-selector candidate and preserve `improved` / `no_change` /
   `regressed` outcomes in one matched stability matrix.
+- CIRCE can decompose the narrowed `trust_only` selector further into
+  parameter-level variants and preserve both weak positive and negative
+  findings without automatically promoting the weaker positive variant to the
+  next repeat stage.
 
 ## Not Yet Claimed
 
@@ -774,6 +803,10 @@ contracts, but they do not establish live LLM model-quality improvement.
   validation has not yet been completed for that redesigned selector.
 - No deployable claim is made for the redesigned `trust_only` sparse selector;
   after repeat validation it remains mixed rather than stable.
+- No further repeat-expansion claim is made for the current parameter-level
+  `trust_only` decomposition; its best candidate is weaker than the earlier
+  `trust_only` single-run result and therefore does not clear the stop-loss
+  threshold for continued investment.
 
 ## Evidence Review Checklist
 
