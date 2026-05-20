@@ -351,9 +351,10 @@ contracts, but they do not establish live LLM model-quality improvement.
       `s2pc_l1_multi_candidate_runtime_search_runtime` held-out runtime-matrix
       record, one `structured_persona_parameter_patch` runtime stability
       record, and one `deepseek_v4_pro_textgrad_candidate_update` diagnostic
-      record. It reports `candidate_update_count=8`,
-      `candidate_accepted_count=6`, `candidate_rejected_count=2`,
-      `diagnostic_only_count=1`, and `candidate_acceptance_rate=0.75`.
+      record. It reports `candidate_update_count=9`,
+      `candidate_accepted_count=6`, `candidate_rejected_count=3`,
+      `diagnostic_only_count=1`, and
+      `candidate_acceptance_rate=0.6666666666666666`.
     - The best accepted record is now
       `s2pc_l1_runtime_matrix_gpt_oss_20b_12x3_seed11`, with matched initial
       loss `0.000112890954`, best loss `0.000111545213`, and final loss
@@ -385,6 +386,11 @@ contracts, but they do not establish live LLM model-quality improvement.
       averaging away rejected candidates, while still preserving full
       `candidate_count`, `improved_count`, and `regressed_count` accounting in
       the per-method record.
+    - The S2PC L1 runtime-stability record
+      `s2pc_l1_runtime_stability_gpt_oss_20b_c01` is rejected within the method
+      gate. It records the repeat evidence for the currently best L1 candidate
+      `c01` across `12x3 seed=11`, `12x3 seed=17`, and `16x3 seed=11`, and the
+      current matrix status is `mixed` rather than `stable_improvement`.
     - The DeepSeek v4-pro TextGrad record is deliberately `diagnostic_only`.
       It has no policy-reaction held-out benchmark artifact, and its W3/W4 smoke
       already records initial loss `0.3003150770148567`, best loss
@@ -478,6 +484,48 @@ contracts, but they do not establish live LLM model-quality improvement.
       support any stability, robustness, or cross-seed generalization claim for
       S2PC L1.
 
+15. **S2PC L1 best-candidate stability check**
+    - The current best L1 candidate `c01` was re-run on two additional axes:
+      `12x3 seed=17` and `16x3 seed=11`. Both Product runs completed
+      successfully and produced held-out benchmark artifacts aligned with the
+      same HTOPS/HPS evaluation projection used for the matched baselines.
+    - The `12x3 seed=17` effect artifact
+      `policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-c01-seed17-heldout-001`
+      regresses from baseline loss `0.000111545213` to candidate loss
+      `0.001179413326`, with relative loss reduction `-9.573410525838`.
+    - The `16x3 seed=11` effect artifact
+      `policy-reaction-s2pc-runtime-effect-gpt-oss-20b-16x3-calibration-split-c01-seed11-heldout-001`
+      also regresses, from baseline loss `0.000109778219` to candidate loss
+      `0.000136894753`, with relative loss reduction `-0.247011968684`.
+    - The stability matrix
+      `policy-reaction-s2pc-runtime-stability-gpt-oss-20b-calibration-split-c01-heldout-001`
+      summarizes the three matched comparisons and records `effect_count=3`,
+      `improved_count=1`, `regressed_count=2`, `overall_status=mixed`, and mean
+      relative loss reduction `-3.269500592835`.
+    - This result materially narrows the current claim boundary: the observed
+      L1 improvement is real for one recorded setting, but it is not yet stable
+      across the first seed/scale repeat axes.
+
+16. **S2PC L1 search-policy ablation**
+    - The Research worktree now records
+      `policy-reaction-s2pc-l1-search-policy-ablation-current-001`, a
+      retrospective held-out ablation over the six evaluated L1 candidates.
+    - The best ablation policy is `beam_top1_direct`, which means the current
+      positive signal already sits on the rank-1 beam candidate and does not
+      require an oracle selector over the full beam.
+    - All improving ablation slices point to the same candidate `c01`, which is
+      also the best candidate for the `food_subsidy_expansion` policy group and
+      the `fixed_income_inflation_stressed` segment group.
+    - The negative-control side remains clearly negative: the best
+      `baseline_no_new_support` group candidate is `c04`, but it still regresses
+      with runtime loss `0.000904895192`; the best
+      `working_family_price_stressed` segment candidate is `c03`, which
+      regresses much more sharply with runtime loss `0.008484318228`.
+    - This ablation supports a bounded design insight rather than an efficacy
+      claim: under the current deterministic search space, useful signal is
+      concentrated in one narrow branch instead of being broadly distributed
+      across segments or policy families.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -537,6 +585,9 @@ contracts, but they do not establish live LLM model-quality improvement.
   locally improving candidate under the current `openai/gpt-oss-20b` 12x3
   calibration-split held-out setting while preserving rejected-candidate
   accounting.
+- CIRCE can attach repeat-aware stability evidence and search-policy ablation
+  artifacts to S2PC L1 runtime results instead of reporting the single positive
+  setting in isolation.
 
 ## Not Yet Claimed
 
@@ -589,6 +640,8 @@ contracts, but they do not establish live LLM model-quality improvement.
   improving candidate out of six under a single model / scale / seed setting.
 - No stable, cross-seed, cross-scale, or cross-provider S2PC L1 advantage claim
   is made from the current runtime matrix.
+- No stable claim is made for the current best L1 candidate `c01`; the first
+  repeat matrix is mixed with two regressions out of three runs.
 
 ## Evidence Review Checklist
 

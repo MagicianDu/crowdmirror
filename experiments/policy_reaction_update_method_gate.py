@@ -17,6 +17,7 @@ RUNTIME_PATCH_STABILITY_SCHEMA_VERSION = (
 )
 S2PC_GATE_SCHEMA_VERSION = "policy-reaction-s2pc-gate-v1"
 S2PC_RUNTIME_EFFECT_SCHEMA_VERSION = "policy-reaction-s2pc-runtime-effect-v1"
+S2PC_RUNTIME_STABILITY_SCHEMA_VERSION = "policy-reaction-s2pc-runtime-stability-v1"
 S2PC_RUNTIME_EFFECT_MATRIX_SCHEMA_VERSION = (
     "policy-reaction-s2pc-runtime-effect-matrix-v1"
 )
@@ -373,6 +374,74 @@ def build_s2pc_runtime_effect_matrix_method_record(
     )
 
 
+def build_s2pc_runtime_stability_method_record(
+    *,
+    method_id: str,
+    s2pc_runtime_stability: dict[str, Any],
+) -> dict[str, Any]:
+    _validate_method_id(method_id)
+    if (
+        s2pc_runtime_stability.get("schema_version")
+        != S2PC_RUNTIME_STABILITY_SCHEMA_VERSION
+    ):
+        raise ValueError("s2pc_runtime_stability has unsupported schema_version")
+    loss_summary = s2pc_runtime_stability.get("loss_summary")
+    if not isinstance(loss_summary, dict):
+        raise ValueError("s2pc_runtime_stability missing loss_summary")
+    candidate_ids = s2pc_runtime_stability.get("candidate_ids")
+    if not isinstance(candidate_ids, list) or not candidate_ids:
+        raise ValueError("s2pc_runtime_stability missing candidate_ids")
+    initial_loss = _numeric(loss_summary.get("baseline_loss_mean"), "baseline_loss_mean")
+    candidate_loss = _numeric(
+        loss_summary.get("s2pc_runtime_loss_mean"),
+        "s2pc_runtime_loss_mean",
+    )
+    absolute_loss_delta = _round_float(initial_loss - candidate_loss)
+    status = (
+        "accepted"
+        if s2pc_runtime_stability.get("overall_status") == "stable_improvement"
+        else "rejected"
+    )
+    return _strict_record(
+        {
+            "method_id": method_id,
+            "generator": "s2pc_l1_multi_candidate_runtime_search_runtime_stability",
+            "evidence_type": "s2pc_runtime_stability_matrix",
+            "eligibility": "heldout_candidate",
+            "status": status,
+            "reason": (
+                "s2pc_runtime_candidate_stably_improved"
+                if status == "accepted"
+                else "s2pc_runtime_candidate_not_stable"
+            ),
+            "loss_metric": s2pc_runtime_stability.get(
+                "loss_metric",
+                DEFAULT_LOSS_METRIC,
+            ),
+            "initial_loss": _round_float(initial_loss),
+            "candidate_loss": _round_float(candidate_loss),
+            "best_loss": _round_float(candidate_loss if status == "accepted" else initial_loss),
+            "final_loss": _round_float(candidate_loss if status == "accepted" else initial_loss),
+            "absolute_loss_delta": absolute_loss_delta,
+            "relative_loss_reduction": (
+                _round_float(absolute_loss_delta / initial_loss)
+                if initial_loss > 0.0
+                else None
+            ),
+            "coverage_rate": 1.0,
+            "candidate_artifact_id": s2pc_runtime_stability["artifact_id"],
+            "candidate_id": str(candidate_ids[0]),
+            "effect_count": s2pc_runtime_stability.get("effect_count"),
+            "improved_count": s2pc_runtime_stability.get("improved_count"),
+            "regressed_count": s2pc_runtime_stability.get("regressed_count"),
+            "scale_axes": s2pc_runtime_stability.get("scale_axes", {}),
+            "source_split_contract": {
+                "candidate_generation": "calibration",
+                "candidate_acceptance": "heldout_runtime_effect_stability",
+                "runtime_effect_evaluation": "heldout",
+            },
+        }
+    )
 def build_textgrad_manifest_method_record(
     *,
     method_id: str,
@@ -664,6 +733,13 @@ def _default_current_method_records(*, loss_metric: str) -> list[dict[str, Any]]
             s2pc_runtime_effect_matrix=load_json_artifact(
                 benchmark_dir
                 / "policy-reaction-s2pc-runtime-effect-matrix-gpt-oss-20b-12x3-calibration-split-l1-heldout-001.json"
+            ),
+        ),
+        build_s2pc_runtime_stability_method_record(
+            method_id="s2pc_l1_runtime_stability_gpt_oss_20b_c01",
+            s2pc_runtime_stability=load_json_artifact(
+                benchmark_dir
+                / "policy-reaction-s2pc-runtime-stability-gpt-oss-20b-calibration-split-c01-heldout-001.json"
             ),
         ),
         build_textgrad_manifest_method_record(

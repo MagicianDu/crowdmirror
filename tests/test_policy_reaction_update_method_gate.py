@@ -7,6 +7,7 @@ from experiments.policy_reaction_update_method_gate import (
     build_policy_reaction_update_method_gate,
     build_runtime_stability_method_record,
     build_s2pc_gate_method_record,
+    build_s2pc_runtime_stability_method_record,
     build_s2pc_runtime_effect_matrix_method_record,
     build_s2pc_runtime_effect_method_record,
     build_textgrad_manifest_method_record,
@@ -175,6 +176,24 @@ def test_s2pc_runtime_effect_matrix_method_record_accepts_best_improvement():
     assert record["candidate_count"] == 6
     assert record["improved_count"] == 1
     assert record["regressed_count"] == 5
+    assert record["candidate_id"] == "policy-reaction-s2pc-l1-candidate-set-current-001-c01"
+
+
+def test_s2pc_runtime_stability_method_record_rejects_mixed_repeat_results():
+    record = build_s2pc_runtime_stability_method_record(
+        method_id="s2pc_l1_runtime_stability",
+        s2pc_runtime_stability=_s2pc_runtime_stability(),
+    )
+
+    assert record["method_id"] == "s2pc_l1_runtime_stability"
+    assert record["generator"] == "s2pc_l1_multi_candidate_runtime_search_runtime_stability"
+    assert record["status"] == "rejected"
+    assert record["reason"] == "s2pc_runtime_candidate_not_stable"
+    assert record["initial_loss"] == 0.000111404795
+    assert record["candidate_loss"] == 0.000475951097
+    assert record["effect_count"] == 3
+    assert record["improved_count"] == 1
+    assert record["regressed_count"] == 2
     assert record["candidate_id"] == "policy-reaction-s2pc-l1-candidate-set-current-001-c01"
 
 
@@ -433,4 +452,33 @@ def _s2pc_runtime_effect_matrix() -> dict:
             },
         ],
         "claim_boundaries": ["s2pc l1 matrix boundary"],
+    }
+
+
+def _s2pc_runtime_stability() -> dict:
+    return {
+        "schema_version": "policy-reaction-s2pc-runtime-stability-v1",
+        "artifact_id": "policy-reaction-s2pc-runtime-stability-test",
+        "overall_status": "mixed",
+        "loss_metric": "weighted_choice_distribution_jsd",
+        "effect_count": 3,
+        "improved_count": 1,
+        "regressed_count": 2,
+        "no_change_count": 0,
+        "candidate_ids": ["policy-reaction-s2pc-l1-candidate-set-current-001-c01"],
+        "best_candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c01",
+        "loss_summary": {
+            "baseline_loss_mean": 0.000111404795,
+            "s2pc_runtime_loss_mean": 0.000475951097,
+            "absolute_loss_delta_mean": -0.000364546302,
+            "relative_loss_reduction_mean": -3.269500592835,
+            "relative_loss_reduction_min": -9.573410525838,
+            "relative_loss_reduction_max": 0.011920716018,
+        },
+        "scale_axes": {
+            "persona_counts": [12, 16],
+            "scenario_counts": [36, 48],
+            "seeds": [11, 17],
+        },
+        "claim_boundaries": ["s2pc runtime stability boundary"],
     }
