@@ -582,6 +582,38 @@ contracts, but they do not establish live LLM model-quality improvement.
       representation or selection logic rather than simply applying nearby
       scalar perturbations.
 
+20. **S2PC sparse factor subset and selector redesign**
+    - The Research worktree now records
+      `policy-reaction-s2pc-c01-sparse-subset-current-001`, which converts the
+      current `c01` branch into three sparse runtime candidates:
+      `s01=household_only`, `s02=trust_only`, and `s03=core_pair_only`.
+      This step asks whether the current positive signal survives after
+      removing parts of the structured factor set, instead of continuing local
+      scalar perturbation.
+    - On the same matched `12x3 seed=11` held-out runtime comparison, the
+      sparse-subset matrix
+      `policy-reaction-s2pc-c01-sparse-subset-matrix-gpt-oss-20b-12x3-heldout-001`
+      reports `candidate_count=3`, `improved_count=1`, and
+      `regressed_count=2`. The unique improving subset is `s02`, whose
+      candidate id is
+      `policy-reaction-s2pc-c01-sparse-subset-current-001-s02`.
+    - The `s02=trust_only` subset reproduces the current best observed loss:
+      baseline `0.000112890954` versus sparse-subset runtime loss
+      `0.000111545213`, a relative loss reduction of `0.011920716018`.
+      By contrast, `s01=household_only` regresses sharply to `0.016544179765`,
+      and `s03=core_pair_only` regresses to `0.009379081172`.
+    - This narrows the current positive signal further. Under the current
+      `c01` branch, the useful effect is concentrated in the
+      `institutional_trust` factor subset, while the
+      `household_budget_rigidity` patches appear harmful in this matched run.
+    - The selector decision artifact
+      `policy-reaction-s2pc-selector-redesign-current-001` therefore updates
+      the current recommendation from `beam_top1_direct` to
+      `sparse_subset_best_runtime_effect`, with recommended candidate
+      `policy-reaction-s2pc-c01-sparse-subset-current-001-s02`. This remains a
+      bounded held-out decision artifact rather than a claim of stable
+      deployment readiness.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -649,6 +681,10 @@ contracts, but they do not establish live LLM model-quality improvement.
 - CIRCE can test local neighborhood variants around the current best S2PC
   candidate and retain negative local-search results as part of the evidence
   chain instead of smoothing them away.
+- CIRCE can decompose the current best S2PC branch into sparse semantic-factor
+  subsets, identify whether the held-out signal survives that sparsification,
+  and emit an explicit selector-redesign artifact instead of relying on an
+  implicit direct-choice rule.
 
 ## Not Yet Claimed
 
@@ -707,6 +743,9 @@ contracts, but they do not establish live LLM model-quality improvement.
   its selector-free robustness artifact is mixed rather than stable.
 - No local-neighborhood improvement claim is made around `c01`; the first three
   bounded perturbation variants all regress relative to the matched baseline.
+- No stability claim is yet made for the redesigned sparse selector; the
+  `trust_only` subset improves on the matched `12x3 seed=11` run, but repeat
+  validation has not yet been completed for that redesigned selector.
 
 ## Evidence Review Checklist
 
