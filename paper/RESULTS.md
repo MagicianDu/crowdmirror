@@ -526,6 +526,38 @@ contracts, but they do not establish live LLM model-quality improvement.
       concentrated in one narrow branch instead of being broadly distributed
       across segments or policy families.
 
+17. **S2PC L1 candidate-family narrowing**
+    - The Research worktree now records
+      `policy-reaction-s2pc-l1-family-narrowing-current-001`, which converts the
+      current ablation result into an explicit next-step search-space reduction.
+    - The retained family contains exactly one candidate:
+      `policy-reaction-s2pc-l1-candidate-set-current-001-c01`. The narrowing
+      rules are:
+      `segment_allowlist=[fixed_income_inflation_stressed]`,
+      `policy_allowlist=[food_subsidy_expansion]`, and `max_rank=1`.
+    - This means the current positive signal is not merely “somewhere in the
+      beam”; it collapses to one branch that is simultaneously rank-1, within
+      the `food_subsidy_expansion` policy family, and within the
+      `fixed_income_inflation_stressed` segment family. All other currently
+      evaluated branches should be treated as lower-priority or negative-control
+      search space for the next iteration.
+
+18. **S2PC selector-free robustness**
+    - The Research worktree now records
+      `policy-reaction-s2pc-selector-free-robustness-current-001`, which asks a
+      stricter question than retrospective oracle ablation: if Product simply
+      applies the best deployable non-oracle selector, does that rule stay
+      stable across repeats?
+    - The chosen deployable selector is `beam_top1_direct`, which selects
+      `policy-reaction-s2pc-l1-candidate-set-current-001-c01` without any
+      held-out lookahead. However, the robustness artifact records
+      `overall_status=mixed`, `repeat_count=3`, `improved_count=1`,
+      `regressed_count=2`, and mean relative loss reduction
+      `-3.269500592835`.
+    - This sharply limits the current deployment claim. Although the direct
+      selector agrees with the best observed single-run candidate, it is not yet
+      robust enough to be treated as a stable Product-side selection rule.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -588,6 +620,8 @@ contracts, but they do not establish live LLM model-quality improvement.
 - CIRCE can attach repeat-aware stability evidence and search-policy ablation
   artifacts to S2PC L1 runtime results instead of reporting the single positive
   setting in isolation.
+- CIRCE can derive an explicit narrowed candidate family and a selector-free
+  robustness artifact from the current S2PC L1 evidence chain.
 
 ## Not Yet Claimed
 
@@ -642,6 +676,8 @@ contracts, but they do not establish live LLM model-quality improvement.
   is made from the current runtime matrix.
 - No stable claim is made for the current best L1 candidate `c01`; the first
   repeat matrix is mixed with two regressions out of three runs.
+- No deployable selector claim is made for the current `beam_top1_direct` rule;
+  its selector-free robustness artifact is mixed rather than stable.
 
 ## Evidence Review Checklist
 

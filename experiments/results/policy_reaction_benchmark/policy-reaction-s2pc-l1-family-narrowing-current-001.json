@@ -1,0 +1,48 @@
+{
+  "artifact_id": "policy-reaction-s2pc-l1-family-narrowing-current-001",
+  "candidate_set_id": "policy-reaction-s2pc-l1-candidate-set-current-001",
+  "claim_boundaries": [
+    "Family narrowing preserves only the intersection shared by improving policy slices.",
+    "This matrix compares held-out alignment across multiple S2PC runtime candidates.",
+    "Only candidates with lower held-out loss than baseline count as improvements.",
+    "S2PC runtime effect is a held-out public-data alignment comparison; not field validation.",
+    "The baseline and S2PC runtime benchmarks use the same held-out HPS/HTOPS evaluation projection.",
+    "This artifact compares segment-level distributional alignment only; it does not establish causal policy effects.",
+    "Official public-use segment alignment smoke benchmark only; not field validation.",
+    "The official side is an observed distribution proxy derived from public-use HTOPS/HPS survey fields.",
+    "The prediction side must come from a separately auditable LLM cohort or product segment report.",
+    "This artifact does not establish causal policy effects or China policy forecast validity.",
+    "This S2PC L1 candidate is extracted from a multi-candidate search set for Product runtime probing. It requires heldout runtime-effect evaluation before any effectiveness claim.",
+    "Direct top-1 policy is deployable because it follows beam rank only.",
+    "Oracle group policies are retrospective analysis slices over already evaluated candidates."
+  ],
+  "claim_boundary": "S2PC L1 family narrowing is a retrospective reduction of the current candidate space based on evaluated evidence; it is not yet a general selector.",
+  "excluded_candidate_count": 5,
+  "narrowing_rules": {
+    "max_rank": 1,
+    "policy_allowlist": [
+      "food_subsidy_expansion"
+    ],
+    "segment_allowlist": [
+      "fixed_income_inflation_stressed"
+    ]
+  },
+  "overall_status": "narrowed_family_available",
+  "retained_candidate_count": 1,
+  "retained_candidate_ids": [
+    "policy-reaction-s2pc-l1-candidate-set-current-001-c01"
+  ],
+  "retained_candidates": [
+    {
+      "candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c01",
+      "policy_id": "food_subsidy_expansion",
+      "proxy_score": 4.254466026348,
+      "rank": 1,
+      "runtime_loss": 0.000111545213,
+      "segment": "fixed_income_inflation_stressed"
+    }
+  ],
+  "runtime_effect_matrix_artifact_id": "policy-reaction-s2pc-runtime-effect-matrix-gpt-oss-20b-12x3-calibration-split-l1-heldout-001",
+  "schema_version": "policy-reaction-s2pc-l1-family-narrowing-v1",
+  "search_policy_ablation_artifact_id": "policy-reaction-s2pc-l1-search-policy-ablation-current-001"
+}
