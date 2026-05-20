@@ -343,22 +343,26 @@ contracts, but they do not establish live LLM model-quality improvement.
       candidate evidence from diagnostic-only optimizer evidence under one strict
       update policy:
       `accept_matched_heldout_loss_improvement_with_complete_segment_coverage_else_reject_or_mark_diagnostic`.
-    - The gate contains eight method records: four `calibration_split_prompting`
-      held-out records, one `s2pc_l0_deterministic_catalog_beam_search`
-      candidate-generation held-out record, one
-      `s2pc_l0_deterministic_catalog_beam_search_runtime` runtime-effect
+    - The gate now contains nine method records: four
+      `calibration_split_prompting` held-out records, one
+      `s2pc_l0_deterministic_catalog_beam_search` candidate-generation held-out
+      record, one `s2pc_l0_deterministic_catalog_beam_search_runtime`
+      runtime-effect record, one
+      `s2pc_l1_multi_candidate_runtime_search_runtime` held-out runtime-matrix
       record, one `structured_persona_parameter_patch` runtime stability
       record, and one `deepseek_v4_pro_textgrad_candidate_update` diagnostic
-      record. It reports `candidate_update_count=7`,
-      `candidate_accepted_count=5`, `candidate_rejected_count=2`,
-      `diagnostic_only_count=1`, and
-      `candidate_acceptance_rate=0.7142857142857143`.
-    - The best accepted record is
-      `gpt_oss_20b_calibration_split_prompting_12x3_seed11`, with matched
-      initial loss `0.188148467815`, best loss `0.000112890954`, and final loss
-      `0.000112890954`. The DeepSeek v4-flash calibration-split records are also
-      accepted relative to the uncalibrated DeepSeek v4-flash held-out baseline,
-      but their best losses remain around `0.0104` to `0.0111`.
+      record. It reports `candidate_update_count=8`,
+      `candidate_accepted_count=6`, `candidate_rejected_count=2`,
+      `diagnostic_only_count=1`, and `candidate_acceptance_rate=0.75`.
+    - The best accepted record is now
+      `s2pc_l1_runtime_matrix_gpt_oss_20b_12x3_seed11`, with matched initial
+      loss `0.000112890954`, best loss `0.000111545213`, and final loss
+      `0.000111545213`. The accepted `gpt_oss_20b` calibration-split baseline
+      prompt remains very strong, and the L1 record only improves it by a small
+      absolute margin under the current single model / scale / seed setting.
+      The DeepSeek v4-flash calibration-split records remain accepted relative
+      to the uncalibrated DeepSeek v4-flash held-out baseline, but their best
+      losses remain around `0.0104` to `0.0111`.
     - The `structured_persona_parameter_patch` method is rejected by the runtime
       stability evidence: `gpt_oss_20b_runtime_prompt_patch_stability` records
       initial loss `0.000111404795`, candidate/runtime loss `0.005108707956`,
@@ -374,6 +378,13 @@ contracts, but they do not establish live LLM model-quality improvement.
       calibration-split baseline against the Product run that actually consumes
       the S2PC candidate artifact; weighted JSD increases from
       `0.000112890954` to `0.000211185317`.
+    - The S2PC L1 runtime-matrix record
+      `s2pc_l1_runtime_matrix_gpt_oss_20b_12x3_seed11` is accepted within the
+      method gate because at least one runtime candidate improves the matched
+      held-out loss. The gate uses the best candidate result rather than
+      averaging away rejected candidates, while still preserving full
+      `candidate_count`, `improved_count`, and `regressed_count` accounting in
+      the per-method record.
     - The DeepSeek v4-pro TextGrad record is deliberately `diagnostic_only`.
       It has no policy-reaction held-out benchmark artifact, and its W3/W4 smoke
       already records initial loss `0.3003150770148567`, best loss
@@ -438,6 +449,35 @@ contracts, but they do not establish live LLM model-quality improvement.
       weakens held-out alignment relative to the already strong calibration-split
       baseline.
 
+14. **S2PC L1 multi-candidate runtime matrix**
+    - The Research worktree now records six explicit Product-runtime candidates
+      derived from
+      `policy-reaction-s2pc-l1-candidate-set-current-001`: `c01` through `c06`.
+      Each candidate is exported as an auditable
+      `policy-reaction-s2pc-candidate-v1` artifact, consumed by Product via
+      `--s2pc-candidate-artifact`, and evaluated on the same held-out HTOPS/HPS
+      projection as the matched `openai/gpt-oss-20b` 12x3 calibration-split
+      baseline.
+    - All six Product runs completed successfully with `36/36` successful calls
+      and four covered official segments. The matrix artifact
+      `policy-reaction-s2pc-runtime-effect-matrix-gpt-oss-20b-12x3-calibration-split-l1-heldout-001`
+      records `candidate_count=6`, `improved_count=1`, and
+      `regressed_count=5`.
+    - The best candidate is
+      `policy-reaction-s2pc-l1-candidate-set-current-001-c01`, which maps to the
+      `fixed_income_inflation_stressed / food_subsidy_expansion` candidate. Its
+      runtime-effect artifact
+      `policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-l1-c01-heldout-001`
+      records baseline loss `0.000112890954`, candidate loss `0.000111545213`,
+      absolute delta `0.000001345741`, and relative loss reduction
+      `0.011920716018`.
+    - The remaining five candidates regress, with the worst candidate
+      `c06` reaching held-out loss `0.01628069538`. The matrix therefore
+      supports a bounded claim that multi-candidate runtime search can surface a
+      locally improving candidate in the current setting, but it does not yet
+      support any stability, robustness, or cross-seed generalization claim for
+      S2PC L1.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -493,6 +533,10 @@ contracts, but they do not establish live LLM model-quality improvement.
 - CIRCE can inject an S2PC candidate artifact into the Product LLM runtime,
   export the resulting segment prediction artifact, and evaluate the matched
   held-out runtime effect without treating a negative result as improvement.
+- CIRCE can run a bounded S2PC L1 multi-candidate runtime search and identify a
+  locally improving candidate under the current `openai/gpt-oss-20b` 12x3
+  calibration-split held-out setting while preserving rejected-candidate
+  accounting.
 
 ## Not Yet Claimed
 
@@ -540,8 +584,11 @@ contracts, but they do not establish live LLM model-quality improvement.
   scenario, model, cohort scale, public-source release, and held-out split.
 - No LLM-assisted S2PC, retrieval-augmented S2PC, or Product runtime S2PC
   effectiveness claim is made from the L0 deterministic artifact.
-- No positive S2PC Product-runtime effectiveness claim is made from the current
-  L0 runtime probe; the matched held-out effect artifact records regression.
+- No broad S2PC Product-runtime effectiveness claim is made from the current
+  evidence. L0 runtime remains regressed, and L1 currently shows only one
+  improving candidate out of six under a single model / scale / seed setting.
+- No stable, cross-seed, cross-scale, or cross-provider S2PC L1 advantage claim
+  is made from the current runtime matrix.
 
 ## Evidence Review Checklist
 

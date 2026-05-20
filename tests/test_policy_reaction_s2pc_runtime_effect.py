@@ -2,7 +2,9 @@ import json
 
 from experiments.policy_reaction_s2pc_runtime_effect import (
     build_policy_reaction_s2pc_runtime_effect,
+    build_policy_reaction_s2pc_runtime_effect_matrix,
     write_policy_reaction_s2pc_runtime_effect,
+    write_policy_reaction_s2pc_runtime_effect_matrix,
 )
 
 
@@ -96,6 +98,73 @@ def test_write_s2pc_runtime_effect(tmp_path):
     assert persisted["overall_status"] == "improved"
 
 
+def test_build_s2pc_runtime_effect_matrix_summarizes_candidates():
+    matrix = build_policy_reaction_s2pc_runtime_effect_matrix(
+        [
+            _s2pc_runtime_effect(
+                status="regressed",
+                baseline_loss=0.0001,
+                s2pc_runtime_loss=0.0002,
+                candidate_id="candidate-a",
+            ),
+            _s2pc_runtime_effect(
+                status="improved",
+                baseline_loss=0.0001,
+                s2pc_runtime_loss=0.00005,
+                candidate_id="candidate-b",
+            ),
+        ],
+        artifact_id="s2pc-runtime-effect-matrix-test",
+    )
+
+    assert matrix["schema_version"] == "policy-reaction-s2pc-runtime-effect-matrix-v1"
+    assert matrix["overall_status"] == "candidate_improvements_available"
+    assert matrix["candidate_count"] == 2
+    assert matrix["improved_count"] == 1
+    assert matrix["regressed_count"] == 1
+    assert matrix["best_candidate_id"] == "candidate-b"
+    assert matrix["best_s2pc_runtime_loss"] == 0.00005
+    assert matrix["candidate_results"][0]["s2pc_candidate_id"] == "candidate-b"
+    json.dumps(matrix, allow_nan=False)
+
+
+def test_write_s2pc_runtime_effect_matrix(tmp_path):
+    first = tmp_path / "first.json"
+    second = tmp_path / "second.json"
+    output = tmp_path / "matrix.json"
+    first.write_text(
+        json.dumps(
+            _s2pc_runtime_effect(
+                status="regressed",
+                baseline_loss=0.0001,
+                s2pc_runtime_loss=0.0002,
+                candidate_id="candidate-a",
+            )
+        )
+    )
+    second.write_text(
+        json.dumps(
+            _s2pc_runtime_effect(
+                status="improved",
+                baseline_loss=0.0001,
+                s2pc_runtime_loss=0.00005,
+                candidate_id="candidate-b",
+            )
+        )
+    )
+
+    written = write_policy_reaction_s2pc_runtime_effect_matrix(
+        output,
+        effect_artifact_paths=[first, second],
+        artifact_id="s2pc-runtime-effect-matrix-test",
+    )
+
+    assert written == output
+    persisted = json.loads(output.read_text())
+    assert persisted["artifact_id"] == "s2pc-runtime-effect-matrix-test"
+    assert persisted["best_candidate_id"] == "candidate-b"
+
+
 def _heldout_benchmark(
     *,
     artifact_id: str,
@@ -164,4 +233,51 @@ def _s2pc_candidate() -> dict:
             "calibration_anchor": {"fixed_income_inflation_stressed": "anchor"}
         },
         "claim_boundary": "s2pc boundary",
+    }
+
+
+def _s2pc_runtime_effect(
+    *,
+    status: str,
+    baseline_loss: float,
+    s2pc_runtime_loss: float,
+    candidate_id: str,
+) -> dict:
+    return {
+        "schema_version": "policy-reaction-s2pc-runtime-effect-v1",
+        "artifact_id": f"s2pc-runtime-effect-{candidate_id}",
+        "overall_status": status,
+        "loss_metric": "weighted_choice_distribution_jsd",
+        "baseline_loss": baseline_loss,
+        "s2pc_runtime_loss": s2pc_runtime_loss,
+        "absolute_loss_delta": baseline_loss - s2pc_runtime_loss,
+        "relative_loss_reduction": (
+            (baseline_loss - s2pc_runtime_loss) / baseline_loss
+            if baseline_loss > 0
+            else None
+        ),
+        "s2pc_candidate_id": candidate_id,
+        "s2pc_product_run_id": f"run-{candidate_id}",
+        "product_runtime_model": "openai/gpt-oss-20b",
+        "product_runtime_scale": {
+            "domain": "policy_reaction",
+            "persona_count": 12,
+            "policy_count": 3,
+            "strategy_count": 3,
+            "scenario_count": 36,
+            "seed": 11,
+        },
+        "source_split_contract": {
+            "residual_mining": "calibration",
+            "semantic_factor_retrieval": "calibration",
+            "parameter_search": "calibration",
+            "candidate_acceptance": "heldout_required",
+            "runtime_effect_evaluation": "heldout",
+        },
+        "coverage": {
+            "baseline_coverage_rate": 1.0,
+            "s2pc_runtime_coverage_rate": 1.0,
+        },
+        "risk_flags": ["s2pc_runtime_effect_not_field_validation"],
+        "claim_boundaries": ["s2pc effect boundary"],
     }

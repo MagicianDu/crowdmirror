@@ -18,6 +18,7 @@ from circe.calibration.s2pc import (
 from experiments.policy_reaction_s2pc_gate import (
     build_policy_reaction_s2pc_candidate,
     build_policy_reaction_s2pc_gate,
+    write_policy_reaction_s2pc_candidate_from_l1_set,
     write_policy_reaction_s2pc_l1_candidate_set,
     write_policy_reaction_s2pc_gate,
 )
@@ -373,6 +374,28 @@ def test_write_policy_reaction_s2pc_l1_candidate_set(tmp_path):
     assert persisted["schema_version"] == "policy-reaction-s2pc-l1-candidate-set-v1"
     assert persisted["candidate_count"] == 3
     assert persisted["candidates"][0]["candidate_prompt_components"]
+
+
+def test_write_policy_reaction_s2pc_candidate_from_l1_set(tmp_path):
+    candidate_set_path = tmp_path / "candidate-set.json"
+    output = tmp_path / "candidate.json"
+    candidate_set_path.write_text(json.dumps(_build_l1_candidate_set_fixture()))
+    candidate_id = (
+        "policy-reaction-s2pc-l1-candidate-set-test-c02"
+    )
+
+    written = write_policy_reaction_s2pc_candidate_from_l1_set(
+        output,
+        candidate_set_path=candidate_set_path,
+        candidate_id=candidate_id,
+    )
+
+    assert written == output
+    persisted = json.loads(output.read_text())
+    assert persisted["schema_version"] == "policy-reaction-s2pc-candidate-v1"
+    assert persisted["candidate_id"] == candidate_id
+    assert persisted["generator"] == "s2pc_l1_multi_candidate_runtime_search"
+    assert persisted["candidate_prompt_components"]
 
 
 def _calibration_benchmark() -> dict:

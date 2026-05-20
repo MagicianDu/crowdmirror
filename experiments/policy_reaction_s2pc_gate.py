@@ -22,6 +22,7 @@ from circe.calibration.s2pc import (  # noqa: E402
     build_s2pc_l1_candidate_set_artifact,
     compile_semantic_matches_to_parameter_patches,
     default_semantic_factor_catalog,
+    extract_s2pc_candidate_from_l1_set,
     mine_policy_reaction_residuals,
     retrieve_semantic_factors,
     run_constrained_parameter_beam_search,
@@ -275,16 +276,33 @@ def write_policy_reaction_s2pc_l1_candidate_set(
     return output
 
 
+def write_policy_reaction_s2pc_candidate_from_l1_set(
+    path: str | Path,
+    *,
+    candidate_set_path: str | Path,
+    candidate_id: str,
+) -> Path:
+    artifact = extract_s2pc_candidate_from_l1_set(
+        load_json_artifact(candidate_set_path),
+        candidate_id=candidate_id,
+    )
+    output = Path(path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(artifact, indent=2, sort_keys=True, allow_nan=False) + "\n")
+    return output
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--mode",
-        choices=["gate", "l1-candidate-set"],
+        choices=["gate", "l1-candidate-set", "extract-candidate"],
         default="gate",
     )
     parser.add_argument("--calibration-benchmark", required=True)
     parser.add_argument("--initial-heldout-benchmark")
     parser.add_argument("--candidate-heldout-benchmark")
+    parser.add_argument("--candidate-set")
     parser.add_argument(
         "--candidate-id",
         default="policy-reaction-s2pc-candidate-current-001",
@@ -332,6 +350,29 @@ def main() -> int:
                     "output": str(output),
                     "status": "generated",
                     "candidate_count": artifact["candidate_count"],
+                },
+                sort_keys=True,
+                allow_nan=False,
+            )
+        )
+        return 0
+
+    if args.mode == "extract-candidate":
+        if not args.candidate_set:
+            raise ValueError("extract-candidate mode requires --candidate-set")
+        output = write_policy_reaction_s2pc_candidate_from_l1_set(
+            args.output,
+            candidate_set_path=args.candidate_set,
+            candidate_id=args.candidate_id,
+        )
+        artifact = load_json_artifact(output)
+        print(
+            json.dumps(
+                {
+                    "artifact_id": artifact["candidate_id"],
+                    "output": str(output),
+                    "status": "generated",
+                    "generator": artifact["generator"],
                 },
                 sort_keys=True,
                 allow_nan=False,

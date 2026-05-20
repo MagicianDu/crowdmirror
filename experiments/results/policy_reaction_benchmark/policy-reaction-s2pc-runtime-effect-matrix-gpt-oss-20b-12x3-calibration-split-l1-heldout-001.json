@@ -1,0 +1,88 @@
+{
+  "artifact_id": "policy-reaction-s2pc-runtime-effect-matrix-gpt-oss-20b-12x3-calibration-split-l1-heldout-001",
+  "best_candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c01",
+  "best_relative_loss_reduction": 0.011920716018,
+  "best_s2pc_runtime_loss": 0.000111545213,
+  "candidate_count": 6,
+  "candidate_results": [
+    {
+      "absolute_loss_delta": 1.345741e-06,
+      "artifact_id": "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-l1-c01-heldout-001",
+      "baseline_loss": 0.000112890954,
+      "overall_status": "improved",
+      "relative_loss_reduction": 0.011920716018,
+      "s2pc_candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c01",
+      "s2pc_product_run_id": "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-s2pc-l1-c01-001",
+      "s2pc_runtime_loss": 0.000111545213
+    },
+    {
+      "absolute_loss_delta": -0.000792004238,
+      "artifact_id": "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-l1-c04-heldout-001",
+      "baseline_loss": 0.000112890954,
+      "overall_status": "regressed",
+      "relative_loss_reduction": -7.015657252421,
+      "s2pc_candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c04",
+      "s2pc_product_run_id": "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-s2pc-l1-c04-001",
+      "s2pc_runtime_loss": 0.000904895192
+    },
+    {
+      "absolute_loss_delta": -0.001990175844,
+      "artifact_id": "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-l1-c05-heldout-001",
+      "baseline_loss": 0.000112890954,
+      "overall_status": "regressed",
+      "relative_loss_reduction": -17.629187981128,
+      "s2pc_candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c05",
+      "s2pc_product_run_id": "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-s2pc-l1-c05-001",
+      "s2pc_runtime_loss": 0.002103066798
+    },
+    {
+      "absolute_loss_delta": -0.0031491356,
+      "artifact_id": "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-l1-c02-heldout-001",
+      "baseline_loss": 0.000112890954,
+      "overall_status": "regressed",
+      "relative_loss_reduction": -27.895375997973,
+      "s2pc_candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c02",
+      "s2pc_product_run_id": "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-s2pc-l1-c02-001",
+      "s2pc_runtime_loss": 0.003262026554
+    },
+    {
+      "absolute_loss_delta": -0.008371427275,
+      "artifact_id": "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-l1-c03-heldout-001",
+      "baseline_loss": 0.000112890954,
+      "overall_status": "regressed",
+      "relative_loss_reduction": -74.154987634006,
+      "s2pc_candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c03",
+      "s2pc_product_run_id": "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-s2pc-l1-c03-001",
+      "s2pc_runtime_loss": 0.008484318228
+    },
+    {
+      "absolute_loss_delta": -0.016167804426,
+      "artifact_id": "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-l1-c06-heldout-001",
+      "baseline_loss": 0.000112890954,
+      "overall_status": "regressed",
+      "relative_loss_reduction": -143.216120488733,
+      "s2pc_candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c06",
+      "s2pc_product_run_id": "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-s2pc-l1-c06-001",
+      "s2pc_runtime_loss": 0.01628069538
+    }
+  ],
+  "claim_boundaries": [
+    "This matrix compares held-out alignment across multiple S2PC runtime candidates.",
+    "Only candidates with lower held-out loss than baseline count as improvements.",
+    "S2PC runtime effect is a held-out public-data alignment comparison; not field validation.",
+    "The baseline and S2PC runtime benchmarks use the same held-out HPS/HTOPS evaluation projection.",
+    "This artifact compares segment-level distributional alignment only; it does not establish causal policy effects.",
+    "Official public-use segment alignment smoke benchmark only; not field validation.",
+    "The official side is an observed distribution proxy derived from public-use HTOPS/HPS survey fields.",
+    "The prediction side must come from a separately auditable LLM cohort or product segment report.",
+    "This artifact does not establish causal policy effects or China policy forecast validity.",
+    "This S2PC L1 candidate is extracted from a multi-candidate search set for Product runtime probing. It requires heldout runtime-effect evaluation before any effectiveness claim."
+  ],
+  "claim_boundary": "S2PC runtime effect matrix ranks held-out alignment outcomes across candidate variants; not field validation.",
+  "improved_count": 1,
+  "loss_metric": "weighted_choice_distribution_jsd",
+  "no_change_count": 0,
+  "overall_status": "candidate_improvements_available",
+  "regressed_count": 5,
+  "schema_version": "policy-reaction-s2pc-runtime-effect-matrix-v1"
+}

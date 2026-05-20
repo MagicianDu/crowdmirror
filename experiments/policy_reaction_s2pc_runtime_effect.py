@@ -7,6 +7,9 @@ from typing import Any
 
 
 S2PC_RUNTIME_EFFECT_SCHEMA_VERSION = "policy-reaction-s2pc-runtime-effect-v1"
+S2PC_RUNTIME_EFFECT_MATRIX_SCHEMA_VERSION = (
+    "policy-reaction-s2pc-runtime-effect-matrix-v1"
+)
 OFFICIAL_SEGMENT_BENCHMARK_SCHEMA_VERSION = (
     "policy-reaction-official-segment-benchmark-v1"
 )
@@ -153,13 +156,126 @@ def write_policy_reaction_s2pc_runtime_effect(
     return output_path
 
 
+def build_policy_reaction_s2pc_runtime_effect_matrix(
+    effect_artifacts: list[dict[str, Any]],
+    *,
+    artifact_id: str,
+    loss_metric: str = DEFAULT_LOSS_METRIC,
+) -> dict[str, Any]:
+    if not effect_artifacts:
+        raise ValueError("effect_artifacts must not be empty")
+    validated_effects = []
+    for artifact in effect_artifacts:
+        _validate_runtime_effect_artifact(artifact, loss_metric=loss_metric)
+        validated_effects.append(artifact)
+
+    sorted_effects = sorted(
+        validated_effects,
+        key=lambda artifact: (
+            float(artifact["s2pc_runtime_loss"]),
+            str(artifact["s2pc_candidate_id"]),
+        ),
+    )
+    improved_count = sum(
+        1 for artifact in sorted_effects if artifact["overall_status"] == "improved"
+    )
+    regressed_count = sum(
+        1 for artifact in sorted_effects if artifact["overall_status"] == "regressed"
+    )
+    no_change_count = sum(
+        1 for artifact in sorted_effects if artifact["overall_status"] == "no_change"
+    )
+    best = sorted_effects[0]
+    matrix = {
+        "schema_version": S2PC_RUNTIME_EFFECT_MATRIX_SCHEMA_VERSION,
+        "artifact_id": artifact_id,
+        "overall_status": _matrix_overall_status(
+            candidate_count=len(sorted_effects),
+            improved_count=improved_count,
+            regressed_count=regressed_count,
+        ),
+        "loss_metric": loss_metric,
+        "candidate_count": len(sorted_effects),
+        "improved_count": improved_count,
+        "regressed_count": regressed_count,
+        "no_change_count": no_change_count,
+        "best_candidate_id": best["s2pc_candidate_id"],
+        "best_s2pc_runtime_loss": _round_float(best["s2pc_runtime_loss"]),
+        "best_relative_loss_reduction": _round_float(
+            best["relative_loss_reduction"]
+        )
+        if best.get("relative_loss_reduction") is not None
+        else None,
+        "candidate_results": [
+            {
+                "artifact_id": artifact["artifact_id"],
+                "overall_status": artifact["overall_status"],
+                "s2pc_candidate_id": artifact["s2pc_candidate_id"],
+                "s2pc_product_run_id": artifact["s2pc_product_run_id"],
+                "baseline_loss": _round_float(artifact["baseline_loss"]),
+                "s2pc_runtime_loss": _round_float(artifact["s2pc_runtime_loss"]),
+                "absolute_loss_delta": _round_float(artifact["absolute_loss_delta"]),
+                "relative_loss_reduction": (
+                    _round_float(artifact["relative_loss_reduction"])
+                    if artifact.get("relative_loss_reduction") is not None
+                    else None
+                ),
+            }
+            for artifact in sorted_effects
+        ],
+        "claim_boundary": (
+            "S2PC runtime effect matrix ranks held-out alignment outcomes across "
+            "candidate variants; not field validation."
+        ),
+        "claim_boundaries": _unique_strings(
+            [
+                "This matrix compares held-out alignment across multiple S2PC runtime candidates.",
+                "Only candidates with lower held-out loss than baseline count as improvements.",
+                *[
+                    boundary
+                    for artifact in sorted_effects
+                    for boundary in artifact.get("claim_boundaries", [])
+                ],
+            ]
+        ),
+    }
+    _assert_strict_json(matrix)
+    return matrix
+
+
+def write_policy_reaction_s2pc_runtime_effect_matrix(
+    path: str | Path,
+    *,
+    effect_artifact_paths: list[str | Path],
+    artifact_id: str,
+    loss_metric: str = DEFAULT_LOSS_METRIC,
+) -> Path:
+    artifact = build_policy_reaction_s2pc_runtime_effect_matrix(
+        [load_json_artifact(effect_path) for effect_path in effect_artifact_paths],
+        artifact_id=artifact_id,
+        loss_metric=loss_metric,
+    )
+    output_path = Path(path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(
+        json.dumps(artifact, indent=2, sort_keys=True, allow_nan=False) + "\n"
+    )
+    return output_path
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--baseline-heldout-benchmark", required=True)
-    parser.add_argument("--baseline-product-manifest", required=True)
-    parser.add_argument("--s2pc-runtime-heldout-benchmark", required=True)
-    parser.add_argument("--s2pc-product-manifest", required=True)
-    parser.add_argument("--s2pc-candidate", required=True)
+    parser.add_argument(
+        "--mode",
+        choices=["effect", "matrix"],
+        default="effect",
+    )
+    parser.add_argument("--baseline-heldout-benchmark")
+    parser.add_argument("--baseline-product-manifest")
+    parser.add_argument("--s2pc-runtime-heldout-benchmark")
+    parser.add_argument("--s2pc-product-manifest")
+    parser.add_argument("--s2pc-candidate")
+    parser.add_argument("--effect-artifact", action="append", default=[])
     parser.add_argument(
         "--artifact-id",
         default=(
@@ -177,6 +293,45 @@ def main() -> int:
         ),
     )
     args = parser.parse_args()
+    if args.mode == "matrix":
+        if not args.effect_artifact:
+            raise ValueError("matrix mode requires at least one --effect-artifact")
+        output_path = write_policy_reaction_s2pc_runtime_effect_matrix(
+            args.output,
+            effect_artifact_paths=args.effect_artifact,
+            artifact_id=args.artifact_id,
+            loss_metric=args.loss_metric,
+        )
+        artifact = load_json_artifact(output_path)
+        print(
+            json.dumps(
+                {
+                    "artifact_id": args.artifact_id,
+                    "output": str(output_path),
+                    "status": artifact["overall_status"],
+                    "candidate_count": artifact["candidate_count"],
+                    "best_candidate_id": artifact["best_candidate_id"],
+                    "best_s2pc_runtime_loss": artifact["best_s2pc_runtime_loss"],
+                },
+                sort_keys=True,
+                allow_nan=False,
+            )
+        )
+        return 0
+
+    required_args = {
+        "baseline_heldout_benchmark": args.baseline_heldout_benchmark,
+        "baseline_product_manifest": args.baseline_product_manifest,
+        "s2pc_runtime_heldout_benchmark": args.s2pc_runtime_heldout_benchmark,
+        "s2pc_product_manifest": args.s2pc_product_manifest,
+        "s2pc_candidate": args.s2pc_candidate,
+    }
+    missing = [name for name, value in required_args.items() if not value]
+    if missing:
+        raise ValueError(
+            "effect mode missing required arguments: " + ", ".join(missing)
+        )
+
     output_path = write_policy_reaction_s2pc_runtime_effect(
         args.output,
         baseline_heldout_benchmark_path=args.baseline_heldout_benchmark,
@@ -276,6 +431,38 @@ def _validate_s2pc_candidate(candidate: dict[str, Any]) -> None:
         raise ValueError("S2PC parameter search must use calibration")
     if contract.get("candidate_acceptance") != "heldout_required":
         raise ValueError("S2PC candidate must require heldout acceptance")
+
+
+def _validate_runtime_effect_artifact(
+    artifact: dict[str, Any], loss_metric: str
+) -> None:
+    if artifact.get("schema_version") != S2PC_RUNTIME_EFFECT_SCHEMA_VERSION:
+        raise ValueError("runtime effect artifact has unsupported schema_version")
+    if artifact.get("loss_metric") != loss_metric:
+        raise ValueError("runtime effect artifact uses unexpected loss_metric")
+    for field_name in (
+        "artifact_id",
+        "overall_status",
+        "baseline_loss",
+        "s2pc_runtime_loss",
+        "absolute_loss_delta",
+        "s2pc_candidate_id",
+        "s2pc_product_run_id",
+    ):
+        if field_name not in artifact:
+            raise ValueError(f"runtime effect artifact missing {field_name}")
+    if artifact["overall_status"] not in {"improved", "regressed", "no_change"}:
+        raise ValueError("runtime effect artifact has unsupported overall_status")
+
+
+def _matrix_overall_status(
+    *, candidate_count: int, improved_count: int, regressed_count: int
+) -> str:
+    if improved_count > 0:
+        return "candidate_improvements_available"
+    if regressed_count == candidate_count:
+        return "all_candidates_regressed"
+    return "no_candidate_improvement"
 
 
 def _benchmark_loss(artifact: dict[str, Any], loss_metric: str) -> float:

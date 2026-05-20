@@ -17,6 +17,9 @@ RUNTIME_PATCH_STABILITY_SCHEMA_VERSION = (
 )
 S2PC_GATE_SCHEMA_VERSION = "policy-reaction-s2pc-gate-v1"
 S2PC_RUNTIME_EFFECT_SCHEMA_VERSION = "policy-reaction-s2pc-runtime-effect-v1"
+S2PC_RUNTIME_EFFECT_MATRIX_SCHEMA_VERSION = (
+    "policy-reaction-s2pc-runtime-effect-matrix-v1"
+)
 TEXTGRAD_EVIDENCE_SCHEMA_VERSION = "circe-evidence-v1"
 DEFAULT_LOSS_METRIC = "weighted_choice_distribution_jsd"
 UPDATE_METHOD_POLICY = (
@@ -295,6 +298,77 @@ def build_s2pc_runtime_effect_method_record(
             "source_split_contract": copy.deepcopy(
                 s2pc_runtime_effect["source_split_contract"]
             ),
+        }
+    )
+
+
+def build_s2pc_runtime_effect_matrix_method_record(
+    *,
+    method_id: str,
+    s2pc_runtime_effect_matrix: dict[str, Any],
+) -> dict[str, Any]:
+    _validate_method_id(method_id)
+    if (
+        s2pc_runtime_effect_matrix.get("schema_version")
+        != S2PC_RUNTIME_EFFECT_MATRIX_SCHEMA_VERSION
+    ):
+        raise ValueError("s2pc_runtime_effect_matrix has unsupported schema_version")
+    if not isinstance(s2pc_runtime_effect_matrix.get("candidate_results"), list) or not (
+        s2pc_runtime_effect_matrix["candidate_results"]
+    ):
+        raise ValueError("s2pc_runtime_effect_matrix missing candidate_results")
+    best_result = s2pc_runtime_effect_matrix["candidate_results"][0]
+    initial_loss = _numeric(best_result.get("baseline_loss"), "baseline_loss")
+    candidate_loss = _numeric(
+        best_result.get("s2pc_runtime_loss"),
+        "s2pc_runtime_loss",
+    )
+    absolute_loss_delta = _round_float(initial_loss - candidate_loss)
+    status = (
+        "accepted"
+        if s2pc_runtime_effect_matrix.get("improved_count", 0) > 0
+        else "rejected"
+    )
+    return _strict_record(
+        {
+            "method_id": method_id,
+            "generator": "s2pc_l1_multi_candidate_runtime_search_runtime",
+            "evidence_type": "s2pc_runtime_effect_matrix",
+            "eligibility": "heldout_candidate",
+            "status": status,
+            "reason": (
+                "s2pc_runtime_matrix_best_candidate_improved"
+                if status == "accepted"
+                else "s2pc_runtime_matrix_no_candidate_improved"
+            ),
+            "loss_metric": s2pc_runtime_effect_matrix.get(
+                "loss_metric",
+                DEFAULT_LOSS_METRIC,
+            ),
+            "initial_loss": _round_float(initial_loss),
+            "candidate_loss": _round_float(candidate_loss),
+            "best_loss": _round_float(candidate_loss if status == "accepted" else initial_loss),
+            "final_loss": _round_float(candidate_loss if status == "accepted" else initial_loss),
+            "absolute_loss_delta": absolute_loss_delta,
+            "relative_loss_reduction": (
+                _round_float(absolute_loss_delta / initial_loss)
+                if initial_loss > 0.0
+                else None
+            ),
+            "coverage_rate": 1.0,
+            "candidate_artifact_id": s2pc_runtime_effect_matrix["artifact_id"],
+            "candidate_id": best_result.get("s2pc_candidate_id"),
+            "candidate_count": s2pc_runtime_effect_matrix.get("candidate_count"),
+            "improved_count": s2pc_runtime_effect_matrix.get("improved_count"),
+            "regressed_count": s2pc_runtime_effect_matrix.get("regressed_count"),
+            "best_candidate_id": s2pc_runtime_effect_matrix.get("best_candidate_id"),
+            "best_runtime_effect_artifact_id": best_result.get("artifact_id"),
+            "model_id": "openai/gpt-oss-20b",
+            "source_split_contract": {
+                "candidate_generation": "calibration",
+                "candidate_acceptance": "heldout_runtime_effect_matrix",
+                "runtime_effect_evaluation": "heldout",
+            },
         }
     )
 
@@ -583,6 +657,13 @@ def _default_current_method_records(*, loss_metric: str) -> list[dict[str, Any]]
             s2pc_runtime_effect=load_json_artifact(
                 benchmark_dir
                 / "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-heldout-001.json"
+            ),
+        ),
+        build_s2pc_runtime_effect_matrix_method_record(
+            method_id="s2pc_l1_runtime_matrix_gpt_oss_20b_12x3_seed11",
+            s2pc_runtime_effect_matrix=load_json_artifact(
+                benchmark_dir
+                / "policy-reaction-s2pc-runtime-effect-matrix-gpt-oss-20b-12x3-calibration-split-l1-heldout-001.json"
             ),
         ),
         build_textgrad_manifest_method_record(

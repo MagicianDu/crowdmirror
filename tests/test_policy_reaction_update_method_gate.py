@@ -7,6 +7,7 @@ from experiments.policy_reaction_update_method_gate import (
     build_policy_reaction_update_method_gate,
     build_runtime_stability_method_record,
     build_s2pc_gate_method_record,
+    build_s2pc_runtime_effect_matrix_method_record,
     build_s2pc_runtime_effect_method_record,
     build_textgrad_manifest_method_record,
     write_policy_reaction_update_method_gate,
@@ -157,6 +158,24 @@ def test_s2pc_runtime_effect_method_record_rejects_regression():
     assert record["candidate_loss"] == 0.000211185317
     assert record["final_loss"] == 0.000112890954
     assert record["source_split_contract"]["runtime_effect_evaluation"] == "heldout"
+
+
+def test_s2pc_runtime_effect_matrix_method_record_accepts_best_improvement():
+    record = build_s2pc_runtime_effect_matrix_method_record(
+        method_id="s2pc_l1_runtime_matrix",
+        s2pc_runtime_effect_matrix=_s2pc_runtime_effect_matrix(),
+    )
+
+    assert record["method_id"] == "s2pc_l1_runtime_matrix"
+    assert record["generator"] == "s2pc_l1_multi_candidate_runtime_search_runtime"
+    assert record["status"] == "accepted"
+    assert record["reason"] == "s2pc_runtime_matrix_best_candidate_improved"
+    assert record["initial_loss"] == 0.000112890954
+    assert record["candidate_loss"] == 0.000111545213
+    assert record["candidate_count"] == 6
+    assert record["improved_count"] == 1
+    assert record["regressed_count"] == 5
+    assert record["candidate_id"] == "policy-reaction-s2pc-l1-candidate-set-current-001-c01"
 
 
 def test_heldout_method_record_requires_same_heldout_target():
@@ -357,4 +376,61 @@ def _s2pc_runtime_effect(
             "baseline_coverage_rate": 1.0,
             "s2pc_runtime_coverage_rate": 1.0,
         },
+    }
+
+
+def _s2pc_runtime_effect_matrix() -> dict:
+    return {
+        "schema_version": "policy-reaction-s2pc-runtime-effect-matrix-v1",
+        "artifact_id": (
+            "policy-reaction-s2pc-runtime-effect-matrix-gpt-oss-20b-12x3-"
+            "calibration-split-l1-heldout-001"
+        ),
+        "overall_status": "candidate_improvements_available",
+        "loss_metric": "weighted_choice_distribution_jsd",
+        "candidate_count": 6,
+        "improved_count": 1,
+        "regressed_count": 5,
+        "no_change_count": 0,
+        "best_candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c01",
+        "best_s2pc_runtime_loss": 0.000111545213,
+        "candidate_results": [
+            {
+                "artifact_id": (
+                    "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-"
+                    "calibration-split-l1-c01-heldout-001"
+                ),
+                "overall_status": "improved",
+                "s2pc_candidate_id": (
+                    "policy-reaction-s2pc-l1-candidate-set-current-001-c01"
+                ),
+                "s2pc_product_run_id": (
+                    "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-"
+                    "s2pc-l1-c01-001"
+                ),
+                "baseline_loss": 0.000112890954,
+                "s2pc_runtime_loss": 0.000111545213,
+                "absolute_loss_delta": 0.000001345741,
+                "relative_loss_reduction": 0.011920716018,
+            },
+            {
+                "artifact_id": (
+                    "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-"
+                    "calibration-split-l1-c04-heldout-001"
+                ),
+                "overall_status": "regressed",
+                "s2pc_candidate_id": (
+                    "policy-reaction-s2pc-l1-candidate-set-current-001-c04"
+                ),
+                "s2pc_product_run_id": (
+                    "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-"
+                    "s2pc-l1-c04-001"
+                ),
+                "baseline_loss": 0.000112890954,
+                "s2pc_runtime_loss": 0.000904895192,
+                "absolute_loss_delta": -0.000792004238,
+                "relative_loss_reduction": -7.015657252421,
+            },
+        ],
+        "claim_boundaries": ["s2pc l1 matrix boundary"],
     }
