@@ -558,6 +558,30 @@ contracts, but they do not establish live LLM model-quality improvement.
       selector agrees with the best observed single-run candidate, it is not yet
       robust enough to be treated as a stable Product-side selection rule.
 
+19. **S2PC c01 local neighborhood search**
+    - The Research worktree now records
+      `policy-reaction-s2pc-c01-neighborhood-current-001`, which explores three
+      local variants around the current best candidate `c01` without widening
+      the search family. The variants adjust only the `fixed_income_inflation_stressed`
+      / `food_subsidy_expansion` branch through small bounded changes to
+      `household_budget_rigidity`, `response_temperature`,
+      `prior_anchor_strength`, and `trust_multiplier`, plus corresponding
+      segment-level prompt wording.
+    - All three neighborhood variants regress on the same `12x3 seed=11`
+      matched held-out comparison. The best local variant is `n01`, but it
+      still worsens loss from baseline `0.000112890954` to `0.002266359458`.
+      The other two variants are worse: `n02` reaches `0.011061938404` and
+      `n03` reaches `0.008647272241`.
+    - The neighborhood matrix
+      `policy-reaction-s2pc-c01-neighborhood-matrix-gpt-oss-20b-12x3-heldout-001`
+      records `candidate_count=3`, `improved_count=0`, `regressed_count=3`, and
+      `overall_status=all_candidates_regressed`.
+    - This negative result is useful. It suggests the current positive `c01`
+      signal is not improved by straightforward local parameter nudging around
+      the existing point. The next search step should therefore change the
+      representation or selection logic rather than simply applying nearby
+      scalar perturbations.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -622,6 +646,9 @@ contracts, but they do not establish live LLM model-quality improvement.
   setting in isolation.
 - CIRCE can derive an explicit narrowed candidate family and a selector-free
   robustness artifact from the current S2PC L1 evidence chain.
+- CIRCE can test local neighborhood variants around the current best S2PC
+  candidate and retain negative local-search results as part of the evidence
+  chain instead of smoothing them away.
 
 ## Not Yet Claimed
 
@@ -678,6 +705,8 @@ contracts, but they do not establish live LLM model-quality improvement.
   repeat matrix is mixed with two regressions out of three runs.
 - No deployable selector claim is made for the current `beam_top1_direct` rule;
   its selector-free robustness artifact is mixed rather than stable.
+- No local-neighborhood improvement claim is made around `c01`; the first three
+  bounded perturbation variants all regress relative to the matched baseline.
 
 ## Evidence Review Checklist
 
