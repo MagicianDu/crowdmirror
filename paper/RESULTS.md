@@ -614,6 +614,29 @@ contracts, but they do not establish live LLM model-quality improvement.
       bounded held-out decision artifact rather than a claim of stable
       deployment readiness.
 
+21. **S2PC `trust_only` repeat validation**
+    - The Research and Product worktrees now extend repeat validation directly
+      on `policy-reaction-s2pc-c01-sparse-subset-current-001-s02`, without
+      returning to the full `c01` patch bundle. Two matched repeat axes were
+      added: `12x3 seed=17` and `16x3 seed=11`.
+    - On `12x3 seed=17`, the `trust_only` candidate reaches exact parity with
+      the matched calibration-split baseline: baseline
+      `0.000111545213`, runtime loss `0.000111545213`,
+      `relative_loss_reduction=0.0`, and `overall_status=no_change`.
+    - On `16x3 seed=11`, the same `trust_only` candidate regresses from
+      baseline `0.000109778219` to `0.000427401852`, with
+      `relative_loss_reduction=-2.893321059682`.
+    - The stability matrix
+      `policy-reaction-s2pc-runtime-stability-gpt-oss-20b-calibration-split-s02-heldout-001`
+      therefore records `effect_count=3`, `improved_count=1`,
+      `regressed_count=1`, `no_change_count=1`, `overall_status=mixed`, and
+      mean relative loss reduction `-0.960466781221`.
+    - This is still useful evidence: the sparse selector removed the large
+      negative contribution from the household-related patches, but it still
+      fails to convert the current local signal into a repeat-stable update
+      rule. The selector recommendation must therefore be downgraded from
+      “prefer sparse subset” to “repeat evidence still insufficient”.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -685,6 +708,9 @@ contracts, but they do not establish live LLM model-quality improvement.
   subsets, identify whether the held-out signal survives that sparsification,
   and emit an explicit selector-redesign artifact instead of relying on an
   implicit direct-choice rule.
+- CIRCE can run repeat validation directly on the narrowed `trust_only`
+  sparse-selector candidate and preserve `improved` / `no_change` /
+  `regressed` outcomes in one matched stability matrix.
 
 ## Not Yet Claimed
 
@@ -746,6 +772,8 @@ contracts, but they do not establish live LLM model-quality improvement.
 - No stability claim is yet made for the redesigned sparse selector; the
   `trust_only` subset improves on the matched `12x3 seed=11` run, but repeat
   validation has not yet been completed for that redesigned selector.
+- No deployable claim is made for the redesigned `trust_only` sparse selector;
+  after repeat validation it remains mixed rather than stable.
 
 ## Evidence Review Checklist
 

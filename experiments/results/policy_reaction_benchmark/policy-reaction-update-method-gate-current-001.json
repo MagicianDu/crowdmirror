@@ -11,12 +11,12 @@
   "artifact_id": "policy-reaction-update-method-gate-current-001",
   "best_loss": 0.000111545213,
   "best_method_id": "s2pc_l1_runtime_matrix_gpt_oss_20b_12x3_seed11",
-  "candidate_acceptance_rate": 0.7,
+  "candidate_acceptance_rate": 0.6363636363636364,
   "candidate_accepted_count": 7,
-  "candidate_evaluated_count": 10,
+  "candidate_evaluated_count": 11,
   "candidate_pending_count": 0,
-  "candidate_rejected_count": 3,
-  "candidate_update_count": 10,
+  "candidate_rejected_count": 4,
+  "candidate_update_count": 11,
   "candidate_update_policy": "accept_matched_heldout_loss_improvement_with_complete_segment_coverage_else_reject_or_mark_diagnostic",
   "claim_boundaries": [
     "Policy-reaction update-method gate compares automated prompt/persona update methods using matched held-out public-data evidence where available; diagnostic-only TextGrad evidence is not accepted as policy-reaction calibration effectiveness.",
@@ -81,9 +81,9 @@
       "best_loss": null,
       "best_method_id": null,
       "diagnostic_only_count": 0,
-      "heldout_candidate_count": 1,
-      "record_count": 1,
-      "rejected_count": 1
+      "heldout_candidate_count": 2,
+      "record_count": 2,
+      "rejected_count": 2
     },
     "structured_persona_parameter_patch": {
       "accepted_count": 0,
@@ -98,14 +98,14 @@
   "initial_loss": 0.000112890954,
   "loss_metric": "weighted_choice_distribution_jsd",
   "loss_scope": "Top-level initial/best/final loss follows the best accepted held-out method record when available; per-method records preserve their matched baseline and candidate losses.",
-  "method_count": 11,
+  "method_count": 12,
   "method_generator_counts": {
     "calibration_split_prompting": 4,
     "deepseek_v4_pro_textgrad_candidate_update": 1,
     "s2pc_l0_deterministic_catalog_beam_search": 1,
     "s2pc_l0_deterministic_catalog_beam_search_runtime": 1,
     "s2pc_l1_multi_candidate_runtime_search_runtime": 2,
-    "s2pc_l1_multi_candidate_runtime_search_runtime_stability": 1,
+    "s2pc_l1_multi_candidate_runtime_search_runtime_stability": 2,
     "structured_persona_parameter_patch": 1
   },
   "method_updates": [
@@ -408,6 +408,46 @@
       "status": "accepted"
     },
     {
+      "absolute_loss_delta": -0.000105425964,
+      "best_loss": 0.000111404795,
+      "candidate_artifact_id": "policy-reaction-s2pc-runtime-stability-gpt-oss-20b-calibration-split-s02-heldout-001",
+      "candidate_id": "policy-reaction-s2pc-c01-sparse-subset-current-001-s02",
+      "candidate_loss": 0.000216830759,
+      "coverage_rate": 1.0,
+      "effect_count": 3,
+      "eligibility": "heldout_candidate",
+      "evidence_type": "s2pc_runtime_stability_matrix",
+      "final_loss": 0.000111404795,
+      "generator": "s2pc_l1_multi_candidate_runtime_search_runtime_stability",
+      "improved_count": 1,
+      "initial_loss": 0.000111404795,
+      "loss_metric": "weighted_choice_distribution_jsd",
+      "method_id": "s2pc_l1_sparse_selector_stability_gpt_oss_20b_s02",
+      "reason": "s2pc_runtime_candidate_not_stable",
+      "regressed_count": 1,
+      "relative_loss_reduction": -0.946332372857,
+      "scale_axes": {
+        "persona_counts": [
+          12,
+          16
+        ],
+        "scenario_counts": [
+          36,
+          48
+        ],
+        "seeds": [
+          11,
+          17
+        ]
+      },
+      "source_split_contract": {
+        "candidate_acceptance": "heldout_runtime_effect_stability",
+        "candidate_generation": "calibration",
+        "runtime_effect_evaluation": "heldout"
+      },
+      "status": "rejected"
+    },
+    {
       "absolute_loss_delta": 0.0,
       "best_loss": 0.3003150770148567,
       "candidate_loss": null,
@@ -456,7 +496,8 @@
   "rejected_method_ids": [
     "gpt_oss_20b_runtime_prompt_patch_stability",
     "s2pc_l0_current_policy_reaction_runtime_probe",
-    "s2pc_l1_runtime_stability_gpt_oss_20b_c01"
+    "s2pc_l1_runtime_stability_gpt_oss_20b_c01",
+    "s2pc_l1_sparse_selector_stability_gpt_oss_20b_s02"
   ],
   "risk_flags": [
     "update_method_gate_not_field_validation",
