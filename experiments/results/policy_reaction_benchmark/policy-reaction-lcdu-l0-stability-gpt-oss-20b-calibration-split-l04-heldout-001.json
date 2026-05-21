@@ -1,0 +1,119 @@
+{
+  "artifact_id": "policy-reaction-lcdu-l0-stability-gpt-oss-20b-calibration-split-l04-heldout-001",
+  "best_candidate_id": "policy-reaction-lcdu-l0-current-001-l04",
+  "candidate_ids": [
+    "policy-reaction-lcdu-l0-current-001-l04"
+  ],
+  "claim_boundaries": [
+    "S2PC runtime stability matrix is repeat evidence over local held-out public-data alignment, not field validation.",
+    "All included runs must use held-out public-data alignment effect artifacts.",
+    "The matrix summarizes local model repeat behavior for one fixed S2PC candidate and does not establish cross-source generalization.",
+    "S2PC runtime effect is a held-out public-data alignment comparison; not field validation.",
+    "The baseline and S2PC runtime benchmarks use the same held-out HPS/HTOPS evaluation projection.",
+    "This artifact compares segment-level distributional alignment only; it does not establish causal policy effects.",
+    "Official public-use segment alignment smoke benchmark only; not field validation.",
+    "The official side is an observed distribution proxy derived from public-use HTOPS/HPS survey fields.",
+    "The prediction side must come from a separately auditable LLM cohort or product segment report.",
+    "This artifact does not establish causal policy effects or China policy forecast validity.",
+    "LCDU candidate is a runtime probe candidate only."
+  ],
+  "claim_boundary": "S2PC runtime stability matrix is repeat evidence over local held-out public-data alignment, not field validation.",
+  "effect_count": 3,
+  "improved_count": 1,
+  "loss_metric": "weighted_choice_distribution_jsd",
+  "loss_summary": {
+    "absolute_loss_delta_mean": -9.1180882e-05,
+    "baseline_loss_mean": 0.000111404795,
+    "relative_loss_reduction_max": 0.051855935383,
+    "relative_loss_reduction_mean": -0.817727824504,
+    "relative_loss_reduction_min": -2.488943374402,
+    "s2pc_runtime_loss_mean": 0.000202585677
+  },
+  "model_ids": [
+    "openai/gpt-oss-20b"
+  ],
+  "no_change_count": 0,
+  "overall_status": "mixed",
+  "regressed_count": 2,
+  "risk_flags": [
+    "s2pc_runtime_stability_not_field_validation",
+    "s2pc_runtime_candidate_not_stable_across_repeats"
+  ],
+  "runs": [
+    {
+      "absolute_loss_delta": 5.854066e-06,
+      "artifact_id": "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-lcdu-l04-heldout-001",
+      "baseline_loss": 0.000112890954,
+      "candidate_id": "policy-reaction-lcdu-l0-current-001-l04",
+      "model": "openai/gpt-oss-20b",
+      "overall_status": "improved",
+      "product_runtime_run_id": "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-lcdu-l04-001",
+      "relative_loss_reduction": 0.051855935383,
+      "s2pc_runtime_loss": 0.000107036888,
+      "scale": {
+        "calibration_profile": "official_htops_2506_calibration_split",
+        "domain": "policy_reaction",
+        "persona_count": 12,
+        "policy_count": 3,
+        "scenario_count": 36,
+        "seed": 11,
+        "strategy_count": 3
+      }
+    },
+    {
+      "absolute_loss_delta": -0.000277629718,
+      "artifact_id": "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-lcdu-l04-seed17-heldout-001",
+      "baseline_loss": 0.000111545213,
+      "candidate_id": "policy-reaction-lcdu-l0-current-001-l04",
+      "model": "openai/gpt-oss-20b",
+      "overall_status": "regressed",
+      "product_runtime_run_id": "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-lcdu-l04-seed17-001",
+      "relative_loss_reduction": -2.488943374402,
+      "s2pc_runtime_loss": 0.00038917493,
+      "scale": {
+        "calibration_profile": "official_htops_2506_calibration_split",
+        "domain": "policy_reaction",
+        "persona_count": 12,
+        "policy_count": 3,
+        "scenario_count": 36,
+        "seed": 17,
+        "strategy_count": 3
+      }
+    },
+    {
+      "absolute_loss_delta": -1.766994e-06,
+      "artifact_id": "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-16x3-calibration-split-lcdu-l04-seed11-heldout-001",
+      "baseline_loss": 0.000109778219,
+      "candidate_id": "policy-reaction-lcdu-l0-current-001-l04",
+      "model": "openai/gpt-oss-20b",
+      "overall_status": "regressed",
+      "product_runtime_run_id": "llm-cohort-policy-local-gpt-oss-20b-16x3-calibration-split-lcdu-l04-seed11-001",
+      "relative_loss_reduction": -0.016096034493,
+      "s2pc_runtime_loss": 0.000111545213,
+      "scale": {
+        "calibration_profile": "official_htops_2506_calibration_split",
+        "domain": "policy_reaction",
+        "persona_count": 16,
+        "policy_count": 3,
+        "scenario_count": 48,
+        "seed": 11,
+        "strategy_count": 3
+      }
+    }
+  ],
+  "scale_axes": {
+    "persona_counts": [
+      12,
+      16
+    ],
+    "scenario_counts": [
+      36,
+      48
+    ],
+    "seeds": [
+      11,
+      17
+    ]
+  },
+  "schema_version": "policy-reaction-s2pc-runtime-stability-v1"
+}

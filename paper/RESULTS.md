@@ -735,6 +735,50 @@ contracts, but they do not establish live LLM model-quality improvement.
       Route-B family has now failed both patch-level and mechanism-level
       bounded search on the current public-data held-out objective.
 
+26. **LCDU L0 latent-constraint single-axis prefilter**
+    - After Route-B stop-loss, the Research worktree switches update
+      representation rather than searcher family. LCDU L0 defines candidates as
+      `latent_state_updates + constraint_program`, then compiles them back into
+      Product-compatible candidate prompt components and bounded parameter
+      patches.
+    - The first single-axis matrix
+      `policy-reaction-lcdu-l0-matrix-gpt-oss-20b-12x3-heldout-001`
+      records `candidate_count=4`, `improved_count=1`,
+      `regressed_count=3`, and best candidate
+      `policy-reaction-lcdu-l0-current-001-l04`.
+    - The matched baseline loss remains `0.000112890954`. Candidate losses are:
+      `l01 -> 0.000527330903`,
+      `l02 -> 0.000132334881`,
+      `l03 -> 0.004477834086`,
+      `l04 -> 0.000107036888`.
+    - `l04` therefore improves over baseline with
+      `relative_loss_reduction=0.051855935383`, which is materially stronger
+      than the earlier best single-run `s02=trust_only`
+      (`0.011920716018`).
+    - This is the first evidence after Route-B stop-loss that a new update
+      representation, rather than a new search policy over old variables, can
+      open a stronger single-axis candidate.
+
+27. **LCDU L0 `l04` repeat validation**
+    - Because `l04` beats both the calibration-split baseline and the earlier
+      `s02` single-run point on `12x3 seed11`, it is expanded to the matched
+      repeat axes `12x3 seed17` and `16x3 seed11`.
+    - The resulting stability artifact
+      `policy-reaction-lcdu-l0-stability-gpt-oss-20b-calibration-split-l04-heldout-001`
+      records `effect_count=3`, `improved_count=1`,
+      `regressed_count=2`, `no_change_count=0`, `overall_status=mixed`, and
+      mean relative loss reduction `-0.817727824504`.
+    - On `12x3 seed17`, `l04` regresses from matched baseline
+      `0.000111545213` to `0.00038917493`, with
+      `relative_loss_reduction=-2.488943374402`.
+    - On `16x3 seed11`, `l04` is close to baseline but still regresses:
+      `0.000109778219 -> 0.000111545213`,
+      `relative_loss_reduction=-0.016096034493`.
+    - The correct interpretation is therefore conservative:
+      LCDU L0 has stronger single-axis promise than Route-B and stronger
+      single-run performance than `s02`, but it still has not crossed the
+      stability threshold required for a method claim.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,

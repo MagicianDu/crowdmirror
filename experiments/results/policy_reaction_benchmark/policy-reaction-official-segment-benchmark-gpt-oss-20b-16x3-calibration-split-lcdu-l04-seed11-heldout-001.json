@@ -1,0 +1,98 @@
+{
+  "artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-16x3-calibration-split-lcdu-l04-seed11-heldout-001",
+  "benchmark_metrics": {
+    "matched_segment_count": 4,
+    "mean_choice_distribution_jsd": 0.0004763214125584951,
+    "segment_rank_correlation": 1.0,
+    "weighted_choice_distribution_jsd": 0.00011154521266144813,
+    "worst_segment_choice_distribution_jsd": 0.0015928065281891066,
+    "worst_segment_rank_correlation": 1.0
+  },
+  "calibration_status": "official_public_data_alignment_smoke",
+  "claim_boundaries": [
+    "Official public-use segment alignment smoke benchmark only; not field validation.",
+    "The official side is an observed distribution proxy derived from public-use HTOPS/HPS survey fields.",
+    "The prediction side must come from a separately auditable LLM cohort or product segment report.",
+    "This artifact does not establish causal policy effects or China policy forecast validity."
+  ],
+  "claim_boundary": "Official public-use segment alignment smoke benchmark only; not field validation.",
+  "overall_status": "passed",
+  "prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-16x3-calibration-split-lcdu-l04-seed11-001",
+  "prediction_model": "openai/gpt-oss-20b",
+  "schema_version": "policy-reaction-official-segment-benchmark-v1",
+  "segment_coverage": {
+    "coverage_rate": 1.0,
+    "extra_predicted_segments": [],
+    "matched_segment_count": 4,
+    "missing_predicted_segments": [],
+    "observed_segment_count": 4,
+    "predicted_segment_count": 4
+  },
+  "segment_metrics": {
+    "fixed_income_inflation_stressed": {
+      "choice_distribution_jsd": 8.235626705294574e-05,
+      "official_distribution": {
+        "baseline_no_new_support": 0.3795867180094045,
+        "cash_cost_of_living_rebate": 0.448349432986699,
+        "food_subsidy_expansion": 0.17206384900389649
+      },
+      "official_row_count": 698,
+      "official_weighted_row_mass": 20946302.731958125,
+      "predicted_distribution": {
+        "baseline_no_new_support": 0.374667,
+        "cash_cost_of_living_rebate": 0.445195,
+        "food_subsidy_expansion": 0.180138
+      },
+      "rank_correlation": 1.0
+    },
+    "general_population_cost_pressure": {
+      "choice_distribution_jsd": 7.757647861003289e-05,
+      "official_distribution": {
+        "baseline_no_new_support": 0.5509173364653502,
+        "cash_cost_of_living_rebate": 0.2636415118739817,
+        "food_subsidy_expansion": 0.18544115166066807
+      },
+      "official_row_count": 2293,
+      "official_weighted_row_mass": 78485660.02449127,
+      "predicted_distribution": {
+        "baseline_no_new_support": 0.540765,
+        "cash_cost_of_living_rebate": 0.268328,
+        "food_subsidy_expansion": 0.190907
+      },
+      "rank_correlation": 1.0
+    },
+    "low_income_food_insecure": {
+      "choice_distribution_jsd": 0.0015928065281891066,
+      "official_distribution": {
+        "baseline_no_new_support": 0.16287372992861077,
+        "cash_cost_of_living_rebate": 0.30732455696004657,
+        "food_subsidy_expansion": 0.5298017131113426
+      },
+      "official_row_count": 52,
+      "official_weighted_row_mass": 4104344.7800838747,
+      "predicted_distribution": {
+        "baseline_no_new_support": 0.188421,
+        "cash_cost_of_living_rebate": 0.26992,
+        "food_subsidy_expansion": 0.541659
+      },
+      "rank_correlation": 1.0
+    },
+    "working_family_price_stressed": {
+      "choice_distribution_jsd": 0.0001525463763818952,
+      "official_distribution": {
+        "baseline_no_new_support": 0.3442600107635518,
+        "cash_cost_of_living_rebate": 0.42247151115990156,
+        "food_subsidy_expansion": 0.2332684780765466
+      },
+      "official_row_count": 518,
+      "official_weighted_row_mass": 20247362.60609469,
+      "predicted_distribution": {
+        "baseline_no_new_support": 0.350413,
+        "cash_cost_of_living_rebate": 0.428487,
+        "food_subsidy_expansion": 0.2211
+      },
+      "rank_correlation": 1.0
+    }
+  },
+  "source_ingestion_artifact_id": "policy-reaction-htops-2506-split-ingestion-001-evaluation"
+}
