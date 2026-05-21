@@ -1252,6 +1252,44 @@ contracts, but they do not establish live LLM model-quality improvement.
       this weak single-axis signal into a candidate that actually challenges
       `LCDU L3`.
 
+45. **Latent response program L1 narrowed family**
+    - `LRP L1` narrows the `L0` family to the two weakly improving branches
+      only: `p01` low-income compensatory and `p02` high-price reactive. The
+      design goal is not to repeat `L0`, but to reduce the global coupling that
+      produced the sharp `p03/p04` collapses and test whether a lighter family
+      can amplify the surviving signal.
+    - The first `LRP L1` family generates four candidates:
+      `q01` low-income milder compensation,
+      `q02` low-income rank-only minimal,
+      `q03` high-price shape-only softened,
+      `q04` dual-axis light hybrid.
+    - All four candidates are evaluated on the matched
+      `gpt-oss-20b 12x3 seed11` calibration-split held-out benchmark. The
+      resulting matrix
+      `policy-reaction-lrp-l1-matrix-gpt-oss-20b-12x3-heldout-001`
+      records
+      `candidate_count=4`,
+      `improved_count=3`,
+      `regressed_count=1`,
+      and
+      `overall_status=candidate_improvements_available`.
+    - Candidate losses are:
+      `q01 -> 0.000111545213`,
+      `q02 -> 0.000112816892`,
+      `q03 -> 0.000111545213`,
+      `q04 -> 0.003266484198`.
+      The best candidates are `q01` and `q03`, both tied at
+      `relative_loss_reduction=0.011920716018`.
+    - This is a useful narrowing result, but still not a step-up result.
+      Compared with `LRP L0`, the narrowed family does reduce the number of
+      catastrophic regressions, but it does not improve beyond the earlier weak
+      single-axis ceiling. `q01` only matches `p01`, `q03` only matches that
+      same ceiling, and `q02` is nearly neutral.
+    - Under the current gate, `LRP L1` still should not enter repeat
+      validation. The evidence supports keeping the “higher-level
+      representation” route alive as a research option, but not escalating this
+      specific family as a new mainline challenger to `LCDU L3`.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
