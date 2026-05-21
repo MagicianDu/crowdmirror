@@ -779,6 +779,32 @@ contracts, but they do not establish live LLM model-quality improvement.
       single-run performance than `s02`, but it still has not crossed the
       stability threshold required for a method claim.
 
+28. **LCDU L1 `l04` 局部 refinement 失败**
+    - To test whether the `l04` signal could be stabilized by refining the
+      latent/constraint compiler without changing the representation family, the
+      Research worktree next constructs a small LCDU L1 neighborhood around
+      `l04`: softer trust suppression, trust floor guard, gap-guarded balance,
+      and cost-relief conservative floor.
+    - The resulting matrix
+      `policy-reaction-lcdu-l1-matrix-gpt-oss-20b-12x3-heldout-001`
+      records `candidate_count=4`, `improved_count=0`,
+      `regressed_count=4`, `overall_status=all_candidates_regressed`, and best
+      candidate `policy-reaction-lcdu-l1-current-001-r03`.
+    - All four candidates are materially worse than the matched baseline
+      `0.000112890954`:
+      `r01 -> 0.004611744283`,
+      `r02 -> 0.005171818286`,
+      `r03 -> 0.001998036129`,
+      `r04 -> 0.009697271256`.
+    - This matters because it narrows the interpretation of LCDU further:
+      LCDU L0's `l04` is still a meaningful representation-level signal, but
+      the immediate local refinement directions tried here do not improve it.
+      In other words, the `l04` point is not yet a smooth neighborhood that can
+      be exploited by small latent/constraint adjustments.
+    - Under the current stop-loss policy, LCDU should not continue with this
+      exact L1 neighborhood family. The preserved lesson is positive at the
+      representation level and negative at the local-refinement level.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
