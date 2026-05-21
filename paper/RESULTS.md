@@ -1010,6 +1010,50 @@ contracts, but they do not establish live LLM model-quality improvement.
       robust at the level of synchronized prompt-anchor guarded programs rather
       than fragile single-component patches.
 
+37. **Low-income residual weakness diagnosis**
+    - A dedicated residual-weakness artifact
+      `policy-reaction-lcdu-l3-low-income-residual-weakness-current-001`
+      diagnoses the remaining `low_income_food_insecure` mismatch after `h02`
+      and `i01`.
+    - The weakness is not a rank-ordering failure: rank correlation remains
+      `1.0` throughout. It is a distribution-shape problem with the same bias
+      signature across runs:
+      `baseline_no_new_support` is over-predicted,
+      `cash_cost_of_living_rebate` is under-predicted,
+      and `food_subsidy_expansion` is slightly over-predicted.
+    - The main drag point is `h02_16x3_seed11`, where the segment JSD worsens
+      from baseline `0.001442162108` to `0.001592806528`.
+    - This matters because it gives a concrete repair direction:
+      raise `cash_cost_of_living_rebate` while trimming
+      `baseline_no_new_support` and lightly trimming
+      `food_subsidy_expansion` for `low_income_food_insecure`.
+
+38. **LCDU L4 low-income repair family**
+    - Guided by the residual-weakness artifact, the next family adds a targeted
+      `low_income_food_insecure` repair layer on top of the accepted `h02`
+      candidate while leaving the previously stabilized
+      `general_population_cost_pressure` and `working_family_price_stressed`
+      structure unchanged.
+    - The resulting single-axis matrix
+      `policy-reaction-lcdu-l4-low-income-repair-matrix-gpt-oss-20b-12x3-heldout-001`
+      records `candidate_count=4`, `improved_count=1`,
+      `regressed_count=3`, and best candidate
+      `policy-reaction-lcdu-l4-low-income-repair-current-001-r04`.
+    - Candidate losses are:
+      `r01 -> 0.005628433024`,
+      `r02 -> 0.000115428295`,
+      `r03 -> 0.009133432652`,
+      `r04 -> 0.00011253572`.
+      Only `r04` remains positive, with
+      `relative_loss_reduction=0.003146700319`.
+    - This is a useful negative result. Strong numeric low-income repairs
+      destabilize the already accepted LCDU L3 structure, while a softer
+      qualitative repair only preserves a near-baseline outcome and still stays
+      far weaker than `h02` or `i01`.
+    - Under the current gate, LCDU L4 low-income repair should stop at
+      single-axis prefilter. The residual weakness is real, but direct repair on
+      that segment currently costs more than it returns.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
