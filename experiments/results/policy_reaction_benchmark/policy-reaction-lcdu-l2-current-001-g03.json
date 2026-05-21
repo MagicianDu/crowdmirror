@@ -1,0 +1,111 @@
+{
+  "best_candidate": {
+    "candidate_index": 1,
+    "parameter_patches": [
+      {
+        "expected_effect": {
+          "cash_cost_of_living_rebate": "increase",
+          "food_subsidy_expansion": "increase"
+        },
+        "factor_id": "institutional_trust",
+        "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+        "parameter_bounds": {
+          "max": 0.85,
+          "min": 0.45
+        },
+        "parameter_name": "prior_anchor_strength",
+        "parameter_value": 0.582911730696,
+        "policy_id": "food_subsidy_expansion",
+        "provenance": {
+          "constraint_program": [
+            {
+              "constraint_type": "distribution_smoothness",
+              "max_top1_probability": 0.5
+            },
+            {
+              "constraint_type": "segment_rank_guard",
+              "guard": "retain_current_ordering_bias"
+            }
+          ],
+          "direction": "over_predicted",
+          "latent_state_updates": {
+            "household_cost_pressure": 0.04,
+            "institutional_trust": -0.11,
+            "policy_relief_urgency": 0.0
+          },
+          "lcdu_l0_tag": "trust_down_distribution_guard",
+          "lcdu_l2_tag": "working_family_soft_guard",
+          "magnitude": 0.436529326741,
+          "match_score": 2.436529326741,
+          "residual": -0.436529326741,
+          "source_split": "calibration"
+        },
+        "segment": "fixed_income_inflation_stressed"
+      },
+      {
+        "expected_effect": {
+          "cash_cost_of_living_rebate": "increase",
+          "food_subsidy_expansion": "increase"
+        },
+        "factor_id": "institutional_trust",
+        "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+        "parameter_bounds": {
+          "max": 1.2,
+          "min": 0.8
+        },
+        "parameter_name": "trust_multiplier",
+        "parameter_value": 0.912211730696,
+        "policy_id": "food_subsidy_expansion",
+        "provenance": {
+          "constraint_program": [
+            {
+              "constraint_type": "distribution_smoothness",
+              "max_top1_probability": 0.5
+            },
+            {
+              "constraint_type": "segment_rank_guard",
+              "guard": "retain_current_ordering_bias"
+            }
+          ],
+          "direction": "over_predicted",
+          "latent_state_updates": {
+            "household_cost_pressure": 0.04,
+            "institutional_trust": -0.11,
+            "policy_relief_urgency": 0.0
+          },
+          "lcdu_l0_tag": "trust_down_distribution_guard",
+          "lcdu_l2_tag": "working_family_soft_guard",
+          "magnitude": 0.436529326741,
+          "match_score": 2.436529326741,
+          "residual": -0.436529326741,
+          "source_split": "calibration"
+        },
+        "segment": "fixed_income_inflation_stressed"
+      }
+    ],
+    "policy_id": "food_subsidy_expansion",
+    "proxy_score": 4.254466026348,
+    "segment": "fixed_income_inflation_stressed"
+  },
+  "candidate_id": "policy-reaction-lcdu-l2-current-001-g03",
+  "candidate_prompt_components": {
+    "calibration_anchor": {
+      "fixed_income_inflation_stressed": "LCDU-L2 factors=institutional_trust; primary_policy=food_subsidy_expansion; latents=household_cost_pressure=+0.04;institutional_trust=-0.11;policy_relief_urgency=+0.00; parameters=prior_anchor_strength=0.582911730696;trust_multiplier=0.912211730696",
+      "working_family_price_stressed": "LCDU-L2 segment_guard=soft_distribution_guard; max_food_subsidy_probability=0.24; min_cash_rebate_probability=0.4"
+    },
+    "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+    "segment_prompt": {
+      "fixed_income_inflation_stressed": "Use the persona's calibrated policy-reaction parameters for this segment. Interpret them through the segment-guarded latent program and preserve full-distribution coherence.",
+      "working_family_price_stressed": "Keep this segment close to its calibration-split baseline response profile. Do not let food_subsidy_expansion exceed 0.240. Keep cash_cost_of_living_rebate at or above 0.400 when feasible."
+    }
+  },
+  "claim_boundary": "LCDU candidate is a runtime probe candidate only.",
+  "generator": "lcdu_l2_segment_guard_family",
+  "schema_version": "policy-reaction-s2pc-candidate-v1",
+  "source_split_contract": {
+    "candidate_acceptance": "heldout_required",
+    "parameter_search": "calibration",
+    "residual_mining": "calibration",
+    "semantic_factor_retrieval": "calibration"
+  }
+}

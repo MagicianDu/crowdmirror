@@ -805,6 +805,35 @@ contracts, but they do not establish live LLM model-quality improvement.
       exact L1 neighborhood family. The preserved lesson is positive at the
       representation level and negative at the local-refinement level.
 
+29. **LCDU L2 segment-guard family**
+    - Because the L0 repeat regression is concentrated mainly in
+      `working_family_price_stressed`, the next step does not continue numeric
+      local refinement. Instead, LCDU L2 introduces segment-guard candidates
+      that explicitly preserve baseline-like behavior for unstable segments,
+      especially `working_family_price_stressed`, while keeping the original
+      `l04` latent direction.
+    - The resulting matrix
+      `policy-reaction-lcdu-l2-matrix-gpt-oss-20b-12x3-heldout-001`
+      records `candidate_count=4`, `improved_count=1`,
+      `regressed_count=3`, and best candidate
+      `policy-reaction-lcdu-l2-current-001-g04`.
+    - Candidate losses are:
+      `g01 -> 0.000115805628`,
+      `g02 -> 0.000116997178`,
+      `g03 -> 0.000114027528`,
+      `g04 -> 0.000111436163`.
+      Only `g04` improves over baseline, with
+      `relative_loss_reduction=0.012886692445`.
+    - This matters because it shows segment-guard reconstruction is a more
+      promising direction than LCDU L1's local neighborhood search: it recovers
+      a positive candidate while keeping all losses near the baseline regime
+      instead of collapsing into large regressions.
+    - However, `g04` still remains weaker than LCDU L0's original `l04`
+      (`0.000107036888`). Under the current gate, LCDU L2 therefore does not
+      earn repeat expansion yet. The retained lesson is that segment-guarded
+      reconstruction is directionally better than local refinement, but this
+      first L2 family has not surpassed the current best single-axis point.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,

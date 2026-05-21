@@ -1,0 +1,68 @@
+{
+  "artifact_id": "policy-reaction-lcdu-l2-matrix-gpt-oss-20b-12x3-heldout-001",
+  "best_candidate_id": "policy-reaction-lcdu-l2-current-001-g04",
+  "best_relative_loss_reduction": 0.012886692445,
+  "best_s2pc_runtime_loss": 0.000111436163,
+  "candidate_count": 4,
+  "candidate_results": [
+    {
+      "absolute_loss_delta": 1.454791e-06,
+      "artifact_id": "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-lcdu-l2-g04-heldout-001",
+      "baseline_loss": 0.000112890954,
+      "overall_status": "improved",
+      "relative_loss_reduction": 0.012886692445,
+      "s2pc_candidate_id": "policy-reaction-lcdu-l2-current-001-g04",
+      "s2pc_product_run_id": "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-lcdu-l2-g04-001",
+      "s2pc_runtime_loss": 0.000111436163
+    },
+    {
+      "absolute_loss_delta": -1.136574e-06,
+      "artifact_id": "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-lcdu-l2-g03-heldout-001",
+      "baseline_loss": 0.000112890954,
+      "overall_status": "regressed",
+      "relative_loss_reduction": -0.010067892624,
+      "s2pc_candidate_id": "policy-reaction-lcdu-l2-current-001-g03",
+      "s2pc_product_run_id": "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-lcdu-l2-g03-001",
+      "s2pc_runtime_loss": 0.000114027528
+    },
+    {
+      "absolute_loss_delta": -2.914674e-06,
+      "artifact_id": "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-lcdu-l2-g01-heldout-001",
+      "baseline_loss": 0.000112890954,
+      "overall_status": "regressed",
+      "relative_loss_reduction": -0.025818490363,
+      "s2pc_candidate_id": "policy-reaction-lcdu-l2-current-001-g01",
+      "s2pc_product_run_id": "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-lcdu-l2-g01-001",
+      "s2pc_runtime_loss": 0.000115805628
+    },
+    {
+      "absolute_loss_delta": -4.106224e-06,
+      "artifact_id": "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-lcdu-l2-g02-heldout-001",
+      "baseline_loss": 0.000112890954,
+      "overall_status": "regressed",
+      "relative_loss_reduction": -0.036373366206,
+      "s2pc_candidate_id": "policy-reaction-lcdu-l2-current-001-g02",
+      "s2pc_product_run_id": "llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-lcdu-l2-g02-001",
+      "s2pc_runtime_loss": 0.000116997178
+    }
+  ],
+  "claim_boundaries": [
+    "This matrix compares held-out alignment across multiple S2PC runtime candidates.",
+    "Only candidates with lower held-out loss than baseline count as improvements.",
+    "S2PC runtime effect is a held-out public-data alignment comparison; not field validation.",
+    "The baseline and S2PC runtime benchmarks use the same held-out HPS/HTOPS evaluation projection.",
+    "This artifact compares segment-level distributional alignment only; it does not establish causal policy effects.",
+    "Official public-use segment alignment smoke benchmark only; not field validation.",
+    "The official side is an observed distribution proxy derived from public-use HTOPS/HPS survey fields.",
+    "The prediction side must come from a separately auditable LLM cohort or product segment report.",
+    "This artifact does not establish causal policy effects or China policy forecast validity.",
+    "LCDU candidate is a runtime probe candidate only."
+  ],
+  "claim_boundary": "S2PC runtime effect matrix ranks held-out alignment outcomes across candidate variants; not field validation.",
+  "improved_count": 1,
+  "loss_metric": "weighted_choice_distribution_jsd",
+  "no_change_count": 0,
+  "overall_status": "candidate_improvements_available",
+  "regressed_count": 3,
+  "schema_version": "policy-reaction-s2pc-runtime-effect-matrix-v1"
+}
