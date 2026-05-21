@@ -798,6 +798,20 @@ def _default_current_method_records(*, loss_metric: str) -> list[dict[str, Any]]
                 / "policy-reaction-lcdu-l3-stability-gpt-oss-20b-calibration-split-h02-heldout-001.json"
             ),
         ),
+        build_s2pc_runtime_effect_matrix_method_record(
+            method_id="lcdu_l3_interaction_matrix_gpt_oss_20b_12x3_seed11",
+            s2pc_runtime_effect_matrix=load_json_artifact(
+                benchmark_dir
+                / "policy-reaction-lcdu-l3-interaction-matrix-gpt-oss-20b-12x3-heldout-001.json"
+            ),
+        ),
+        build_s2pc_runtime_stability_method_record(
+            method_id="lcdu_l3_interaction_stability_gpt_oss_20b_i01",
+            s2pc_runtime_stability=load_json_artifact(
+                benchmark_dir
+                / "policy-reaction-lcdu-l3-i01-stability-gpt-oss-20b-calibration-split-heldout-001.json"
+            ),
+        ),
         build_textgrad_manifest_method_record(
             method_id="deepseek_v4_pro_textgrad_w3w4_candidate_update",
             generator="deepseek_v4_pro_textgrad_candidate_update",

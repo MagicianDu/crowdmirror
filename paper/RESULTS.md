@@ -929,6 +929,87 @@ contracts, but they do not establish live LLM model-quality improvement.
       improvement. The stable effect therefore still appears to depend on the
       full prompt-plus-anchor guarded program rather than the anchor alone.
 
+34. **LCDU L3 `h02` segment-level attribution**
+    - To identify where `h02`'s repeat improvement actually comes from, the
+      Research worktree compares segment-level JSD deltas between the matched
+      calibration-split baseline and the accepted `h02` candidate across the
+      three validated runs.
+    - The dominant positive contribution comes from
+      `general_population_cost_pressure`. On `12x3 seed11`, its segment JSD
+      improves from `0.000078310643` to `0.000057776999`; on `12x3 seed17`, it
+      improves from `0.000077576479` to `0.00003027243`; and on `16x3 seed11`,
+      it improves from `0.000077576479` to `0.000032980456`.
+    - A smaller but still positive contribution comes from
+      `working_family_price_stressed`. Its JSD improves from
+      `0.000158547816` to `0.000152546376` on `12x3 seed11`, stays flat on
+      `12x3 seed17`, and improves from `0.000155521754` to `0.000152546376` on
+      `16x3 seed11`.
+    - `fixed_income_inflation_stressed` remains unchanged across these runs,
+      while `low_income_food_insecure` is the main drag term on `16x3 seed11`,
+      where its segment JSD worsens from `0.001442162108` to
+      `0.001592806528`.
+    - The correct interpretation is therefore not “all segments improve.”
+      Instead, `h02` works mainly by consistently reducing error on
+      `general_population_cost_pressure`, with secondary support from
+      `working_family_price_stressed`, while still leaving
+      `low_income_food_insecure` as a residual weakness.
+
+35. **LCDU L3 prompt-anchor interaction ablation**
+    - After the single-component ablation shows that `anchor_only_guard` is not
+      stable by itself, the next step tests whether `h02`'s success depends on
+      prompt-anchor interaction rather than either side alone.
+    - The interaction matrix
+      `policy-reaction-lcdu-l3-interaction-matrix-gpt-oss-20b-12x3-heldout-001`
+      evaluates four combinations:
+      `i01=numeric_prompt+numeric_anchor`,
+      `i02=numeric_prompt+qualitative_anchor`,
+      `i03=qualitative_prompt+numeric_anchor`,
+      `i04=qualitative_prompt+qualitative_anchor`.
+    - Candidate losses are:
+      `i01 -> 0.000092334757`,
+      `i02 -> 0.000111545213`,
+      `i03 -> 0.000116658591`,
+      `i04 -> 0.000097128778`.
+      The corresponding relative loss reductions are
+      `0.18208895689`,
+      `0.011920716018`,
+      `-0.033374126773`,
+      and `0.139623021018`.
+    - The best candidate is `i01`, which is stronger than the current accepted
+      `h02` single-axis point (`0.000098795927`). `i04` also remains clearly
+      positive, while `i02` collapses to the same weak single-axis signal as
+      `anchor_only_guard`, and `i03` regresses.
+    - This sharply narrows the mechanism story. The stable `h02` effect is not
+      explained by anchor alone, and numeric specificity on only one side is
+      not enough. The strongest evidence now points to a synchronized,
+      numerically specified prompt-anchor guarded program, with the prompt and
+      anchor reinforcing each other rather than acting as separable patches.
+
+36. **LCDU L3 `i01` repeat validation**
+    - Because `i01=numeric_prompt+numeric_anchor` is the strongest interaction
+      candidate on the `12x3 seed11` axis, it is expanded to the matched repeat
+      axes `12x3 seed17` and `16x3 seed11`.
+    - The resulting stability artifact
+      `policy-reaction-lcdu-l3-i01-stability-gpt-oss-20b-calibration-split-heldout-001`
+      records `effect_count=3`, `improved_count=3`,
+      `regressed_count=0`, `no_change_count=0`,
+      `overall_status=stable_improvement`, and mean relative loss reduction
+      `0.14574759582`.
+    - On `12x3 seed17`, `i01` improves from matched baseline
+      `0.000111545213` to `0.000098650179`, with
+      `relative_loss_reduction=0.115603643512`.
+    - On `16x3 seed11`, `i01` improves from matched baseline
+      `0.000109778219` to `0.000094458648`, with
+      `relative_loss_reduction=0.139550187059`.
+    - This matters because it confirms the interaction result is not just a
+      stronger single-axis point. A synchronized numeric prompt plus numeric
+      anchor remains stable across the same repeat axes used for `h02`.
+    - The current comparison should still stay conservative: `i01` is the
+      strongest single-axis interaction point, while `h02` retains the stronger
+      mean repeat improvement. Together they show that the LCDU L3 mechanism is
+      robust at the level of synchronized prompt-anchor guarded programs rather
+      than fragile single-component patches.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
