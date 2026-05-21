@@ -1054,6 +1054,66 @@ contracts, but they do not establish live LLM model-quality improvement.
       single-axis prefilter. The residual weakness is real, but direct repair on
       that segment currently costs more than it returns.
 
+39. **Axis-level internal-generalization bridge**
+    - To test internal generalization without changing the task, a new
+      axis-level ingestion artifact
+      `policy-reaction-htops-2506-public-axis-ingestion-001`
+      re-aggregates the same HTOPS/HPS 2506 public-use source onto
+      Product-compatible demographic axes:
+      `income_band`,
+      `employment_status`,
+      `household_with_children`,
+      `food_sufficiency_status`,
+      and `price_stress_level`.
+    - The bridge is explicit about canonical mapping. Public-use survey values
+      do not natively match Product persona labels, so the ingestion step
+      normalizes them into the Product axis schema instead of silently relying
+      on string equality.
+    - This matters because it creates a same-task alternate-schema evaluation
+      surface. It does not yet claim any improvement or generalization result;
+      it only establishes that official observed distributions and Product
+      outputs can be aligned under a finer demographic partition.
+
+40. **LCDU L3 axis-level benchmark diagnostics**
+    - Two real Product segment reports are exported from the accepted `LCDU L3`
+      candidates:
+      `segment-policy-report-lcdu-l3-h02-001`
+      and
+      `segment-policy-report-lcdu-l3-i01-001`.
+      They are then compared against the official axis-level ingestion through
+      axis benchmarks:
+      `policy-reaction-axis-benchmark-lcdu-l3-h02-001`
+      and
+      `policy-reaction-axis-benchmark-lcdu-l3-i01-001`.
+    - Both benchmarks pass contract coverage with
+      `coverage_rate=1.0` and `matched_segment_count=14`.
+      Product still emits three extra axis segments not observed on the
+      official side:
+      `employment_status=hourly_or_part_time_worker`,
+      `employment_status=mixed_employment_status`,
+      and
+      `food_sufficiency_status=enough_but_less_varied`.
+    - Aggregate alignment is mixed rather than strong:
+      for `h02`,
+      `weighted_choice_distribution_jsd=0.009779743208737248`,
+      `mean_choice_distribution_jsd=0.021510287202774567`,
+      `segment_rank_correlation=0.5`,
+      `worst_segment_rank_correlation=-1.0`;
+      for `i01`,
+      `weighted_choice_distribution_jsd=0.009715886100179951`,
+      `mean_choice_distribution_jsd=0.02147064327852375`,
+      `segment_rank_correlation=0.5`,
+      `worst_segment_rank_correlation=-1.0`.
+    - The strongest axis-level weakness is stable across both candidates:
+      worst JSD occurs at `price_stress_level=high`
+      (`0.14925228029562396`), while the worst rank failure occurs at
+      `income_band=low` (`-1.0`).
+    - This is not a positive generalization result. The bridge succeeds, but
+      the current axis-level diagnostics show that `LCDU L3` still loses
+      ordering fidelity on parts of the finer demographic schema. The current
+      claim should stay narrow: same-task alternate-schema evaluation is now
+      auditable, and it reveals where internal generalization remains weak.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -1138,6 +1198,9 @@ contracts, but they do not establish live LLM model-quality improvement.
 - CIRCE can generate a bounded Route-B small-population candidate set and
   preserve full prefilter evidence when most candidates regress and the best
   candidate still fails to clear the repeat-expansion threshold.
+- CIRCE can bridge official HTOPS/HPS public-use observations and Product
+  segment-policy outputs onto a shared axis-level demographic schema for
+  same-task internal-generalization diagnostics.
 
 ## Not Yet Claimed
 
@@ -1181,6 +1244,9 @@ contracts, but they do not establish live LLM model-quality improvement.
 - No cross-source or cross-period generalization claim is made from the
   row-split evaluation because the calibration and evaluation projections are
   both derived from HTOPS/HPS 2506.
+- No broad LCDU generalization claim is made from the current axis-level
+  benchmark bridge; it is same-task alternate-schema diagnostics, and current
+  rank alignment remains mixed.
 - No prompt/persona patch gate claim is made beyond the recorded Product
   scenario, model, cohort scale, public-source release, and held-out split.
 - No LLM-assisted S2PC, retrieval-augmented S2PC, or Product runtime S2PC
