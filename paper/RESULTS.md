@@ -662,6 +662,24 @@ contracts, but they do not establish live LLM model-quality improvement.
       repeat expansion: it finds a weaker single-run positive point rather than
       a more stable or stronger update rule.
 
+23. **Route-B repeat-aware robust-score baseline**
+    - The Research worktree now defines a Route-B robust objective artifact,
+      which scores a candidate by mean held-out loss, instability penalty,
+      worst-case loss, and a small complexity penalty over repeat axes.
+    - Applying this score to the current
+      `policy-reaction-s2pc-c01-sparse-subset-current-001-s02` candidate yields
+      `policy-reaction-route-b-robust-score-s02-current-001`, with
+      `improved_count=1`, `regressed_count=1`, `no_change_count=1`, and
+      `robust_score=0.004793128859`.
+    - The current `s02=trust_only` candidate is marked
+      `overall_status=blocked_by_stop_loss` under Route B. This is an
+      intentional change of evaluation standard rather than a contradiction of
+      the earlier single-run positive result: Route B requires repeat-aware
+      robustness and therefore rejects candidates that only improve on one axis.
+    - This artifact becomes the baseline selection surface for the next stage.
+      Future Route-B candidate search should compare against this robust-score
+      baseline rather than against single-run held-out loss alone.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -740,6 +758,9 @@ contracts, but they do not establish live LLM model-quality improvement.
   parameter-level variants and preserve both weak positive and negative
   findings without automatically promoting the weaker positive variant to the
   next repeat stage.
+- CIRCE can score a policy-reaction candidate under a repeat-aware robust
+  objective and explicitly block a single-run-positive but repeat-unstable
+  candidate through stop-loss logic.
 
 ## Not Yet Claimed
 
@@ -807,6 +828,10 @@ contracts, but they do not establish live LLM model-quality improvement.
   `trust_only` decomposition; its best candidate is weaker than the earlier
   `trust_only` single-run result and therefore does not clear the stop-loss
   threshold for continued investment.
+- No Route-B effectiveness claim is made yet beyond the current baseline
+  scoring scaffold; the current `s02=trust_only` candidate is blocked by the
+  new repeat-aware objective and does not constitute a successful Route-B
+  search result.
 
 ## Evidence Review Checklist
 
