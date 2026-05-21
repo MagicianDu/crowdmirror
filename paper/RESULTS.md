@@ -908,6 +908,27 @@ contracts, but they do not establish live LLM model-quality improvement.
       a numerically constrained segment anchor, where prompt and anchor work
       together and the anchor carries the larger standalone contribution.
 
+33. **LCDU L3 `a02=anchor_only_guard` repeat check**
+    - Because `a02=anchor_only_guard` is the only ablation candidate that
+      remains positive on the `12x3 seed11` single axis, it is expanded to the
+      matched repeat axes `12x3 seed17` and `16x3 seed11`.
+    - The resulting stability artifact
+      `policy-reaction-lcdu-l3-a02-stability-gpt-oss-20b-calibration-split-heldout-001`
+      records `effect_count=3`, `improved_count=1`,
+      `regressed_count=1`, `no_change_count=1`,
+      `overall_status=mixed`, and mean relative loss reduction
+      `-0.001391772825`.
+    - On `12x3 seed17`, `a02` becomes `no_change`:
+      `0.000111545213 -> 0.000111545213`.
+    - On `16x3 seed11`, `a02` regresses:
+      `0.000109778219 -> 0.000111545213`,
+      `relative_loss_reduction=-0.016096034493`.
+    - This closes the explanation loop more tightly. The calibrated
+      `working_family` anchor is necessary enough to preserve a weak
+      single-axis signal, but it is not sufficient to explain `h02`'s stable
+      improvement. The stable effect therefore still appears to depend on the
+      full prompt-plus-anchor guarded program rather than the anchor alone.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
