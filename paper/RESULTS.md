@@ -680,6 +680,31 @@ contracts, but they do not establish live LLM model-quality improvement.
       Future Route-B candidate search should compare against this robust-score
       baseline rather than against single-run held-out loss alone.
 
+24. **Route-B generation-0 single-axis prefilter**
+    - The Research and Product worktrees then ran a first bounded Route-B
+      generation-0 population over the current `trust_only` family, using four
+      structured candidates that only adjust `prior_anchor_strength` and
+      `trust_multiplier` under a small-population search policy.
+    - The resulting matrix
+      `policy-reaction-route-b-generation0-matrix-gpt-oss-20b-12x3-heldout-001`
+      records `candidate_count=4`, `improved_count=1`,
+      `regressed_count=3`, and best candidate
+      `policy-reaction-route-b-generation0-current-001-g04`.
+    - Three candidates regress sharply:
+      `g01 -> 0.008989250943`,
+      `g02 -> 0.017589373491`,
+      `g03 -> 0.001626070675`.
+      Only `g04` improves, from baseline `0.000112890954` to
+      `0.000112017956`, with relative loss reduction
+      `0.007733108557`.
+    - This is still not enough to continue. The best generation-0 candidate is
+      weaker than the earlier `s02=trust_only` single-run result
+      (`0.000111545213`, relative reduction `0.011920716018`), so Route-B
+      generation 0 does not clear the prefilter threshold for repeat expansion.
+    - The correct reading is that Route B now has a runnable search surface and
+      prefilter mechanism, but its first small population did not yet produce a
+      candidate strong enough to justify the more expensive repeat-aware stage.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -761,6 +786,9 @@ contracts, but they do not establish live LLM model-quality improvement.
 - CIRCE can score a policy-reaction candidate under a repeat-aware robust
   objective and explicitly block a single-run-positive but repeat-unstable
   candidate through stop-loss logic.
+- CIRCE can generate a bounded Route-B small-population candidate set and
+  preserve full prefilter evidence when most candidates regress and the best
+  candidate still fails to clear the repeat-expansion threshold.
 
 ## Not Yet Claimed
 
@@ -832,6 +860,9 @@ contracts, but they do not establish live LLM model-quality improvement.
   scoring scaffold; the current `s02=trust_only` candidate is blocked by the
   new repeat-aware objective and does not constitute a successful Route-B
   search result.
+- No Route-B generation-0 continuation claim is made from the current
+  prefilter matrix; its best single-run candidate remains weaker than the
+  earlier `s02=trust_only` result and therefore does not earn repeat budget.
 
 ## Evidence Review Checklist
 
