@@ -7,17 +7,20 @@
     "s2pc_l0_current_policy_reaction_candidate",
     "s2pc_l1_runtime_matrix_gpt_oss_20b_12x3_seed11",
     "s2pc_l1_sparse_subset_matrix_gpt_oss_20b_12x3_seed11",
-    "s2pc_l1_parameter_subset_matrix_gpt_oss_20b_12x3_seed11"
+    "s2pc_l1_parameter_subset_matrix_gpt_oss_20b_12x3_seed11",
+    "lcdu_l2_runtime_matrix_gpt_oss_20b_12x3_seed11",
+    "lcdu_l3_runtime_matrix_gpt_oss_20b_12x3_seed11",
+    "lcdu_l3_runtime_stability_gpt_oss_20b_h02"
   ],
   "artifact_id": "policy-reaction-update-method-gate-current-001",
-  "best_loss": 0.000111545213,
-  "best_method_id": "s2pc_l1_runtime_matrix_gpt_oss_20b_12x3_seed11",
-  "candidate_acceptance_rate": 0.6666666666666666,
-  "candidate_accepted_count": 8,
-  "candidate_evaluated_count": 12,
+  "best_loss": 8.7570012e-05,
+  "best_method_id": "lcdu_l3_runtime_stability_gpt_oss_20b_h02",
+  "candidate_acceptance_rate": 0.6470588235294118,
+  "candidate_accepted_count": 11,
+  "candidate_evaluated_count": 17,
   "candidate_pending_count": 0,
-  "candidate_rejected_count": 4,
-  "candidate_update_count": 12,
+  "candidate_rejected_count": 6,
+  "candidate_update_count": 17,
   "candidate_update_policy": "accept_matched_heldout_loss_improvement_with_complete_segment_coverage_else_reject_or_mark_diagnostic",
   "claim_boundaries": [
     "Policy-reaction update-method gate compares automated prompt/persona update methods using matched held-out public-data evidence where available; diagnostic-only TextGrad evidence is not accepted as policy-reaction calibration effectiveness.",
@@ -30,7 +33,7 @@
     "deepseek_v4_pro_textgrad_w3w4_candidate_update"
   ],
   "diagnostic_only_count": 1,
-  "final_loss": 0.000111545213,
+  "final_loss": 8.7570012e-05,
   "generator_summaries": {
     "calibration_split_prompting": {
       "accepted_count": 4,
@@ -69,22 +72,22 @@
       "rejected_count": 1
     },
     "s2pc_l1_multi_candidate_runtime_search_runtime": {
-      "accepted_count": 3,
-      "best_loss": 0.000111545213,
-      "best_method_id": "s2pc_l1_runtime_matrix_gpt_oss_20b_12x3_seed11",
+      "accepted_count": 5,
+      "best_loss": 9.8795927e-05,
+      "best_method_id": "lcdu_l3_runtime_matrix_gpt_oss_20b_12x3_seed11",
       "diagnostic_only_count": 0,
-      "heldout_candidate_count": 3,
-      "record_count": 3,
-      "rejected_count": 0
+      "heldout_candidate_count": 6,
+      "record_count": 6,
+      "rejected_count": 1
     },
     "s2pc_l1_multi_candidate_runtime_search_runtime_stability": {
-      "accepted_count": 0,
-      "best_loss": null,
-      "best_method_id": null,
+      "accepted_count": 1,
+      "best_loss": 8.7570012e-05,
+      "best_method_id": "lcdu_l3_runtime_stability_gpt_oss_20b_h02",
       "diagnostic_only_count": 0,
-      "heldout_candidate_count": 2,
-      "record_count": 2,
-      "rejected_count": 2
+      "heldout_candidate_count": 4,
+      "record_count": 4,
+      "rejected_count": 3
     },
     "structured_persona_parameter_patch": {
       "accepted_count": 0,
@@ -96,17 +99,17 @@
       "rejected_count": 1
     }
   },
-  "initial_loss": 0.000112890954,
+  "initial_loss": 0.000111404795,
   "loss_metric": "weighted_choice_distribution_jsd",
   "loss_scope": "Top-level initial/best/final loss follows the best accepted held-out method record when available; per-method records preserve their matched baseline and candidate losses.",
-  "method_count": 13,
+  "method_count": 18,
   "method_generator_counts": {
     "calibration_split_prompting": 4,
     "deepseek_v4_pro_textgrad_candidate_update": 1,
     "s2pc_l0_deterministic_catalog_beam_search": 1,
     "s2pc_l0_deterministic_catalog_beam_search_runtime": 1,
-    "s2pc_l1_multi_candidate_runtime_search_runtime": 3,
-    "s2pc_l1_multi_candidate_runtime_search_runtime_stability": 2,
+    "s2pc_l1_multi_candidate_runtime_search_runtime": 6,
+    "s2pc_l1_multi_candidate_runtime_search_runtime_stability": 4,
     "structured_persona_parameter_patch": 1
   },
   "method_updates": [
@@ -478,6 +481,173 @@
       "status": "accepted"
     },
     {
+      "absolute_loss_delta": -9.1180882e-05,
+      "best_loss": 0.000111404795,
+      "candidate_artifact_id": "policy-reaction-lcdu-l0-stability-gpt-oss-20b-calibration-split-l04-heldout-001",
+      "candidate_id": "policy-reaction-lcdu-l0-current-001-l04",
+      "candidate_loss": 0.000202585677,
+      "coverage_rate": 1.0,
+      "effect_count": 3,
+      "eligibility": "heldout_candidate",
+      "evidence_type": "s2pc_runtime_stability_matrix",
+      "final_loss": 0.000111404795,
+      "generator": "s2pc_l1_multi_candidate_runtime_search_runtime_stability",
+      "improved_count": 1,
+      "initial_loss": 0.000111404795,
+      "loss_metric": "weighted_choice_distribution_jsd",
+      "method_id": "lcdu_l0_runtime_stability_gpt_oss_20b_l04",
+      "reason": "s2pc_runtime_candidate_not_stable",
+      "regressed_count": 2,
+      "relative_loss_reduction": -0.818464609176,
+      "scale_axes": {
+        "persona_counts": [
+          12,
+          16
+        ],
+        "scenario_counts": [
+          36,
+          48
+        ],
+        "seeds": [
+          11,
+          17
+        ]
+      },
+      "source_split_contract": {
+        "candidate_acceptance": "heldout_runtime_effect_stability",
+        "candidate_generation": "calibration",
+        "runtime_effect_evaluation": "heldout"
+      },
+      "status": "rejected"
+    },
+    {
+      "absolute_loss_delta": -0.001885145175,
+      "best_candidate_id": "policy-reaction-lcdu-l1-current-001-r03",
+      "best_loss": 0.000112890954,
+      "best_runtime_effect_artifact_id": "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-lcdu-l1-r03-heldout-001",
+      "candidate_artifact_id": "policy-reaction-lcdu-l1-matrix-gpt-oss-20b-12x3-heldout-001",
+      "candidate_count": 4,
+      "candidate_id": "policy-reaction-lcdu-l1-current-001-r03",
+      "candidate_loss": 0.001998036129,
+      "coverage_rate": 1.0,
+      "eligibility": "heldout_candidate",
+      "evidence_type": "s2pc_runtime_effect_matrix",
+      "final_loss": 0.000112890954,
+      "generator": "s2pc_l1_multi_candidate_runtime_search_runtime",
+      "improved_count": 0,
+      "initial_loss": 0.000112890954,
+      "loss_metric": "weighted_choice_distribution_jsd",
+      "method_id": "lcdu_l1_runtime_matrix_gpt_oss_20b_12x3_seed11",
+      "model_id": "openai/gpt-oss-20b",
+      "reason": "s2pc_runtime_matrix_no_candidate_improved",
+      "regressed_count": 4,
+      "relative_loss_reduction": -16.698815168131,
+      "source_split_contract": {
+        "candidate_acceptance": "heldout_runtime_effect_matrix",
+        "candidate_generation": "calibration",
+        "runtime_effect_evaluation": "heldout"
+      },
+      "status": "rejected"
+    },
+    {
+      "absolute_loss_delta": 1.454791e-06,
+      "best_candidate_id": "policy-reaction-lcdu-l2-current-001-g04",
+      "best_loss": 0.000111436163,
+      "best_runtime_effect_artifact_id": "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-lcdu-l2-g04-heldout-001",
+      "candidate_artifact_id": "policy-reaction-lcdu-l2-matrix-gpt-oss-20b-12x3-heldout-001",
+      "candidate_count": 4,
+      "candidate_id": "policy-reaction-lcdu-l2-current-001-g04",
+      "candidate_loss": 0.000111436163,
+      "coverage_rate": 1.0,
+      "eligibility": "heldout_candidate",
+      "evidence_type": "s2pc_runtime_effect_matrix",
+      "final_loss": 0.000111436163,
+      "generator": "s2pc_l1_multi_candidate_runtime_search_runtime",
+      "improved_count": 1,
+      "initial_loss": 0.000112890954,
+      "loss_metric": "weighted_choice_distribution_jsd",
+      "method_id": "lcdu_l2_runtime_matrix_gpt_oss_20b_12x3_seed11",
+      "model_id": "openai/gpt-oss-20b",
+      "reason": "s2pc_runtime_matrix_best_candidate_improved",
+      "regressed_count": 3,
+      "relative_loss_reduction": 0.012886692409,
+      "source_split_contract": {
+        "candidate_acceptance": "heldout_runtime_effect_matrix",
+        "candidate_generation": "calibration",
+        "runtime_effect_evaluation": "heldout"
+      },
+      "status": "accepted"
+    },
+    {
+      "absolute_loss_delta": 1.4095027e-05,
+      "best_candidate_id": "policy-reaction-lcdu-l3-current-001-h02",
+      "best_loss": 9.8795927e-05,
+      "best_runtime_effect_artifact_id": "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-lcdu-l3-h02-heldout-001",
+      "candidate_artifact_id": "policy-reaction-lcdu-l3-matrix-gpt-oss-20b-12x3-heldout-001",
+      "candidate_count": 4,
+      "candidate_id": "policy-reaction-lcdu-l3-current-001-h02",
+      "candidate_loss": 9.8795927e-05,
+      "coverage_rate": 1.0,
+      "eligibility": "heldout_candidate",
+      "evidence_type": "s2pc_runtime_effect_matrix",
+      "final_loss": 9.8795927e-05,
+      "generator": "s2pc_l1_multi_candidate_runtime_search_runtime",
+      "improved_count": 1,
+      "initial_loss": 0.000112890954,
+      "loss_metric": "weighted_choice_distribution_jsd",
+      "method_id": "lcdu_l3_runtime_matrix_gpt_oss_20b_12x3_seed11",
+      "model_id": "openai/gpt-oss-20b",
+      "reason": "s2pc_runtime_matrix_best_candidate_improved",
+      "regressed_count": 3,
+      "relative_loss_reduction": 0.124855238623,
+      "source_split_contract": {
+        "candidate_acceptance": "heldout_runtime_effect_matrix",
+        "candidate_generation": "calibration",
+        "runtime_effect_evaluation": "heldout"
+      },
+      "status": "accepted"
+    },
+    {
+      "absolute_loss_delta": 2.3834783e-05,
+      "best_loss": 8.7570012e-05,
+      "candidate_artifact_id": "policy-reaction-lcdu-l3-stability-gpt-oss-20b-calibration-split-h02-heldout-001",
+      "candidate_id": "policy-reaction-lcdu-l3-current-001-h02",
+      "candidate_loss": 8.7570012e-05,
+      "coverage_rate": 1.0,
+      "effect_count": 3,
+      "eligibility": "heldout_candidate",
+      "evidence_type": "s2pc_runtime_stability_matrix",
+      "final_loss": 8.7570012e-05,
+      "generator": "s2pc_l1_multi_candidate_runtime_search_runtime_stability",
+      "improved_count": 3,
+      "initial_loss": 0.000111404795,
+      "loss_metric": "weighted_choice_distribution_jsd",
+      "method_id": "lcdu_l3_runtime_stability_gpt_oss_20b_h02",
+      "reason": "s2pc_runtime_candidate_stably_improved",
+      "regressed_count": 0,
+      "relative_loss_reduction": 0.213947550462,
+      "scale_axes": {
+        "persona_counts": [
+          12,
+          16
+        ],
+        "scenario_counts": [
+          36,
+          48
+        ],
+        "seeds": [
+          11,
+          17
+        ]
+      },
+      "source_split_contract": {
+        "candidate_acceptance": "heldout_runtime_effect_stability",
+        "candidate_generation": "calibration",
+        "runtime_effect_evaluation": "heldout"
+      },
+      "status": "accepted"
+    },
+    {
       "absolute_loss_delta": 0.0,
       "best_loss": 0.3003150770148567,
       "candidate_loss": null,
@@ -527,7 +697,9 @@
     "gpt_oss_20b_runtime_prompt_patch_stability",
     "s2pc_l0_current_policy_reaction_runtime_probe",
     "s2pc_l1_runtime_stability_gpt_oss_20b_c01",
-    "s2pc_l1_sparse_selector_stability_gpt_oss_20b_s02"
+    "s2pc_l1_sparse_selector_stability_gpt_oss_20b_s02",
+    "lcdu_l0_runtime_stability_gpt_oss_20b_l04",
+    "lcdu_l1_runtime_matrix_gpt_oss_20b_12x3_seed11"
   ],
   "risk_flags": [
     "update_method_gate_not_field_validation",

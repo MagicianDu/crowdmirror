@@ -834,6 +834,52 @@ contracts, but they do not establish live LLM model-quality improvement.
       reconstruction is directionally better than local refinement, but this
       first L2 family has not surpassed the current best single-axis point.
 
+30. **LCDU L3 working-family guard threshold reconstruction**
+    - Because LCDU L2 suggested that segment-guard reconstruction was the right
+      direction, but its first family stayed weaker than `l04`, the next step
+      narrows the search surface further. LCDU L3 keeps the original `l04`
+      latent direction fixed and reconstructs only the
+      `working_family_price_stressed` guard thresholds.
+    - The resulting matrix
+      `policy-reaction-lcdu-l3-matrix-gpt-oss-20b-12x3-heldout-001`
+      records `candidate_count=4`, `improved_count=1`,
+      `regressed_count=3`, and best candidate
+      `policy-reaction-lcdu-l3-current-001-h02`.
+    - Candidate losses are:
+      `h01 -> 0.000116658591`,
+      `h02 -> 0.000098795927`,
+      `h03 -> 0.000115428295`,
+      `h04 -> 0.000113707732`.
+      Only `h02` improves, with
+      `relative_loss_reduction=0.124855230105`.
+    - This matters because `h02` is stronger than the prior best LCDU point
+      `l04 = 0.000107036888`. At this stage, LCDU L3 becomes the first
+      post-Route-B family that opens a meaningfully better single-axis
+      candidate than every earlier S2PC, Route-B, or LCDU point on matched
+      `12x3 seed11`.
+
+31. **LCDU L3 `h02` repeat validation**
+    - Because `h02` clearly beats the `12x3 seed11` baseline, it is expanded to
+      the matched repeat axes `12x3 seed17` and `16x3 seed11`.
+    - The resulting stability artifact
+      `policy-reaction-lcdu-l3-stability-gpt-oss-20b-calibration-split-h02-heldout-001`
+      records `effect_count=3`, `improved_count=3`,
+      `regressed_count=0`, `no_change_count=0`,
+      `overall_status=stable_improvement`, and mean relative loss reduction
+      `0.214472380187`.
+    - On `12x3 seed11`, `h02` improves from baseline
+      `0.000112890954` to `0.000098795927`.
+    - On `12x3 seed17`, `h02` further improves from matched baseline
+      `0.000111545213` to `0.000081085178`, with
+      `relative_loss_reduction=0.2730734316`.
+    - On `16x3 seed11`, `h02` improves from matched baseline
+      `0.000109778219` to `0.000082828931`, with
+      `relative_loss_reduction=0.245488478856`.
+    - This is the first update family in the current policy-reaction line that
+      crosses the repeat gate. The conservative claim boundary remains the same:
+      this is stable local held-out public-data alignment improvement, not
+      field validation or real-world policy forecast proof.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
