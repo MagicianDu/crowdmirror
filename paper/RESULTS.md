@@ -880,6 +880,34 @@ contracts, but they do not establish live LLM model-quality improvement.
       this is stable local held-out public-data alignment improvement, not
       field validation or real-world policy forecast proof.
 
+32. **LCDU L3 `h02` explanation ablation**
+    - After `h02` becomes the first stable-improvement candidate, the next step
+      is no longer broader search. Instead, the Research worktree constructs an
+      explanation-oriented ablation family around `h02`:
+      `prompt_only_guard`, `anchor_only_guard`, `qualitative_guard`, and
+      `no_working_family_override`.
+    - The resulting matrix
+      `policy-reaction-lcdu-l3-ablation-matrix-gpt-oss-20b-12x3-heldout-001`
+      records `candidate_count=4`, `improved_count=1`,
+      `regressed_count=3`, and best candidate
+      `policy-reaction-lcdu-l3-ablation-current-001-a02`.
+    - Candidate losses are:
+      `a01 -> 0.000114027528`,
+      `a02 -> 0.000111545213`,
+      `a03 -> 0.000117419158`,
+      `a04 -> 0.000113104793`.
+      Only `a02=anchor_only_guard` remains positive, with
+      `relative_loss_reduction=0.011920716018`.
+    - This evidence materially narrows the interpretation of `h02`:
+      `working_family` prompt text by itself is not sufficient, and a purely
+      qualitative guard is also not sufficient. The strongest signal appears
+      only when the calibrated numeric guard anchor and the segment-level guard
+      prompt are combined in the full `h02` candidate.
+    - The practical conclusion is that `h02` should not be summarized as
+      “better wording.” It is better described as a guarded latent program with
+      a numerically constrained segment anchor, where prompt and anchor work
+      together and the anchor carries the larger standalone contribution.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
