@@ -705,6 +705,36 @@ contracts, but they do not establish live LLM model-quality improvement.
       prefilter mechanism, but its first small population did not yet produce a
       candidate strong enough to justify the more expensive repeat-aware stage.
 
+25. **Route-B generation-1 mechanism-level variable redefinition**
+    - Route-B next replaces patch-level perturbations with a small
+      mechanism-level discrete population. The new generation-1 search no
+      longer searches raw `prior_anchor_strength` and `trust_multiplier`
+      adjustments directly. Instead, each candidate compiles a bounded
+      mechanism profile over four higher-level variables:
+      `anchor_regime`, `trust_mode`, `uncertainty_mode`, and `focus_mode`.
+    - The resulting matrix
+      `policy-reaction-route-b-generation1-matrix-gpt-oss-20b-12x3-heldout-001`
+      records `candidate_count=4`, `improved_count=0`,
+      `regressed_count=4`, `overall_status=all_candidates_regressed`, and best
+      candidate `policy-reaction-route-b-generation1-current-001-h03`.
+    - The four matched held-out losses are all materially worse than the
+      baseline `0.000112890954`:
+      `h01 -> 0.01481642642`,
+      `h02 -> 0.030763241376`,
+      `h03 -> 0.011526513378`,
+      `h04 -> 0.086475999947`.
+      Their relative loss reductions are all strongly negative, ranging from
+      `-101.103073813771` to `-765.013547753751`.
+    - This matters because it rules out a second hypothesis: the weakness of
+      Route-B generation-0 was not merely caused by over-local patch variables.
+      Moving the search surface up to mechanism-level, Product-compilable
+      discrete controls still fails to produce even a single candidate that
+      beats the calibration-split baseline on the matched `12x3 seed=11` axis.
+    - Under the current stop-loss rule, Route-B generation 1 should therefore
+      stop immediately rather than expand into repeat evaluation. The present
+      Route-B family has now failed both patch-level and mechanism-level
+      bounded search on the current public-data held-out objective.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
