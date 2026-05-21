@@ -391,6 +391,75 @@ robust_score =
 
 ---
 
+### 4.7 DSPy 的定位：优化框架，而不是独立主算法
+
+**定义**
+
+DSPy 更适合被看作一个程序化 LM 优化框架：
+
+- 先把任务写成模块化 program；
+- 再指定 metric；
+- 最后让 optimizer 去搜索 instruction、few-shot 示例，或者小范围程序参数。
+
+在本项目里，DSPy 不应被表述为“比 TextGrad 更强的单点算法”，而应被表述为：
+
+> 路线 A 或路线 B 的候选实现框架之一。
+
+**为什么不能把 DSPy 直接当主算法**
+
+1. 当前问题的硬伤不是“不会生成候选”，而是“候选不稳”。
+2. DSPy 默认更擅长 instruction / few-shot / trace-based program optimization，而不是天然解决鲁棒目标设计。
+3. 如果不加结构化变量与止损规则，DSPy 很可能重复 TextGrad 的问题，只是换了程序化外壳。
+
+**DSPy 在本项目中的合理用法**
+
+#### 用法 A：作为路线 A 的 instruction / few-shot 优化器
+
+适合对象：
+
+- 固定 segment update program；
+- 固定候选 schema；
+- 允许 DSPy 优化少量 instruction 与 few-shot。
+
+不适合对象：
+
+- 完整 persona 文本自由改写；
+- 无约束 prompt 大范围 mutation。
+
+#### 用法 B：作为路线 B 的候选生成器
+
+做法：
+
+1. 把 residual、segment、policy、失败 trace 输入 DSPy program；
+2. 让 DSPy 生成结构化候选；
+3. 候选仍然必须走现有 held-out gate 和鲁棒目标评估。
+
+也就是说：
+
+- DSPy 负责“提案”；
+- 现有 gate 负责“验收”；
+- 路线 B 的鲁棒目标负责“是否继续投资”。
+
+**DSPy 的优点**
+
+- 比自由 prompt rewrite 更程序化；
+- 比手写 prompt patch 更容易形成可复用优化流程；
+- 适合作为 metric 驱动的优化外壳。
+
+**DSPy 的风险**
+
+- 如果 metric 仍然只是单次 held-out loss，它也会重复单点 improvement 的问题；
+- 如果 program 结构太自由，会再次退化成 prompt 工程；
+- 如果 optimizer 成本过高，容易在本地 LLM 预算下失控。
+
+**当前建议**
+
+- DSPy 不单独列为主线方法；
+- DSPy 作为路线 A 的候选实现框架保留在比较表中；
+- 只有当路线 A/B 的变量与目标函数先定义清楚后，才值得做 DSPy smoke MVP。
+
+---
+
 ## 5. 路线级比较结论
 
 | 路线 | 优化对象 | 目标函数 | 稳定性潜力 | Research 潜力 | Product 潜力 | MVP 难度 | 当前建议 |
@@ -401,6 +470,7 @@ robust_score =
 | 路线 B | 结构化参数 + 鲁棒目标 | mean + instability + worst-case | 高 | 高 | 高 | 中到高 | **优先主线** |
 | OR 组合优化 | rule / prototype / assignment | 组合目标 | 中到高 | 高 | 高 | 高 | 第二阶段 |
 | 分布约束 / latent state | latent / constraint | 约束满足 + 鲁棒性 | 高 | 很高 | 高 | 高 | 中长期主线 |
+| DSPy（框架位） | program / instruction / demos | 依附 A/B 的目标函数 | 取决于宿主路线 | 中到高 | 中到高 | 中 | 作为 A/B 候选实现壳 |
 
 ---
 
@@ -420,6 +490,19 @@ robust_score =
 
 1. 如果路线 B 太贵，A 可以先作为降配版 MVP。
 2. A 也是构建 B 所需结构化变量空间的前置工作。
+
+### 路线 A 的补充说明：DSPy 可以作为候选实现框架
+
+原因：
+
+1. DSPy 擅长把模块化 LM program 与 metric 绑定起来；
+2. 它适合承载 instruction / demo 优化；
+3. 但它不能替代路线 A/B 的目标函数设计与止损规则。
+
+因此更准确的表述是：
+
+- 路线 A 是方法路线；
+- DSPy 是路线 A 的候选实现壳之一。
 
 ### 第三优先级：分布约束 / latent state 路线
 
@@ -510,6 +593,36 @@ score =
 
 ---
 
+### 7.3 DSPy smoke MVP 的位置
+
+DSPy 如果要进入实验，不应作为独立主线，而应作为路线 A 的一个轻量实现分支。
+
+**推荐的最小做法**
+
+1. 固定结构化变量空间，不让 DSPy 自由改完整 persona 文本；
+2. 固定 metric 接口，仍然使用现有 held-out benchmark；
+3. 只允许 DSPy 优化：
+   - instruction wording
+   - few-shot demos
+   - 小范围 program 参数
+4. 先只跑 `12x3 seed11`
+
+**DSPy smoke 的止损标准**
+
+出现以下任一情况即停止，不扩 repeat：
+
+1. 没有超过当前 `s02/trust_only`
+2. 虽然优于 baseline，但弱于当前最优单点结果
+3. cost 明显高于结构化搜索，但收益没有同步上升
+4. 输出难以审计，或难以转成 Product 可消费 artifact
+
+因此，DSPy smoke 的定位是：
+
+- 验证“程序化优化框架”是否比当前手写搜索脚本更有价值；
+- 而不是验证“DSPy 是否天然优于所有其他方法”。
+
+---
+
 ## 8. 止损原则
 
 后 S2PC 阶段必须显式执行止损，而不是无限追加搜索预算。
@@ -555,4 +668,3 @@ score =
 一句话总结：
 
 > 后 S2PC 阶段，不应继续围绕单点 patch 搜索做更多变体，而应把问题提升为“面向稳定性目标的结构化黑盒优化”。
-
