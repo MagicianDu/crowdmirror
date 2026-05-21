@@ -1350,6 +1350,9 @@ contracts, but they do not establish live LLM model-quality improvement.
   than resolving them.
 - No positive LCDU L5 axis-guided repair claim is made from the first runtime
   matrix; all four candidates regress on the matched held-out benchmark.
+- No positive latent-response-program effectiveness claim is made from the
+  current `LRP L0` artifact set; it is representation and candidate-generation
+  evidence only, without runtime or held-out acceptance results.
 - No prompt/persona patch gate claim is made beyond the recorded Product
   scenario, model, cohort scale, public-source release, and held-out split.
 - No LLM-assisted S2PC, retrieval-augmented S2PC, or Product runtime S2PC
