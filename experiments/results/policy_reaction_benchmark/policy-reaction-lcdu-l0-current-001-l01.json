@@ -1,0 +1,109 @@
+{
+  "best_candidate": {
+    "candidate_index": 1,
+    "parameter_patches": [
+      {
+        "expected_effect": {
+          "cash_cost_of_living_rebate": "increase",
+          "food_subsidy_expansion": "increase"
+        },
+        "factor_id": "institutional_trust",
+        "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+        "parameter_bounds": {
+          "max": 0.85,
+          "min": 0.45
+        },
+        "parameter_name": "prior_anchor_strength",
+        "parameter_value": 0.647011730696,
+        "policy_id": "food_subsidy_expansion",
+        "provenance": {
+          "constraint_program": [
+            {
+              "constraint_type": "primary_policy_floor",
+              "min_probability": 0.22,
+              "policy_id": "food_subsidy_expansion"
+            },
+            {
+              "constraint_type": "distribution_smoothness",
+              "max_top1_probability": 0.58
+            }
+          ],
+          "direction": "over_predicted",
+          "latent_state_updates": {
+            "household_cost_pressure": 0.0,
+            "institutional_trust": 0.18,
+            "policy_relief_urgency": 0.16
+          },
+          "lcdu_l0_tag": "trust_urgency_smooth",
+          "magnitude": 0.436529326741,
+          "match_score": 2.436529326741,
+          "residual": -0.436529326741,
+          "source_split": "calibration"
+        },
+        "segment": "fixed_income_inflation_stressed"
+      },
+      {
+        "expected_effect": {
+          "cash_cost_of_living_rebate": "increase",
+          "food_subsidy_expansion": "increase"
+        },
+        "factor_id": "institutional_trust",
+        "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+        "parameter_bounds": {
+          "max": 1.2,
+          "min": 0.8
+        },
+        "parameter_name": "trust_multiplier",
+        "parameter_value": 1.001011730696,
+        "policy_id": "food_subsidy_expansion",
+        "provenance": {
+          "constraint_program": [
+            {
+              "constraint_type": "primary_policy_floor",
+              "min_probability": 0.22,
+              "policy_id": "food_subsidy_expansion"
+            },
+            {
+              "constraint_type": "distribution_smoothness",
+              "max_top1_probability": 0.58
+            }
+          ],
+          "direction": "over_predicted",
+          "latent_state_updates": {
+            "household_cost_pressure": 0.0,
+            "institutional_trust": 0.18,
+            "policy_relief_urgency": 0.16
+          },
+          "lcdu_l0_tag": "trust_urgency_smooth",
+          "magnitude": 0.436529326741,
+          "match_score": 2.436529326741,
+          "residual": -0.436529326741,
+          "source_split": "calibration"
+        },
+        "segment": "fixed_income_inflation_stressed"
+      }
+    ],
+    "policy_id": "food_subsidy_expansion",
+    "proxy_score": 4.254466026348,
+    "segment": "fixed_income_inflation_stressed"
+  },
+  "candidate_id": "policy-reaction-lcdu-l0-current-001-l01",
+  "candidate_prompt_components": {
+    "calibration_anchor": {
+      "fixed_income_inflation_stressed": "LCDU factors=institutional_trust; primary_policy=food_subsidy_expansion; latents=household_cost_pressure=+0.00;institutional_trust=+0.18;policy_relief_urgency=+0.16; constraints=primary_floor(food_subsidy_expansion >= 0.22) | smooth(max_top1 <= 0.58); parameters=prior_anchor_strength=0.647011730696;trust_multiplier=1.001011730696"
+    },
+    "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+    "segment_prompt": {
+      "fixed_income_inflation_stressed": "Use the persona's calibrated policy-reaction parameters for this segment. Interpret them through the latent social-state program rather than a direct prompt patch. Keep the full policy distribution coherent under the declared constraints."
+    }
+  },
+  "claim_boundary": "LCDU candidate is a runtime probe candidate only.",
+  "generator": "lcdu_l0_latent_constraint_compiler",
+  "schema_version": "policy-reaction-s2pc-candidate-v1",
+  "source_split_contract": {
+    "candidate_acceptance": "heldout_required",
+    "parameter_search": "calibration",
+    "residual_mining": "calibration",
+    "semantic_factor_retrieval": "calibration"
+  }
+}
