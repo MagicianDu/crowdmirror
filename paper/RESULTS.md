@@ -1165,6 +1165,48 @@ contracts, but they do not establish live LLM model-quality improvement.
       not an artifact of full-data aggregation; it persists on the held-out row
       split as well.
 
+43. **LCDU L5 axis-guided repair family**
+    - Because the axis-level weakness and held-out split extrapolation both
+      identify the same two failure points, the next family lifts the repair
+      target from single named segments to Product-compatible axis selectors:
+      `income_band=low`
+      and
+      `price_stress_level=high`.
+    - Product runtime is extended so calibration candidate prompt components can
+      match not only `persona.segment` but also demographic selectors of the
+      form `axis=value`. This makes axis-guided runtime probes executable rather
+      than purely descriptive.
+    - The first `LCDU L5` family generates four candidates:
+      `x01` income-low rank guard,
+      `x02` high-price shape guard,
+      `x03` dual-axis soft guard,
+      `x04` dual-axis numeric guard.
+    - All four candidates are evaluated on the matched `12x3 seed11`
+      calibration-split held-out benchmark. The resulting matrix
+      `policy-reaction-lcdu-l5-axis-guided-repair-matrix-gpt-oss-20b-12x3-heldout-001`
+      records
+      `candidate_count=4`,
+      `improved_count=0`,
+      `regressed_count=4`,
+      and
+      `overall_status=all_candidates_regressed`.
+    - Candidate losses are:
+      `x01 -> 0.000117419158`,
+      `x02 -> 0.000117419158`,
+      `x03 -> 0.000115057521`,
+      `x04 -> 0.000885217439`.
+      The best candidate is `x03`, but it still regresses relative to baseline,
+      with
+      `relative_loss_reduction=-0.019191688343`.
+    - This is a useful stop-loss result. Moving from accepted segment-level
+      guards to direct axis-level runtime guards is executable, but the first
+      axis-guided repair family does not improve held-out alignment and can
+      degrade it sharply when the numeric guard is too strong (`x04`).
+    - Under the current gate, `LCDU L5` should not enter repeat validation.
+      The next step should not be “more of the same” on axis-level prompt
+      patches. The evidence now points to a representation mismatch between the
+      accepted segment-level runtime and the finer demographic control surface.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -1254,6 +1296,9 @@ contracts, but they do not establish live LLM model-quality improvement.
   same-task internal-generalization diagnostics.
 - CIRCE can localize persistent axis-level LCDU weaknesses and verify that the
   dominant finer-schema failure points remain on the held-out row split.
+- CIRCE can execute axis-guided LCDU runtime probes by matching calibration
+  candidate components against Product demographic selectors as well as fixed
+  segment ids.
 
 ## Not Yet Claimed
 
@@ -1303,6 +1348,8 @@ contracts, but they do not establish live LLM model-quality improvement.
 - No LCDU finer-schema robustness claim is made from the current axis-level
   split extrapolation; the held-out split preserves the same weak points rather
   than resolving them.
+- No positive LCDU L5 axis-guided repair claim is made from the first runtime
+  matrix; all four candidates regress on the matched held-out benchmark.
 - No prompt/persona patch gate claim is made beyond the recorded Product
   scenario, model, cohort scale, public-source release, and held-out split.
 - No LLM-assisted S2PC, retrieval-augmented S2PC, or Product runtime S2PC
