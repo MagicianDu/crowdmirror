@@ -1114,6 +1114,57 @@ contracts, but they do not establish live LLM model-quality improvement.
       claim should stay narrow: same-task alternate-schema evaluation is now
       auditable, and it reveals where internal generalization remains weak.
 
+41. **LCDU L3 axis-level weakness attribution**
+    - A dedicated weakness artifact
+      `policy-reaction-axis-weakness-lcdu-l3-current-001`
+      compares the two accepted candidates `h02` and `i01` directly on their
+      axis-level benchmark outputs.
+    - The result is stable across both candidates:
+      `persistent_worst_jsd_segment = price_stress_level=high`
+      with mean JSD
+      `0.14925228029562396`,
+      and
+      `persistent_worst_rank_segment = income_band=low`
+      with mean rank correlation
+      `-1.0`.
+    - This matters because it shows the finer-schema weakness is not random
+      candidate noise. Both accepted LCDU L3 variants inherit the same two weak
+      points: a distribution-shape error on high price stress and an ordering
+      failure on low income.
+
+42. **LCDU L3 axis-level held-out split extrapolation**
+    - The official HTOPS/HPS two-way row split is projected onto the same
+      Product-compatible axis schema through
+      `policy-reaction-htops-2506-axis-split-ingestion-001`,
+      yielding
+      `policy-reaction-htops-2506-axis-evaluation-ingestion-001`
+      as a held-out axis-level observed surface.
+    - The accepted candidates are re-benchmarked against that held-out axis
+      split:
+      `policy-reaction-axis-benchmark-lcdu-l3-h02-evaluation-split-001`
+      and
+      `policy-reaction-axis-benchmark-lcdu-l3-i01-evaluation-split-001`.
+    - The held-out results stay very close to the full-data axis benchmarks.
+      For `h02`:
+      `weighted_choice_distribution_jsd=0.010083181769177024`,
+      `mean_choice_distribution_jsd=0.022050398910805732`,
+      `segment_rank_correlation=0.5`,
+      `worst_segment_rank_correlation=-1.0`.
+      For `i01`:
+      `weighted_choice_distribution_jsd=0.0100197976214031`,
+      `mean_choice_distribution_jsd=0.022011023947825364`,
+      `segment_rank_correlation=0.5`,
+      `worst_segment_rank_correlation=-1.0`.
+    - The dominant weak points are unchanged on the held-out axis split:
+      worst JSD remains `price_stress_level=high`
+      (`0.14714363159110094`),
+      and worst rank failure remains `income_band=low`
+      (`-1.0`) for both accepted candidates.
+    - This is still not a positive generalization result, but it is a stronger
+      negative diagnostic than before. The same-task finer-schema weakness is
+      not an artifact of full-data aggregation; it persists on the held-out row
+      split as well.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -1201,6 +1252,8 @@ contracts, but they do not establish live LLM model-quality improvement.
 - CIRCE can bridge official HTOPS/HPS public-use observations and Product
   segment-policy outputs onto a shared axis-level demographic schema for
   same-task internal-generalization diagnostics.
+- CIRCE can localize persistent axis-level LCDU weaknesses and verify that the
+  dominant finer-schema failure points remain on the held-out row split.
 
 ## Not Yet Claimed
 
@@ -1247,6 +1300,9 @@ contracts, but they do not establish live LLM model-quality improvement.
 - No broad LCDU generalization claim is made from the current axis-level
   benchmark bridge; it is same-task alternate-schema diagnostics, and current
   rank alignment remains mixed.
+- No LCDU finer-schema robustness claim is made from the current axis-level
+  split extrapolation; the held-out split preserves the same weak points rather
+  than resolving them.
 - No prompt/persona patch gate claim is made beyond the recorded Product
   scenario, model, cohort scale, public-source release, and held-out split.
 - No LLM-assisted S2PC, retrieval-augmented S2PC, or Product runtime S2PC

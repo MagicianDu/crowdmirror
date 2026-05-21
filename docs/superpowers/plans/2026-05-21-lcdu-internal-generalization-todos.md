@@ -156,6 +156,50 @@ pytest research/tests/test_policy_reaction_axis_benchmark.py
 2. `h02` / `i01` 在 axis-level 上并非完全失配，但也没有出现足够强的排序稳定性；
 3. 这一步更适合作为“内部泛化诊断入口”，而不是“已经证明通用性”的证据。
 
+## 7. 继续执行结果
+
+### 7.1 axis-level weakness attribution
+
+- 目标：确认当前 axis-level benchmark 的最差点是否稳定，以及问题主要出在分布还是排序
+- 当前结果：已完成
+- 产出：
+  - `/Users/dm/Documents/cc-社会计算器-worktrees/research/experiments/policy_reaction_axis_weakness.py`
+  - `/Users/dm/Documents/cc-社会计算器-worktrees/research/tests/test_policy_reaction_axis_weakness.py`
+  - `policy-reaction-axis-weakness-lcdu-l3-current-001.json`
+
+结论：
+
+- `persistent_worst_jsd_segment = price_stress_level=high`
+- `persistent_worst_rank_segment = income_band=low`
+
+这说明 axis-level 的主要弱点不是随机漂移，而是在 `h02` 与 `i01` 两个已接受候选上都稳定存在。
+
+### 7.2 split 外推
+
+- 目标：判断上面的 axis-level 弱点是否只依赖全量 public 聚合，还是在 held-out row split 上仍然成立
+- 当前结果：已完成
+- 产出：
+  - `/Users/dm/Documents/cc-社会计算器-worktrees/research/experiments/policy_reaction_axis_split_ingestion.py`
+  - `/Users/dm/Documents/cc-社会计算器-worktrees/research/tests/test_policy_reaction_axis_split_ingestion.py`
+  - `policy-reaction-htops-2506-axis-split-ingestion-001.json`
+  - `policy-reaction-htops-2506-axis-evaluation-ingestion-001.json`
+  - `policy-reaction-axis-benchmark-lcdu-l3-h02-evaluation-split-001.json`
+  - `policy-reaction-axis-benchmark-lcdu-l3-i01-evaluation-split-001.json`
+
+结论：
+
+- `h02` evaluation split:
+  - `weighted_choice_distribution_jsd = 0.010083181769177024`
+  - `segment_rank_correlation = 0.5`
+- `i01` evaluation split:
+  - `weighted_choice_distribution_jsd = 0.0100197976214031`
+  - `segment_rank_correlation = 0.5`
+- 两条线在 evaluation split 上的最差点没有变化：
+  - `worst_jsd_segment = price_stress_level=high`
+  - `worst_rank_segment = income_band=low`
+
+这说明当前 axis-level 弱点并不是“全量 public 聚合的偶然产物”，而是在 held-out split 上也保持。
+
 ## 6. 止损标准
 
 如果发现以下任一情况，本轮就停：
