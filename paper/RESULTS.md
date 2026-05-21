@@ -1290,6 +1290,125 @@ contracts, but they do not establish live LLM model-quality improvement.
       representation” route alive as a research option, but not escalating this
       specific family as a new mainline challenger to `LCDU L3`.
 
+46. **Round1 route A: Segment Program Search**
+    - The first segment-level synchronized program family generates four
+      candidates:
+      `s01` soft_guard_family,
+      `s02` mixed_numeric_qualitative_family,
+      `s03` segment_crossover_family,
+      `s04` selective_anchor_heavy_family.
+    - On the matched `gpt-oss-20b 12x3 seed11` held-out benchmark, the route
+      matrix
+      `policy-reaction-segment-program-l0-matrix-gpt-oss-20b-12x3-heldout-001`
+      records
+      `candidate_count=4`,
+      `improved_count=1`,
+      `regressed_count=3`,
+      and
+      `overall_status=candidate_improvements_available`.
+    - Candidate losses are:
+      `s02 -> 0.000111545213`,
+      `s03 -> 0.000116997178`,
+      `s04 -> 0.000132498489`,
+      `s01 -> 0.003543626925`.
+      The best candidate is `s02`, with
+      `relative_loss_reduction=0.011920716018`.
+    - This route remains alive, but only as a weak-signal route. It can still
+      beat the held-out baseline at a single point, but it does not exceed the
+      already known weak-signal ceiling and is clearly below `LCDU L3`.
+
+47. **Round1 route B: LRP stronger family**
+    - The first stronger `LRP round1` family generates four candidates:
+      `r01` rank-first compensatory bridge,
+      `r02` shape-first relief stabilizer,
+      `r03` dual-axis pressure release,
+      `r04` targeted anti-inertia extreme.
+    - On the matched `gpt-oss-20b 12x3 seed11` held-out benchmark, the route
+      matrix
+      `policy-reaction-lrp-round1-l0-matrix-gpt-oss-20b-12x3-heldout-001`
+      records
+      `candidate_count=4`,
+      `improved_count=0`,
+      `regressed_count=4`,
+      and
+      `overall_status=all_candidates_regressed`.
+    - Candidate losses are:
+      `r02 -> 0.000114027528`,
+      `r04 -> 0.000298154757`,
+      `r01 -> 0.000567826985`,
+      `r03 -> 0.000862567119`.
+    - This route fails the round1 gate. The stronger latent family does not
+      improve on the earlier `LRP` weak-signal line; instead it turns into
+      broad regression. Under the current stop-loss rule, this route should be
+      stopped rather than deepened.
+
+48. **Round1 route C: Constraint Program**
+    - The first population-level constraint-program family generates four
+      candidates:
+      `c01` relief_floor_low_income_guard,
+      `c02` price_stress_distribution_guard,
+      `c03` dual_axis_balanced_population_program,
+      `c04` strict_targeted_population_program.
+    - On the matched `gpt-oss-20b 12x3 seed11` held-out benchmark, the route
+      matrix
+      `policy-reaction-constraint-program-l0-matrix-gpt-oss-20b-12x3-heldout-001`
+      records
+      `candidate_count=4`,
+      `improved_count=0`,
+      `regressed_count=4`,
+      and
+      `overall_status=all_candidates_regressed`.
+    - Candidate losses are:
+      `c01 -> 0.000113104793`,
+      `c02 -> 0.000115805628`,
+      `c04 -> 0.000513038271`,
+      `c03 -> 0.006564134024`.
+    - This route also fails the round1 gate. The most conservative candidate
+      is only slightly worse than baseline, but the family as a whole shows
+      that moving directly to population-level constraints is not enough, by
+      itself, to produce a stronger held-out candidate.
+
+49. **Round1 route D: Prototype / Retrieval Program**
+    - The first prototype-program family generates four candidates:
+      `r01` accepted_rank_anchor,
+      `r02` accepted_with_weak_positive_bridge,
+      `r03` failure_aware_dual_axis_bridge,
+      `r04` tri_family_conservative_program.
+    - On the matched `gpt-oss-20b 12x3 seed11` held-out benchmark, the route
+      matrix
+      `policy-reaction-prototype-program-l0-matrix-gpt-oss-20b-12x3-heldout-001`
+      records
+      `candidate_count=4`,
+      `improved_count=2`,
+      `regressed_count=2`,
+      and
+      `overall_status=candidate_improvements_available`.
+    - Candidate losses are:
+      `r02 -> 0.000111545213`,
+      `r03 -> 0.000111545213`,
+      `r01 -> 0.000113397501`,
+      `r04 -> 0.000114360157`.
+      The best candidates are `r02` and `r03`, both tied at
+      `relative_loss_reduction=0.011920716018`.
+    - This route is the strongest of the new non-LCDU routes in round1, but it
+      still only reaches the same weak single-axis ceiling as segment-program
+      and earlier `LRP` families. It qualifies as a keep/observe route, not a
+      promotion route.
+
+50. **Round1 route-level conclusion**
+    - Round1 was explicitly designed to compare four orthogonal route families
+      under the same single-axis held-out gate, not to overfit one line.
+    - The route-level outcome is:
+      - `keep/observe`: segment-program, prototype-program
+      - `stop`: stronger LRP family, constraint-program
+    - Most importantly, no route in round1 exceeds `LCDU L3`. The best new
+      candidates all stop at the same weak single-axis ceiling
+      (`0.000111545213`, `relative_loss_reduction=0.011920716018`), which is
+      well below the already accepted `LCDU L3 h02/i01` line.
+    - This is a real conclusion, not an incomplete search. The current round1
+      evidence says the search space is not empty, but the strongest new routes
+      still do not challenge the existing mainline.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
