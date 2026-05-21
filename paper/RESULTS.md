@@ -1207,6 +1207,51 @@ contracts, but they do not establish live LLM model-quality improvement.
       patches. The evidence now points to a representation mismatch between the
       accepted segment-level runtime and the finer demographic control surface.
 
+44. **Latent response program L0 prefilter**
+    - After `LCDU L5` fails, the next route lifts the repair object one level
+      higher. Instead of adding another axis-level prompt or anchor patch, the
+      new `LRP L0` family defines four latent response variables:
+      `baseline_inertia`,
+      `relief_preference`,
+      `price_stress_reactivity`,
+      and
+      `targeting_sensitivity`,
+      then compiles selector-based regime rules and response constraints back
+      into Product-compatible runtime candidates.
+    - The first `LRP L0` family generates four candidates:
+      `p01` low-income compensatory program,
+      `p02` high-price reactive program,
+      `p03` dual-axis balanced program,
+      `p04` dual-axis targeted program.
+    - All four candidates are evaluated on the matched
+      `gpt-oss-20b 12x3 seed11` calibration-split held-out benchmark. The
+      resulting matrix
+      `policy-reaction-lrp-l0-matrix-gpt-oss-20b-12x3-heldout-001`
+      records
+      `candidate_count=4`,
+      `improved_count=2`,
+      `regressed_count=2`,
+      and
+      `overall_status=candidate_improvements_available`.
+    - Candidate losses are:
+      `p01 -> 0.000111545213`,
+      `p02 -> 0.000111774841`,
+      `p03 -> 0.002574409167`,
+      `p04 -> 0.003360798171`.
+      The best candidate is `p01`, with
+      `relative_loss_reduction=0.011920716018`.
+    - This is a useful representation result, but not yet a method result.
+      `LRP L0` does show that a higher-level response program can produce
+      non-regressing candidates and avoids the uniform collapse seen in `LCDU
+      L5`. But the best improvement is only a weak single-axis gain, still well
+      below the accepted `LCDU L3 h02/i01` level, and two candidates regress
+      sharply.
+    - Under the current gate, `LRP L0` has earned follow-up diagnosis but not
+      repeat validation. The next question is not whether “higher-level
+      representation exists,” but whether a tighter `LRP` family can convert
+      this weak single-axis signal into a candidate that actually challenges
+      `LCDU L3`.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
@@ -1350,9 +1395,10 @@ contracts, but they do not establish live LLM model-quality improvement.
   than resolving them.
 - No positive LCDU L5 axis-guided repair claim is made from the first runtime
   matrix; all four candidates regress on the matched held-out benchmark.
-- No positive latent-response-program effectiveness claim is made from the
-  current `LRP L0` artifact set; it is representation and candidate-generation
-  evidence only, without runtime or held-out acceptance results.
+- No stable or accepted latent-response-program effectiveness claim is made
+  from the current `LRP L0` evidence. The first family has two weak single-axis
+  improvements and two regressions, but no repeat validation or held-out gate
+  acceptance.
 - No prompt/persona patch gate claim is made beyond the recorded Product
   scenario, model, cohort scale, public-source release, and held-out split.
 - No LLM-assisted S2PC, retrieval-augmented S2PC, or Product runtime S2PC
