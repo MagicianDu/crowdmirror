@@ -32,3 +32,32 @@ def test_build_round1_prefilter_plan_generates_consistent_paths(tmp_path: Path) 
     assert entry["prediction_artifact_id"] == "policy-reaction-segment-predictions-constraint-program-l0-c01-001"
     assert entry["benchmark_artifact_id"] == "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-constraint-program-l0-c01-heldout-001"
     assert entry["effect_artifact_id"] == "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-constraint-program-l0-c01-heldout-001"
+
+
+def test_build_round1_prefilter_plan_uses_model_slug_in_artifacts(tmp_path: Path) -> None:
+    candidate = tmp_path / "candidate.json"
+    candidate.write_text(
+        json.dumps(
+            {
+                "schema_version": "policy-reaction-s2pc-candidate-v1",
+                "candidate_id": "policy-reaction-prototype-program-l1-current-001-u01",
+            }
+        )
+    )
+    plan = build_round1_prefilter_plan(
+        candidate_paths=[str(candidate)],
+        route_slug="prototype-program-l1",
+        model="deepseek-v4-flash",
+        base_url="https://api.deepseek.com",
+        persona_count=12,
+        strategy_count=3,
+        seed=11,
+        product_root="/tmp/product",
+        research_root="/tmp/research",
+    )
+    entry = plan["entries"][0]
+    assert plan["model_slug"] == "deepseek-v4-flash"
+    assert entry["run_id"].endswith("prototype-program-l1-u01-001")
+    assert "deepseek-v4-flash" in entry["manifest_path"]
+    assert entry["benchmark_artifact_id"] == "policy-reaction-official-segment-benchmark-deepseek-v4-flash-12x3-calibration-split-prototype-program-l1-u01-heldout-001"
+    assert entry["effect_artifact_id"] == "policy-reaction-s2pc-runtime-effect-deepseek-v4-flash-12x3-calibration-split-prototype-program-l1-u01-heldout-001"

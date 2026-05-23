@@ -23,6 +23,7 @@ def build_round1_prefilter_plan(
         raise ValueError("candidate_paths must not be empty")
     product_root_path = Path(product_root)
     research_root_path = Path(research_root)
+    model_slug = _model_slug(model)
     entries = []
     for candidate_path_str in candidate_paths:
         candidate_path = Path(candidate_path_str)
@@ -36,14 +37,21 @@ def build_round1_prefilter_plan(
             {
                 "candidate_id": candidate_id,
                 "candidate_path": str(candidate_path),
-                "run_id": f"llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-{run_suffix}-001",
+                "run_id": f"llm-cohort-policy-local-{model_slug}-12x3-calibration-split-{run_suffix}-001",
+                "model_slug": model_slug,
                 "prediction_artifact_id": f"policy-reaction-segment-predictions-{run_suffix}-001",
-                "benchmark_artifact_id": f"policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-{run_suffix}-heldout-001",
-                "effect_artifact_id": f"policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-{run_suffix}-heldout-001",
+                "benchmark_artifact_id": (
+                    f"policy-reaction-official-segment-benchmark-{model_slug}-12x3-"
+                    f"calibration-split-{run_suffix}-heldout-001"
+                ),
+                "effect_artifact_id": (
+                    f"policy-reaction-s2pc-runtime-effect-{model_slug}-12x3-"
+                    f"calibration-split-{run_suffix}-heldout-001"
+                ),
                 "manifest_path": str(
                     product_root_path
                     / "experiments/results/llm_cohort_gate"
-                    / f"llm-cohort-policy-local-gpt-oss-20b-12x3-calibration-split-{run_suffix}-001.json"
+                    / f"llm-cohort-policy-local-{model_slug}-12x3-calibration-split-{run_suffix}-001.json"
                 ),
                 "prediction_path": str(
                     product_root_path
@@ -53,18 +61,19 @@ def build_round1_prefilter_plan(
                 "benchmark_path": str(
                     research_root_path
                     / "experiments/results/policy_reaction_benchmark"
-                    / f"policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-{run_suffix}-heldout-001.json"
+                    / f"policy-reaction-official-segment-benchmark-{model_slug}-12x3-calibration-split-{run_suffix}-heldout-001.json"
                 ),
                 "effect_path": str(
                     research_root_path
                     / "experiments/results/policy_reaction_benchmark"
-                    / f"policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-{run_suffix}-heldout-001.json"
+                    / f"policy-reaction-s2pc-runtime-effect-{model_slug}-12x3-calibration-split-{run_suffix}-heldout-001.json"
                 ),
             }
         )
     return {
         "route_slug": route_slug,
         "model": model,
+        "model_slug": model_slug,
         "base_url": base_url,
         "persona_count": persona_count,
         "strategy_count": strategy_count,
@@ -175,7 +184,7 @@ def execute_round1_prefilter_plan(plan: dict[str, Any]) -> dict[str, Any]:
     matrix_path = (
         research_root
         / "experiments/results/policy_reaction_benchmark"
-        / f"policy-reaction-{plan['route_slug']}-matrix-gpt-oss-20b-12x3-heldout-001.json"
+        / f"policy-reaction-{plan['route_slug']}-matrix-{plan['model_slug']}-12x3-heldout-001.json"
     )
     _run(
         [
@@ -189,7 +198,7 @@ def execute_round1_prefilter_plan(plan: dict[str, Any]) -> dict[str, Any]:
                 for item in ("--effect-artifact", effect_path)
             ],
             "--artifact-id",
-            f"policy-reaction-{plan['route_slug']}-matrix-gpt-oss-20b-12x3-heldout-001",
+            f"policy-reaction-{plan['route_slug']}-matrix-{plan['model_slug']}-12x3-heldout-001",
             "--output",
             str(matrix_path),
         ],
@@ -204,6 +213,11 @@ def execute_round1_prefilter_plan(plan: dict[str, Any]) -> dict[str, Any]:
 
 def _run(command: list[str], *, cwd: Path) -> None:
     subprocess.run(command, cwd=cwd, check=True)
+
+
+def _model_slug(model: str) -> str:
+    normalized = model.rsplit("/", 1)[-1]
+    return normalized.replace("/", "-").replace(".", "-").replace("_", "-")
 
 
 def main() -> int:

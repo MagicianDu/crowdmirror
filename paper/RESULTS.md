@@ -1409,6 +1409,75 @@ contracts, but they do not establish live LLM model-quality improvement.
       evidence says the search space is not empty, but the strongest new routes
       still do not challenge the existing mainline.
 
+51. **Round2 route A: Segment Program L1 narrowed family**
+    - Starting from the round1 keep/observe winner `s02`, the narrowed
+      segment-program family generates four candidates:
+      `t01` working_family_cash_floor_focus,
+      `t02` low_income_support_order_focus,
+      `t03` dual_axis_soft_sync,
+      `t04` high_price_numeric_push.
+    - On the matched `gpt-oss-20b 12x3 seed11` held-out benchmark, the route
+      matrix
+      `policy-reaction-segment-program-l1-matrix-gpt-oss-20b-12x3-heldout-001`
+      records
+      `candidate_count=4`,
+      `improved_count=1`,
+      `regressed_count=3`,
+      and
+      `overall_status=candidate_improvements_available`.
+    - Candidate losses are:
+      `t02 -> 0.000111545213`,
+      `t01 -> 0.000114027528`,
+      `t03 -> 0.000117419158`,
+      `t04 -> 0.000939323621`.
+      The best candidate is `t02`, with
+      `relative_loss_reduction=0.011920716018`.
+    - This route does not improve on round1. The narrowed family can still hit
+      the known weak single-axis ceiling, but it does not exceed it, and the
+      more aggressive high-price push collapses badly. Under the round2 gate,
+      segment-program remains a weak backup route rather than a challenger to
+      `LCDU L3`.
+
+52. **Round2 route D: Prototype Program L1 narrowed family**
+    - Starting from the round1 keep/observe prototype line, the narrowed
+      retrieval family generates four candidates:
+      `u01` accepted_plus_cash_floor_conservative,
+      `u02` accepted_plus_failure_guard,
+      `u03` accepted_rank_shape_bridge,
+      `u04` tri_family_hard_recomposition.
+    - On the matched `gpt-oss-20b 12x3 seed11` held-out benchmark, the route
+      matrix
+      `policy-reaction-prototype-program-l1-matrix-gpt-oss-20b-12x3-heldout-001`
+      records
+      `candidate_count=4`,
+      `improved_count=0`,
+      `regressed_count=4`,
+      and
+      `overall_status=all_candidates_regressed`.
+    - Candidate losses are:
+      `u01 -> 0.000113397501`,
+      `u02 -> 0.000115057521`,
+      `u03 -> 0.000114360157`,
+      `u04 -> 0.000116997178`.
+    - This route fails the round2 gate. Once the prototype family is narrowed
+      around the round1 keep/observe line, all candidates regress and the best
+      candidate no longer even reaches the earlier weak ceiling. Under the
+      current stop-loss rule, prototype-program should now be stopped.
+
+53. **Round2 route-level conclusion**
+    - Round2 only expanded the two round1 keep/observe routes:
+      segment-program and prototype-program.
+    - The route-level outcome is:
+      - `keep only as archived weak signal`: segment-program
+      - `stop`: prototype-program
+    - Most importantly, round2 still produces no candidate that exceeds
+      `LCDU L3`, and no candidate that even exceeds the old weak single-axis
+      ceiling of `0.000111545213`.
+    - This means the parallel route search has already produced a usable
+      route-level conclusion:
+      `LCDU L3` remains the active mainline, while the non-LCDU round1/round2
+      challengers do not currently justify repeat-budget escalation.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
