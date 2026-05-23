@@ -1,0 +1,219 @@
+{
+  "best_candidate": {
+    "candidate_index": 1,
+    "parameter_patches": [
+      {
+        "expected_effect": {
+          "cash_cost_of_living_rebate": "increase",
+          "food_subsidy_expansion": "increase"
+        },
+        "factor_id": "institutional_trust",
+        "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+        "parameter_bounds": {
+          "max": 0.85,
+          "min": 0.45
+        },
+        "parameter_name": "prior_anchor_strength",
+        "parameter_value": 0.625069730696,
+        "policy_id": "food_subsidy_expansion",
+        "provenance": {
+          "constraint_program": [
+            {
+              "constraint_type": "distribution_smoothness",
+              "max_top1_probability": 0.5
+            },
+            {
+              "constraint_type": "segment_rank_guard",
+              "guard": "retain_current_ordering_bias"
+            }
+          ],
+          "direction": "over_predicted",
+          "global_latents": {
+            "baseline_inertia": -0.1,
+            "price_stress_reactivity": 0.28,
+            "relief_preference": 0.24,
+            "targeting_sensitivity": 0.12
+          },
+          "latent_state_updates": {
+            "household_cost_pressure": 0.06,
+            "institutional_trust": -0.12,
+            "policy_relief_urgency": 0.0
+          },
+          "lcdu_l0_tag": "trust_down_distribution_guard",
+          "lrp_round1_l0_variant_tag": "shape_first_relief_stabilizer",
+          "magnitude": 0.436529326741,
+          "match_score": 2.436529326741,
+          "optimizer": "cross-family recomposition",
+          "regime_rules": [
+            {
+              "latent_delta": {
+                "baseline_inertia": -0.08,
+                "price_stress_reactivity": 0.16,
+                "relief_preference": 0.12,
+                "targeting_sensitivity": 0.02
+              },
+              "program_intent": "stabilize high-price distribution shape without reverting to baseline",
+              "selector": "price_stress_level=high"
+            },
+            {
+              "latent_delta": {
+                "baseline_inertia": -0.04,
+                "price_stress_reactivity": 0.0,
+                "relief_preference": 0.08,
+                "targeting_sensitivity": 0.08
+              },
+              "program_intent": "preserve low-income ordering while shape correction is primary",
+              "selector": "income_band=low"
+            }
+          ],
+          "representation": "latent response program plus prototype retrieval",
+          "residual": -0.436529326741,
+          "response_constraints": [
+            {
+              "constraint_type": "distribution_shape_guard",
+              "max_baseline_probability": 0.228,
+              "selector": "price_stress_level=high"
+            },
+            {
+              "constraint_type": "relief_floor",
+              "min_probability": 0.32,
+              "policy_id": "cash_cost_of_living_rebate"
+            },
+            {
+              "constraint_type": "rank_guard",
+              "guard": "preserve_relief_ordering",
+              "selector": "income_band=low"
+            }
+          ],
+          "route_combo_id": "r3c-latent-prototype",
+          "route_combo_variant_tag": "conservative_bridge",
+          "secondary_candidate_id": "policy-reaction-prototype-program-l0-current-001-r02",
+          "source_split": "calibration",
+          "system_level": "axis/persona hybrid",
+          "total_rule_strength": 0.58
+        },
+        "segment": "fixed_income_inflation_stressed"
+      },
+      {
+        "expected_effect": {
+          "cash_cost_of_living_rebate": "increase",
+          "food_subsidy_expansion": "increase"
+        },
+        "factor_id": "institutional_trust",
+        "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+        "parameter_bounds": {
+          "max": 1.2,
+          "min": 0.8
+        },
+        "parameter_name": "trust_multiplier",
+        "parameter_value": 0.954549330696,
+        "policy_id": "food_subsidy_expansion",
+        "provenance": {
+          "constraint_program": [
+            {
+              "constraint_type": "distribution_smoothness",
+              "max_top1_probability": 0.5
+            },
+            {
+              "constraint_type": "segment_rank_guard",
+              "guard": "retain_current_ordering_bias"
+            }
+          ],
+          "direction": "over_predicted",
+          "global_latents": {
+            "baseline_inertia": -0.1,
+            "price_stress_reactivity": 0.28,
+            "relief_preference": 0.24,
+            "targeting_sensitivity": 0.12
+          },
+          "latent_state_updates": {
+            "household_cost_pressure": 0.06,
+            "institutional_trust": -0.12,
+            "policy_relief_urgency": 0.0
+          },
+          "lcdu_l0_tag": "trust_down_distribution_guard",
+          "lrp_round1_l0_variant_tag": "shape_first_relief_stabilizer",
+          "magnitude": 0.436529326741,
+          "match_score": 2.436529326741,
+          "optimizer": "cross-family recomposition",
+          "regime_rules": [
+            {
+              "latent_delta": {
+                "baseline_inertia": -0.08,
+                "price_stress_reactivity": 0.16,
+                "relief_preference": 0.12,
+                "targeting_sensitivity": 0.02
+              },
+              "program_intent": "stabilize high-price distribution shape without reverting to baseline",
+              "selector": "price_stress_level=high"
+            },
+            {
+              "latent_delta": {
+                "baseline_inertia": -0.04,
+                "price_stress_reactivity": 0.0,
+                "relief_preference": 0.08,
+                "targeting_sensitivity": 0.08
+              },
+              "program_intent": "preserve low-income ordering while shape correction is primary",
+              "selector": "income_band=low"
+            }
+          ],
+          "representation": "latent response program plus prototype retrieval",
+          "residual": -0.436529326741,
+          "response_constraints": [
+            {
+              "constraint_type": "distribution_shape_guard",
+              "max_baseline_probability": 0.228,
+              "selector": "price_stress_level=high"
+            },
+            {
+              "constraint_type": "relief_floor",
+              "min_probability": 0.32,
+              "policy_id": "cash_cost_of_living_rebate"
+            },
+            {
+              "constraint_type": "rank_guard",
+              "guard": "preserve_relief_ordering",
+              "selector": "income_band=low"
+            }
+          ],
+          "route_combo_id": "r3c-latent-prototype",
+          "route_combo_variant_tag": "conservative_bridge",
+          "secondary_candidate_id": "policy-reaction-prototype-program-l0-current-001-r02",
+          "source_split": "calibration",
+          "system_level": "axis/persona hybrid",
+          "total_rule_strength": 0.58
+        },
+        "segment": "fixed_income_inflation_stressed"
+      }
+    ],
+    "policy_id": "food_subsidy_expansion",
+    "proxy_score": 4.254466026348,
+    "segment": "fixed_income_inflation_stressed"
+  },
+  "candidate_id": "policy-reaction-route-combo-r3c-latent-prototype-current-001-v01",
+  "candidate_prompt_components": {
+    "calibration_anchor": {
+      "fixed_income_inflation_stressed": "ROUTE-COMBO combo_id=r3c-latent-prototype; variant=conservative_bridge; representation=latent response program plus prototype retrieval; optimizer=cross-family recomposition; system_level=axis/persona hybrid; primary_policy=food_subsidy_expansion; secondary=policy-reaction-prototype-program-l0-current-001-r02; factors=institutional_trust; parameters=prior_anchor_strength=0.625069730696;trust_multiplier=0.954549330696",
+      "income_band=low": "ROUTE-COMBO selector=income_band=low; combo_id=r3c-latent-prototype; variant=conservative_bridge; strength=0.35. Secondary anchor hint: PROTOTYPE-L0 selector=income_band=low; mix=accepted:accepted_family_rank_guard:rank_anchor | weak_positive:weak_positive_family_cash_floor:soft_bridge",
+      "price_stress_level=high": "ROUTE-COMBO selector=price_stress_level=high; combo_id=r3c-latent-prototype; variant=conservative_bridge; strength=0.35. Secondary anchor hint: PROTOTYPE-L0 selector=price_stress_level=high; mix=accepted:accepted_family_rank_guard:rank_anchor | weak_positive:weak_positive_family_cash_floor:soft_bridge",
+      "working_family_price_stressed": "LCDU-L3 guard_policy=working_family_mid_guard; max_food_subsidy_probability=0.25; min_cash_rebate_probability=0.41"
+    },
+    "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+    "segment_prompt": {
+      "fixed_income_inflation_stressed": "Use the persona's calibrated policy-reaction parameters for this segment. Keep the global LCDU distribution shape unchanged while applying guarded segment overrides only where needed. Interpret this response through the round1 latent response program family. Keep rank repair and distribution-shape stabilization jointly coherent. Interpret this candidate through the finite route-combo coverage program. Combo: R3-C latent + prototype hybrid. Variant: conservative_bridge. Use only the shared signal between source families and avoid hard output forcing.",
+      "income_band=low": "Apply route-combo coverage control for income_band=low. Combo: R3-C latent + prototype hybrid. Variant intent: Use only the shared signal between source families and avoid hard output forcing. Secondary prompt hint: For low-income personas, keep active support options ahead of the no-new-support baseline. Retrieve and reconcile these prototypes: accepted_family_rank_guard, weak_positive_family_cash_floor.",
+      "price_stress_level=high": "Apply route-combo coverage control for price_stress_level=high. Combo: R3-C latent + prototype hybrid. Variant intent: Use only the shared signal between source families and avoid hard output forcing. Secondary prompt hint: For high price-stress personas, preserve relief mass and avoid baseline overshoot. Use failure-family prototypes only as negative retrieval cues: accepted_family_rank_guard, weak_positive_family_cash_floor.",
+      "working_family_price_stressed": "Keep this segment near its calibration-split baseline response profile. Do not let food_subsidy_expansion exceed 0.250. Keep cash_cost_of_living_rebate at or above 0.410 when feasible. Interpret this response through the round1 latent response program family. Keep rank repair and distribution-shape stabilization jointly coherent."
+    }
+  },
+  "claim_boundary": "Route-combo candidate is a runtime probe candidate only.",
+  "generator": "route_combo_coverage_candidate_builder",
+  "schema_version": "policy-reaction-s2pc-candidate-v1",
+  "source_split_contract": {
+    "candidate_acceptance": "heldout_required",
+    "parameter_search": "calibration",
+    "residual_mining": "calibration",
+    "semantic_factor_retrieval": "calibration"
+  }
+}

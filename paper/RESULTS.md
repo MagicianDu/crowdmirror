@@ -1478,6 +1478,90 @@ contracts, but they do not establish live LLM model-quality improvement.
       `LCDU L3` remains the active mainline, while the non-LCDU round1/round2
       challengers do not currently justify repeat-budget escalation.
 
+54. **Route coverage ledger**
+    - A dedicated coverage ledger was added at
+      `docs/superpowers/plans/2026-05-23-route-coverage-ledger.md`.
+    - The ledger makes the conclusion boundary explicit:
+      the current finite exploration space is not the full algorithmic
+      universe, but the 3-round by 4-route grid defined by the parallel-track
+      design spec.
+    - Under that boundary, the required coverage set is 12 route-round units:
+      R1-A/B/C/D, R2-A/B/C/D, and R3-A/B/C/D.
+    - Before this ledger, R2-B, R2-C, and the four R3 cross-family units were
+      still missing. Those missing units are now covered by the route-combo
+      candidate builder and runtime matrices below.
+
+55. **R2-B: narrowed LRP coverage unit**
+    - The R2-B unit is represented by
+      `policy-reaction-route-combo-r2b-lrp-narrowed-matrix-gpt-oss-20b-12x3-heldout-001`.
+    - It records
+      `candidate_count=4`,
+      `improved_count=2`,
+      `regressed_count=2`,
+      and
+      `overall_status=candidate_improvements_available`.
+    - Candidate losses are:
+      `v02 -> 0.000111545213`,
+      `v03 -> 0.000111545213`,
+      `v01 -> 0.000113707732`,
+      `v04 -> 0.000117419158`.
+    - This unit produces weak signal only. It reaches the known weak ceiling
+      but does not exceed `LCDU L3`.
+
+56. **R2-C: narrowed constraint coverage unit**
+    - The R2-C unit is represented by
+      `policy-reaction-route-combo-r2c-constraint-narrowed-matrix-gpt-oss-20b-12x3-heldout-001`.
+    - It records
+      `candidate_count=4`,
+      `improved_count=1`,
+      `regressed_count=3`,
+      and
+      `overall_status=candidate_improvements_available`.
+    - Candidate losses are:
+      `v01 -> 0.000111545213`,
+      `v03 -> 0.000117419158`,
+      `v02 -> 0.000125609053`,
+      `v04 -> 0.000462693091`.
+    - This unit also produces weak signal only. Stronger constraint pressure
+      quickly regresses, so it does not justify repeat-budget escalation.
+
+57. **R3 cross-family coverage units**
+    - R3-A `segment + latent` is represented by
+      `policy-reaction-route-combo-r3a-segment-latent-matrix-gpt-oss-20b-12x3-heldout-001`.
+      It records `improved_count=2`, `regressed_count=2`, and best loss
+      `0.000111545213`.
+    - R3-B `segment + constraint` is represented by
+      `policy-reaction-route-combo-r3b-segment-constraint-matrix-gpt-oss-20b-12x3-heldout-001`.
+      It records `improved_count=4`, `regressed_count=0`, but every improved
+      candidate has the same loss `0.000111545213`.
+    - R3-C `latent + prototype` is represented by
+      `policy-reaction-route-combo-r3c-latent-prototype-matrix-gpt-oss-20b-12x3-heldout-001`.
+      It records `improved_count=2`, `regressed_count=2`, and best loss
+      `0.000111545213`.
+    - R3-D `constraint + prototype` is represented by
+      `policy-reaction-route-combo-r3d-constraint-prototype-matrix-gpt-oss-20b-12x3-heldout-001`.
+      It records `improved_count=3`, `regressed_count=1`, and best loss
+      `0.000111545213`.
+    - The R3 result is important because it tests cross-route combinations,
+      not just single-route continuations. None of the four cross-family
+      combinations exceeds the weak ceiling or challenges `LCDU L3`.
+
+58. **Coverage-complete route conclusion**
+    - Within the finite 12-unit coverage grid defined by the parallel-track
+      design and coverage ledger, all route-round units have now been
+      attempted.
+    - No non-LCDU route exceeds `LCDU L3`.
+    - No non-LCDU route exceeds the old weak single-axis ceiling
+      `0.000111545213`, with
+      `relative_loss_reduction=0.011920716018`.
+    - The strongest post-ledger pattern is not a new method signal; it is a
+      plateau. Several cross-family combinations can reproduce the weak signal,
+      but none creates a stronger candidate.
+    - The valid conclusion is therefore bounded but firm:
+      under the current 12-unit route coverage grid, `LCDU L3` remains the
+      active research/product mainline. This does not claim that the full
+      algorithmic universe has been exhausted.
+
 ## Accepted Claims
 
 - CIRCE has a deterministic validation path for probability contracts,
