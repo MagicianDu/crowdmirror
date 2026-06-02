@@ -19,6 +19,10 @@ DEFAULT_MULTI_DATASET_GENERALIZATION_MATRIX_PATH = Path(
     "experiments/results/dcl_prs_multi_dataset_generalization_matrix/"
     "dcl-prs-multi-dataset-generalization-current-001.json"
 )
+DEFAULT_RUNTIME_STRONG_BASELINE_TRIAL_PATH = Path(
+    "experiments/results/dcl_prs_runtime_strong_baseline_trial/"
+    "dcl-prs-runtime-strong-baseline-trial-current-001.json"
+)
 DEFAULT_LCDU_STRONG_BASELINE_MATRIX_PATHS = [
     Path(
         "experiments/results/lcdu_lcr_segment_gate_strong_baseline/"
@@ -47,19 +51,24 @@ def build_dcl_prs_strong_baseline_decision_matrix(
     dcl_prs_strong_baseline_matrix: dict[str, Any] | None,
     gss_real_repair_effect_validation: dict[str, Any] | None,
     multi_dataset_generalization_matrix: dict[str, Any] | None,
+    runtime_strong_baseline_trial: dict[str, Any] | None = None,
     lcdU_strong_baseline_matrices: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     lcdU_strong_baseline_matrices = lcdU_strong_baseline_matrices or []
     dcl_win = _dcl_prs_strong_win(dcl_prs_strong_baseline_matrix)
+    runtime_trial_win = _runtime_trial_strong_win(runtime_strong_baseline_trial)
     multi_closed = _multi_dataset_gate_closed(multi_dataset_generalization_matrix)
     runtime_or_strong_evidence = _has_runtime_or_strong_evidence(
         gss_real_repair_effect_validation
     )
-    stable_win = dcl_win and multi_closed and runtime_or_strong_evidence
+    stable_win = multi_closed and (
+        runtime_trial_win or (dcl_win and runtime_or_strong_evidence)
+    )
     stoploss_triggers = [] if stable_win else _stoploss_triggers(
         dcl_prs_strong_baseline_matrix=dcl_prs_strong_baseline_matrix,
         gss_real_repair_effect_validation=gss_real_repair_effect_validation,
         multi_dataset_generalization_matrix=multi_dataset_generalization_matrix,
+        runtime_strong_baseline_trial=runtime_strong_baseline_trial,
     )
     artifact = {
         "schema_version": DECISION_SCHEMA_VERSION,
@@ -73,6 +82,7 @@ def build_dcl_prs_strong_baseline_decision_matrix(
             dcl_prs_strong_baseline_matrix=dcl_prs_strong_baseline_matrix,
             gss_real_repair_effect_validation=gss_real_repair_effect_validation,
             multi_dataset_generalization_matrix=multi_dataset_generalization_matrix,
+            runtime_strong_baseline_trial=runtime_strong_baseline_trial,
             lcdU_strong_baseline_matrices=lcdU_strong_baseline_matrices,
         ),
         "evidence_class": (
@@ -85,6 +95,7 @@ def build_dcl_prs_strong_baseline_decision_matrix(
             dcl_prs_strong_baseline_matrix=dcl_prs_strong_baseline_matrix,
             gss_real_repair_effect_validation=gss_real_repair_effect_validation,
             multi_dataset_generalization_matrix=multi_dataset_generalization_matrix,
+            runtime_strong_baseline_trial=runtime_strong_baseline_trial,
         ),
         "lcdU_reference_baseline_summary": _lcdU_reference_summary(
             lcdU_strong_baseline_matrices
@@ -119,6 +130,9 @@ def write_dcl_prs_strong_baseline_decision_matrix(
     multi_dataset_generalization_matrix_path: str | Path = (
         DEFAULT_MULTI_DATASET_GENERALIZATION_MATRIX_PATH
     ),
+    runtime_strong_baseline_trial_path: str | Path = (
+        DEFAULT_RUNTIME_STRONG_BASELINE_TRIAL_PATH
+    ),
     lcdU_strong_baseline_matrix_paths: list[str | Path] | None = None,
 ) -> dict[str, Any]:
     output_path = Path(output_dir)
@@ -138,6 +152,9 @@ def write_dcl_prs_strong_baseline_decision_matrix(
         ),
         multi_dataset_generalization_matrix=_load_json_if_exists(
             Path(multi_dataset_generalization_matrix_path)
+        ),
+        runtime_strong_baseline_trial=_load_json_if_exists(
+            Path(runtime_strong_baseline_trial_path)
         ),
         lcdU_strong_baseline_matrices=[
             matrix for path in lcdU_paths if (matrix := _load_json_if_exists(path))
@@ -165,6 +182,10 @@ def main() -> int:
         default=str(DEFAULT_MULTI_DATASET_GENERALIZATION_MATRIX_PATH),
     )
     parser.add_argument(
+        "--runtime-strong-baseline-trial-path",
+        default=str(DEFAULT_RUNTIME_STRONG_BASELINE_TRIAL_PATH),
+    )
+    parser.add_argument(
         "--lcdu-strong-baseline-matrix-path",
         action="append",
         default=[],
@@ -190,6 +211,7 @@ def main() -> int:
         multi_dataset_generalization_matrix_path=(
             args.multi_dataset_generalization_matrix_path
         ),
+        runtime_strong_baseline_trial_path=args.runtime_strong_baseline_trial_path,
         lcdU_strong_baseline_matrix_paths=(
             args.lcdu_strong_baseline_matrix_path or None
         ),
@@ -224,6 +246,19 @@ def _dcl_prs_strong_win(artifact: dict[str, Any] | None) -> bool:
     if artifact.get("dcl_prs_leads_covered_baselines") is not True:
         return False
     return _beats_required_baselines(artifact)
+
+
+def _runtime_trial_strong_win(artifact: dict[str, Any] | None) -> bool:
+    return (
+        artifact is not None
+        and artifact.get("schema_version")
+        == "dcl-prs-runtime-strong-baseline-trial-v1"
+        and artifact.get("overall_status")
+        == "runtime_strong_baseline_trial_dcl_prs_leads"
+        and artifact.get("stable_strong_baseline_win_proven") is True
+        and artifact.get("dcl_prs_leads_covered_baselines") is True
+        and not artifact.get("blocking_gaps", [])
+    )
 
 
 def _beats_required_baselines(artifact: dict[str, Any]) -> bool:
@@ -261,6 +296,7 @@ def _stoploss_triggers(
     dcl_prs_strong_baseline_matrix: dict[str, Any] | None,
     gss_real_repair_effect_validation: dict[str, Any] | None,
     multi_dataset_generalization_matrix: dict[str, Any] | None,
+    runtime_strong_baseline_trial: dict[str, Any] | None,
 ) -> list[str]:
     triggers = []
     if dcl_prs_strong_baseline_matrix is None:
@@ -282,6 +318,18 @@ def _stoploss_triggers(
                 _append_unique(triggers, flag)
     if not _multi_dataset_gate_closed(multi_dataset_generalization_matrix):
         _append_unique(triggers, "multi_dataset_generalization_incomplete")
+    if runtime_strong_baseline_trial is None:
+        _append_unique(triggers, "dcl_prs_runtime_strong_baseline_trial_missing")
+    else:
+        for gap in runtime_strong_baseline_trial.get("blocking_gaps", []):
+            _append_unique(triggers, gap)
+        if runtime_strong_baseline_trial.get("overall_status") == (
+            "runtime_strong_baseline_trial_dcl_prs_not_leading"
+        ):
+            _append_unique(
+                triggers,
+                "dcl_prs_runtime_strong_baseline_trial_not_leading",
+            )
     return triggers
 
 
@@ -314,6 +362,7 @@ def _dcl_prs_evidence_summary(
     dcl_prs_strong_baseline_matrix: dict[str, Any] | None,
     gss_real_repair_effect_validation: dict[str, Any] | None,
     multi_dataset_generalization_matrix: dict[str, Any] | None,
+    runtime_strong_baseline_trial: dict[str, Any] | None,
 ) -> dict[str, Any]:
     return {
         "strong_baseline_status": (
@@ -346,6 +395,15 @@ def _dcl_prs_evidence_summary(
         "generalization_gate_closed": (
             multi_dataset_generalization_matrix or {}
         ).get("generalization_gate_closed"),
+        "runtime_trial_status": (runtime_strong_baseline_trial or {}).get(
+            "overall_status"
+        ),
+        "runtime_trial_stable_win": (runtime_strong_baseline_trial or {}).get(
+            "stable_strong_baseline_win_proven"
+        ),
+        "runtime_trial_blocking_gaps": (runtime_strong_baseline_trial or {}).get(
+            "blocking_gaps", []
+        ),
     }
 
 
@@ -380,6 +438,7 @@ def _source_artifact_ids(
     dcl_prs_strong_baseline_matrix: dict[str, Any] | None,
     gss_real_repair_effect_validation: dict[str, Any] | None,
     multi_dataset_generalization_matrix: dict[str, Any] | None,
+    runtime_strong_baseline_trial: dict[str, Any] | None,
     lcdU_strong_baseline_matrices: list[dict[str, Any]],
 ) -> list[str]:
     refs = []
@@ -387,6 +446,7 @@ def _source_artifact_ids(
         dcl_prs_strong_baseline_matrix,
         gss_real_repair_effect_validation,
         multi_dataset_generalization_matrix,
+        runtime_strong_baseline_trial,
         *lcdU_strong_baseline_matrices,
     ):
         if artifact is not None and isinstance(artifact.get("artifact_id"), str):

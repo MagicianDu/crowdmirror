@@ -53,6 +53,9 @@ from experiments.dcl_prs_strong_baseline_decision_matrix import (  # noqa: E402
     DEFAULT_LCDU_STRONG_BASELINE_MATRIX_PATHS,
     build_dcl_prs_strong_baseline_decision_matrix,
 )
+from experiments.dcl_prs_runtime_strong_baseline_trial import (  # noqa: E402
+    build_dcl_prs_runtime_strong_baseline_trial,
+)
 from experiments.dcl_prs_official_public_use_file_probe import (  # noqa: E402
     build_official_public_use_file_probe,
 )
@@ -83,6 +86,10 @@ DEFAULT_MULTI_DATASET_GENERALIZATION_MATRIX_PATH = Path(
     "experiments/results/dcl_prs_multi_dataset_generalization_matrix/"
     "dcl-prs-multi-dataset-generalization-current-001.json"
 )
+DEFAULT_RUNTIME_STRONG_BASELINE_TRIAL_PATH = Path(
+    "experiments/results/dcl_prs_runtime_strong_baseline_trial/"
+    "dcl-prs-runtime-strong-baseline-trial-current-001.json"
+)
 
 
 def build_dcl_prs_gate_index(
@@ -107,6 +114,7 @@ def build_dcl_prs_gate_index(
     gss_policy_task_ingestion_smoke: dict[str, Any] | None = None,
     gss_real_repair_effect_validation: dict[str, Any] | None = None,
     multi_dataset_generalization_matrix: dict[str, Any] | None = None,
+    runtime_strong_baseline_trial: dict[str, Any] | None = None,
     strong_baseline_decision_matrix: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     completed_subgates = _completed_subgates(
@@ -129,6 +137,7 @@ def build_dcl_prs_gate_index(
         gss_policy_task_ingestion_smoke=gss_policy_task_ingestion_smoke,
         gss_real_repair_effect_validation=gss_real_repair_effect_validation,
         multi_dataset_generalization_matrix=multi_dataset_generalization_matrix,
+        runtime_strong_baseline_trial=runtime_strong_baseline_trial,
         strong_baseline_decision_matrix=strong_baseline_decision_matrix,
     )
     required_next_gates = _required_next_gates(completed_subgates)
@@ -152,6 +161,7 @@ def build_dcl_prs_gate_index(
         gss_policy_task_ingestion_smoke=gss_policy_task_ingestion_smoke,
         gss_real_repair_effect_validation=gss_real_repair_effect_validation,
         multi_dataset_generalization_matrix=multi_dataset_generalization_matrix,
+        runtime_strong_baseline_trial=runtime_strong_baseline_trial,
         strong_baseline_decision_matrix=strong_baseline_decision_matrix,
     )
     gate = {
@@ -243,6 +253,12 @@ def write_dcl_prs_gate_index(
     multi_dataset_generalization_matrix = _load_json_if_exists(
         DEFAULT_MULTI_DATASET_GENERALIZATION_MATRIX_PATH
     )
+    runtime_strong_baseline_trial = _load_json_if_exists(
+        DEFAULT_RUNTIME_STRONG_BASELINE_TRIAL_PATH
+    ) or build_dcl_prs_runtime_strong_baseline_trial(
+        artifact_id="dcl-prs-runtime-strong-baseline-trial-current-001",
+        benchmark_records=[],
+    )
     strong_baseline_matrix = build_dcl_prs_strong_baseline_matrix(
         artifact_id="dcl-prs-strong-baseline-current-001",
         gss_real_repair_effect_validation=gss_real_repair_effect_validation,
@@ -259,6 +275,7 @@ def write_dcl_prs_gate_index(
             dcl_prs_strong_baseline_matrix=strong_baseline_matrix,
             gss_real_repair_effect_validation=gss_real_repair_effect_validation,
             multi_dataset_generalization_matrix=multi_dataset_generalization_matrix,
+            runtime_strong_baseline_trial=runtime_strong_baseline_trial,
             lcdU_strong_baseline_matrices=lcdU_strong_baseline_matrices,
         )
     )
@@ -295,6 +312,7 @@ def write_dcl_prs_gate_index(
         gss_policy_task_ingestion_smoke=gss_policy_task_ingestion_smoke,
         gss_real_repair_effect_validation=gss_real_repair_effect_validation,
         multi_dataset_generalization_matrix=multi_dataset_generalization_matrix,
+        runtime_strong_baseline_trial=runtime_strong_baseline_trial,
         strong_baseline_decision_matrix=strong_baseline_decision_matrix,
     )
     index_path = output_path / f"{artifact_id}.json"
@@ -348,6 +366,7 @@ def _completed_subgates(
     gss_policy_task_ingestion_smoke: dict[str, Any] | None,
     gss_real_repair_effect_validation: dict[str, Any] | None,
     multi_dataset_generalization_matrix: dict[str, Any] | None,
+    runtime_strong_baseline_trial: dict[str, Any] | None,
     strong_baseline_decision_matrix: dict[str, Any] | None,
 ) -> list[str]:
     completed = []
@@ -469,6 +488,27 @@ def _completed_subgates(
         status="multi_dataset_generalization_partial",
     ) and multi_dataset_generalization_matrix.get("generalization_gate_closed") is False:
         completed.append("multi_dataset_generalization_matrix_partial")
+    if _is_status(
+        runtime_strong_baseline_trial,
+        schema_version="dcl-prs-runtime-strong-baseline-trial-v1",
+        status="runtime_strong_baseline_trial_blocked",
+    ):
+        completed.append("runtime_strong_baseline_trial_ready")
+        completed.append("runtime_strong_baseline_trial_blocked")
+    elif _is_status(
+        runtime_strong_baseline_trial,
+        schema_version="dcl-prs-runtime-strong-baseline-trial-v1",
+        status="runtime_strong_baseline_trial_dcl_prs_not_leading",
+    ):
+        completed.append("runtime_strong_baseline_trial_ready")
+        completed.append("runtime_strong_baseline_trial_not_leading")
+    elif _is_status(
+        runtime_strong_baseline_trial,
+        schema_version="dcl-prs-runtime-strong-baseline-trial-v1",
+        status="runtime_strong_baseline_trial_dcl_prs_leads",
+    ):
+        completed.append("runtime_strong_baseline_trial_ready")
+        completed.append("runtime_strong_baseline_trial_leads")
     if _is_status(
         strong_baseline_decision_matrix,
         schema_version="dcl-prs-strong-baseline-decision-matrix-v1",
@@ -613,6 +653,10 @@ def _ccf_a_blocking_gaps(completed_subgates: list[str]) -> list[str]:
     else:
         gaps.append("real_effect_validation_missing")
     gaps.append("strong_baseline_win_missing")
+    if "runtime_strong_baseline_trial_blocked" in completed:
+        gaps.append("dcl_prs_runtime_prediction_missing")
+    elif "runtime_strong_baseline_trial_not_leading" in completed:
+        gaps.append("dcl_prs_runtime_strong_baseline_trial_not_leading")
     if "strong_baseline_decision_stoploss_recommended" in completed:
         gaps.append("dcl_prs_algorithm_main_claim_stoploss_recommended")
     gaps.append(
@@ -662,6 +706,7 @@ def _evidence_refs(
     gss_policy_task_ingestion_smoke: dict[str, Any] | None,
     gss_real_repair_effect_validation: dict[str, Any] | None,
     multi_dataset_generalization_matrix: dict[str, Any] | None,
+    runtime_strong_baseline_trial: dict[str, Any] | None,
     strong_baseline_decision_matrix: dict[str, Any] | None,
 ) -> list[str]:
     refs = []
@@ -685,6 +730,7 @@ def _evidence_refs(
         gss_policy_task_ingestion_smoke,
         gss_real_repair_effect_validation,
         multi_dataset_generalization_matrix,
+        runtime_strong_baseline_trial,
         strong_baseline_decision_matrix,
     ):
         if artifact is not None and isinstance(artifact.get("artifact_id"), str):

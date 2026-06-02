@@ -13,6 +13,7 @@ def test_decision_matrix_recommends_stoploss_when_strong_win_is_not_proven():
         dcl_prs_strong_baseline_matrix=_dcl_prs_not_leading_fixture(),
         gss_real_repair_effect_validation=_gss_real_effect_fixture(),
         multi_dataset_generalization_matrix=_multi_dataset_partial_fixture(),
+        runtime_strong_baseline_trial=_runtime_trial_blocked_fixture(),
         lcdU_strong_baseline_matrices=[
             _lcdu_lcr_sg_not_leading_fixture(),
             _lcdu_llm_core_not_leading_fixture(),
@@ -33,6 +34,7 @@ def test_decision_matrix_recommends_stoploss_when_strong_win_is_not_proven():
         "stoploss_dcl_prs_as_algorithm_main_claim"
     )
     assert "strong_baseline_win_missing" in decision["stoploss_triggers"]
+    assert "dcl_prs_runtime_prediction_missing" in decision["stoploss_triggers"]
     assert (
         "prediction_scenarios_not_runtime_llm_outputs"
         in decision["stoploss_triggers"]
@@ -56,6 +58,7 @@ def test_decision_matrix_does_not_count_gss_smoke_repairs_as_strong_baseline_win
         dcl_prs_strong_baseline_matrix=dcl,
         gss_real_repair_effect_validation=gss,
         multi_dataset_generalization_matrix=_multi_dataset_partial_fixture(),
+        runtime_strong_baseline_trial=_runtime_trial_not_leading_fixture(),
         lcdU_strong_baseline_matrices=[],
     )
 
@@ -63,6 +66,9 @@ def test_decision_matrix_does_not_count_gss_smoke_repairs_as_strong_baseline_win
     assert decision["evidence_class"] == "engineering_result_only"
     assert "not_strong_baseline_evidence" in decision["stoploss_triggers"]
     assert "prediction_scenarios_not_runtime_llm_outputs" in decision[
+        "stoploss_triggers"
+    ]
+    assert "dcl_prs_runtime_strong_baseline_trial_not_leading" in decision[
         "stoploss_triggers"
     ]
 
@@ -99,6 +105,7 @@ def test_decision_matrix_can_promote_future_true_stable_strong_baseline_win():
         dcl_prs_strong_baseline_matrix=dcl,
         gss_real_repair_effect_validation=gss,
         multi_dataset_generalization_matrix=_multi_dataset_closed_fixture(),
+        runtime_strong_baseline_trial=_runtime_trial_leading_fixture(),
         lcdU_strong_baseline_matrices=[_lcdu_lcr_sg_not_leading_fixture()],
     )
 
@@ -109,6 +116,28 @@ def test_decision_matrix_can_promote_future_true_stable_strong_baseline_win():
         "conditional_candidate_pending_full_paper_audit"
     )
     assert decision["stoploss_triggers"] == []
+
+
+def test_decision_matrix_can_use_runtime_trial_as_primary_strong_baseline_evidence():
+    dcl = _dcl_prs_not_leading_fixture()
+    dcl["blocking_gaps"] = []
+    gss = _gss_real_effect_fixture()
+    gss["risk_flags"] = ["runtime_llm_outputs", "strong_baseline_evidence"]
+
+    decision = build_dcl_prs_strong_baseline_decision_matrix(
+        artifact_id="dcl-prs-strong-baseline-decision-test",
+        dcl_prs_strong_baseline_matrix=dcl,
+        gss_real_repair_effect_validation=gss,
+        multi_dataset_generalization_matrix=_multi_dataset_closed_fixture(),
+        runtime_strong_baseline_trial=_runtime_trial_leading_fixture(),
+        lcdU_strong_baseline_matrices=[],
+    )
+
+    assert decision["overall_status"] == "decision_boundary_research_candidate"
+    assert decision["stable_strong_baseline_win_proven"] is True
+    assert decision["dcl_prs_evidence_summary"]["runtime_trial_status"] == (
+        "runtime_strong_baseline_trial_dcl_prs_leads"
+    )
 
 
 def test_decision_matrix_script_writes_artifact(tmp_path):
@@ -134,6 +163,8 @@ def test_decision_matrix_script_writes_artifact(tmp_path):
             str(gss_path),
             "--multi-dataset-generalization-matrix-path",
             str(multi_path),
+            "--runtime-strong-baseline-trial-path",
+            str(tmp_path / "missing-runtime-trial.json"),
             "--lcdu-strong-baseline-matrix-path",
             str(lcr_path),
             "--lcdu-strong-baseline-matrix-path",
@@ -278,4 +309,45 @@ def _lcdu_llm_core_not_leading_fixture() -> dict:
         "risk_flags": [
             "llm_core_not_better_than_fixed_party_prior",
         ],
+    }
+
+
+def _runtime_trial_blocked_fixture() -> dict:
+    return {
+        "schema_version": "dcl-prs-runtime-strong-baseline-trial-v1",
+        "artifact_id": "dcl-prs-runtime-strong-baseline-trial-test",
+        "overall_status": "runtime_strong_baseline_trial_blocked",
+        "stable_strong_baseline_win_proven": False,
+        "dcl_prs_leads_covered_baselines": False,
+        "blocking_gaps": [
+            "dcl_prs_runtime_prediction_missing",
+            "multi_task_runtime_trial_missing",
+            "repeat_stability_missing",
+        ],
+    }
+
+
+def _runtime_trial_not_leading_fixture() -> dict:
+    return {
+        "schema_version": "dcl-prs-runtime-strong-baseline-trial-v1",
+        "artifact_id": "dcl-prs-runtime-strong-baseline-trial-test",
+        "overall_status": "runtime_strong_baseline_trial_dcl_prs_not_leading",
+        "stable_strong_baseline_win_proven": False,
+        "dcl_prs_leads_covered_baselines": False,
+        "blocking_gaps": [
+            "dcl_prs_not_better_than_fixed_party_or_ideology_prior",
+        ],
+    }
+
+
+def _runtime_trial_leading_fixture() -> dict:
+    return {
+        "schema_version": "dcl-prs-runtime-strong-baseline-trial-v1",
+        "artifact_id": "dcl-prs-runtime-strong-baseline-trial-test",
+        "overall_status": "runtime_strong_baseline_trial_dcl_prs_leads",
+        "stable_strong_baseline_win_proven": True,
+        "dcl_prs_leads_covered_baselines": True,
+        "task_count": 2,
+        "repeat_count": 2,
+        "blocking_gaps": [],
     }

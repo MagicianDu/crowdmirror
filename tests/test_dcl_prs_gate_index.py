@@ -40,6 +40,9 @@ from experiments.dcl_prs_strong_baseline_matrix import (
 from experiments.dcl_prs_strong_baseline_decision_matrix import (
     build_dcl_prs_strong_baseline_decision_matrix,
 )
+from experiments.dcl_prs_runtime_strong_baseline_trial import (
+    build_dcl_prs_runtime_strong_baseline_trial,
+)
 
 
 def test_dcl_prs_gate_keeps_research_and_product_claims_open_for_ingestion_only():
@@ -871,11 +874,16 @@ def test_dcl_prs_gate_tracks_stoploss_decision_as_next_research_boundary():
         gss_real_repair_effect_validation=gss_real_effect,
         multi_dataset_generalization_matrix=generalization,
     )
+    runtime_trial = build_dcl_prs_runtime_strong_baseline_trial(
+        artifact_id="dcl-prs-runtime-strong-baseline-trial-test",
+        benchmark_records=[],
+    )
     decision = build_dcl_prs_strong_baseline_decision_matrix(
         artifact_id="dcl-prs-strong-baseline-decision-test",
         dcl_prs_strong_baseline_matrix=strong_baseline,
         gss_real_repair_effect_validation=gss_real_effect,
         multi_dataset_generalization_matrix=generalization,
+        runtime_strong_baseline_trial=runtime_trial,
         lcdU_strong_baseline_matrices=[],
     )
 
@@ -912,13 +920,17 @@ def test_dcl_prs_gate_tracks_stoploss_decision_as_next_research_boundary():
         gss_policy_task_ingestion_smoke=gss_smoke,
         gss_real_repair_effect_validation=gss_real_effect,
         multi_dataset_generalization_matrix=generalization,
+        runtime_strong_baseline_trial=runtime_trial,
         strong_baseline_decision_matrix=decision,
     )
 
+    assert "runtime_strong_baseline_trial_ready" in gate["completed_subgates"]
+    assert "runtime_strong_baseline_trial_blocked" in gate["completed_subgates"]
     assert "strong_baseline_decision_ready" in gate["completed_subgates"]
     assert "strong_baseline_decision_stoploss_recommended" in gate[
         "completed_subgates"
     ]
+    assert "dcl-prs-runtime-strong-baseline-trial-test" in gate["evidence_refs"]
     assert "dcl-prs-strong-baseline-decision-test" in gate["evidence_refs"]
     assert gate["required_next_gates"] == [
         "complete_eurobarometer_authenticated_download",
@@ -929,6 +941,9 @@ def test_dcl_prs_gate_tracks_stoploss_decision_as_next_research_boundary():
     assert "dcl_prs_algorithm_main_claim_stoploss_recommended" in gate[
         "ccf_a_gate"
     ]["blocking_gaps"]
+    assert "dcl_prs_runtime_prediction_missing" in gate["ccf_a_gate"][
+        "blocking_gaps"
+    ]
 
 
 def test_dcl_prs_gate_script_writes_artifact(tmp_path):
