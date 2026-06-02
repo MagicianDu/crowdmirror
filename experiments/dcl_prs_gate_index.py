@@ -22,6 +22,18 @@ from experiments.dcl_prs_failure_attribution import (  # noqa: E402
 from experiments.dcl_prs_dynamic_simulation import (  # noqa: E402
     build_dynamic_simulation_trace,
 )
+from experiments.dcl_prs_mechanism_ablation_matrix import (  # noqa: E402
+    build_mechanism_ablation_matrix,
+)
+from experiments.dcl_prs_repair_repeat_acceptance_matrix import (  # noqa: E402
+    build_repair_repeat_acceptance_matrix,
+)
+from experiments.dcl_prs_cross_domain_task_slice_smoke import (  # noqa: E402
+    build_cross_domain_task_slice_smoke,
+)
+from experiments.dcl_prs_product_cohort_report import (  # noqa: E402
+    build_product_cohort_report,
+)
 
 
 GATE_SCHEMA_VERSION = "dcl-prs-gate-index-v1"
@@ -34,12 +46,20 @@ def build_dcl_prs_gate_index(
     mechanism_program: dict[str, Any] | None = None,
     failure_attribution: dict[str, Any] | None = None,
     dynamic_simulation: dict[str, Any] | None = None,
+    mechanism_ablation_matrix: dict[str, Any] | None = None,
+    repair_repeat_acceptance_matrix: dict[str, Any] | None = None,
+    cross_domain_task_slice_smoke: dict[str, Any] | None = None,
+    product_cohort_report: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     completed_subgates = _completed_subgates(
         cross_domain_ingestion=cross_domain_ingestion,
         mechanism_program=mechanism_program,
         failure_attribution=failure_attribution,
         dynamic_simulation=dynamic_simulation,
+        mechanism_ablation_matrix=mechanism_ablation_matrix,
+        repair_repeat_acceptance_matrix=repair_repeat_acceptance_matrix,
+        cross_domain_task_slice_smoke=cross_domain_task_slice_smoke,
+        product_cohort_report=product_cohort_report,
     )
     required_next_gates = _required_next_gates(completed_subgates)
     evidence_refs = _evidence_refs(
@@ -47,6 +67,10 @@ def build_dcl_prs_gate_index(
         mechanism_program=mechanism_program,
         failure_attribution=failure_attribution,
         dynamic_simulation=dynamic_simulation,
+        mechanism_ablation_matrix=mechanism_ablation_matrix,
+        repair_repeat_acceptance_matrix=repair_repeat_acceptance_matrix,
+        cross_domain_task_slice_smoke=cross_domain_task_slice_smoke,
+        product_cohort_report=product_cohort_report,
     )
     gate = {
         "schema_version": GATE_SCHEMA_VERSION,
@@ -57,22 +81,11 @@ def build_dcl_prs_gate_index(
         "evidence_refs": evidence_refs,
         "ccf_a_gate": {
             "status": "open",
-            "blocking_gaps": [
-                "mechanism_ablation_missing",
-                "repair_repeat_acceptance_missing",
-                "cross_domain_smoke_missing",
-                "strong_baseline_win_missing",
-                "multi_dataset_generalization_missing",
-            ],
+            "blocking_gaps": _ccf_a_blocking_gaps(completed_subgates),
         },
         "product_gate": {
             "status": "open",
-            "blocking_gaps": [
-                "cohort_report_evidence_missing",
-                "runtime_manifest_missing",
-                "customer_field_validation_missing",
-                "uncertainty_disclosure_missing",
-            ],
+            "blocking_gaps": _product_blocking_gaps(completed_subgates),
         },
         "risk_flags": [
             "dcl_prs_l0_only",
@@ -96,21 +109,42 @@ def write_dcl_prs_gate_index(
 ) -> dict[str, Any]:
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
+    cross_domain_ingestion = build_cross_domain_ingestion_index(
+        artifact_id="dcl-prs-cross-domain-ingestion-current-001"
+    )
     mechanism_program = build_mechanism_program_index(
         artifact_id="dcl-prs-mechanism-program-current-001"
     )
+    failure_attribution = build_failure_attribution_index(
+        artifact_id="dcl-prs-failure-attribution-current-001"
+    )
+    dynamic_simulation = build_dynamic_simulation_trace(
+        artifact_id="dcl-prs-dynamic-simulation-current-001",
+        mechanism_program_index=mechanism_program,
+    )
     gate = build_dcl_prs_gate_index(
         artifact_id=artifact_id,
-        cross_domain_ingestion=build_cross_domain_ingestion_index(
-            artifact_id="dcl-prs-cross-domain-ingestion-current-001"
-        ),
+        cross_domain_ingestion=cross_domain_ingestion,
         mechanism_program=mechanism_program,
-        failure_attribution=build_failure_attribution_index(
-            artifact_id="dcl-prs-failure-attribution-current-001"
-        ),
-        dynamic_simulation=build_dynamic_simulation_trace(
-            artifact_id="dcl-prs-dynamic-simulation-current-001",
+        failure_attribution=failure_attribution,
+        dynamic_simulation=dynamic_simulation,
+        mechanism_ablation_matrix=build_mechanism_ablation_matrix(
+            artifact_id="dcl-prs-mechanism-ablation-current-001",
             mechanism_program_index=mechanism_program,
+        ),
+        repair_repeat_acceptance_matrix=build_repair_repeat_acceptance_matrix(
+            artifact_id="dcl-prs-repair-repeat-acceptance-current-001",
+            failure_attribution_index=failure_attribution,
+        ),
+        cross_domain_task_slice_smoke=build_cross_domain_task_slice_smoke(
+            artifact_id="dcl-prs-cross-domain-task-slice-smoke-current-001",
+            cross_domain_ingestion=cross_domain_ingestion,
+        ),
+        product_cohort_report=build_product_cohort_report(
+            artifact_id="dcl-prs-product-cohort-report-current-001",
+            mechanism_program_index=mechanism_program,
+            failure_attribution_index=failure_attribution,
+            dynamic_simulation=dynamic_simulation,
         ),
     )
     index_path = output_path / f"{artifact_id}.json"
@@ -149,6 +183,10 @@ def _completed_subgates(
     mechanism_program: dict[str, Any] | None,
     failure_attribution: dict[str, Any] | None,
     dynamic_simulation: dict[str, Any] | None,
+    mechanism_ablation_matrix: dict[str, Any] | None,
+    repair_repeat_acceptance_matrix: dict[str, Any] | None,
+    cross_domain_task_slice_smoke: dict[str, Any] | None,
+    product_cohort_report: dict[str, Any] | None,
 ) -> list[str]:
     completed = []
     if _is_status(
@@ -175,10 +213,48 @@ def _completed_subgates(
         status="dynamic_trace_ready_for_l0_gate",
     ):
         completed.append("dynamic_simulation_l0_ready")
+    if _is_status(
+        mechanism_ablation_matrix,
+        schema_version="dcl-prs-mechanism-ablation-matrix-v1",
+        status="mechanism_ablation_matrix_ready",
+    ):
+        completed.append("mechanism_ablation_matrix_ready")
+    if _is_status(
+        repair_repeat_acceptance_matrix,
+        schema_version="dcl-prs-repair-repeat-acceptance-matrix-v1",
+        status="repair_repeat_acceptance_matrix_ready",
+    ):
+        completed.append("repair_repeat_acceptance_matrix_ready")
+    if _is_status(
+        cross_domain_task_slice_smoke,
+        schema_version="dcl-prs-cross-domain-task-slice-smoke-v1",
+        status="cross_domain_task_slice_smoke_ready",
+    ):
+        completed.append("cross_domain_task_slice_smoke_ready")
+    if _is_status(
+        product_cohort_report,
+        schema_version="dcl-prs-product-cohort-report-v1",
+        status="product_cohort_report_evidence_ready",
+    ):
+        completed.append("product_cohort_report_evidence_ready")
     return completed
 
 
 def _required_next_gates(completed_subgates: list[str]) -> list[str]:
+    if {
+        "mechanism_ablation_matrix_ready",
+        "repair_repeat_acceptance_matrix_ready",
+        "cross_domain_task_slice_smoke_ready",
+        "product_cohort_report_evidence_ready",
+    }.issubset(set(completed_subgates)):
+        return [
+            "run_mechanism_ablation_repeat_matrix",
+            "run_repair_effect_validation_matrix",
+            "load_cross_domain_public_microdata_slices",
+            "connect_report_to_product_runtime_manifest",
+            "run_strong_baseline_matrix",
+        ]
+
     if {
         "cross_domain_public_dataset_ingestion_ready",
         "mechanism_program_l0_ready",
@@ -204,12 +280,56 @@ def _required_next_gates(completed_subgates: list[str]) -> list[str]:
     return required
 
 
+def _ccf_a_blocking_gaps(completed_subgates: list[str]) -> list[str]:
+    completed = set(completed_subgates)
+    gaps = []
+    if "mechanism_ablation_matrix_ready" not in completed:
+        gaps.append("mechanism_ablation_missing")
+    else:
+        gaps.append("mechanism_ablation_repeat_missing")
+    if "repair_repeat_acceptance_matrix_ready" not in completed:
+        gaps.append("repair_repeat_acceptance_missing")
+    else:
+        gaps.append("repair_effect_validation_missing")
+    if "cross_domain_task_slice_smoke_ready" not in completed:
+        gaps.append("cross_domain_smoke_missing")
+    else:
+        gaps.append("cross_domain_microdata_missing")
+    gaps.extend(
+        [
+            "strong_baseline_win_missing",
+            "multi_dataset_generalization_missing",
+        ]
+    )
+    return gaps
+
+
+def _product_blocking_gaps(completed_subgates: list[str]) -> list[str]:
+    completed = set(completed_subgates)
+    gaps = []
+    if "product_cohort_report_evidence_ready" not in completed:
+        gaps.append("cohort_report_evidence_missing")
+    else:
+        gaps.append("product_runtime_manifest_connection_missing")
+    gaps.extend(
+        [
+            "customer_field_validation_missing",
+            "product_runtime_validation_missing",
+        ]
+    )
+    return gaps
+
+
 def _evidence_refs(
     *,
     cross_domain_ingestion: dict[str, Any] | None,
     mechanism_program: dict[str, Any] | None,
     failure_attribution: dict[str, Any] | None,
     dynamic_simulation: dict[str, Any] | None,
+    mechanism_ablation_matrix: dict[str, Any] | None,
+    repair_repeat_acceptance_matrix: dict[str, Any] | None,
+    cross_domain_task_slice_smoke: dict[str, Any] | None,
+    product_cohort_report: dict[str, Any] | None,
 ) -> list[str]:
     refs = []
     for artifact in (
@@ -217,6 +337,10 @@ def _evidence_refs(
         mechanism_program,
         failure_attribution,
         dynamic_simulation,
+        mechanism_ablation_matrix,
+        repair_repeat_acceptance_matrix,
+        cross_domain_task_slice_smoke,
+        product_cohort_report,
     ):
         if artifact is not None and isinstance(artifact.get("artifact_id"), str):
             refs.append(artifact["artifact_id"])
