@@ -75,6 +75,10 @@ DEFAULT_GSS_REAL_REPAIR_EFFECT_VALIDATION_PATH = Path(
     "experiments/results/dcl_prs_gss_real_repair_effect_validation/"
     "dcl-prs-gss-real-repair-effect-current-001.json"
 )
+DEFAULT_MULTI_DATASET_GENERALIZATION_MATRIX_PATH = Path(
+    "experiments/results/dcl_prs_multi_dataset_generalization_matrix/"
+    "dcl-prs-multi-dataset-generalization-current-001.json"
+)
 
 
 def build_dcl_prs_gate_index(
@@ -98,6 +102,7 @@ def build_dcl_prs_gate_index(
     gss_policy_task_binding: dict[str, Any] | None = None,
     gss_policy_task_ingestion_smoke: dict[str, Any] | None = None,
     gss_real_repair_effect_validation: dict[str, Any] | None = None,
+    multi_dataset_generalization_matrix: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     completed_subgates = _completed_subgates(
         cross_domain_ingestion=cross_domain_ingestion,
@@ -118,6 +123,7 @@ def build_dcl_prs_gate_index(
         gss_policy_task_binding=gss_policy_task_binding,
         gss_policy_task_ingestion_smoke=gss_policy_task_ingestion_smoke,
         gss_real_repair_effect_validation=gss_real_repair_effect_validation,
+        multi_dataset_generalization_matrix=multi_dataset_generalization_matrix,
     )
     required_next_gates = _required_next_gates(completed_subgates)
     evidence_refs = _evidence_refs(
@@ -139,6 +145,7 @@ def build_dcl_prs_gate_index(
         gss_policy_task_binding=gss_policy_task_binding,
         gss_policy_task_ingestion_smoke=gss_policy_task_ingestion_smoke,
         gss_real_repair_effect_validation=gss_real_repair_effect_validation,
+        multi_dataset_generalization_matrix=multi_dataset_generalization_matrix,
     )
     gate = {
         "schema_version": GATE_SCHEMA_VERSION,
@@ -226,6 +233,9 @@ def write_dcl_prs_gate_index(
     gss_real_repair_effect_validation = _load_json_if_exists(
         DEFAULT_GSS_REAL_REPAIR_EFFECT_VALIDATION_PATH
     )
+    multi_dataset_generalization_matrix = _load_json_if_exists(
+        DEFAULT_MULTI_DATASET_GENERALIZATION_MATRIX_PATH
+    )
     gate = build_dcl_prs_gate_index(
         artifact_id=artifact_id,
         cross_domain_ingestion=cross_domain_ingestion,
@@ -255,12 +265,14 @@ def write_dcl_prs_gate_index(
         strong_baseline_matrix=build_dcl_prs_strong_baseline_matrix(
             artifact_id="dcl-prs-strong-baseline-current-001",
             gss_real_repair_effect_validation=gss_real_repair_effect_validation,
+            multi_dataset_generalization_matrix=multi_dataset_generalization_matrix,
         ),
         gss_public_use_download_manifest=gss_manifest,
         official_public_use_file_probe=official_file_probe,
         gss_policy_task_binding=gss_policy_task_binding,
         gss_policy_task_ingestion_smoke=gss_policy_task_ingestion_smoke,
         gss_real_repair_effect_validation=gss_real_repair_effect_validation,
+        multi_dataset_generalization_matrix=multi_dataset_generalization_matrix,
     )
     index_path = output_path / f"{artifact_id}.json"
     index_path.write_text(
@@ -312,6 +324,7 @@ def _completed_subgates(
     gss_policy_task_binding: dict[str, Any] | None,
     gss_policy_task_ingestion_smoke: dict[str, Any] | None,
     gss_real_repair_effect_validation: dict[str, Any] | None,
+    multi_dataset_generalization_matrix: dict[str, Any] | None,
 ) -> list[str]:
     completed = []
     if _is_status(
@@ -426,6 +439,12 @@ def _completed_subgates(
         status="gss_real_repair_effect_validation_ready",
     ):
         completed.append("gss_real_repair_effect_validation_ready")
+    if _is_status(
+        multi_dataset_generalization_matrix,
+        schema_version="dcl-prs-multi-dataset-generalization-matrix-v1",
+        status="multi_dataset_generalization_partial",
+    ) and multi_dataset_generalization_matrix.get("generalization_gate_closed") is False:
+        completed.append("multi_dataset_generalization_matrix_partial")
     return completed
 
 
@@ -452,7 +471,11 @@ def _required_next_gates(completed_subgates: list[str]) -> list[str]:
                 gates.append("download_gss_public_use_file")
             gates.extend(
                 [
-                    "run_multi_dataset_generalization_matrix",
+                    (
+                        "complete_multi_dataset_generalization_matrix"
+                        if "multi_dataset_generalization_matrix_partial" in completed
+                        else "run_multi_dataset_generalization_matrix"
+                    ),
                     "run_product_runtime_validation",
                     "improve_dcl_prs_until_strong_baseline_win",
                 ]
@@ -544,7 +567,11 @@ def _ccf_a_blocking_gaps(completed_subgates: list[str]) -> list[str]:
     else:
         gaps.append("real_effect_validation_missing")
     gaps.append("strong_baseline_win_missing")
-    gaps.append("multi_dataset_generalization_missing")
+    gaps.append(
+        "multi_dataset_generalization_incomplete"
+        if "multi_dataset_generalization_matrix_partial" in completed
+        else "multi_dataset_generalization_missing"
+    )
     return gaps
 
 
@@ -586,6 +613,7 @@ def _evidence_refs(
     gss_policy_task_binding: dict[str, Any] | None,
     gss_policy_task_ingestion_smoke: dict[str, Any] | None,
     gss_real_repair_effect_validation: dict[str, Any] | None,
+    multi_dataset_generalization_matrix: dict[str, Any] | None,
 ) -> list[str]:
     refs = []
     for artifact in (
@@ -607,6 +635,7 @@ def _evidence_refs(
         gss_policy_task_binding,
         gss_policy_task_ingestion_smoke,
         gss_real_repair_effect_validation,
+        multi_dataset_generalization_matrix,
     ):
         if artifact is not None and isinstance(artifact.get("artifact_id"), str):
             refs.append(artifact["artifact_id"])

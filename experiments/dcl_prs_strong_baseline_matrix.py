@@ -11,16 +11,28 @@ DEFAULT_GSS_REAL_REPAIR_EFFECT_VALIDATION_PATH = Path(
     "experiments/results/dcl_prs_gss_real_repair_effect_validation/"
     "dcl-prs-gss-real-repair-effect-current-001.json"
 )
+DEFAULT_MULTI_DATASET_GENERALIZATION_MATRIX_PATH = Path(
+    "experiments/results/dcl_prs_multi_dataset_generalization_matrix/"
+    "dcl-prs-multi-dataset-generalization-current-001.json"
+)
 
 
 def build_dcl_prs_strong_baseline_matrix(
     *,
     artifact_id: str,
     gss_real_repair_effect_validation: dict[str, Any] | None = None,
+    multi_dataset_generalization_matrix: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     real_effect_ready = _is_gss_real_effect_ready(gss_real_repair_effect_validation)
+    generalization_partial = _is_generalization_partial(
+        multi_dataset_generalization_matrix
+    )
     blocking_gaps = [
-        "multi_dataset_generalization_missing",
+        (
+            "multi_dataset_generalization_incomplete"
+            if generalization_partial
+            else "multi_dataset_generalization_missing"
+        ),
         "strong_baseline_win_missing",
     ]
     if not real_effect_ready:
@@ -69,6 +81,7 @@ def build_dcl_prs_strong_baseline_matrix(
             "cross_domain_access_audit_ready": True,
             "product_runtime_manifest_ready": True,
             "gss_real_effect_validation_ready": real_effect_ready,
+            "multi_dataset_generalization_partial": generalization_partial,
         },
         "blocking_gaps": blocking_gaps,
         "risk_flags": [
@@ -98,6 +111,9 @@ def write_dcl_prs_strong_baseline_matrix(
         artifact_id=artifact_id,
         gss_real_repair_effect_validation=_load_json_if_exists(
             DEFAULT_GSS_REAL_REPAIR_EFFECT_VALIDATION_PATH
+        ),
+        multi_dataset_generalization_matrix=_load_json_if_exists(
+            DEFAULT_MULTI_DATASET_GENERALIZATION_MATRIX_PATH
         ),
     )
     index_path = output_path / f"{artifact_id}.json"
@@ -153,6 +169,16 @@ def _load_json_if_exists(path: Path) -> dict[str, Any] | None:
     if not path.exists():
         return None
     return json.loads(path.read_text())
+
+
+def _is_generalization_partial(artifact: dict[str, Any] | None) -> bool:
+    return (
+        artifact is not None
+        and artifact.get("schema_version")
+        == "dcl-prs-multi-dataset-generalization-matrix-v1"
+        and artifact.get("overall_status") == "multi_dataset_generalization_partial"
+        and artifact.get("generalization_gate_closed") is False
+    )
 
 
 if __name__ == "__main__":

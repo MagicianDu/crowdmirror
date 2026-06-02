@@ -46,6 +46,31 @@ def test_dcl_prs_strong_baseline_matrix_tracks_real_effect_evidence():
     ]
 
 
+def test_dcl_prs_strong_baseline_matrix_tracks_partial_generalization():
+    matrix = build_dcl_prs_strong_baseline_matrix(
+        artifact_id="dcl-prs-strong-baseline-test",
+        gss_real_repair_effect_validation={
+            "schema_version": "dcl-prs-gss-real-repair-effect-v1",
+            "artifact_id": "dcl-prs-gss-real-repair-effect-test",
+            "overall_status": "gss_real_repair_effect_validation_ready",
+            "real_effect_promoted_count": 2,
+        },
+        multi_dataset_generalization_matrix={
+            "schema_version": "dcl-prs-multi-dataset-generalization-matrix-v1",
+            "artifact_id": "dcl-prs-multi-dataset-generalization-test",
+            "overall_status": "multi_dataset_generalization_partial",
+            "generalization_gate_closed": False,
+        },
+    )
+
+    assert matrix["paper_gate_eligible"] is False
+    assert matrix["l2_readiness"]["multi_dataset_generalization_partial"] is True
+    assert matrix["blocking_gaps"] == [
+        "multi_dataset_generalization_incomplete",
+        "strong_baseline_win_missing",
+    ]
+
+
 def test_dcl_prs_strong_baseline_script_writes_artifact(tmp_path):
     output_dir = tmp_path / "dcl_prs_strong_baseline"
 
