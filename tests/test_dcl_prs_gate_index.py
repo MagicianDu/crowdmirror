@@ -6,18 +6,33 @@ from experiments.dcl_prs_gate_index import build_dcl_prs_gate_index
 from experiments.dcl_prs_cross_domain_task_slice_smoke import (
     build_cross_domain_task_slice_smoke,
 )
+from experiments.dcl_prs_cross_domain_microdata_slices import (
+    build_cross_domain_microdata_access_audit,
+)
 from experiments.dcl_prs_dynamic_simulation import build_dynamic_simulation_trace
 from experiments.dcl_prs_failure_attribution import build_failure_attribution_index
 from experiments.dcl_prs_mechanism_ablation_matrix import (
     build_mechanism_ablation_matrix,
 )
+from experiments.dcl_prs_mechanism_ablation_repeat_matrix import (
+    build_mechanism_ablation_repeat_matrix,
+)
 from experiments.dcl_prs_mechanism_program import build_mechanism_program_index
 from experiments.dcl_prs_product_cohort_report import build_product_cohort_report
+from experiments.dcl_prs_product_runtime_manifest import (
+    build_product_runtime_manifest,
+)
 from experiments.dcl_prs_public_dataset_ingestion import (
     build_cross_domain_ingestion_index,
 )
 from experiments.dcl_prs_repair_repeat_acceptance_matrix import (
     build_repair_repeat_acceptance_matrix,
+)
+from experiments.dcl_prs_repair_effect_validation_matrix import (
+    build_repair_effect_validation_matrix,
+)
+from experiments.dcl_prs_strong_baseline_matrix import (
+    build_dcl_prs_strong_baseline_matrix,
 )
 
 
@@ -141,6 +156,93 @@ def test_dcl_prs_gate_tracks_l1_subgates_without_closing_claims():
     ]
     assert gate["ccf_a_gate"]["status"] == "open"
     assert gate["product_gate"]["status"] == "open"
+
+
+def test_dcl_prs_gate_tracks_l2_readiness_but_keeps_true_blockers_open():
+    cross_domain = build_cross_domain_ingestion_index(
+        artifact_id="dcl-prs-cross-domain-ingestion-test"
+    )
+    mechanism = build_mechanism_program_index(
+        artifact_id="dcl-prs-mechanism-program-test"
+    )
+    failure = build_failure_attribution_index(
+        artifact_id="dcl-prs-failure-attribution-test"
+    )
+    dynamic = build_dynamic_simulation_trace(
+        artifact_id="dcl-prs-dynamic-simulation-test",
+        mechanism_program_index=mechanism,
+    )
+    ablation = build_mechanism_ablation_matrix(
+        artifact_id="dcl-prs-mechanism-ablation-test",
+        mechanism_program_index=mechanism,
+    )
+    repeat_acceptance = build_repair_repeat_acceptance_matrix(
+        artifact_id="dcl-prs-repair-repeat-test",
+        failure_attribution_index=failure,
+    )
+    task_slice_smoke = build_cross_domain_task_slice_smoke(
+        artifact_id="dcl-prs-cross-domain-task-slice-smoke-test",
+        cross_domain_ingestion=cross_domain,
+    )
+    product_report = build_product_cohort_report(
+        artifact_id="dcl-prs-product-cohort-report-test",
+        mechanism_program_index=mechanism,
+        failure_attribution_index=failure,
+        dynamic_simulation=dynamic,
+    )
+    gate = build_dcl_prs_gate_index(
+        artifact_id="dcl-prs-gate-test",
+        cross_domain_ingestion=cross_domain,
+        mechanism_program=mechanism,
+        failure_attribution=failure,
+        dynamic_simulation=dynamic,
+        mechanism_ablation_matrix=ablation,
+        repair_repeat_acceptance_matrix=repeat_acceptance,
+        cross_domain_task_slice_smoke=task_slice_smoke,
+        product_cohort_report=product_report,
+        mechanism_ablation_repeat_matrix=build_mechanism_ablation_repeat_matrix(
+            artifact_id="dcl-prs-mechanism-ablation-repeat-test",
+            mechanism_ablation_matrix=ablation,
+        ),
+        repair_effect_validation_matrix=build_repair_effect_validation_matrix(
+            artifact_id="dcl-prs-repair-effect-test",
+            repair_repeat_acceptance_matrix=repeat_acceptance,
+        ),
+        cross_domain_microdata_access_audit=build_cross_domain_microdata_access_audit(
+            artifact_id="dcl-prs-cross-domain-microdata-test",
+            cross_domain_task_slice_smoke=task_slice_smoke,
+        ),
+        product_runtime_manifest=build_product_runtime_manifest(
+            artifact_id="dcl-prs-product-runtime-manifest-test",
+            product_cohort_report=product_report,
+        ),
+        strong_baseline_matrix=build_dcl_prs_strong_baseline_matrix(
+            artifact_id="dcl-prs-strong-baseline-test"
+        ),
+    )
+
+    assert "mechanism_ablation_repeat_matrix_ready" in gate["completed_subgates"]
+    assert "repair_effect_validation_matrix_ready" in gate["completed_subgates"]
+    assert "cross_domain_microdata_access_audit_ready" in gate["completed_subgates"]
+    assert "product_runtime_manifest_connection_ready" in gate["completed_subgates"]
+    assert "strong_baseline_matrix_ready" in gate["completed_subgates"]
+    assert gate["required_next_gates"] == [
+        "download_official_cross_domain_public_use_files",
+        "run_real_repair_effect_validation",
+        "run_multi_dataset_generalization_matrix",
+        "run_product_runtime_validation",
+        "improve_dcl_prs_until_strong_baseline_win",
+    ]
+    assert gate["ccf_a_gate"]["blocking_gaps"] == [
+        "cross_domain_microdata_download_missing",
+        "real_effect_validation_missing",
+        "strong_baseline_win_missing",
+        "multi_dataset_generalization_missing",
+    ]
+    assert gate["product_gate"]["blocking_gaps"] == [
+        "customer_field_validation_missing",
+        "product_runtime_validation_missing",
+    ]
 
 
 def test_dcl_prs_gate_script_writes_artifact(tmp_path):

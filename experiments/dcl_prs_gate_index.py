@@ -34,6 +34,21 @@ from experiments.dcl_prs_cross_domain_task_slice_smoke import (  # noqa: E402
 from experiments.dcl_prs_product_cohort_report import (  # noqa: E402
     build_product_cohort_report,
 )
+from experiments.dcl_prs_mechanism_ablation_repeat_matrix import (  # noqa: E402
+    build_mechanism_ablation_repeat_matrix,
+)
+from experiments.dcl_prs_repair_effect_validation_matrix import (  # noqa: E402
+    build_repair_effect_validation_matrix,
+)
+from experiments.dcl_prs_cross_domain_microdata_slices import (  # noqa: E402
+    build_cross_domain_microdata_access_audit,
+)
+from experiments.dcl_prs_product_runtime_manifest import (  # noqa: E402
+    build_product_runtime_manifest,
+)
+from experiments.dcl_prs_strong_baseline_matrix import (  # noqa: E402
+    build_dcl_prs_strong_baseline_matrix,
+)
 
 
 GATE_SCHEMA_VERSION = "dcl-prs-gate-index-v1"
@@ -50,6 +65,11 @@ def build_dcl_prs_gate_index(
     repair_repeat_acceptance_matrix: dict[str, Any] | None = None,
     cross_domain_task_slice_smoke: dict[str, Any] | None = None,
     product_cohort_report: dict[str, Any] | None = None,
+    mechanism_ablation_repeat_matrix: dict[str, Any] | None = None,
+    repair_effect_validation_matrix: dict[str, Any] | None = None,
+    cross_domain_microdata_access_audit: dict[str, Any] | None = None,
+    product_runtime_manifest: dict[str, Any] | None = None,
+    strong_baseline_matrix: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     completed_subgates = _completed_subgates(
         cross_domain_ingestion=cross_domain_ingestion,
@@ -60,6 +80,11 @@ def build_dcl_prs_gate_index(
         repair_repeat_acceptance_matrix=repair_repeat_acceptance_matrix,
         cross_domain_task_slice_smoke=cross_domain_task_slice_smoke,
         product_cohort_report=product_cohort_report,
+        mechanism_ablation_repeat_matrix=mechanism_ablation_repeat_matrix,
+        repair_effect_validation_matrix=repair_effect_validation_matrix,
+        cross_domain_microdata_access_audit=cross_domain_microdata_access_audit,
+        product_runtime_manifest=product_runtime_manifest,
+        strong_baseline_matrix=strong_baseline_matrix,
     )
     required_next_gates = _required_next_gates(completed_subgates)
     evidence_refs = _evidence_refs(
@@ -71,6 +96,11 @@ def build_dcl_prs_gate_index(
         repair_repeat_acceptance_matrix=repair_repeat_acceptance_matrix,
         cross_domain_task_slice_smoke=cross_domain_task_slice_smoke,
         product_cohort_report=product_cohort_report,
+        mechanism_ablation_repeat_matrix=mechanism_ablation_repeat_matrix,
+        repair_effect_validation_matrix=repair_effect_validation_matrix,
+        cross_domain_microdata_access_audit=cross_domain_microdata_access_audit,
+        product_runtime_manifest=product_runtime_manifest,
+        strong_baseline_matrix=strong_baseline_matrix,
     )
     gate = {
         "schema_version": GATE_SCHEMA_VERSION,
@@ -122,29 +152,52 @@ def write_dcl_prs_gate_index(
         artifact_id="dcl-prs-dynamic-simulation-current-001",
         mechanism_program_index=mechanism_program,
     )
+    mechanism_ablation = build_mechanism_ablation_matrix(
+        artifact_id="dcl-prs-mechanism-ablation-current-001",
+        mechanism_program_index=mechanism_program,
+    )
+    repair_repeat = build_repair_repeat_acceptance_matrix(
+        artifact_id="dcl-prs-repair-repeat-acceptance-current-001",
+        failure_attribution_index=failure_attribution,
+    )
+    task_slice_smoke = build_cross_domain_task_slice_smoke(
+        artifact_id="dcl-prs-cross-domain-task-slice-smoke-current-001",
+        cross_domain_ingestion=cross_domain_ingestion,
+    )
+    product_report = build_product_cohort_report(
+        artifact_id="dcl-prs-product-cohort-report-current-001",
+        mechanism_program_index=mechanism_program,
+        failure_attribution_index=failure_attribution,
+        dynamic_simulation=dynamic_simulation,
+    )
     gate = build_dcl_prs_gate_index(
         artifact_id=artifact_id,
         cross_domain_ingestion=cross_domain_ingestion,
         mechanism_program=mechanism_program,
         failure_attribution=failure_attribution,
         dynamic_simulation=dynamic_simulation,
-        mechanism_ablation_matrix=build_mechanism_ablation_matrix(
-            artifact_id="dcl-prs-mechanism-ablation-current-001",
-            mechanism_program_index=mechanism_program,
+        mechanism_ablation_matrix=mechanism_ablation,
+        repair_repeat_acceptance_matrix=repair_repeat,
+        cross_domain_task_slice_smoke=task_slice_smoke,
+        product_cohort_report=product_report,
+        mechanism_ablation_repeat_matrix=build_mechanism_ablation_repeat_matrix(
+            artifact_id="dcl-prs-mechanism-ablation-repeat-current-001",
+            mechanism_ablation_matrix=mechanism_ablation,
         ),
-        repair_repeat_acceptance_matrix=build_repair_repeat_acceptance_matrix(
-            artifact_id="dcl-prs-repair-repeat-acceptance-current-001",
-            failure_attribution_index=failure_attribution,
+        repair_effect_validation_matrix=build_repair_effect_validation_matrix(
+            artifact_id="dcl-prs-repair-effect-validation-current-001",
+            repair_repeat_acceptance_matrix=repair_repeat,
         ),
-        cross_domain_task_slice_smoke=build_cross_domain_task_slice_smoke(
-            artifact_id="dcl-prs-cross-domain-task-slice-smoke-current-001",
-            cross_domain_ingestion=cross_domain_ingestion,
+        cross_domain_microdata_access_audit=build_cross_domain_microdata_access_audit(
+            artifact_id="dcl-prs-cross-domain-microdata-current-001",
+            cross_domain_task_slice_smoke=task_slice_smoke,
         ),
-        product_cohort_report=build_product_cohort_report(
-            artifact_id="dcl-prs-product-cohort-report-current-001",
-            mechanism_program_index=mechanism_program,
-            failure_attribution_index=failure_attribution,
-            dynamic_simulation=dynamic_simulation,
+        product_runtime_manifest=build_product_runtime_manifest(
+            artifact_id="dcl-prs-product-runtime-manifest-current-001",
+            product_cohort_report=product_report,
+        ),
+        strong_baseline_matrix=build_dcl_prs_strong_baseline_matrix(
+            artifact_id="dcl-prs-strong-baseline-current-001",
         ),
     )
     index_path = output_path / f"{artifact_id}.json"
@@ -187,6 +240,11 @@ def _completed_subgates(
     repair_repeat_acceptance_matrix: dict[str, Any] | None,
     cross_domain_task_slice_smoke: dict[str, Any] | None,
     product_cohort_report: dict[str, Any] | None,
+    mechanism_ablation_repeat_matrix: dict[str, Any] | None,
+    repair_effect_validation_matrix: dict[str, Any] | None,
+    cross_domain_microdata_access_audit: dict[str, Any] | None,
+    product_runtime_manifest: dict[str, Any] | None,
+    strong_baseline_matrix: dict[str, Any] | None,
 ) -> list[str]:
     completed = []
     if _is_status(
@@ -237,10 +295,59 @@ def _completed_subgates(
         status="product_cohort_report_evidence_ready",
     ):
         completed.append("product_cohort_report_evidence_ready")
+    if _is_status(
+        mechanism_ablation_repeat_matrix,
+        schema_version="dcl-prs-mechanism-ablation-repeat-matrix-v1",
+        status="mechanism_ablation_repeat_matrix_ready",
+    ):
+        completed.append("mechanism_ablation_repeat_matrix_ready")
+    if _is_status(
+        repair_effect_validation_matrix,
+        schema_version="dcl-prs-repair-effect-validation-matrix-v1",
+        status="repair_effect_validation_matrix_ready",
+    ):
+        completed.append("repair_effect_validation_matrix_ready")
+    if _is_status(
+        cross_domain_microdata_access_audit,
+        schema_version="dcl-prs-cross-domain-microdata-slices-v1",
+        status="cross_domain_microdata_access_audit_ready",
+    ):
+        completed.append("cross_domain_microdata_access_audit_ready")
+    if _is_status(
+        product_runtime_manifest,
+        schema_version="dcl-prs-product-runtime-manifest-v1",
+        status="product_runtime_manifest_connection_ready",
+    ):
+        completed.append("product_runtime_manifest_connection_ready")
+    if _is_status(
+        strong_baseline_matrix,
+        schema_version="dcl-prs-strong-baseline-matrix-v1",
+        status="strong_baseline_dcl_prs_not_leading",
+    ) or _is_status(
+        strong_baseline_matrix,
+        schema_version="dcl-prs-strong-baseline-matrix-v1",
+        status="strong_baseline_dcl_prs_leads",
+    ):
+        completed.append("strong_baseline_matrix_ready")
     return completed
 
 
 def _required_next_gates(completed_subgates: list[str]) -> list[str]:
+    if {
+        "mechanism_ablation_repeat_matrix_ready",
+        "repair_effect_validation_matrix_ready",
+        "cross_domain_microdata_access_audit_ready",
+        "product_runtime_manifest_connection_ready",
+        "strong_baseline_matrix_ready",
+    }.issubset(set(completed_subgates)):
+        return [
+            "download_official_cross_domain_public_use_files",
+            "run_real_repair_effect_validation",
+            "run_multi_dataset_generalization_matrix",
+            "run_product_runtime_validation",
+            "improve_dcl_prs_until_strong_baseline_win",
+        ]
+
     if {
         "mechanism_ablation_matrix_ready",
         "repair_repeat_acceptance_matrix_ready",
@@ -283,24 +390,26 @@ def _required_next_gates(completed_subgates: list[str]) -> list[str]:
 def _ccf_a_blocking_gaps(completed_subgates: list[str]) -> list[str]:
     completed = set(completed_subgates)
     gaps = []
-    if "mechanism_ablation_matrix_ready" not in completed:
-        gaps.append("mechanism_ablation_missing")
-    else:
-        gaps.append("mechanism_ablation_repeat_missing")
-    if "repair_repeat_acceptance_matrix_ready" not in completed:
-        gaps.append("repair_repeat_acceptance_missing")
-    else:
-        gaps.append("repair_effect_validation_missing")
     if "cross_domain_task_slice_smoke_ready" not in completed:
         gaps.append("cross_domain_smoke_missing")
-    else:
+    elif "cross_domain_microdata_access_audit_ready" not in completed:
         gaps.append("cross_domain_microdata_missing")
-    gaps.extend(
-        [
-            "strong_baseline_win_missing",
-            "multi_dataset_generalization_missing",
-        ]
-    )
+    else:
+        gaps.append("cross_domain_microdata_download_missing")
+    if "mechanism_ablation_matrix_ready" not in completed:
+        gaps.append("mechanism_ablation_missing")
+    elif "mechanism_ablation_repeat_matrix_ready" not in completed:
+        gaps.append("mechanism_ablation_repeat_missing")
+    else:
+        pass
+    if "repair_repeat_acceptance_matrix_ready" not in completed:
+        gaps.append("repair_repeat_acceptance_missing")
+    elif "repair_effect_validation_matrix_ready" not in completed:
+        gaps.append("repair_effect_validation_missing")
+    else:
+        gaps.append("real_effect_validation_missing")
+    gaps.append("strong_baseline_win_missing")
+    gaps.append("multi_dataset_generalization_missing")
     return gaps
 
 
@@ -309,8 +418,10 @@ def _product_blocking_gaps(completed_subgates: list[str]) -> list[str]:
     gaps = []
     if "product_cohort_report_evidence_ready" not in completed:
         gaps.append("cohort_report_evidence_missing")
-    else:
+    elif "product_runtime_manifest_connection_ready" not in completed:
         gaps.append("product_runtime_manifest_connection_missing")
+    else:
+        pass
     gaps.extend(
         [
             "customer_field_validation_missing",
@@ -330,6 +441,11 @@ def _evidence_refs(
     repair_repeat_acceptance_matrix: dict[str, Any] | None,
     cross_domain_task_slice_smoke: dict[str, Any] | None,
     product_cohort_report: dict[str, Any] | None,
+    mechanism_ablation_repeat_matrix: dict[str, Any] | None,
+    repair_effect_validation_matrix: dict[str, Any] | None,
+    cross_domain_microdata_access_audit: dict[str, Any] | None,
+    product_runtime_manifest: dict[str, Any] | None,
+    strong_baseline_matrix: dict[str, Any] | None,
 ) -> list[str]:
     refs = []
     for artifact in (
@@ -341,6 +457,11 @@ def _evidence_refs(
         repair_repeat_acceptance_matrix,
         cross_domain_task_slice_smoke,
         product_cohort_report,
+        mechanism_ablation_repeat_matrix,
+        repair_effect_validation_matrix,
+        cross_domain_microdata_access_audit,
+        product_runtime_manifest,
+        strong_baseline_matrix,
     ):
         if artifact is not None and isinstance(artifact.get("artifact_id"), str):
             refs.append(artifact["artifact_id"])
