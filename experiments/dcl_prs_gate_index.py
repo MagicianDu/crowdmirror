@@ -49,6 +49,10 @@ from experiments.dcl_prs_product_runtime_manifest import (  # noqa: E402
 from experiments.dcl_prs_strong_baseline_matrix import (  # noqa: E402
     build_dcl_prs_strong_baseline_matrix,
 )
+from experiments.dcl_prs_strong_baseline_decision_matrix import (  # noqa: E402
+    DEFAULT_LCDU_STRONG_BASELINE_MATRIX_PATHS,
+    build_dcl_prs_strong_baseline_decision_matrix,
+)
 from experiments.dcl_prs_official_public_use_file_probe import (  # noqa: E402
     build_official_public_use_file_probe,
 )
@@ -103,6 +107,7 @@ def build_dcl_prs_gate_index(
     gss_policy_task_ingestion_smoke: dict[str, Any] | None = None,
     gss_real_repair_effect_validation: dict[str, Any] | None = None,
     multi_dataset_generalization_matrix: dict[str, Any] | None = None,
+    strong_baseline_decision_matrix: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     completed_subgates = _completed_subgates(
         cross_domain_ingestion=cross_domain_ingestion,
@@ -124,6 +129,7 @@ def build_dcl_prs_gate_index(
         gss_policy_task_ingestion_smoke=gss_policy_task_ingestion_smoke,
         gss_real_repair_effect_validation=gss_real_repair_effect_validation,
         multi_dataset_generalization_matrix=multi_dataset_generalization_matrix,
+        strong_baseline_decision_matrix=strong_baseline_decision_matrix,
     )
     required_next_gates = _required_next_gates(completed_subgates)
     evidence_refs = _evidence_refs(
@@ -146,6 +152,7 @@ def build_dcl_prs_gate_index(
         gss_policy_task_ingestion_smoke=gss_policy_task_ingestion_smoke,
         gss_real_repair_effect_validation=gss_real_repair_effect_validation,
         multi_dataset_generalization_matrix=multi_dataset_generalization_matrix,
+        strong_baseline_decision_matrix=strong_baseline_decision_matrix,
     )
     gate = {
         "schema_version": GATE_SCHEMA_VERSION,
@@ -236,6 +243,25 @@ def write_dcl_prs_gate_index(
     multi_dataset_generalization_matrix = _load_json_if_exists(
         DEFAULT_MULTI_DATASET_GENERALIZATION_MATRIX_PATH
     )
+    strong_baseline_matrix = build_dcl_prs_strong_baseline_matrix(
+        artifact_id="dcl-prs-strong-baseline-current-001",
+        gss_real_repair_effect_validation=gss_real_repair_effect_validation,
+        multi_dataset_generalization_matrix=multi_dataset_generalization_matrix,
+    )
+    lcdU_strong_baseline_matrices = [
+        matrix
+        for path in DEFAULT_LCDU_STRONG_BASELINE_MATRIX_PATHS
+        if (matrix := _load_json_if_exists(path)) is not None
+    ]
+    strong_baseline_decision_matrix = (
+        build_dcl_prs_strong_baseline_decision_matrix(
+            artifact_id="dcl-prs-strong-baseline-decision-current-001",
+            dcl_prs_strong_baseline_matrix=strong_baseline_matrix,
+            gss_real_repair_effect_validation=gss_real_repair_effect_validation,
+            multi_dataset_generalization_matrix=multi_dataset_generalization_matrix,
+            lcdU_strong_baseline_matrices=lcdU_strong_baseline_matrices,
+        )
+    )
     gate = build_dcl_prs_gate_index(
         artifact_id=artifact_id,
         cross_domain_ingestion=cross_domain_ingestion,
@@ -262,17 +288,14 @@ def write_dcl_prs_gate_index(
             artifact_id="dcl-prs-product-runtime-manifest-current-001",
             product_cohort_report=product_report,
         ),
-        strong_baseline_matrix=build_dcl_prs_strong_baseline_matrix(
-            artifact_id="dcl-prs-strong-baseline-current-001",
-            gss_real_repair_effect_validation=gss_real_repair_effect_validation,
-            multi_dataset_generalization_matrix=multi_dataset_generalization_matrix,
-        ),
+        strong_baseline_matrix=strong_baseline_matrix,
         gss_public_use_download_manifest=gss_manifest,
         official_public_use_file_probe=official_file_probe,
         gss_policy_task_binding=gss_policy_task_binding,
         gss_policy_task_ingestion_smoke=gss_policy_task_ingestion_smoke,
         gss_real_repair_effect_validation=gss_real_repair_effect_validation,
         multi_dataset_generalization_matrix=multi_dataset_generalization_matrix,
+        strong_baseline_decision_matrix=strong_baseline_decision_matrix,
     )
     index_path = output_path / f"{artifact_id}.json"
     index_path.write_text(
@@ -325,6 +348,7 @@ def _completed_subgates(
     gss_policy_task_ingestion_smoke: dict[str, Any] | None,
     gss_real_repair_effect_validation: dict[str, Any] | None,
     multi_dataset_generalization_matrix: dict[str, Any] | None,
+    strong_baseline_decision_matrix: dict[str, Any] | None,
 ) -> list[str]:
     completed = []
     if _is_status(
@@ -445,11 +469,33 @@ def _completed_subgates(
         status="multi_dataset_generalization_partial",
     ) and multi_dataset_generalization_matrix.get("generalization_gate_closed") is False:
         completed.append("multi_dataset_generalization_matrix_partial")
+    if _is_status(
+        strong_baseline_decision_matrix,
+        schema_version="dcl-prs-strong-baseline-decision-matrix-v1",
+        status="decision_boundary_stoploss_recommended",
+    ):
+        completed.append("strong_baseline_decision_ready")
+        completed.append("strong_baseline_decision_stoploss_recommended")
+    elif _is_status(
+        strong_baseline_decision_matrix,
+        schema_version="dcl-prs-strong-baseline-decision-matrix-v1",
+        status="decision_boundary_research_candidate",
+    ):
+        completed.append("strong_baseline_decision_ready")
+        completed.append("strong_baseline_decision_research_candidate")
     return completed
 
 
 def _required_next_gates(completed_subgates: list[str]) -> list[str]:
     completed = set(completed_subgates)
+    if "strong_baseline_decision_research_candidate" in completed:
+        strong_baseline_next_gate = "promote_to_full_paper_gate_audit"
+    elif "strong_baseline_decision_stoploss_recommended" in completed:
+        strong_baseline_next_gate = (
+            "run_dcl_prs_runtime_strong_baseline_trial_or_retire_algorithm_main_claim"
+        )
+    else:
+        strong_baseline_next_gate = "improve_dcl_prs_until_strong_baseline_win"
     if {
         "mechanism_ablation_repeat_matrix_ready",
         "repair_effect_validation_matrix_ready",
@@ -477,7 +523,7 @@ def _required_next_gates(completed_subgates: list[str]) -> list[str]:
                         else "run_multi_dataset_generalization_matrix"
                     ),
                     "run_product_runtime_validation",
-                    "improve_dcl_prs_until_strong_baseline_win",
+                    strong_baseline_next_gate,
                 ]
             )
             if "gss_real_repair_effect_validation_ready" not in completed:
@@ -491,7 +537,7 @@ def _required_next_gates(completed_subgates: list[str]) -> list[str]:
             "run_real_repair_effect_validation",
             "run_multi_dataset_generalization_matrix",
             "run_product_runtime_validation",
-            "improve_dcl_prs_until_strong_baseline_win",
+            strong_baseline_next_gate,
         ]
 
     if {
@@ -567,6 +613,8 @@ def _ccf_a_blocking_gaps(completed_subgates: list[str]) -> list[str]:
     else:
         gaps.append("real_effect_validation_missing")
     gaps.append("strong_baseline_win_missing")
+    if "strong_baseline_decision_stoploss_recommended" in completed:
+        gaps.append("dcl_prs_algorithm_main_claim_stoploss_recommended")
     gaps.append(
         "multi_dataset_generalization_incomplete"
         if "multi_dataset_generalization_matrix_partial" in completed
@@ -614,6 +662,7 @@ def _evidence_refs(
     gss_policy_task_ingestion_smoke: dict[str, Any] | None,
     gss_real_repair_effect_validation: dict[str, Any] | None,
     multi_dataset_generalization_matrix: dict[str, Any] | None,
+    strong_baseline_decision_matrix: dict[str, Any] | None,
 ) -> list[str]:
     refs = []
     for artifact in (
@@ -636,6 +685,7 @@ def _evidence_refs(
         gss_policy_task_ingestion_smoke,
         gss_real_repair_effect_validation,
         multi_dataset_generalization_matrix,
+        strong_baseline_decision_matrix,
     ):
         if artifact is not None and isinstance(artifact.get("artifact_id"), str):
             refs.append(artifact["artifact_id"])
