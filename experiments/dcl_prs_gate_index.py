@@ -71,6 +71,10 @@ DEFAULT_GSS_POLICY_TASK_INGESTION_SMOKE_PATH = Path(
     "experiments/results/dcl_prs_gss_policy_task_ingestion_smoke/"
     "dcl-prs-gss-policy-task-smoke-current-001.json"
 )
+DEFAULT_GSS_REAL_REPAIR_EFFECT_VALIDATION_PATH = Path(
+    "experiments/results/dcl_prs_gss_real_repair_effect_validation/"
+    "dcl-prs-gss-real-repair-effect-current-001.json"
+)
 
 
 def build_dcl_prs_gate_index(
@@ -93,6 +97,7 @@ def build_dcl_prs_gate_index(
     official_public_use_file_probe: dict[str, Any] | None = None,
     gss_policy_task_binding: dict[str, Any] | None = None,
     gss_policy_task_ingestion_smoke: dict[str, Any] | None = None,
+    gss_real_repair_effect_validation: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     completed_subgates = _completed_subgates(
         cross_domain_ingestion=cross_domain_ingestion,
@@ -112,6 +117,7 @@ def build_dcl_prs_gate_index(
         official_public_use_file_probe=official_public_use_file_probe,
         gss_policy_task_binding=gss_policy_task_binding,
         gss_policy_task_ingestion_smoke=gss_policy_task_ingestion_smoke,
+        gss_real_repair_effect_validation=gss_real_repair_effect_validation,
     )
     required_next_gates = _required_next_gates(completed_subgates)
     evidence_refs = _evidence_refs(
@@ -132,6 +138,7 @@ def build_dcl_prs_gate_index(
         official_public_use_file_probe=official_public_use_file_probe,
         gss_policy_task_binding=gss_policy_task_binding,
         gss_policy_task_ingestion_smoke=gss_policy_task_ingestion_smoke,
+        gss_real_repair_effect_validation=gss_real_repair_effect_validation,
     )
     gate = {
         "schema_version": GATE_SCHEMA_VERSION,
@@ -216,6 +223,9 @@ def write_dcl_prs_gate_index(
     gss_policy_task_ingestion_smoke = _load_json_if_exists(
         DEFAULT_GSS_POLICY_TASK_INGESTION_SMOKE_PATH
     )
+    gss_real_repair_effect_validation = _load_json_if_exists(
+        DEFAULT_GSS_REAL_REPAIR_EFFECT_VALIDATION_PATH
+    )
     gate = build_dcl_prs_gate_index(
         artifact_id=artifact_id,
         cross_domain_ingestion=cross_domain_ingestion,
@@ -244,11 +254,13 @@ def write_dcl_prs_gate_index(
         ),
         strong_baseline_matrix=build_dcl_prs_strong_baseline_matrix(
             artifact_id="dcl-prs-strong-baseline-current-001",
+            gss_real_repair_effect_validation=gss_real_repair_effect_validation,
         ),
         gss_public_use_download_manifest=gss_manifest,
         official_public_use_file_probe=official_file_probe,
         gss_policy_task_binding=gss_policy_task_binding,
         gss_policy_task_ingestion_smoke=gss_policy_task_ingestion_smoke,
+        gss_real_repair_effect_validation=gss_real_repair_effect_validation,
     )
     index_path = output_path / f"{artifact_id}.json"
     index_path.write_text(
@@ -299,6 +311,7 @@ def _completed_subgates(
     official_public_use_file_probe: dict[str, Any] | None,
     gss_policy_task_binding: dict[str, Any] | None,
     gss_policy_task_ingestion_smoke: dict[str, Any] | None,
+    gss_real_repair_effect_validation: dict[str, Any] | None,
 ) -> list[str]:
     completed = []
     if _is_status(
@@ -407,6 +420,12 @@ def _completed_subgates(
         status="gss_policy_task_ingestion_smoke_ready",
     ):
         completed.append("gss_policy_task_ingestion_smoke_ready")
+    if _is_status(
+        gss_real_repair_effect_validation,
+        schema_version="dcl-prs-gss-real-repair-effect-v1",
+        status="gss_real_repair_effect_validation_ready",
+    ):
+        completed.append("gss_real_repair_effect_validation_ready")
     return completed
 
 
@@ -433,12 +452,16 @@ def _required_next_gates(completed_subgates: list[str]) -> list[str]:
                 gates.append("download_gss_public_use_file")
             gates.extend(
                 [
-                    "run_real_repair_effect_validation",
                     "run_multi_dataset_generalization_matrix",
                     "run_product_runtime_validation",
                     "improve_dcl_prs_until_strong_baseline_win",
                 ]
             )
+            if "gss_real_repair_effect_validation_ready" not in completed:
+                gates.insert(
+                    len(gates) - 3,
+                    "run_real_repair_effect_validation",
+                )
             return gates
         return [
             "download_official_cross_domain_public_use_files",
@@ -516,6 +539,8 @@ def _ccf_a_blocking_gaps(completed_subgates: list[str]) -> list[str]:
         gaps.append("repair_repeat_acceptance_missing")
     elif "repair_effect_validation_matrix_ready" not in completed:
         gaps.append("repair_effect_validation_missing")
+    elif "gss_real_repair_effect_validation_ready" in completed:
+        pass
     else:
         gaps.append("real_effect_validation_missing")
     gaps.append("strong_baseline_win_missing")
@@ -560,6 +585,7 @@ def _evidence_refs(
     official_public_use_file_probe: dict[str, Any] | None,
     gss_policy_task_binding: dict[str, Any] | None,
     gss_policy_task_ingestion_smoke: dict[str, Any] | None,
+    gss_real_repair_effect_validation: dict[str, Any] | None,
 ) -> list[str]:
     refs = []
     for artifact in (
@@ -580,6 +606,7 @@ def _evidence_refs(
         official_public_use_file_probe,
         gss_policy_task_binding,
         gss_policy_task_ingestion_smoke,
+        gss_real_repair_effect_validation,
     ):
         if artifact is not None and isinstance(artifact.get("artifact_id"), str):
             refs.append(artifact["artifact_id"])
