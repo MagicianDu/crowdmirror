@@ -18,6 +18,9 @@ from experiments.dcl_prs_mechanism_ablation_repeat_matrix import (
     build_mechanism_ablation_repeat_matrix,
 )
 from experiments.dcl_prs_mechanism_program import build_mechanism_program_index
+from experiments.dcl_prs_official_public_use_file_probe import (
+    build_official_public_use_file_probe,
+)
 from experiments.dcl_prs_product_cohort_report import build_product_cohort_report
 from experiments.dcl_prs_product_runtime_manifest import (
     build_product_runtime_manifest,
@@ -235,6 +238,109 @@ def test_dcl_prs_gate_tracks_l2_readiness_but_keeps_true_blockers_open():
     ]
     assert gate["ccf_a_gate"]["blocking_gaps"] == [
         "cross_domain_microdata_download_missing",
+        "real_effect_validation_missing",
+        "strong_baseline_win_missing",
+        "multi_dataset_generalization_missing",
+    ]
+    assert gate["product_gate"]["blocking_gaps"] == [
+        "customer_field_validation_missing",
+        "product_runtime_validation_missing",
+    ]
+
+
+def test_dcl_prs_gate_tracks_l3_official_data_without_overclaiming():
+    cross_domain = build_cross_domain_ingestion_index(
+        artifact_id="dcl-prs-cross-domain-ingestion-test"
+    )
+    mechanism = build_mechanism_program_index(
+        artifact_id="dcl-prs-mechanism-program-test"
+    )
+    failure = build_failure_attribution_index(
+        artifact_id="dcl-prs-failure-attribution-test"
+    )
+    dynamic = build_dynamic_simulation_trace(
+        artifact_id="dcl-prs-dynamic-simulation-test",
+        mechanism_program_index=mechanism,
+    )
+    ablation = build_mechanism_ablation_matrix(
+        artifact_id="dcl-prs-mechanism-ablation-test",
+        mechanism_program_index=mechanism,
+    )
+    repeat_acceptance = build_repair_repeat_acceptance_matrix(
+        artifact_id="dcl-prs-repair-repeat-test",
+        failure_attribution_index=failure,
+    )
+    task_slice_smoke = build_cross_domain_task_slice_smoke(
+        artifact_id="dcl-prs-cross-domain-task-slice-smoke-test",
+        cross_domain_ingestion=cross_domain,
+    )
+    product_report = build_product_cohort_report(
+        artifact_id="dcl-prs-product-cohort-report-test",
+        mechanism_program_index=mechanism,
+        failure_attribution_index=failure,
+        dynamic_simulation=dynamic,
+    )
+    gss_manifest = {
+        "schema_version": "dcl-prs-gss-public-use-download-v1",
+        "artifact_id": "dcl-prs-gss-public-use-download-test",
+        "overall_status": "gss_public_use_download_verified",
+        "download_verified": True,
+        "byte_count": 123,
+        "sha256": "abc",
+    }
+    official_file_probe = build_official_public_use_file_probe(
+        artifact_id="dcl-prs-official-public-use-file-probe-test",
+        gss_download_manifest=gss_manifest,
+    )
+
+    gate = build_dcl_prs_gate_index(
+        artifact_id="dcl-prs-gate-test",
+        cross_domain_ingestion=cross_domain,
+        mechanism_program=mechanism,
+        failure_attribution=failure,
+        dynamic_simulation=dynamic,
+        mechanism_ablation_matrix=ablation,
+        repair_repeat_acceptance_matrix=repeat_acceptance,
+        cross_domain_task_slice_smoke=task_slice_smoke,
+        product_cohort_report=product_report,
+        mechanism_ablation_repeat_matrix=build_mechanism_ablation_repeat_matrix(
+            artifact_id="dcl-prs-mechanism-ablation-repeat-test",
+            mechanism_ablation_matrix=ablation,
+        ),
+        repair_effect_validation_matrix=build_repair_effect_validation_matrix(
+            artifact_id="dcl-prs-repair-effect-test",
+            repair_repeat_acceptance_matrix=repeat_acceptance,
+        ),
+        cross_domain_microdata_access_audit=build_cross_domain_microdata_access_audit(
+            artifact_id="dcl-prs-cross-domain-microdata-test",
+            cross_domain_task_slice_smoke=task_slice_smoke,
+        ),
+        product_runtime_manifest=build_product_runtime_manifest(
+            artifact_id="dcl-prs-product-runtime-manifest-test",
+            product_cohort_report=product_report,
+        ),
+        strong_baseline_matrix=build_dcl_prs_strong_baseline_matrix(
+            artifact_id="dcl-prs-strong-baseline-test"
+        ),
+        gss_public_use_download_manifest=gss_manifest,
+        official_public_use_file_probe=official_file_probe,
+    )
+
+    assert "gss_public_use_download_verified" in gate["completed_subgates"]
+    assert "official_public_use_file_probe_partial" in gate["completed_subgates"]
+    assert "dcl-prs-gss-public-use-download-test" in gate["evidence_refs"]
+    assert "dcl-prs-official-public-use-file-probe-test" in gate["evidence_refs"]
+    assert gate["required_next_gates"] == [
+        "complete_eurobarometer_authenticated_download",
+        "bind_gss_public_use_variables_to_policy_tasks",
+        "run_real_repair_effect_validation",
+        "run_multi_dataset_generalization_matrix",
+        "run_product_runtime_validation",
+        "improve_dcl_prs_until_strong_baseline_win",
+    ]
+    assert gate["ccf_a_gate"]["blocking_gaps"] == [
+        "eurobarometer_microdata_download_missing",
+        "gss_variable_binding_missing",
         "real_effect_validation_missing",
         "strong_baseline_win_missing",
         "multi_dataset_generalization_missing",

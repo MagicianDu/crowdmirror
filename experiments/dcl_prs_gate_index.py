@@ -49,9 +49,20 @@ from experiments.dcl_prs_product_runtime_manifest import (  # noqa: E402
 from experiments.dcl_prs_strong_baseline_matrix import (  # noqa: E402
     build_dcl_prs_strong_baseline_matrix,
 )
+from experiments.dcl_prs_official_public_use_file_probe import (  # noqa: E402
+    build_official_public_use_file_probe,
+)
 
 
 GATE_SCHEMA_VERSION = "dcl-prs-gate-index-v1"
+DEFAULT_GSS_PUBLIC_USE_DOWNLOAD_MANIFEST_PATH = Path(
+    "experiments/results/dcl_prs_gss_public_use_download/"
+    "dcl-prs-gss-public-use-download-current-001.json"
+)
+DEFAULT_OFFICIAL_PUBLIC_USE_FILE_PROBE_PATH = Path(
+    "experiments/results/dcl_prs_official_public_use_file_probe/"
+    "dcl-prs-official-public-use-file-probe-current-001.json"
+)
 
 
 def build_dcl_prs_gate_index(
@@ -70,6 +81,8 @@ def build_dcl_prs_gate_index(
     cross_domain_microdata_access_audit: dict[str, Any] | None = None,
     product_runtime_manifest: dict[str, Any] | None = None,
     strong_baseline_matrix: dict[str, Any] | None = None,
+    gss_public_use_download_manifest: dict[str, Any] | None = None,
+    official_public_use_file_probe: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     completed_subgates = _completed_subgates(
         cross_domain_ingestion=cross_domain_ingestion,
@@ -85,6 +98,8 @@ def build_dcl_prs_gate_index(
         cross_domain_microdata_access_audit=cross_domain_microdata_access_audit,
         product_runtime_manifest=product_runtime_manifest,
         strong_baseline_matrix=strong_baseline_matrix,
+        gss_public_use_download_manifest=gss_public_use_download_manifest,
+        official_public_use_file_probe=official_public_use_file_probe,
     )
     required_next_gates = _required_next_gates(completed_subgates)
     evidence_refs = _evidence_refs(
@@ -101,6 +116,8 @@ def build_dcl_prs_gate_index(
         cross_domain_microdata_access_audit=cross_domain_microdata_access_audit,
         product_runtime_manifest=product_runtime_manifest,
         strong_baseline_matrix=strong_baseline_matrix,
+        gss_public_use_download_manifest=gss_public_use_download_manifest,
+        official_public_use_file_probe=official_public_use_file_probe,
     )
     gate = {
         "schema_version": GATE_SCHEMA_VERSION,
@@ -170,6 +187,15 @@ def write_dcl_prs_gate_index(
         failure_attribution_index=failure_attribution,
         dynamic_simulation=dynamic_simulation,
     )
+    gss_manifest = _load_json_if_exists(DEFAULT_GSS_PUBLIC_USE_DOWNLOAD_MANIFEST_PATH)
+    official_file_probe = _load_json_if_exists(
+        DEFAULT_OFFICIAL_PUBLIC_USE_FILE_PROBE_PATH
+    )
+    if official_file_probe is None and gss_manifest is not None:
+        official_file_probe = build_official_public_use_file_probe(
+            artifact_id="dcl-prs-official-public-use-file-probe-current-001",
+            gss_download_manifest=gss_manifest,
+        )
     gate = build_dcl_prs_gate_index(
         artifact_id=artifact_id,
         cross_domain_ingestion=cross_domain_ingestion,
@@ -199,6 +225,8 @@ def write_dcl_prs_gate_index(
         strong_baseline_matrix=build_dcl_prs_strong_baseline_matrix(
             artifact_id="dcl-prs-strong-baseline-current-001",
         ),
+        gss_public_use_download_manifest=gss_manifest,
+        official_public_use_file_probe=official_file_probe,
     )
     index_path = output_path / f"{artifact_id}.json"
     index_path.write_text(
@@ -245,6 +273,8 @@ def _completed_subgates(
     cross_domain_microdata_access_audit: dict[str, Any] | None,
     product_runtime_manifest: dict[str, Any] | None,
     strong_baseline_matrix: dict[str, Any] | None,
+    gss_public_use_download_manifest: dict[str, Any] | None,
+    official_public_use_file_probe: dict[str, Any] | None,
 ) -> list[str]:
     completed = []
     if _is_status(
@@ -329,17 +359,47 @@ def _completed_subgates(
         status="strong_baseline_dcl_prs_leads",
     ):
         completed.append("strong_baseline_matrix_ready")
+    if _is_status(
+        gss_public_use_download_manifest,
+        schema_version="dcl-prs-gss-public-use-download-v1",
+        status="gss_public_use_download_verified",
+    ):
+        completed.append("gss_public_use_download_verified")
+    if _is_status(
+        official_public_use_file_probe,
+        schema_version="dcl-prs-official-public-use-file-probe-v1",
+        status="official_public_use_file_probe_partial",
+    ):
+        completed.append("official_public_use_file_probe_partial")
     return completed
 
 
 def _required_next_gates(completed_subgates: list[str]) -> list[str]:
+    completed = set(completed_subgates)
     if {
         "mechanism_ablation_repeat_matrix_ready",
         "repair_effect_validation_matrix_ready",
         "cross_domain_microdata_access_audit_ready",
         "product_runtime_manifest_connection_ready",
         "strong_baseline_matrix_ready",
-    }.issubset(set(completed_subgates)):
+    }.issubset(completed):
+        if "official_public_use_file_probe_partial" in completed:
+            gates = [
+                "complete_eurobarometer_authenticated_download",
+            ]
+            if "gss_public_use_download_verified" in completed:
+                gates.append("bind_gss_public_use_variables_to_policy_tasks")
+            else:
+                gates.append("download_gss_public_use_file")
+            gates.extend(
+                [
+                    "run_real_repair_effect_validation",
+                    "run_multi_dataset_generalization_matrix",
+                    "run_product_runtime_validation",
+                    "improve_dcl_prs_until_strong_baseline_win",
+                ]
+            )
+            return gates
         return [
             "download_official_cross_domain_public_use_files",
             "run_real_repair_effect_validation",
@@ -353,7 +413,7 @@ def _required_next_gates(completed_subgates: list[str]) -> list[str]:
         "repair_repeat_acceptance_matrix_ready",
         "cross_domain_task_slice_smoke_ready",
         "product_cohort_report_evidence_ready",
-    }.issubset(set(completed_subgates)):
+    }.issubset(completed):
         return [
             "run_mechanism_ablation_repeat_matrix",
             "run_repair_effect_validation_matrix",
@@ -394,6 +454,12 @@ def _ccf_a_blocking_gaps(completed_subgates: list[str]) -> list[str]:
         gaps.append("cross_domain_smoke_missing")
     elif "cross_domain_microdata_access_audit_ready" not in completed:
         gaps.append("cross_domain_microdata_missing")
+    elif "official_public_use_file_probe_partial" in completed:
+        gaps.append("eurobarometer_microdata_download_missing")
+        if "gss_public_use_download_verified" in completed:
+            gaps.append("gss_variable_binding_missing")
+        else:
+            gaps.append("gss_public_use_download_missing")
     else:
         gaps.append("cross_domain_microdata_download_missing")
     if "mechanism_ablation_matrix_ready" not in completed:
@@ -446,6 +512,8 @@ def _evidence_refs(
     cross_domain_microdata_access_audit: dict[str, Any] | None,
     product_runtime_manifest: dict[str, Any] | None,
     strong_baseline_matrix: dict[str, Any] | None,
+    gss_public_use_download_manifest: dict[str, Any] | None,
+    official_public_use_file_probe: dict[str, Any] | None,
 ) -> list[str]:
     refs = []
     for artifact in (
@@ -462,10 +530,18 @@ def _evidence_refs(
         cross_domain_microdata_access_audit,
         product_runtime_manifest,
         strong_baseline_matrix,
+        gss_public_use_download_manifest,
+        official_public_use_file_probe,
     ):
         if artifact is not None and isinstance(artifact.get("artifact_id"), str):
             refs.append(artifact["artifact_id"])
     return refs
+
+
+def _load_json_if_exists(path: Path) -> dict[str, Any] | None:
+    if not path.exists():
+        return None
+    return json.loads(path.read_text())
 
 
 def _is_status(
