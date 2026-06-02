@@ -63,6 +63,14 @@ DEFAULT_OFFICIAL_PUBLIC_USE_FILE_PROBE_PATH = Path(
     "experiments/results/dcl_prs_official_public_use_file_probe/"
     "dcl-prs-official-public-use-file-probe-current-001.json"
 )
+DEFAULT_GSS_POLICY_TASK_BINDING_PATH = Path(
+    "experiments/results/dcl_prs_gss_policy_task_binding/"
+    "dcl-prs-gss-policy-task-binding-current-001.json"
+)
+DEFAULT_GSS_POLICY_TASK_INGESTION_SMOKE_PATH = Path(
+    "experiments/results/dcl_prs_gss_policy_task_ingestion_smoke/"
+    "dcl-prs-gss-policy-task-smoke-current-001.json"
+)
 
 
 def build_dcl_prs_gate_index(
@@ -83,6 +91,8 @@ def build_dcl_prs_gate_index(
     strong_baseline_matrix: dict[str, Any] | None = None,
     gss_public_use_download_manifest: dict[str, Any] | None = None,
     official_public_use_file_probe: dict[str, Any] | None = None,
+    gss_policy_task_binding: dict[str, Any] | None = None,
+    gss_policy_task_ingestion_smoke: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     completed_subgates = _completed_subgates(
         cross_domain_ingestion=cross_domain_ingestion,
@@ -100,6 +110,8 @@ def build_dcl_prs_gate_index(
         strong_baseline_matrix=strong_baseline_matrix,
         gss_public_use_download_manifest=gss_public_use_download_manifest,
         official_public_use_file_probe=official_public_use_file_probe,
+        gss_policy_task_binding=gss_policy_task_binding,
+        gss_policy_task_ingestion_smoke=gss_policy_task_ingestion_smoke,
     )
     required_next_gates = _required_next_gates(completed_subgates)
     evidence_refs = _evidence_refs(
@@ -118,6 +130,8 @@ def build_dcl_prs_gate_index(
         strong_baseline_matrix=strong_baseline_matrix,
         gss_public_use_download_manifest=gss_public_use_download_manifest,
         official_public_use_file_probe=official_public_use_file_probe,
+        gss_policy_task_binding=gss_policy_task_binding,
+        gss_policy_task_ingestion_smoke=gss_policy_task_ingestion_smoke,
     )
     gate = {
         "schema_version": GATE_SCHEMA_VERSION,
@@ -196,6 +210,12 @@ def write_dcl_prs_gate_index(
             artifact_id="dcl-prs-official-public-use-file-probe-current-001",
             gss_download_manifest=gss_manifest,
         )
+    gss_policy_task_binding = _load_json_if_exists(
+        DEFAULT_GSS_POLICY_TASK_BINDING_PATH
+    )
+    gss_policy_task_ingestion_smoke = _load_json_if_exists(
+        DEFAULT_GSS_POLICY_TASK_INGESTION_SMOKE_PATH
+    )
     gate = build_dcl_prs_gate_index(
         artifact_id=artifact_id,
         cross_domain_ingestion=cross_domain_ingestion,
@@ -227,6 +247,8 @@ def write_dcl_prs_gate_index(
         ),
         gss_public_use_download_manifest=gss_manifest,
         official_public_use_file_probe=official_file_probe,
+        gss_policy_task_binding=gss_policy_task_binding,
+        gss_policy_task_ingestion_smoke=gss_policy_task_ingestion_smoke,
     )
     index_path = output_path / f"{artifact_id}.json"
     index_path.write_text(
@@ -275,6 +297,8 @@ def _completed_subgates(
     strong_baseline_matrix: dict[str, Any] | None,
     gss_public_use_download_manifest: dict[str, Any] | None,
     official_public_use_file_probe: dict[str, Any] | None,
+    gss_policy_task_binding: dict[str, Any] | None,
+    gss_policy_task_ingestion_smoke: dict[str, Any] | None,
 ) -> list[str]:
     completed = []
     if _is_status(
@@ -371,6 +395,18 @@ def _completed_subgates(
         status="official_public_use_file_probe_partial",
     ):
         completed.append("official_public_use_file_probe_partial")
+    if _is_status(
+        gss_policy_task_binding,
+        schema_version="dcl-prs-gss-policy-task-binding-v1",
+        status="gss_policy_task_variables_bound",
+    ) and gss_policy_task_binding.get("required_fields_bound") is True:
+        completed.append("gss_policy_task_variables_bound")
+    if _is_status(
+        gss_policy_task_ingestion_smoke,
+        schema_version="dcl-prs-gss-policy-task-ingestion-smoke-v1",
+        status="gss_policy_task_ingestion_smoke_ready",
+    ):
+        completed.append("gss_policy_task_ingestion_smoke_ready")
     return completed
 
 
@@ -387,7 +423,11 @@ def _required_next_gates(completed_subgates: list[str]) -> list[str]:
             gates = [
                 "complete_eurobarometer_authenticated_download",
             ]
-            if "gss_public_use_download_verified" in completed:
+            if "gss_policy_task_ingestion_smoke_ready" in completed:
+                pass
+            elif "gss_policy_task_variables_bound" in completed:
+                gates.append("run_gss_policy_task_ingestion_smoke")
+            elif "gss_public_use_download_verified" in completed:
                 gates.append("bind_gss_public_use_variables_to_policy_tasks")
             else:
                 gates.append("download_gss_public_use_file")
@@ -456,7 +496,11 @@ def _ccf_a_blocking_gaps(completed_subgates: list[str]) -> list[str]:
         gaps.append("cross_domain_microdata_missing")
     elif "official_public_use_file_probe_partial" in completed:
         gaps.append("eurobarometer_microdata_download_missing")
-        if "gss_public_use_download_verified" in completed:
+        if "gss_policy_task_ingestion_smoke_ready" in completed:
+            pass
+        elif "gss_policy_task_variables_bound" in completed:
+            gaps.append("gss_ingestion_smoke_missing")
+        elif "gss_public_use_download_verified" in completed:
             gaps.append("gss_variable_binding_missing")
         else:
             gaps.append("gss_public_use_download_missing")
@@ -514,6 +558,8 @@ def _evidence_refs(
     strong_baseline_matrix: dict[str, Any] | None,
     gss_public_use_download_manifest: dict[str, Any] | None,
     official_public_use_file_probe: dict[str, Any] | None,
+    gss_policy_task_binding: dict[str, Any] | None,
+    gss_policy_task_ingestion_smoke: dict[str, Any] | None,
 ) -> list[str]:
     refs = []
     for artifact in (
@@ -532,6 +578,8 @@ def _evidence_refs(
         strong_baseline_matrix,
         gss_public_use_download_manifest,
         official_public_use_file_probe,
+        gss_policy_task_binding,
+        gss_policy_task_ingestion_smoke,
     ):
         if artifact is not None and isinstance(artifact.get("artifact_id"), str):
             refs.append(artifact["artifact_id"])
