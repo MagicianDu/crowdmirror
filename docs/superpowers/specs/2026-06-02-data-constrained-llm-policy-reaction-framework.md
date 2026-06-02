@@ -12,6 +12,7 @@
 - 但多轮探索后，继续在 `prior family / k / selector / gate / prompt` 之间局部搜索，难以稳定胜出强基线；
 - `strong_baseline_lcdu_not_leading` 说明 LCDU 当前版本不能单独支撑 CCF-A 主贡献；
 - Product 需要的不只是局部拟合改善，而是完整、可解释、可审计、可演化的政策反应模拟能力。
+- 单一公开数据集容易把结论锁定在一个调查口径、一个制度环境或一类政策议题上，因此新阶段必须增加跨领域公开数据验证。
 
 因此，LCDU 在新阶段不再作为唯一主算法继续硬推，而降级为：
 
@@ -395,7 +396,7 @@ LCDU 后续作为基础设施保留：
 
 ## 6. 第一阶段实验矩阵
 
-第一阶段不追求完整三元系统，而是用 4 个任务覆盖关键组合。
+第一阶段不追求完整三元系统，而是用 5 个任务覆盖关键组合和跨领域数据验证。
 
 ### Task 1：Mechanism Program L0
 
@@ -502,11 +503,53 @@ LCDU 后续作为基础设施保留：
 - CCF-A gate 不允许被 single split 关闭；
 - Product readiness 不允许只看 UI demo。
 
+### Task 5：Cross-Domain Public Dataset Ingestion L0
+
+目标：
+
+> 增加两个不同领域的公开数据集，验证 DCL-PRS 不是只对当前 ANES/HPS 类数据切片有效。
+
+第一阶段正式纳入两个数据源：
+
+1. GSS，General Social Survey；
+2. Eurobarometer。
+
+WVS，World Values Survey，作为备用或第二阶段跨文化扩展数据源。
+
+输入：
+
+- GSS public-use data；
+- Eurobarometer public opinion data；
+- 变量 codebook；
+- 当前 policy reaction task schema；
+- 当前 DCL-PRS artifact schema。
+
+输出：
+
+- `public_dataset_audit` artifact；
+- `cross_domain_task_mapping` artifact；
+- `dataset_ingestion_smoke` artifact；
+- `cross_domain_claim_boundary`。
+
+验收：
+
+- 至少两个新增数据源完成 license / access / codebook 审计；
+- 至少两个新增数据源各形成 1 个可运行 task slice；
+- 新 task slice 必须能映射到 cohort、policy/question、response distribution 三类核心字段；
+- 不允许把新增数据 smoke 结果包装成 CCF-A 结论；
+- 所有跨领域结果必须进入 Integrated Gate。
+
 ## 7. 验证方案
 
 ### 7.1 数据与 split
 
-第一阶段继续使用现有公开数据切片，不重新定义 benchmark。
+第一阶段保留现有公开数据切片作为主验证协议，同时新增两个跨领域公开数据源作为外部有效性验证。
+
+现有数据不被替代，原因是：
+
+- 当前 ANES/HPS/HOTPS 切片已有完整 calibration / heldout / test / repeat / gate；
+- 新数据源需要先做变量映射和 ingestion smoke；
+- CCF-A claim 必须区分主协议证据和跨领域补充证据。
 
 必须保留：
 
@@ -517,6 +560,19 @@ LCDU 后续作为基础设施保留：
 - strong baseline comparison。
 
 新增数据可作为第二阶段扩展，但不能在第一阶段替代当前可复现协议。
+
+第一阶段新增数据源：
+
+| 数据源 | 领域 | 官方来源 | 用途 |
+| --- | --- | --- | --- |
+| GSS | 美国长期社会态度、制度信任、社会政策、经济、健康、民权 | [NORC General Social Survey](https://www.norc.org/research/projects/gss.html) | 验证机制生成与失败归因是否能迁移到更宽社会议题 |
+| Eurobarometer | 欧洲公共意见、EU 议题、政治社会态度、政策信任 | [GESIS Eurobarometer Data Service](https://www.gesis.org/en/eurobarometer-data-service) | 验证跨制度环境和跨国家群体切片下的 policy reaction 能力 |
+
+备用数据源：
+
+| 数据源 | 领域 | 官方来源 | 用途 |
+| --- | --- | --- | --- |
+| WVS | 跨文化价值观、制度信任、民主、迁移、社会规范 | [World Values Survey](https://www.worldvaluessurvey.org/WVSContents.jsp?CMSID=Documentation) | 第二阶段验证机制变量的跨文化外推边界 |
 
 ### 7.2 Baseline
 
@@ -571,6 +627,7 @@ Product 指标：
 2. A × C 产生可校准、可解释的动态仿真 trace；
 3. B × C 能自动定位动态仿真的主要误差来源；
 4. Integrated Gate 证明新框架的 evidence chain 明显优于当前 Product demo。
+5. GSS 与 Eurobarometer 至少各完成一个可运行 task slice，并能进入统一 gate。
 
 ### 8.2 止损标准
 
@@ -580,14 +637,15 @@ Product 指标：
 2. 错误归因无法稳定复现；
 3. repair proposal 大量被 heldout gate 拒绝；
 4. 动态仿真只能生成叙事，不能进入校准指标；
-5. 新框架在 Product 侧无法形成比 LCDU 报告更强的说服力。
+5. 新增公开数据无法映射到统一 policy reaction schema；
+6. 新框架在 Product 侧无法形成比 LCDU 报告更强的说服力。
 
 ### 8.3 CCF-A 候选标准
 
 新框架要成为 CCF-A 主贡献候选，至少需要：
 
 1. 明确算法定义；
-2. 至少两个公开政策反应任务；
+2. 至少三个公开政策反应任务，其中至少两个来自不同公开数据源；
 3. 至少一个跨任务泛化结果；
 4. 强 baseline 胜出；
 5. 消融证明三条路线或关键组合不是装饰模块；
@@ -610,8 +668,9 @@ Product 指标：
 
 1. 先做 Task 4 的 artifact/gate skeleton，统一证据格式；
 2. 并行做 Task 1 和 Task 2，因为机制生成与错误归因可以共享 segment failure corpus；
-3. 在 Task 1 有稳定 mechanism program 后，启动 Task 3；
-4. 最后用 Task 4 生成第一轮 route coverage ledger 和结论。
+3. 并行启动 Task 5 的数据审计和 ingestion smoke；
+4. 在 Task 1 有稳定 mechanism program 后，启动 Task 3；
+5. 最后用 Task 4 生成第一轮 route coverage ledger 和结论。
 
 如果资源允许，可以开三个 worktree：
 
@@ -632,6 +691,7 @@ Product 指标：
 3. 哪些结论最有商业说服力，例如风险预警、分群解释、政策沟通建议、舆情演化；
 4. 是否允许引入更多公开数据源；
 5. 是否允许把部分 LLM 运行成本用于机制生成和仿真 trace。
+6. 在 GSS / Eurobarometer 中优先选择哪些议题作为第一批 cross-domain task，例如健康、经济、移民、环境、制度信任。
 
 ## 11. 本阶段结论
 
@@ -644,4 +704,5 @@ Product 指标：
 1. 机制程序是否能成为可检验中间层？
 2. 自动错误归因是否能替代人工 prompt/persona 调参？
 3. 群体动态仿真是否能从 demo 叙事变成可校准证据？
-4. 三条路线组合后是否形成比 LCDU 更强的 Research / Product 共同壁垒？
+4. 新框架是否能跨 GSS / Eurobarometer 等不同公开数据源保持可运行和可解释？
+5. 三条路线组合后是否形成比 LCDU 更强的 Research / Product 共同壁垒？
