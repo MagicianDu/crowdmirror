@@ -140,3 +140,20 @@ LCDU L3 的第一阶段围绕 `working_family_price_stressed` 构造一组 guard
    - negative-result stop-loss on low-income repair
 
 这样既能保留主方法的正向证据，也能保留边界清晰的负结果链条。
+
+## 9. 方法摘要 artifact
+
+为避免 LCDU L3 只停留在论文叙述中，当前新增一个机器可读方法摘要：
+
+`experiments/results/policy_reaction_benchmark/policy-reaction-lcdu-l3-method-summary-current-001.json`
+
+该 artifact 汇总：
+
+1. `h02` 与 `i01` 两个 accepted candidate；
+2. repeat stability evidence；
+3. prompt-anchor interaction 与 ablation evidence；
+4. finite route-combo coverage evidence；
+5. residual weakness 与未闭合 gap；
+6. Product 可消费的 `risk_flags` 与 `claim_boundaries`。
+
+它的边界是 bounded transfer evidence：可以支撑 Product 报告展示“当前采用的 Research 主方法及其证据链”，但不能被写成 field validation、客户现场预测准确率或 CCF-A 级充分证据。
