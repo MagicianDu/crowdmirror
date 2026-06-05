@@ -1,3 +1,20 @@
+# Research Worktree — Active Direction
+
+> **当前主线已切换到 R6。**
+>
+> 后续开发以 `docs/active-spec.md` 和 `docs/CURRENT_STATE.md` 为准。
+> 本 README 下方原有内容保留为历史背景，不再作为当前实现依据。
+
+当前 active spec：
+
+- `docs/superpowers/specs/2026-06-05-r6-outcome-feedback-prior-anchored-interaction-simulation-spec.md`
+
+当前目标：
+
+> 结果反馈约束的先验锚定交互仿真框架：用强先验建立可信底座，用交互仿真发现静态数据盲区，用真实 outcome 回填持续校正方法。
+
+## Historical Background
+
 # Research Worktree — Calibrated Generative Agents for CSS
 
 **学科定位**：计算社会科学 / 社会计算

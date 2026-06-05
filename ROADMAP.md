@@ -1,3 +1,17 @@
+# Research Roadmap
+
+> **历史路线图。当前主线已切换到 R6。**
+>
+> 后续开发以 `docs/active-spec.md`、`docs/CURRENT_STATE.md` 和
+> `docs/superpowers/specs/2026-06-05-r6-outcome-feedback-prior-anchored-interaction-simulation-spec.md`
+> 为准。本文下方内容仅作为早期研究背景，不再作为当前实现依据。
+
+当前 R6 目标：
+
+> 构建结果反馈约束的先验锚定交互仿真框架，用于发布前反应评估和发布后反馈学习。
+
+## Historical Roadmap
+
 # Research Roadmap: Calibrated Generative Agents for Computational Social Science
 
 ## 学科定位
