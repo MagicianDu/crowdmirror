@@ -1,0 +1,310 @@
+{
+  "artifact_id": "r6-public-outcome-proxy-anes-climate-current-001",
+  "blocking_gaps": [
+    "public_proxy_is_not_direct_release_outcome",
+    "needs_in_condition_same_family_holdout"
+  ],
+  "by_segment": {
+    "party_or_ideology=conservative|income=lower": {
+      "observed_behavior_change_proxy": 0.57,
+      "observed_reject_proxy": 0.43,
+      "observed_reject_proxy_raw": 0.425925925926,
+      "row_count": 54,
+      "weighted_row_mass": 54
+    },
+    "party_or_ideology=conservative|income=middle": {
+      "observed_behavior_change_proxy": 0.43,
+      "observed_reject_proxy": 0.57,
+      "observed_reject_proxy_raw": 0.567307692308,
+      "row_count": 104,
+      "weighted_row_mass": 104
+    },
+    "party_or_ideology=conservative|income=unknown": {
+      "observed_behavior_change_proxy": 0.25,
+      "observed_reject_proxy": 0.75,
+      "observed_reject_proxy_raw": 0.75,
+      "row_count": 16,
+      "weighted_row_mass": 16
+    },
+    "party_or_ideology=conservative|income=upper": {
+      "observed_behavior_change_proxy": 0.45,
+      "observed_reject_proxy": 0.55,
+      "observed_reject_proxy_raw": 0.547297297297,
+      "row_count": 148,
+      "weighted_row_mass": 148
+    },
+    "party_or_ideology=liberal|income=lower": {
+      "observed_behavior_change_proxy": 0.91,
+      "observed_reject_proxy": 0.09,
+      "observed_reject_proxy_raw": 0.093023255814,
+      "row_count": 43,
+      "weighted_row_mass": 43
+    },
+    "party_or_ideology=liberal|income=middle": {
+      "observed_behavior_change_proxy": 0.93,
+      "observed_reject_proxy": 0.07,
+      "observed_reject_proxy_raw": 0.068493150685,
+      "row_count": 73,
+      "weighted_row_mass": 73
+    },
+    "party_or_ideology=liberal|income=unknown": {
+      "observed_behavior_change_proxy": 0.94,
+      "observed_reject_proxy": 0.06,
+      "observed_reject_proxy_raw": 0.0625,
+      "row_count": 16,
+      "weighted_row_mass": 16
+    },
+    "party_or_ideology=liberal|income=upper": {
+      "observed_behavior_change_proxy": 0.99,
+      "observed_reject_proxy": 0.01,
+      "observed_reject_proxy_raw": 0.012048192771,
+      "row_count": 166,
+      "weighted_row_mass": 166
+    },
+    "party_or_ideology=moderate|income=lower": {
+      "observed_behavior_change_proxy": 0.89,
+      "observed_reject_proxy": 0.11,
+      "observed_reject_proxy_raw": 0.108695652174,
+      "row_count": 46,
+      "weighted_row_mass": 46
+    },
+    "party_or_ideology=moderate|income=middle": {
+      "observed_behavior_change_proxy": 0.85,
+      "observed_reject_proxy": 0.15,
+      "observed_reject_proxy_raw": 0.151515151515,
+      "row_count": 66,
+      "weighted_row_mass": 66
+    },
+    "party_or_ideology=moderate|income=unknown": {
+      "observed_behavior_change_proxy": 0.79,
+      "observed_reject_proxy": 0.21,
+      "observed_reject_proxy_raw": 0.214285714286,
+      "row_count": 14,
+      "weighted_row_mass": 14
+    },
+    "party_or_ideology=moderate|income=upper": {
+      "observed_behavior_change_proxy": 0.87,
+      "observed_reject_proxy": 0.13,
+      "observed_reject_proxy_raw": 0.129411764706,
+      "row_count": 85,
+      "weighted_row_mass": 85
+    },
+    "party_or_ideology=unknown|income=lower": {
+      "observed_behavior_change_proxy": 0.79,
+      "observed_reject_proxy": 0.21,
+      "observed_reject_proxy_raw": 0.210526315789,
+      "row_count": 38,
+      "weighted_row_mass": 38
+    },
+    "party_or_ideology=unknown|income=middle": {
+      "observed_behavior_change_proxy": 0.87,
+      "observed_reject_proxy": 0.13,
+      "observed_reject_proxy_raw": 0.133333333333,
+      "row_count": 30,
+      "weighted_row_mass": 30
+    },
+    "party_or_ideology=unknown|income=unknown": {
+      "observed_behavior_change_proxy": 0.86,
+      "observed_reject_proxy": 0.14,
+      "observed_reject_proxy_raw": 0.142857142857,
+      "row_count": 7,
+      "weighted_row_mass": 7
+    },
+    "party_or_ideology=unknown|income=upper": {
+      "observed_behavior_change_proxy": 0.81,
+      "observed_reject_proxy": 0.19,
+      "observed_reject_proxy_raw": 0.192307692308,
+      "row_count": 26,
+      "weighted_row_mass": 26
+    }
+  },
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "This artifact adapts ANES public-use LCDU microdata distributions into the policy-reaction benchmark schema. It is a split ingestion artifact only, not model quality or field validation evidence."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "data_quality_flags": [
+    "same_dataset_regulation_holdout_proxy_not_field_outcome",
+    "proxy_metric_not_direct_attitude_truth",
+    "heldout_split_not_customer_release"
+  ],
+  "mapping_review": {
+    "claim_boundary": "Same-dataset public proxy only; not field outcome or direct customer behavior.",
+    "mapping_rationale": "For a rights/rule or regulation-change case, opposition to more regulation or spending is treated as a bounded reject proxy.",
+    "proxy_family": "climate_energy_regulation_preference",
+    "target_response_option": "oppose_more_regulation_or_spending"
+  },
+  "metrics": {
+    "observed_reject_proxy": 0.25,
+    "observed_reject_proxy_raw": 0.2510729613733605,
+    "row_count": 932,
+    "weighted_row_mass": 932
+  },
+  "outcome_override": {
+    "by_segment": {
+      "party_or_ideology=conservative|income=lower": {
+        "observed_behavior_change_proxy": 0.57,
+        "observed_reject_proxy": 0.43,
+        "observed_reject_proxy_raw": 0.425925925926,
+        "row_count": 54,
+        "weighted_row_mass": 54
+      },
+      "party_or_ideology=conservative|income=middle": {
+        "observed_behavior_change_proxy": 0.43,
+        "observed_reject_proxy": 0.57,
+        "observed_reject_proxy_raw": 0.567307692308,
+        "row_count": 104,
+        "weighted_row_mass": 104
+      },
+      "party_or_ideology=conservative|income=unknown": {
+        "observed_behavior_change_proxy": 0.25,
+        "observed_reject_proxy": 0.75,
+        "observed_reject_proxy_raw": 0.75,
+        "row_count": 16,
+        "weighted_row_mass": 16
+      },
+      "party_or_ideology=conservative|income=upper": {
+        "observed_behavior_change_proxy": 0.45,
+        "observed_reject_proxy": 0.55,
+        "observed_reject_proxy_raw": 0.547297297297,
+        "row_count": 148,
+        "weighted_row_mass": 148
+      },
+      "party_or_ideology=liberal|income=lower": {
+        "observed_behavior_change_proxy": 0.91,
+        "observed_reject_proxy": 0.09,
+        "observed_reject_proxy_raw": 0.093023255814,
+        "row_count": 43,
+        "weighted_row_mass": 43
+      },
+      "party_or_ideology=liberal|income=middle": {
+        "observed_behavior_change_proxy": 0.93,
+        "observed_reject_proxy": 0.07,
+        "observed_reject_proxy_raw": 0.068493150685,
+        "row_count": 73,
+        "weighted_row_mass": 73
+      },
+      "party_or_ideology=liberal|income=unknown": {
+        "observed_behavior_change_proxy": 0.94,
+        "observed_reject_proxy": 0.06,
+        "observed_reject_proxy_raw": 0.0625,
+        "row_count": 16,
+        "weighted_row_mass": 16
+      },
+      "party_or_ideology=liberal|income=upper": {
+        "observed_behavior_change_proxy": 0.99,
+        "observed_reject_proxy": 0.01,
+        "observed_reject_proxy_raw": 0.012048192771,
+        "row_count": 166,
+        "weighted_row_mass": 166
+      },
+      "party_or_ideology=moderate|income=lower": {
+        "observed_behavior_change_proxy": 0.89,
+        "observed_reject_proxy": 0.11,
+        "observed_reject_proxy_raw": 0.108695652174,
+        "row_count": 46,
+        "weighted_row_mass": 46
+      },
+      "party_or_ideology=moderate|income=middle": {
+        "observed_behavior_change_proxy": 0.85,
+        "observed_reject_proxy": 0.15,
+        "observed_reject_proxy_raw": 0.151515151515,
+        "row_count": 66,
+        "weighted_row_mass": 66
+      },
+      "party_or_ideology=moderate|income=unknown": {
+        "observed_behavior_change_proxy": 0.79,
+        "observed_reject_proxy": 0.21,
+        "observed_reject_proxy_raw": 0.214285714286,
+        "row_count": 14,
+        "weighted_row_mass": 14
+      },
+      "party_or_ideology=moderate|income=upper": {
+        "observed_behavior_change_proxy": 0.87,
+        "observed_reject_proxy": 0.13,
+        "observed_reject_proxy_raw": 0.129411764706,
+        "row_count": 85,
+        "weighted_row_mass": 85
+      },
+      "party_or_ideology=unknown|income=lower": {
+        "observed_behavior_change_proxy": 0.79,
+        "observed_reject_proxy": 0.21,
+        "observed_reject_proxy_raw": 0.210526315789,
+        "row_count": 38,
+        "weighted_row_mass": 38
+      },
+      "party_or_ideology=unknown|income=middle": {
+        "observed_behavior_change_proxy": 0.87,
+        "observed_reject_proxy": 0.13,
+        "observed_reject_proxy_raw": 0.133333333333,
+        "row_count": 30,
+        "weighted_row_mass": 30
+      },
+      "party_or_ideology=unknown|income=unknown": {
+        "observed_behavior_change_proxy": 0.86,
+        "observed_reject_proxy": 0.14,
+        "observed_reject_proxy_raw": 0.142857142857,
+        "row_count": 7,
+        "weighted_row_mass": 7
+      },
+      "party_or_ideology=unknown|income=upper": {
+        "observed_behavior_change_proxy": 0.81,
+        "observed_reject_proxy": 0.19,
+        "observed_reject_proxy_raw": 0.192307692308,
+        "row_count": 26,
+        "weighted_row_mass": 26
+      }
+    },
+    "data_quality_flags": [
+      "same_dataset_regulation_holdout_proxy_not_field_outcome",
+      "proxy_metric_not_direct_attitude_truth",
+      "heldout_split_not_customer_release"
+    ],
+    "metrics": {
+      "complaint_rate": 0.0,
+      "conversion_delta": -0.59,
+      "negative_sentiment_rate": 0.15,
+      "observed_reject_proxy": 0.25
+    },
+    "observation_window": "anes_2024_public_use_climate_heldout_split",
+    "outcome_source_level": "public_proxy",
+    "release_id": "anes_2024_climate_heldout_proxy",
+    "risk_flags": [
+      "same_dataset_same_family_holdout_not_global_validation",
+      "same_family_holdout_not_cap_condition_validation",
+      "not_field_validation",
+      "not_accuracy_superiority_evidence"
+    ],
+    "source_refs": [
+      "policy-reaction-anes-climate-001-heldout",
+      "experiments/results/policy_reaction_benchmark/policy-reaction-anes-climate-001-heldout.json"
+    ]
+  },
+  "public_source": {
+    "dataset_access_mode": "public_use_heldout_split",
+    "puf_row_count": 1108,
+    "skipped_row_count": 176,
+    "source_artifact_id": "policy-reaction-anes-climate-001-heldout",
+    "source_name": "ANES 2024 public-use climate-energy regulation heldout",
+    "source_schema_version": "policy-reaction-public-data-ingestion-v1",
+    "source_url": "https://sda.berkeley.edu/sdaweb/analysis/?dataset=anes2024full",
+    "split_role": "heldout",
+    "usable_row_count": 932
+  },
+  "risk_flags": [
+    "same_dataset_same_family_holdout_not_global_validation",
+    "same_family_holdout_not_cap_condition_validation",
+    "not_field_validation",
+    "not_accuracy_superiority_evidence"
+  ],
+  "run_id": "r6-public-outcome-proxy-anes-climate-current-001",
+  "schema_version": "r6-public-outcome-proxy-v1",
+  "source_key": "anes_climate_heldout",
+  "source_refs": [
+    "policy-reaction-anes-climate-001-heldout",
+    "experiments/results/policy_reaction_benchmark/policy-reaction-anes-climate-001-heldout.json"
+  ],
+  "status": "public_proxy_ready",
+  "target_case_id": "generic-rights-rule-change",
+  "target_case_type": "rights_rule_change"
+}

@@ -67,6 +67,14 @@
 - `experiments/results/r6_followup_holdout_validation/r6-followup-holdout-validation-current-001.json`
 - `experiments/results/r6_evidence_report/r6-evidence-report-current-004.json`
 
+当前新增的 R6 第三个 public proxy 单元：
+
+- `experiments/r6_public_outcome_proxy.py` 支持 `anes_climate_heldout`。
+- `experiments/results/r6_public_outcome_proxy/r6-public-outcome-proxy-anes-climate-current-001.json`
+- `experiments/results/r6_ablation_report/r6-ablation-report-anes-climate-current-001.json`
+- `experiments/results/r6_followup_holdout_validation/r6-followup-holdout-validation-current-002.json`
+- `experiments/results/r6_evidence_report/r6-evidence-report-current-005.json`
+
 ## 已确认结论
 
 1. 强人口/客户/群体先验不是研究对手，而是仿真底座。
@@ -86,6 +94,9 @@
 15. Evidence report 已将 Product ingestion 纳入 gate：`product_report_ingests_mechanism_cap=true`；旧的 `needs_product_demo_report_ingestion` 与 `needs_public_proxy_mapping_review` gap 不再保留。
 16. follow-up / holdout validation 的当前结论是 `holdout_validation_partial`：mechanism cap 在 ANES source case 上修复失败，并在 HTOPS cross-proxy holdout 上不回归，但缺少同 family 的 rights/rule holdout，因此 `global_update_accepted=false`。
 17. outcome feedback update 在两个 public proxy 上都降低了 same-case error，但仍是 `blocked_same_case_only`；当前没有 cross-case transfer protocol，不能进入全局更新。
+18. 第三个 public proxy `anes_climate_heldout` 已接入：它是同 ANES public-use、不同政策域的 climate-energy regulation heldout，映射到 `generic-rights-rule-change` 的 bounded reject proxy，`observed_reject_proxy=0.25`。
+19. 第三个 proxy 让 holdout 结论更精确：当前不是“没有同 family holdout”，而是“同 family holdout 可用，但不覆盖 cap 触发条件”。在 climate holdout 上 static prior error 为 `0.06`，高于 cap 条件阈值 `0.03`，因此 `mechanism_cap_same_family_cap_condition_covered=false`、`global_update_accepted=false`。
+20. 三个 public proxy 的整体证据仍是 mixed evidence：HTOPS 上 prior-anchored interaction 为正向，ANES health 与 ANES climate 上都是 regression；因此 R6 只能继续作为有约束诊断框架推进，不能宣称稳定准确性优势。
 
 ## 可复用资产
 
@@ -119,7 +130,7 @@ R6 开发时必须只 stage 本轮明确修改的文件。
 
 ## 下一步
 
-1. 继续接入第三个 public/real proxy，优先寻找同 family 的 rights/rule holdout，用来验证 mechanism cap 是否可从 partial pass 升级。
+1. 寻找或构造“覆盖 cap 触发条件”的同 family rights/rule holdout，即 static prior error 足够低且 interaction amplification 会触发 cap 的独立 public/real proxy。
 2. 设计 outcome feedback cross-case transfer protocol，验证 same-case feedback update 是否能跨 case 不回归。
 3. 将 cap 规则扩展成可配置 policy，而不是写死在 runtime 默认参数中。
 4. 将 Product 侧展示从 JSON report 接到 demo/API，但必须直接消费 artifact 字段，不允许写静态叙事兜底。

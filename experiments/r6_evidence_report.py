@@ -37,11 +37,16 @@ def build_r6_evidence_report(
         run_id=run_id,
         source_key="anes_health_heldout",
     )
-    public_proxies = [public_proxy, second_public_proxy]
+    third_public_proxy = build_r6_public_outcome_proxy(
+        artifact_id=f"{artifact_id}-public-outcome-proxy-anes-climate",
+        run_id=run_id,
+        source_key="anes_climate_heldout",
+    )
+    public_proxies = [public_proxy, second_public_proxy, third_public_proxy]
     case_matrix = build_r6_case_matrix(
         artifact_id=f"{artifact_id}-case-matrix",
         run_id=run_id,
-        public_outcome_proxies=public_proxies,
+        public_outcome_proxies=[public_proxy, second_public_proxy],
     )
     mechanism_cap_ablation = build_r6_mechanism_cap_ablation(
         artifact_id=f"{artifact_id}-mechanism-cap-ablation",
@@ -67,6 +72,11 @@ def build_r6_evidence_report(
         run_id=run_id,
         public_outcome_proxy=second_public_proxy,
     )
+    third_ablation = build_r6_ablation_report(
+        artifact_id=f"{artifact_id}-ablation-anes-climate",
+        run_id=run_id,
+        public_outcome_proxy=third_public_proxy,
+    )
     by_method = {result["method"]: result for result in ablation["baseline_results"]}
     prior_anchored_beats_no_interaction = (
         by_method["prior_anchored_interaction"]["mean_absolute_error"]
@@ -81,8 +91,8 @@ def build_r6_evidence_report(
             "current_decision": "continue_r6_with_constraints",
             "stoploss_triggered": False,
             "reason": (
-                "Two public proxy cases are connected. One supports the prior-anchored "
-                "interaction signal, one exposes a non-improvement boundary, and global "
+                "Three public proxies are connected. One supports the prior-anchored "
+                "interaction signal, two expose non-improvement boundaries, and global "
                 "updates remain blocked."
             ),
         },
@@ -119,8 +129,11 @@ def build_r6_evidence_report(
         "ablation_reports": [
             _ablation_case_summary(ablation),
             _ablation_case_summary(second_ablation),
+            _ablation_case_summary(third_ablation),
         ],
-        "multi_proxy_summary": _multi_proxy_summary([ablation, second_ablation]),
+        "multi_proxy_summary": _multi_proxy_summary(
+            [ablation, second_ablation, third_ablation]
+        ),
         "product_report_summary": {
             "artifact_id": product_report["artifact_id"],
             "status": product_report["status"],
@@ -145,16 +158,24 @@ def build_r6_evidence_report(
         "acceptance_gates": {
             "public_outcome_proxy_connected": True,
             "second_public_outcome_proxy_connected": True,
+            "third_public_outcome_proxy_connected": True,
             "ablation_baselines_present": _has_required_ablation_methods(ablation),
             "deterministic_replay_passed": (
                 ablation["deterministic_replay"]["passed"]
                 and second_ablation["deterministic_replay"]["passed"]
+                and third_ablation["deterministic_replay"]["passed"]
             ),
             "product_report_ingests_mechanism_cap": True,
             "followup_holdout_validation_present": True,
             "mechanism_cap_same_family_holdout_available": followup_holdout[
                 "acceptance_gates"
             ]["mechanism_cap_same_family_holdout_available"],
+            "mechanism_cap_same_family_cap_condition_covered": followup_holdout[
+                "acceptance_gates"
+            ]["mechanism_cap_same_family_cap_condition_covered"],
+            "mechanism_cap_same_family_validation_passed": followup_holdout[
+                "acceptance_gates"
+            ]["mechanism_cap_same_family_validation_passed"],
             "outcome_feedback_cross_case_transfer_available": followup_holdout[
                 "acceptance_gates"
             ]["outcome_feedback_cross_case_transfer_available"],
@@ -164,12 +185,14 @@ def build_r6_evidence_report(
         "source_refs": [
             public_proxy["artifact_id"],
             second_public_proxy["artifact_id"],
+            third_public_proxy["artifact_id"],
             case_matrix["artifact_id"],
             product_report["artifact_id"],
             mechanism_cap_ablation["artifact_id"],
             followup_holdout["artifact_id"],
             ablation["artifact_id"],
             second_ablation["artifact_id"],
+            third_ablation["artifact_id"],
         ],
         "claim_boundaries": [
             R6_CLAIM_BOUNDARY,

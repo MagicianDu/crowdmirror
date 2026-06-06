@@ -52,6 +52,39 @@ def test_r6_public_outcome_proxy_binds_anes_health_heldout_to_second_case():
     assert "heldout_public_proxy_not_global_validation" in proxy["risk_flags"]
 
 
+def test_r6_public_outcome_proxy_binds_anes_climate_heldout_to_third_same_family_case():
+    proxy = build_r6_public_outcome_proxy(
+        artifact_id="r6-public-outcome-proxy-anes-climate-test",
+        run_id="r6-public-outcome-proxy-anes-climate-run",
+        source_key="anes_climate_heldout",
+    )
+
+    assert proxy["schema_version"] == "r6-public-outcome-proxy-v1"
+    assert proxy["status"] == "public_proxy_ready"
+    assert proxy["source_key"] == "anes_climate_heldout"
+    assert proxy["target_case_id"] == "generic-rights-rule-change"
+    assert proxy["target_case_type"] == "rights_rule_change"
+    assert proxy["public_source"]["source_artifact_id"] == (
+        "policy-reaction-anes-climate-001-heldout"
+    )
+    assert proxy["public_source"]["source_name"] == (
+        "ANES 2024 public-use climate-energy regulation heldout"
+    )
+    assert proxy["public_source"]["usable_row_count"] == 932
+    assert proxy["public_source"]["split_role"] == "heldout"
+    assert proxy["metrics"]["observed_reject_proxy"] == 0.25
+    assert proxy["mapping_review"]["proxy_family"] == (
+        "climate_energy_regulation_preference"
+    )
+    assert proxy["mapping_review"]["target_response_option"] == (
+        "oppose_more_regulation_or_spending"
+    )
+    assert "same_dataset_regulation_holdout_proxy_not_field_outcome" in proxy[
+        "data_quality_flags"
+    ]
+    assert "same_family_holdout_not_cap_condition_validation" in proxy["risk_flags"]
+
+
 def test_r6_case_matrix_can_replace_one_fixture_with_public_proxy_outcome():
     proxy = build_r6_public_outcome_proxy(
         artifact_id="r6-public-outcome-proxy-test",
@@ -155,18 +188,23 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
     assert report["acceptance_gates"] == {
         "public_outcome_proxy_connected": True,
         "second_public_outcome_proxy_connected": True,
+        "third_public_outcome_proxy_connected": True,
         "ablation_baselines_present": True,
         "deterministic_replay_passed": True,
         "product_report_ingests_mechanism_cap": True,
         "followup_holdout_validation_present": True,
-        "mechanism_cap_same_family_holdout_available": False,
+        "mechanism_cap_same_family_holdout_available": True,
+        "mechanism_cap_same_family_cap_condition_covered": False,
+        "mechanism_cap_same_family_validation_passed": False,
         "outcome_feedback_cross_case_transfer_available": False,
         "global_update_accepted": False,
     }
     assert report["followup_holdout_validation_summary"] == {
         "artifact_id": "r6-evidence-report-test-followup-holdout-validation",
         "status": "holdout_validation_partial",
-        "mechanism_cap_upgrade_status": "partial_pass_needs_same_family_holdout",
+        "mechanism_cap_upgrade_status": (
+            "partial_pass_needs_in_condition_same_family_holdout"
+        ),
         "outcome_feedback_upgrade_status": "blocked_same_case_only",
         "global_update_accepted": False,
     }
@@ -175,16 +213,19 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
     )
     assert report["ablation_summary"]["prior_anchored_beats_no_interaction"] is True
     assert report["multi_proxy_summary"] == {
-        "public_proxy_count": 2,
+        "public_proxy_count": 3,
         "public_proxy_source_count": 2,
         "prior_anchored_positive_count": 1,
-        "prior_anchored_regression_count": 1,
+        "prior_anchored_regression_count": 2,
         "conclusion": "mixed_public_proxy_evidence",
     }
     assert "needs_more_public_or_real_outcomes" in report["remaining_gaps"]
     assert "needs_product_demo_report_ingestion" not in report["remaining_gaps"]
     assert "needs_public_proxy_mapping_review" not in report["remaining_gaps"]
-    assert "needs_same_family_rights_rule_holdout" in report["remaining_gaps"]
+    assert "needs_third_public_or_real_proxy" not in report["remaining_gaps"]
+    assert "needs_in_condition_same_family_rights_rule_holdout" in report[
+        "remaining_gaps"
+    ]
     assert "same_case_feedback_not_global_acceptance" in report["risk_flags"]
     json.dumps(report, allow_nan=False)
 

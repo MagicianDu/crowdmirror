@@ -28,6 +28,10 @@ ANES_HEALTH_HELDOUT_PATH = (
     "experiments/results/policy_reaction_benchmark/"
     "policy-reaction-anes-health-001-heldout.json"
 )
+ANES_CLIMATE_HELDOUT_PATH = (
+    "experiments/results/policy_reaction_benchmark/"
+    "policy-reaction-anes-climate-001-heldout.json"
+)
 TARGET_CASE_ID = "generic-public-service-policy-change"
 
 
@@ -47,6 +51,12 @@ def build_r6_public_outcome_proxy(
             artifact_id=artifact_id,
             run_id=run_id,
             public_ingestion_path=ANES_HEALTH_HELDOUT_PATH,
+        )
+    if source_key == "anes_climate_heldout":
+        return _build_anes_climate_proxy(
+            artifact_id=artifact_id,
+            run_id=run_id,
+            public_ingestion_path=ANES_CLIMATE_HELDOUT_PATH,
         )
     if source_key != "htops_cost_pressure":
         raise ValueError(f"unknown R6 public outcome proxy source_key: {source_key}")
@@ -240,6 +250,110 @@ def _build_anes_health_proxy(
         "blocking_gaps": [
             "public_proxy_is_not_direct_release_outcome",
             "needs_cross_proxy_mapping_review",
+        ],
+    }
+    assert_strict_json(proxy)
+    return proxy
+
+
+def _build_anes_climate_proxy(
+    *,
+    artifact_id: str,
+    run_id: str,
+    public_ingestion_path: str | Path,
+) -> dict[str, Any]:
+    ingestion = load_json_artifact(public_ingestion_path)
+    observed = ingestion["observed_policy_reaction_summary"]
+    by_segment = observed["by_segment"]
+    target_option = "oppose_more_regulation_or_spending"
+    weighted = _weighted_distribution(by_segment)
+    observed_reject_proxy_raw = weighted[target_option]
+    segment_payload = _segment_proxy_for_target(
+        by_segment,
+        target_option=target_option,
+        behavior_options=[
+            "support_more_regulation_or_spending",
+            "mixed_or_status_quo",
+        ],
+    )
+    usable_row_count = sum(segment["row_count"] for segment in segment_payload.values())
+    weighted_row_mass = sum(segment["weighted_row_mass"] for segment in segment_payload.values())
+    data_quality_flags = [
+        "same_dataset_regulation_holdout_proxy_not_field_outcome",
+        "proxy_metric_not_direct_attitude_truth",
+        "heldout_split_not_customer_release",
+    ]
+    risk_flags = [
+        "same_dataset_same_family_holdout_not_global_validation",
+        "same_family_holdout_not_cap_condition_validation",
+        "not_field_validation",
+        "not_accuracy_superiority_evidence",
+    ]
+    source_refs = [
+        ingestion["artifact_id"],
+        str(public_ingestion_path),
+    ]
+    proxy = {
+        "schema_version": R6_PUBLIC_OUTCOME_PROXY_SCHEMA_VERSION,
+        "artifact_id": artifact_id,
+        "run_id": run_id,
+        "status": "public_proxy_ready",
+        "source_key": "anes_climate_heldout",
+        "target_case_id": "generic-rights-rule-change",
+        "target_case_type": "rights_rule_change",
+        "public_source": {
+            "source_artifact_id": ingestion["artifact_id"],
+            "source_name": "ANES 2024 public-use climate-energy regulation heldout",
+            "source_schema_version": ingestion["schema_version"],
+            "source_url": ingestion.get("source", {}).get("source_url", "unknown_public_source_url"),
+            "dataset_access_mode": "public_use_heldout_split",
+            "puf_row_count": ingestion["row_count"],
+            "usable_row_count": usable_row_count,
+            "skipped_row_count": ingestion["row_count"] - usable_row_count,
+            "split_role": ingestion["split_role"],
+        },
+        "metrics": {
+            "observed_reject_proxy": round(observed_reject_proxy_raw, 2),
+            "observed_reject_proxy_raw": observed_reject_proxy_raw,
+            "row_count": usable_row_count,
+            "weighted_row_mass": weighted_row_mass,
+        },
+        "by_segment": segment_payload,
+        "mapping_review": {
+            "proxy_family": "climate_energy_regulation_preference",
+            "target_response_option": target_option,
+            "mapping_rationale": (
+                "For a rights/rule or regulation-change case, opposition to more "
+                "regulation or spending is treated as a bounded reject proxy."
+            ),
+            "claim_boundary": "Same-dataset public proxy only; not field outcome or direct customer behavior.",
+        },
+        "outcome_override": {
+            "release_id": "anes_2024_climate_heldout_proxy",
+            "observation_window": "anes_2024_public_use_climate_heldout_split",
+            "metrics": {
+                "observed_reject_proxy": round(observed_reject_proxy_raw, 2),
+                "complaint_rate": 0.0,
+                "negative_sentiment_rate": round(weighted["mixed_or_status_quo"], 2),
+                "conversion_delta": -round(weighted["support_more_regulation_or_spending"], 2),
+            },
+            "by_segment": segment_payload,
+            "source_refs": source_refs,
+            "risk_flags": risk_flags,
+            "data_quality_flags": data_quality_flags,
+            "outcome_source_level": "public_proxy",
+        },
+        "data_quality_flags": data_quality_flags,
+        "source_refs": source_refs,
+        "claim_boundaries": [
+            R6_CLAIM_BOUNDARY,
+            ingestion["claim_boundary"],
+        ],
+        "claim_boundary": R6_CLAIM_BOUNDARY,
+        "risk_flags": risk_flags,
+        "blocking_gaps": [
+            "public_proxy_is_not_direct_release_outcome",
+            "needs_in_condition_same_family_holdout",
         ],
     }
     assert_strict_json(proxy)
