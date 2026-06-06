@@ -84,6 +84,7 @@ def build_r6_ablation_report(
             global_update_status="blocked_same_case_only",
         ),
     ]
+    current_best_non_feedback_method = _best_non_feedback_method(baseline_results)
     report = {
         "schema_version": R6_ABLATION_REPORT_SCHEMA_VERSION,
         "artifact_id": artifact_id,
@@ -109,7 +110,7 @@ def build_r6_ablation_report(
         ),
         "baseline_results": baseline_results,
         "method_ranking": _method_ranking(baseline_results),
-        "current_best_non_feedback_method": "prior_anchored_interaction",
+        "current_best_non_feedback_method": current_best_non_feedback_method,
         "claim_status": "public_proxy_diagnostic_only",
         "source_refs": [
             proxy["artifact_id"],
@@ -232,6 +233,13 @@ def _method_ranking(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
             sorted(results, key=lambda result: result["mean_absolute_error"])
         )
     ]
+
+
+def _best_non_feedback_method(results: list[dict[str, Any]]) -> str:
+    candidates = [
+        result for result in results if result["method"] != "outcome_feedback_update"
+    ]
+    return min(candidates, key=lambda result: result["mean_absolute_error"])["method"]
 
 
 def _deterministic_replay(

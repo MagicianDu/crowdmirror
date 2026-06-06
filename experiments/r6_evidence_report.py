@@ -30,10 +30,16 @@ def build_r6_evidence_report(
         artifact_id=f"{artifact_id}-public-outcome-proxy",
         run_id=run_id,
     )
+    second_public_proxy = build_r6_public_outcome_proxy(
+        artifact_id=f"{artifact_id}-public-outcome-proxy-anes-health",
+        run_id=run_id,
+        source_key="anes_health_heldout",
+    )
+    public_proxies = [public_proxy, second_public_proxy]
     case_matrix = build_r6_case_matrix(
         artifact_id=f"{artifact_id}-case-matrix",
         run_id=run_id,
-        public_outcome_proxy=public_proxy,
+        public_outcome_proxies=public_proxies,
     )
     product_report = build_r6_product_report(
         artifact_id=f"{artifact_id}-product-report",
@@ -44,6 +50,11 @@ def build_r6_evidence_report(
         artifact_id=f"{artifact_id}-ablation",
         run_id=run_id,
         public_outcome_proxy=public_proxy,
+    )
+    second_ablation = build_r6_ablation_report(
+        artifact_id=f"{artifact_id}-ablation-anes-health",
+        run_id=run_id,
+        public_outcome_proxy=second_public_proxy,
     )
     by_method = {result["method"]: result for result in ablation["baseline_results"]}
     prior_anchored_beats_no_interaction = (
@@ -59,11 +70,14 @@ def build_r6_evidence_report(
             "current_decision": "continue_r6_with_constraints",
             "stoploss_triggered": False,
             "reason": (
-                "One public proxy case is connected, the prior-anchored interaction "
-                "signal improves over the no-interaction prior on this proxy, and "
-                "global updates remain blocked."
+                "Two public proxy cases are connected. One supports the prior-anchored "
+                "interaction signal, one exposes a non-improvement boundary, and global "
+                "updates remain blocked."
             ),
         },
+        "public_outcome_proxies": [
+            _public_proxy_summary(proxy) for proxy in public_proxies
+        ],
         "public_outcome_proxy": {
             "artifact_id": public_proxy["artifact_id"],
             "target_case_id": public_proxy["target_case_id"],
@@ -91,6 +105,11 @@ def build_r6_evidence_report(
             ],
             "current_best_non_feedback_method": ablation["current_best_non_feedback_method"],
         },
+        "ablation_reports": [
+            _ablation_case_summary(ablation),
+            _ablation_case_summary(second_ablation),
+        ],
+        "multi_proxy_summary": _multi_proxy_summary([ablation, second_ablation]),
         "product_report_summary": {
             "artifact_id": product_report["artifact_id"],
             "status": product_report["status"],
@@ -98,8 +117,12 @@ def build_r6_evidence_report(
         },
         "acceptance_gates": {
             "public_outcome_proxy_connected": True,
+            "second_public_outcome_proxy_connected": True,
             "ablation_baselines_present": _has_required_ablation_methods(ablation),
-            "deterministic_replay_passed": ablation["deterministic_replay"]["passed"],
+            "deterministic_replay_passed": (
+                ablation["deterministic_replay"]["passed"]
+                and second_ablation["deterministic_replay"]["passed"]
+            ),
             "global_update_accepted": False,
         },
         "remaining_gaps": [
@@ -110,9 +133,11 @@ def build_r6_evidence_report(
         ],
         "source_refs": [
             public_proxy["artifact_id"],
+            second_public_proxy["artifact_id"],
             case_matrix["artifact_id"],
             product_report["artifact_id"],
             ablation["artifact_id"],
+            second_ablation["artifact_id"],
         ],
         "claim_boundaries": [
             R6_CLAIM_BOUNDARY,
@@ -123,6 +148,7 @@ def build_r6_evidence_report(
             "public_proxy_not_field_validation",
             "same_case_feedback_not_global_acceptance",
             "not_cross_domain_accuracy_evidence",
+            "mixed_public_proxy_evidence",
         ],
         "blocking_gaps": [
             "global_update_acceptance_blocked",
@@ -135,6 +161,61 @@ def build_r6_evidence_report(
 
 def write_r6_evidence_report(output: str | Path, **kwargs: Any) -> Path:
     return write_json_artifact(output, build_r6_evidence_report(**kwargs))
+
+
+def _public_proxy_summary(proxy: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "artifact_id": proxy["artifact_id"],
+        "source_key": proxy["source_key"],
+        "target_case_id": proxy["target_case_id"],
+        "source_artifact_id": proxy["public_source"]["source_artifact_id"],
+        "source_name": proxy["public_source"]["source_name"],
+        "usable_row_count": proxy["public_source"]["usable_row_count"],
+        "observed_reject_proxy": proxy["metrics"]["observed_reject_proxy"],
+        "mapping_target_response_option": proxy["mapping_review"]["target_response_option"],
+    }
+
+
+def _ablation_case_summary(ablation: dict[str, Any]) -> dict[str, Any]:
+    by_method = {result["method"]: result for result in ablation["baseline_results"]}
+    prior_anchored_beats_no_interaction = (
+        by_method["prior_anchored_interaction"]["mean_absolute_error"]
+        < by_method["no_interaction_prior"]["mean_absolute_error"]
+    )
+    return {
+        "artifact_id": ablation["artifact_id"],
+        "target_case_id": ablation["target_case_id"],
+        "public_proxy_observed_reject": ablation["public_proxy"]["observed_reject_proxy"],
+        "no_interaction_error": by_method["no_interaction_prior"]["mean_absolute_error"],
+        "prior_anchored_error": by_method["prior_anchored_interaction"][
+            "mean_absolute_error"
+        ],
+        "prior_anchored_beats_no_interaction": prior_anchored_beats_no_interaction,
+        "outcome_feedback_global_status": by_method["outcome_feedback_update"][
+            "global_update_status"
+        ],
+    }
+
+
+def _multi_proxy_summary(ablation_reports: list[dict[str, Any]]) -> dict[str, Any]:
+    case_summaries = [_ablation_case_summary(ablation) for ablation in ablation_reports]
+    positive_count = sum(
+        1 for summary in case_summaries if summary["prior_anchored_beats_no_interaction"]
+    )
+    regression_count = len(case_summaries) - positive_count
+    return {
+        "public_proxy_count": len(case_summaries),
+        "public_proxy_source_count": len(
+            {summary["target_case_id"] for summary in case_summaries}
+        ),
+        "prior_anchored_positive_count": positive_count,
+        "prior_anchored_regression_count": regression_count,
+        "conclusion": (
+            "mixed_public_proxy_evidence"
+            if regression_count
+            else "positive_public_proxy_evidence"
+        ),
+    }
 
 
 def _has_required_ablation_methods(ablation: dict[str, Any]) -> bool:

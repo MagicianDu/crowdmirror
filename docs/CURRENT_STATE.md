@@ -33,6 +33,14 @@
 - `experiments/results/r6_ablation_report/r6-ablation-report-current-001.json`
 - `experiments/results/r6_evidence_report/r6-evidence-report-current-001.json`
 
+当前新增的 R6 双 proxy 证据单元：
+
+- `experiments/results/r6_public_outcome_proxy/r6-public-outcome-proxy-anes-health-current-001.json`
+- `experiments/results/r6_ablation_report/r6-ablation-report-anes-health-current-001.json`
+- `experiments/results/r6_case_matrix/r6-case-matrix-current-002.json`
+- `experiments/results/r6_product_report/r6-product-report-current-002.json`
+- `experiments/results/r6_evidence_report/r6-evidence-report-current-002.json`
+
 ## 已确认结论
 
 1. 强人口/客户/群体先验不是研究对手，而是仿真底座。
@@ -42,6 +50,8 @@
 5. 垂直场景只能作为验证 case，不能成为方法定义。
 6. 当前 public proxy evidence 支持继续 R6，但只能作为诊断证据，不能作为 field validation 或跨域准确性结论。
 7. same-case outcome feedback update 即使降低误差，也必须保持 `blocked_same_case_only`，不能进入全局默认参数。
+8. 双 proxy 结果是 mixed evidence：HTOPS public proxy 上 prior-anchored interaction 优于 no-interaction prior；ANES health heldout proxy 上 prior-anchored interaction 劣于 no-interaction prior。
+9. 当前结论不是“R6 稳定正效应成立”，而是“R6 已能发现正向信号和失败边界，值得继续但必须做跨 proxy/holdout 约束”。
 
 ## 可复用资产
 
@@ -75,8 +85,8 @@ R6 开发时必须只 stage 本轮明确修改的文件。
 
 ## 下一步
 
-1. 再接入至少 1 个不同任务或不同来源的 public/real outcome proxy，避免单 proxy 结论偏置。
-2. 把 public proxy mapping review 文档化，说明 `baseline_no_new_support` 为什么只能作为 reject proxy。
+1. 把 public proxy mapping review 文档化，分别解释 HTOPS `baseline_no_new_support` 和 ANES `private_insurance_plan` 为什么只能作为 reject proxy。
+2. 针对 ANES health 的失败边界诊断 interaction 机制是否过度放大 rejection risk。
 3. 将 evidence report 接到 Product report/demo ingestion，但继续保留 claim boundary。
 4. 用 follow-up 或 holdout case 验证 outcome feedback update，只有跨 case 不回归时才允许从 `blocked_same_case_only` 升级。
 

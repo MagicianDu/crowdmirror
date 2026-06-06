@@ -24,12 +24,14 @@ def build_r6_case_matrix(
     run_id: str,
     case_templates: list[dict[str, Any]] | None = None,
     public_outcome_proxy: dict[str, Any] | None = None,
+    public_outcome_proxies: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
     templates = _templates_with_public_proxy(
         case_templates if case_templates is not None else R6_CASE_TEMPLATES,
         public_outcome_proxy=public_outcome_proxy,
+        public_outcome_proxies=public_outcome_proxies,
     )
     packages = [
         build_r6_foundation_pipeline(
@@ -79,6 +81,8 @@ def build_r6_case_matrix(
             "needs_holdout_validation_before_global_update_acceptance",
         ],
     }
+    if public_outcome_case_count >= 2:
+        matrix["risk_flags"].append("two_cases_have_public_outcome_proxy")
     assert_strict_json(matrix)
     return matrix
 
@@ -125,6 +129,7 @@ def _case_summary(package: dict[str, Any]) -> dict[str, Any]:
             ],
         },
         "outcome_source_level": outcome.get("outcome_source_level", "fixture_proxy"),
+        "public_outcome_proxy_artifact_id": package.get("public_outcome_proxy_artifact_id"),
         "data_quality_flags": outcome.get("data_quality_flags", []),
         "update_status": registry["overall_status"],
         "default_runtime_enabled": update["default_runtime_enabled"],
@@ -138,19 +143,33 @@ def _templates_with_public_proxy(
     templates: list[dict[str, Any]],
     *,
     public_outcome_proxy: dict[str, Any] | None,
+    public_outcome_proxies: list[dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
     copied = [copy.deepcopy(template) for template in templates]
-    if public_outcome_proxy is None:
+    proxies = list(public_outcome_proxies or [])
+    if public_outcome_proxy is not None:
+        proxies.append(public_outcome_proxy)
+    if not proxies:
         return copied
+    for proxy in proxies:
+        _apply_public_proxy(copied, public_outcome_proxy=proxy)
+    return copied
+
+
+def _apply_public_proxy(
+    templates: list[dict[str, Any]],
+    *,
+    public_outcome_proxy: dict[str, Any],
+) -> None:
     target_case_id = public_outcome_proxy["target_case_id"]
-    for template in copied:
+    for template in templates:
         if template["case_id"] == target_case_id:
             template["outcome"] = {
                 **template.get("outcome", {}),
                 **public_outcome_proxy["outcome_override"],
             }
             template["public_outcome_proxy_artifact_id"] = public_outcome_proxy["artifact_id"]
-            return copied
+            return
     raise ValueError(f"public outcome proxy target case not found: {target_case_id}")
 
 

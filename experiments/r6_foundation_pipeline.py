@@ -78,6 +78,7 @@ def build_r6_foundation_pipeline(
         "case_id": template.get("case_id", "generic-price-change"),
         "case_type": template.get("case_type", "price_change"),
         "industry_binding": template.get("industry_binding", "generic"),
+        "public_outcome_proxy_artifact_id": template.get("public_outcome_proxy_artifact_id"),
         "prior_manifest": prior,
         "scenario_manifest": scenario,
         "interaction_trace": trace,

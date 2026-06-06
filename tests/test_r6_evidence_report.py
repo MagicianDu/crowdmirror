@@ -30,6 +30,28 @@ def test_r6_public_outcome_proxy_binds_htops_public_ingestion_to_one_case():
     json.dumps(proxy, allow_nan=False)
 
 
+def test_r6_public_outcome_proxy_binds_anes_health_heldout_to_second_case():
+    proxy = build_r6_public_outcome_proxy(
+        artifact_id="r6-public-outcome-proxy-anes-test",
+        run_id="r6-public-outcome-proxy-anes-run",
+        source_key="anes_health_heldout",
+    )
+
+    assert proxy["schema_version"] == "r6-public-outcome-proxy-v1"
+    assert proxy["status"] == "public_proxy_ready"
+    assert proxy["target_case_id"] == "generic-rights-rule-change"
+    assert proxy["public_source"]["source_artifact_id"] == (
+        "policy-reaction-anes-health-001-heldout"
+    )
+    assert proxy["public_source"]["source_name"] == "ANES 2024 public-use health heldout"
+    assert proxy["public_source"]["usable_row_count"] == 954
+    assert proxy["public_source"]["split_role"] == "heldout"
+    assert proxy["metrics"]["observed_reject_proxy"] == 0.33
+    assert proxy["mapping_review"]["target_response_option"] == "private_insurance_plan"
+    assert "public_heldout_proxy_not_field_outcome" in proxy["data_quality_flags"]
+    assert "heldout_public_proxy_not_global_validation" in proxy["risk_flags"]
+
+
 def test_r6_case_matrix_can_replace_one_fixture_with_public_proxy_outcome():
     proxy = build_r6_public_outcome_proxy(
         artifact_id="r6-public-outcome-proxy-test",
@@ -49,6 +71,37 @@ def test_r6_case_matrix_can_replace_one_fixture_with_public_proxy_outcome():
     assert "public_proxy_not_field_outcome" in public_cases[0]["data_quality_flags"]
     assert "case_templates_are_fixture_level_evidence" in matrix["risk_flags"]
     assert "one_case_has_public_outcome_proxy" in matrix["risk_flags"]
+
+
+def test_r6_case_matrix_accepts_two_public_proxies_without_merging_sources():
+    htops_proxy = build_r6_public_outcome_proxy(
+        artifact_id="r6-public-outcome-proxy-htops-test",
+        run_id="r6-public-outcome-proxy-htops-run",
+    )
+    anes_proxy = build_r6_public_outcome_proxy(
+        artifact_id="r6-public-outcome-proxy-anes-test",
+        run_id="r6-public-outcome-proxy-anes-run",
+        source_key="anes_health_heldout",
+    )
+    matrix = build_r6_case_matrix(
+        artifact_id="r6-case-matrix-two-proxy-test",
+        run_id="r6-case-matrix-two-proxy-run",
+        public_outcome_proxies=[htops_proxy, anes_proxy],
+    )
+
+    public_cases = [case for case in matrix["cases"] if case["outcome_source_level"] == "public_proxy"]
+    assert matrix["public_outcome_proxy_case_count"] == 2
+    assert {case["case_id"] for case in public_cases} == {
+        "generic-public-service-policy-change",
+        "generic-rights-rule-change",
+    }
+    assert {
+        case["public_outcome_proxy_artifact_id"] for case in public_cases
+    } == {
+        "r6-public-outcome-proxy-htops-test",
+        "r6-public-outcome-proxy-anes-test",
+    }
+    assert "two_cases_have_public_outcome_proxy" in matrix["risk_flags"]
 
 
 def test_r6_ablation_report_compares_prior_interaction_noise_and_feedback():
@@ -101,11 +154,19 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
     assert report["evidence_answer"]["stoploss_triggered"] is False
     assert report["acceptance_gates"] == {
         "public_outcome_proxy_connected": True,
+        "second_public_outcome_proxy_connected": True,
         "ablation_baselines_present": True,
         "deterministic_replay_passed": True,
         "global_update_accepted": False,
     }
     assert report["ablation_summary"]["prior_anchored_beats_no_interaction"] is True
+    assert report["multi_proxy_summary"] == {
+        "public_proxy_count": 2,
+        "public_proxy_source_count": 2,
+        "prior_anchored_positive_count": 1,
+        "prior_anchored_regression_count": 1,
+        "conclusion": "mixed_public_proxy_evidence",
+    }
     assert "needs_more_public_or_real_outcomes" in report["remaining_gaps"]
     assert "same_case_feedback_not_global_acceptance" in report["risk_flags"]
     json.dumps(report, allow_nan=False)

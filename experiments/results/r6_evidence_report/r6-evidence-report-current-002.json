@@ -1,0 +1,122 @@
+{
+  "ablation_reports": [
+    {
+      "artifact_id": "r6-evidence-report-current-002-ablation",
+      "no_interaction_error": 0.18,
+      "outcome_feedback_global_status": "blocked_same_case_only",
+      "prior_anchored_beats_no_interaction": true,
+      "prior_anchored_error": 0.11,
+      "public_proxy_observed_reject": 0.47,
+      "target_case_id": "generic-public-service-policy-change"
+    },
+    {
+      "artifact_id": "r6-evidence-report-current-002-ablation-anes-health",
+      "no_interaction_error": 0.02,
+      "outcome_feedback_global_status": "blocked_same_case_only",
+      "prior_anchored_beats_no_interaction": false,
+      "prior_anchored_error": 0.05,
+      "public_proxy_observed_reject": 0.33,
+      "target_case_id": "generic-rights-rule-change"
+    }
+  ],
+  "ablation_summary": {
+    "artifact_id": "r6-evidence-report-current-002-ablation",
+    "current_best_non_feedback_method": "prior_anchored_interaction",
+    "no_interaction_error": 0.18,
+    "outcome_feedback_global_status": "blocked_same_case_only",
+    "outcome_feedback_update_error": 0.04,
+    "prior_anchored_beats_no_interaction": true,
+    "prior_anchored_error": 0.11
+  },
+  "acceptance_gates": {
+    "ablation_baselines_present": true,
+    "deterministic_replay_passed": true,
+    "global_update_accepted": false,
+    "public_outcome_proxy_connected": true,
+    "second_public_outcome_proxy_connected": true
+  },
+  "artifact_id": "r6-evidence-report-current-002",
+  "blocking_gaps": [
+    "global_update_acceptance_blocked",
+    "cross_case_validation_missing"
+  ],
+  "case_matrix_summary": {
+    "artifact_id": "r6-evidence-report-current-002-case-matrix",
+    "case_count": 3,
+    "public_outcome_proxy_case_count": 2
+  },
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "This is public proxy evidence only; it is not field validation."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "evidence_answer": {
+    "current_decision": "continue_r6_with_constraints",
+    "reason": "Two public proxy cases are connected. One supports the prior-anchored interaction signal, one exposes a non-improvement boundary, and global updates remain blocked.",
+    "stoploss_triggered": false
+  },
+  "multi_proxy_summary": {
+    "conclusion": "mixed_public_proxy_evidence",
+    "prior_anchored_positive_count": 1,
+    "prior_anchored_regression_count": 1,
+    "public_proxy_count": 2,
+    "public_proxy_source_count": 2
+  },
+  "product_report_summary": {
+    "artifact_id": "r6-evidence-report-current-002-product-report",
+    "market_claim_status": "diagnostic_workflow_ready_not_accuracy_claim",
+    "status": "report_ready"
+  },
+  "public_outcome_proxies": [
+    {
+      "artifact_id": "r6-evidence-report-current-002-public-outcome-proxy",
+      "mapping_target_response_option": "baseline_no_new_support",
+      "observed_reject_proxy": 0.47,
+      "source_artifact_id": "policy-reaction-htops-2506-public-ingestion-001",
+      "source_key": "htops_cost_pressure",
+      "source_name": "HTOPS/HPS public-use cost pressure",
+      "target_case_id": "generic-public-service-policy-change",
+      "usable_row_count": 7317
+    },
+    {
+      "artifact_id": "r6-evidence-report-current-002-public-outcome-proxy-anes-health",
+      "mapping_target_response_option": "private_insurance_plan",
+      "observed_reject_proxy": 0.33,
+      "source_artifact_id": "policy-reaction-anes-health-001-heldout",
+      "source_key": "anes_health_heldout",
+      "source_name": "ANES 2024 public-use health heldout",
+      "target_case_id": "generic-rights-rule-change",
+      "usable_row_count": 954
+    }
+  ],
+  "public_outcome_proxy": {
+    "artifact_id": "r6-evidence-report-current-002-public-outcome-proxy",
+    "observed_reject_proxy": 0.47,
+    "source_url": "https://www.census.gov/programs-surveys/household-pulse-survey/data/datasets.html",
+    "target_case_id": "generic-public-service-policy-change",
+    "usable_row_count": 7317
+  },
+  "remaining_gaps": [
+    "needs_more_public_or_real_outcomes",
+    "needs_holdout_case_for_feedback_update_acceptance",
+    "needs_public_proxy_mapping_review",
+    "needs_product_demo_report_ingestion"
+  ],
+  "risk_flags": [
+    "public_proxy_not_field_validation",
+    "same_case_feedback_not_global_acceptance",
+    "not_cross_domain_accuracy_evidence",
+    "mixed_public_proxy_evidence"
+  ],
+  "run_id": "r6-evidence-report-current-002",
+  "schema_version": "r6-evidence-report-v1",
+  "source_refs": [
+    "r6-evidence-report-current-002-public-outcome-proxy",
+    "r6-evidence-report-current-002-public-outcome-proxy-anes-health",
+    "r6-evidence-report-current-002-case-matrix",
+    "r6-evidence-report-current-002-product-report",
+    "r6-evidence-report-current-002-ablation",
+    "r6-evidence-report-current-002-ablation-anes-health"
+  ],
+  "status": "public_proxy_evidence_ready"
+}

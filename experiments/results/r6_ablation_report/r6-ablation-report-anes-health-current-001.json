@@ -1,0 +1,167 @@
+{
+  "artifact_id": "r6-ablation-report-anes-health-current-001",
+  "baseline_results": [
+    {
+      "global_update_status": "not_update_candidate",
+      "mean_absolute_error": 0.02,
+      "mean_prediction": 0.31,
+      "method": "no_interaction_prior",
+      "observed_reject_proxy": 0.33,
+      "prediction_count": 1,
+      "predictions": [
+        {
+          "prediction": 0.31
+        }
+      ]
+    },
+    {
+      "global_update_status": "not_update_candidate",
+      "mean_absolute_error": 0.013,
+      "mean_prediction": 0.317,
+      "method": "random_noise_baseline",
+      "observed_reject_proxy": 0.33,
+      "prediction_count": 4,
+      "predictions": [
+        {
+          "prediction": 0.315,
+          "scale": 3,
+          "seed": 11
+        },
+        {
+          "prediction": 0.324,
+          "scale": 6,
+          "seed": 11
+        },
+        {
+          "prediction": 0.31,
+          "scale": 3,
+          "seed": 17
+        },
+        {
+          "prediction": 0.319,
+          "scale": 6,
+          "seed": 17
+        }
+      ]
+    },
+    {
+      "global_update_status": "not_update_candidate",
+      "mean_absolute_error": 0.02,
+      "mean_prediction": 0.35,
+      "method": "uncalibrated_interaction",
+      "observed_reject_proxy": 0.33,
+      "prediction_count": 1,
+      "predictions": [
+        {
+          "prediction": 0.35
+        }
+      ]
+    },
+    {
+      "global_update_status": "diagnostic_candidate",
+      "mean_absolute_error": 0.05,
+      "mean_prediction": 0.38,
+      "method": "prior_anchored_interaction",
+      "observed_reject_proxy": 0.33,
+      "prediction_count": 1,
+      "predictions": [
+        {
+          "prediction": 0.38
+        }
+      ]
+    },
+    {
+      "global_update_status": "blocked_same_case_only",
+      "mean_absolute_error": 0.02,
+      "mean_prediction": 0.35,
+      "method": "outcome_feedback_update",
+      "observed_reject_proxy": 0.33,
+      "prediction_count": 1,
+      "predictions": [
+        {
+          "prediction": 0.35
+        }
+      ]
+    }
+  ],
+  "blocking_gaps": [
+    "needs_more_public_or_real_outcomes",
+    "needs_holdout_case_for_feedback_update_acceptance"
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Same-case outcome feedback is diagnostic only and cannot be accepted globally."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "claim_status": "public_proxy_diagnostic_only",
+  "current_best_non_feedback_method": "random_noise_baseline",
+  "deterministic_replay": {
+    "checked_method": "random_noise_baseline",
+    "passed": true,
+    "replay_count": 2
+  },
+  "method_ranking": [
+    {
+      "global_update_status": "not_update_candidate",
+      "mean_absolute_error": 0.013,
+      "method": "random_noise_baseline",
+      "rank": 1
+    },
+    {
+      "global_update_status": "not_update_candidate",
+      "mean_absolute_error": 0.02,
+      "method": "no_interaction_prior",
+      "rank": 2
+    },
+    {
+      "global_update_status": "not_update_candidate",
+      "mean_absolute_error": 0.02,
+      "method": "uncalibrated_interaction",
+      "rank": 3
+    },
+    {
+      "global_update_status": "blocked_same_case_only",
+      "mean_absolute_error": 0.02,
+      "method": "outcome_feedback_update",
+      "rank": 4
+    },
+    {
+      "global_update_status": "diagnostic_candidate",
+      "mean_absolute_error": 0.05,
+      "method": "prior_anchored_interaction",
+      "rank": 5
+    }
+  ],
+  "public_proxy": {
+    "observed_reject_proxy": 0.33,
+    "source_url": "https://sda.berkeley.edu/sdaweb/analysis/?dataset=anes2024full",
+    "usable_row_count": 954
+  },
+  "risk_flags": [
+    "public_proxy_not_field_validation",
+    "same_case_feedback_not_global_acceptance",
+    "not_cross_domain_accuracy_evidence"
+  ],
+  "run_id": "r6-ablation-report-anes-health-current-001",
+  "schema_version": "r6-ablation-report-v1",
+  "seed_scale_grid": {
+    "run_count": 4,
+    "scales": [
+      3,
+      6
+    ],
+    "seeds": [
+      11,
+      17
+    ]
+  },
+  "source_foundation_package_id": "r6-ablation-report-anes-health-current-001-foundation",
+  "source_public_outcome_proxy_id": "r6-public-outcome-proxy-anes-health-current-001",
+  "source_refs": [
+    "r6-public-outcome-proxy-anes-health-current-001",
+    "r6-ablation-report-anes-health-current-001-foundation",
+    "policy-reaction-anes-health-001-heldout"
+  ],
+  "status": "diagnostic_ready",
+  "target_case_id": "generic-rights-rule-change"
+}
