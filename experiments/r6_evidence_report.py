@@ -12,6 +12,7 @@ if __package__ in {None, ""}:
 from experiments.r6_ablation_report import build_r6_ablation_report
 from experiments.r6_case_matrix import build_r6_case_matrix
 from experiments.r6_contracts import R6_CLAIM_BOUNDARY, assert_strict_json, non_empty_string, write_json_artifact
+from experiments.r6_followup_holdout_validation import build_r6_followup_holdout_validation
 from experiments.r6_mechanism_cap_ablation import build_r6_mechanism_cap_ablation
 from experiments.r6_product_report import build_r6_product_report
 from experiments.r6_public_outcome_proxy import build_r6_public_outcome_proxy
@@ -51,6 +52,10 @@ def build_r6_evidence_report(
         run_id=run_id,
         case_matrix=case_matrix,
         mechanism_cap_ablation=mechanism_cap_ablation,
+    )
+    followup_holdout = build_r6_followup_holdout_validation(
+        artifact_id=f"{artifact_id}-followup-holdout-validation",
+        run_id=run_id,
     )
     ablation = build_r6_ablation_report(
         artifact_id=f"{artifact_id}-ablation",
@@ -124,6 +129,19 @@ def build_r6_evidence_report(
                 "claim_status"
             ],
         },
+        "followup_holdout_validation_summary": {
+            "artifact_id": followup_holdout["artifact_id"],
+            "status": followup_holdout["status"],
+            "mechanism_cap_upgrade_status": followup_holdout[
+                "mechanism_cap_validation"
+            ]["upgrade_status"],
+            "outcome_feedback_upgrade_status": followup_holdout[
+                "outcome_feedback_validation"
+            ]["upgrade_status"],
+            "global_update_accepted": followup_holdout["acceptance_gates"][
+                "global_update_accepted"
+            ],
+        },
         "acceptance_gates": {
             "public_outcome_proxy_connected": True,
             "second_public_outcome_proxy_connected": True,
@@ -133,19 +151,23 @@ def build_r6_evidence_report(
                 and second_ablation["deterministic_replay"]["passed"]
             ),
             "product_report_ingests_mechanism_cap": True,
+            "followup_holdout_validation_present": True,
+            "mechanism_cap_same_family_holdout_available": followup_holdout[
+                "acceptance_gates"
+            ]["mechanism_cap_same_family_holdout_available"],
+            "outcome_feedback_cross_case_transfer_available": followup_holdout[
+                "acceptance_gates"
+            ]["outcome_feedback_cross_case_transfer_available"],
             "global_update_accepted": False,
         },
-        "remaining_gaps": [
-            "needs_more_public_or_real_outcomes",
-            "needs_holdout_case_for_feedback_update_acceptance",
-            "needs_holdout_case_for_mechanism_cap_acceptance",
-        ],
+        "remaining_gaps": _remaining_gaps_with_followup(followup_holdout),
         "source_refs": [
             public_proxy["artifact_id"],
             second_public_proxy["artifact_id"],
             case_matrix["artifact_id"],
             product_report["artifact_id"],
             mechanism_cap_ablation["artifact_id"],
+            followup_holdout["artifact_id"],
             ablation["artifact_id"],
             second_ablation["artifact_id"],
         ],
@@ -160,6 +182,7 @@ def build_r6_evidence_report(
             "not_cross_domain_accuracy_evidence",
             "mixed_public_proxy_evidence",
             "mechanism_cap_not_runtime_default",
+            "partial_holdout_not_runtime_acceptance",
         ],
         "blocking_gaps": [
             "global_update_acceptance_blocked",
@@ -172,6 +195,16 @@ def build_r6_evidence_report(
 
 def write_r6_evidence_report(output: str | Path, **kwargs: Any) -> Path:
     return write_json_artifact(output, build_r6_evidence_report(**kwargs))
+
+
+def _remaining_gaps_with_followup(followup_holdout: dict[str, Any]) -> list[str]:
+    gaps = [
+        "needs_more_public_or_real_outcomes",
+        "needs_holdout_case_for_feedback_update_acceptance",
+        "needs_holdout_case_for_mechanism_cap_acceptance",
+    ]
+    gaps.extend(followup_holdout["blocking_gaps"])
+    return sorted(set(gaps))
 
 
 def _public_proxy_summary(proxy: dict[str, Any]) -> dict[str, Any]:

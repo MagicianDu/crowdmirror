@@ -158,6 +158,16 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "ablation_baselines_present": True,
         "deterministic_replay_passed": True,
         "product_report_ingests_mechanism_cap": True,
+        "followup_holdout_validation_present": True,
+        "mechanism_cap_same_family_holdout_available": False,
+        "outcome_feedback_cross_case_transfer_available": False,
+        "global_update_accepted": False,
+    }
+    assert report["followup_holdout_validation_summary"] == {
+        "artifact_id": "r6-evidence-report-test-followup-holdout-validation",
+        "status": "holdout_validation_partial",
+        "mechanism_cap_upgrade_status": "partial_pass_needs_same_family_holdout",
+        "outcome_feedback_upgrade_status": "blocked_same_case_only",
         "global_update_accepted": False,
     }
     assert report["product_report_summary"]["mechanism_cap_status"] == (
@@ -174,6 +184,7 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
     assert "needs_more_public_or_real_outcomes" in report["remaining_gaps"]
     assert "needs_product_demo_report_ingestion" not in report["remaining_gaps"]
     assert "needs_public_proxy_mapping_review" not in report["remaining_gaps"]
+    assert "needs_same_family_rights_rule_holdout" in report["remaining_gaps"]
     assert "same_case_feedback_not_global_acceptance" in report["risk_flags"]
     json.dumps(report, allow_nan=False)
 
