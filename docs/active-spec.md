@@ -2,14 +2,22 @@
 
 ## 当前唯一事实源
 
-当前 Research / Product 双线的唯一 active spec 是：
+当前 Research / Product 双线的 active spec 由一个主控 spec 和一个当前阶段 addendum 组成：
 
 - `docs/superpowers/specs/2026-06-05-r6-outcome-feedback-prior-anchored-interaction-simulation-spec.md`
+- `docs/superpowers/specs/2026-06-06-r6-method-gates-transfer-protocol-spec.md`
 
 工作名：
 
 - 中文：R6 结果反馈约束的先验锚定交互仿真框架
 - English: Outcome-Feedback Prior-Anchored Interaction Simulation
+
+其中：
+
+- `2026-06-05-r6-outcome-feedback-prior-anchored-interaction-simulation-spec.md` 定义 R6 的总体问题、方法边界和 foundation artifact chain。
+- `2026-06-06-r6-method-gates-transfer-protocol-spec.md` 定义当前阶段的 evidence levels、acceptance gates、cross-case transfer protocol 和止损边界。
+
+后续实现若与历史 R2-R5、旧 prompt/persona 优化、单一 proxy 扩张路线冲突，以当前阶段 addendum 为准。
 
 ## 当前目标
 
@@ -41,6 +49,14 @@ R6 必须同时满足：
 6. `r6_learning_report`
 7. `r6_update_registry`
 
+当前阶段已从 foundation artifact 扩展到方法验收层，只推进：
+
+1. `cross-case transfer protocol artifact`
+2. `in-condition holdout 搜索标准`
+3. `Product evidence card contract`
+
+不再把“继续增加 public proxy 数量”作为默认目标；只有当新增数据能触发 acceptance gate，才进入数据接入。
+
 ## 降权历史材料
 
 以下材料只作为历史经验或基础设施参考，不再作为当前主线：
@@ -60,4 +76,5 @@ R6 必须同时满足：
 - 测试优先运行 `tests/test_r6_*.py`。
 - 不运行或修改旧路线测试来证明 R6 成立，除非明确是在复用基础设施。
 - Product 报告必须保留 claim boundary，不能展示未验证准确性宣称。
-
+- 候选更新必须通过当前阶段 addendum 定义的 evidence level 和 acceptance gate，才能从 diagnostic 升级。
+- same-case outcome feedback improvement 不得直接包装成可迁移更新。

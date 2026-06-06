@@ -75,6 +75,12 @@
 - `experiments/results/r6_followup_holdout_validation/r6-followup-holdout-validation-current-002.json`
 - `experiments/results/r6_evidence_report/r6-evidence-report-current-005.json`
 
+当前新增的 R6 方法验收与迁移协议 addendum：
+
+- `docs/superpowers/specs/2026-06-06-r6-method-gates-transfer-protocol-spec.md`
+- 当前路线已从“继续补 public proxy / artifact 细节”切换到“方法定义、acceptance gates、cross-case transfer protocol 和 Product evidence card contract”。
+- 后续不再把泛泛增加 proxy 数量作为推进目标；新增数据必须服务于明确 gate，例如 in-condition same-family holdout 或 outcome feedback cross-case transfer。
+
 ## 已确认结论
 
 1. 强人口/客户/群体先验不是研究对手，而是仿真底座。
@@ -97,6 +103,10 @@
 18. 第三个 public proxy `anes_climate_heldout` 已接入：它是同 ANES public-use、不同政策域的 climate-energy regulation heldout，映射到 `generic-rights-rule-change` 的 bounded reject proxy，`observed_reject_proxy=0.25`。
 19. 第三个 proxy 让 holdout 结论更精确：当前不是“没有同 family holdout”，而是“同 family holdout 可用，但不覆盖 cap 触发条件”。在 climate holdout 上 static prior error 为 `0.06`，高于 cap 条件阈值 `0.03`，因此 `mechanism_cap_same_family_cap_condition_covered=false`、`global_update_accepted=false`。
 20. 三个 public proxy 的整体证据仍是 mixed evidence：HTOPS 上 prior-anchored interaction 为正向，ANES health 与 ANES climate 上都是 regression；因此 R6 只能继续作为有约束诊断框架推进，不能宣称稳定准确性优势。
+21. 当前工作没有偏离 R6 主线，但已到达细节扩张边界；继续堆 proxy 或 JSON 变体收益不足，必须转向方法验收层。
+22. 当前 R6 最强主张是：它已经形成能连接强先验、交互风险偏移、结果反馈、失败边界和受约束更新的可审计框架，但尚未证明稳定准确性优势或全局可迁移更新能力。
+23. mechanism cap 当前处于 `L3 partial`：source case 修复成立，部分 holdout 不回归，但缺少覆盖 cap 触发条件的独立同 family holdout，不能进入 runtime default。
+24. outcome feedback 当前处于 `L2 same-case improvement`：两个 public proxy 上 same-case error 均下降，但缺少 cross-case transfer protocol，不能宣称可迁移优化。
 
 ## 可复用资产
 
@@ -130,10 +140,10 @@ R6 开发时必须只 stage 本轮明确修改的文件。
 
 ## 下一步
 
-1. 寻找或构造“覆盖 cap 触发条件”的同 family rights/rule holdout，即 static prior error 足够低且 interaction amplification 会触发 cap 的独立 public/real proxy。
-2. 设计 outcome feedback cross-case transfer protocol，验证 same-case feedback update 是否能跨 case 不回归。
-3. 将 cap 规则扩展成可配置 policy，而不是写死在 runtime 默认参数中。
-4. 将 Product 侧展示从 JSON report 接到 demo/API，但必须直接消费 artifact 字段，不允许写静态叙事兜底。
+1. 实现 `cross-case transfer protocol artifact`，统一记录 source case、candidate update、frozen rule、holdout case、比较结果和 global update 阻断原因。
+2. 写出 `in-condition holdout` 搜索标准和数据选择 ledger；不再泛泛找公开数据，而是按 cap 触发条件和 case family 条件筛选。
+3. 定义 Product evidence card contract，把 claim status、allowed claim、blocked claim、source artifact、升级条件做成产品可消费结构。
+4. 只有当前三项完成后，才继续做有目标的数据接入或 Product demo/API 接线。
 
 ## 验收边界
 
