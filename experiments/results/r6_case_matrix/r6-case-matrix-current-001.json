@@ -1,0 +1,204 @@
+{
+  "acceptance_gates": {
+    "all_cases_have_no_interaction_control": true,
+    "all_cases_have_outcome_feedback": true,
+    "all_updates_blocked_until_validated": true,
+    "minimum_case_templates_met": true
+  },
+  "artifact_id": "r6-case-matrix-current-001",
+  "blocking_gaps": [
+    "needs_real_or_public_outcome_proxy_cases",
+    "needs_holdout_validation_before_global_update_acceptance"
+  ],
+  "case_count": 3,
+  "case_types_covered": [
+    "price_change",
+    "rights_rule_change",
+    "public_service_policy_change"
+  ],
+  "cases": [
+    {
+      "artifact_id": "r6-case-matrix-current-001-generic-price-change",
+      "case_id": "generic-price-change",
+      "case_type": "price_change",
+      "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+      "default_runtime_enabled": false,
+      "industry_binding": "generic",
+      "learning": {
+        "absolute_error": 0.06,
+        "error_attribution_types": [
+          "mechanism_error"
+        ],
+        "observed_reject_proxy": 0.41
+      },
+      "no_interaction_control_enabled": true,
+      "outcome_feedback_available": true,
+      "risk_shift": {
+        "delta": 0.07,
+        "interaction_reject_rate": 0.35,
+        "recommended_observations": [
+          "complaint_rate_by_segment",
+          "observed_reject_proxy_by_segment",
+          "negative_sentiment_rate",
+          "conversion_delta"
+        ]
+      },
+      "scenario": {
+        "change_type": "price",
+        "impact_dimensions": [
+          "cost_increase",
+          "fairness_concern",
+          "substitution_pressure"
+        ],
+        "scenario_id": "generic_price_change_001"
+      },
+      "static_prior": {
+        "distribution": {
+          "accept": 0.47,
+          "neutral": 0.25,
+          "reject": 0.28
+        },
+        "reject_rate": 0.28
+      },
+      "status": "diagnostic_ready",
+      "top_risk_segment": {
+        "delta_reject": 0.12,
+        "mechanisms": [
+          "fairness_concern",
+          "peer_amplification",
+          "substitution_pressure"
+        ],
+        "segment_id": "sensitive_low_trust"
+      },
+      "update_status": "needs_more_outcomes"
+    },
+    {
+      "artifact_id": "r6-case-matrix-current-001-generic-rights-rule-change",
+      "case_id": "generic-rights-rule-change",
+      "case_type": "rights_rule_change",
+      "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+      "default_runtime_enabled": false,
+      "industry_binding": "generic",
+      "learning": {
+        "absolute_error": 0.05,
+        "error_attribution_types": [
+          "mechanism_error"
+        ],
+        "observed_reject_proxy": 0.43
+      },
+      "no_interaction_control_enabled": true,
+      "outcome_feedback_available": true,
+      "risk_shift": {
+        "delta": 0.07,
+        "interaction_reject_rate": 0.38,
+        "recommended_observations": [
+          "complaint_rate_by_segment",
+          "observed_reject_proxy_by_segment",
+          "negative_sentiment_rate",
+          "conversion_delta"
+        ]
+      },
+      "scenario": {
+        "change_type": "rule",
+        "impact_dimensions": [
+          "rights_reduction",
+          "fairness_concern",
+          "trust_shock"
+        ],
+        "scenario_id": "generic_rights_rule_change_001"
+      },
+      "static_prior": {
+        "distribution": {
+          "accept": 0.39,
+          "neutral": 0.3,
+          "reject": 0.31
+        },
+        "reject_rate": 0.31
+      },
+      "status": "diagnostic_ready",
+      "top_risk_segment": {
+        "delta_reject": 0.12,
+        "mechanisms": [
+          "rights_loss_salience",
+          "peer_amplification",
+          "trust_shock"
+        ],
+        "segment_id": "rights_dependent_low_trust"
+      },
+      "update_status": "needs_more_outcomes"
+    },
+    {
+      "artifact_id": "r6-case-matrix-current-001-generic-public-service-policy-change",
+      "case_id": "generic-public-service-policy-change",
+      "case_type": "public_service_policy_change",
+      "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+      "default_runtime_enabled": false,
+      "industry_binding": "generic",
+      "learning": {
+        "absolute_error": 0.04,
+        "error_attribution_types": [
+          "mechanism_error"
+        ],
+        "observed_reject_proxy": 0.4
+      },
+      "no_interaction_control_enabled": true,
+      "outcome_feedback_available": true,
+      "risk_shift": {
+        "delta": 0.07,
+        "interaction_reject_rate": 0.36,
+        "recommended_observations": [
+          "complaint_rate_by_segment",
+          "observed_reject_proxy_by_segment",
+          "negative_sentiment_rate",
+          "conversion_delta"
+        ]
+      },
+      "scenario": {
+        "change_type": "policy",
+        "impact_dimensions": [
+          "access_constraint",
+          "service_reliability_concern",
+          "equity_concern"
+        ],
+        "scenario_id": "generic_public_service_policy_change_001"
+      },
+      "static_prior": {
+        "distribution": {
+          "accept": 0.42,
+          "neutral": 0.29,
+          "reject": 0.29
+        },
+        "reject_rate": 0.29
+      },
+      "status": "diagnostic_ready",
+      "top_risk_segment": {
+        "delta_reject": 0.12,
+        "mechanisms": [
+          "access_anxiety",
+          "community_amplification",
+          "equity_concern"
+        ],
+        "segment_id": "service_dependent_low_trust"
+      },
+      "update_status": "needs_more_outcomes"
+    }
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "industry_binding": "generic_multi_case_templates",
+  "risk_flags": [
+    "no_cross_domain_accuracy_claim",
+    "case_templates_are_fixture_level_evidence",
+    "unvalidated_update_not_enabled"
+  ],
+  "run_id": "r6-case-matrix-current-001",
+  "schema_version": "r6-case-matrix-v1",
+  "source_refs": [
+    "r6-case-matrix-current-001-generic-price-change",
+    "r6-case-matrix-current-001-generic-rights-rule-change",
+    "r6-case-matrix-current-001-generic-public-service-policy-change"
+  ],
+  "status": "diagnostic_ready"
+}

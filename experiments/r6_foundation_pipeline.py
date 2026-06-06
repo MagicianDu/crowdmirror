@@ -22,22 +22,31 @@ from experiments.r6_update_registry import build_r6_update_registry
 R6_FOUNDATION_PACKAGE_SCHEMA_VERSION = "r6-foundation-package-v1"
 
 
-def build_r6_foundation_pipeline(*, artifact_id: str, run_id: str) -> dict[str, Any]:
+def build_r6_foundation_pipeline(
+    *,
+    artifact_id: str,
+    run_id: str,
+    case_template: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
+    template = case_template or {}
     prior = build_r6_prior_manifest(
         artifact_id=f"{artifact_id}-prior",
         run_id=run_id,
+        segments=template.get("prior_segments"),
     )
     scenario = build_r6_scenario_manifest(
         artifact_id=f"{artifact_id}-scenario",
         run_id=run_id,
+        scenario=template.get("scenario"),
     )
     trace = build_r6_interaction_trace(
         artifact_id=f"{artifact_id}-interaction",
         run_id=run_id,
         prior_manifest=prior,
         scenario_manifest=scenario,
+        interaction_profile=template.get("interaction_profile"),
     )
     risk = build_r6_risk_shift_report(
         artifact_id=f"{artifact_id}-risk-shift",
@@ -48,6 +57,7 @@ def build_r6_foundation_pipeline(*, artifact_id: str, run_id: str) -> dict[str, 
     outcome = build_r6_outcome_manifest(
         artifact_id=f"{artifact_id}-outcome",
         run_id=run_id,
+        outcome=template.get("outcome"),
     )
     learning = build_r6_learning_report(
         artifact_id=f"{artifact_id}-learning",
@@ -65,6 +75,9 @@ def build_r6_foundation_pipeline(*, artifact_id: str, run_id: str) -> dict[str, 
         "artifact_id": artifact_id,
         "run_id": run_id,
         "status": "diagnostic_ready",
+        "case_id": template.get("case_id", "generic-price-change"),
+        "case_type": template.get("case_type", "price_change"),
+        "industry_binding": template.get("industry_binding", "generic"),
         "prior_manifest": prior,
         "scenario_manifest": scenario,
         "interaction_trace": trace,
@@ -117,4 +130,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

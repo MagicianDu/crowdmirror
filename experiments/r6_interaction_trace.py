@@ -15,11 +15,13 @@ def build_r6_interaction_trace(
     prior_manifest: dict[str, Any],
     scenario_manifest: dict[str, Any],
     rounds: int = 3,
+    interaction_profile: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
     static_prior = prior_manifest["aggregate_static_response_prior"]
-    delta = {"accept": -0.04, "neutral": -0.03, "reject": 0.07}
+    profile = interaction_profile or _default_interaction_profile()
+    delta = dict(profile["delta_distribution"])
     interaction_result = rounded_distribution(
         {option: static_prior[option] + delta[option] for option in static_prior},
         digits=2,
@@ -38,6 +40,24 @@ def build_r6_interaction_trace(
         "static_prior_distribution": static_prior,
         "interaction_result_distribution": interaction_result,
         "delta_distribution": delta,
+        "segment_shifts": list(profile["segment_shifts"]),
+        "source_refs": _source_refs(prior_manifest, scenario_manifest),
+        "claim_boundaries": [R6_CLAIM_BOUNDARY],
+        "claim_boundary": R6_CLAIM_BOUNDARY,
+        "risk_flags": ["interaction_shift_requires_outcome_validation"],
+        "blocking_gaps": [],
+    }
+    assert_strict_json(manifest)
+    return manifest
+
+
+def write_r6_interaction_trace(output: str, **kwargs: Any):
+    return write_json_artifact(output, build_r6_interaction_trace(**kwargs))
+
+
+def _default_interaction_profile() -> dict[str, Any]:
+    return {
+        "delta_distribution": {"accept": -0.04, "neutral": -0.03, "reject": 0.07},
         "segment_shifts": [
             {
                 "segment_id": "sensitive_low_trust",
@@ -59,18 +79,7 @@ def build_r6_interaction_trace(
                 "delta_distribution": {"accept": -0.01, "neutral": -0.01, "reject": 0.02},
             },
         ],
-        "source_refs": _source_refs(prior_manifest, scenario_manifest),
-        "claim_boundaries": [R6_CLAIM_BOUNDARY],
-        "claim_boundary": R6_CLAIM_BOUNDARY,
-        "risk_flags": ["interaction_shift_requires_outcome_validation"],
-        "blocking_gaps": [],
     }
-    assert_strict_json(manifest)
-    return manifest
-
-
-def write_r6_interaction_trace(output: str, **kwargs: Any):
-    return write_json_artifact(output, build_r6_interaction_trace(**kwargs))
 
 
 def _events(*, rounds: int) -> list[dict[str, Any]]:
@@ -101,4 +110,3 @@ def _source_refs(prior_manifest: dict[str, Any], scenario_manifest: dict[str, An
     refs.extend(prior_manifest.get("source_refs", []))
     refs.extend(scenario_manifest.get("source_refs", []))
     return list(dict.fromkeys(refs))
-
