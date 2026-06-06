@@ -1,0 +1,145 @@
+{
+  "artifact_id": "r6-ccfa-readiness-report-current-001",
+  "blocking_gaps": [
+    "needs_failure_boundary_to_predict_holdout_gate",
+    "needs_field_outcome_validation",
+    "needs_formal_problem_and_theory_section",
+    "needs_in_condition_same_family_rights_rule_holdout",
+    "needs_outcome_feedback_transfer_beating_static_prior",
+    "needs_stable_superiority_over_strong_static_prior"
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "CCF-A readiness report is a gate evaluation; failed gates must not be softened into positive claims."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "failed_required_gate_count": 6,
+  "failed_required_gates": [
+    {
+      "blocking_gap": "needs_formal_problem_and_theory_section",
+      "gate_id": "formal_problem_defined",
+      "status": "partial"
+    },
+    {
+      "blocking_gap": "needs_outcome_feedback_transfer_beating_static_prior",
+      "gate_id": "outcome_feedback_gated_update",
+      "status": "partial"
+    },
+    {
+      "blocking_gap": "needs_in_condition_same_family_rights_rule_holdout",
+      "gate_id": "l4_in_condition_transfer",
+      "status": "failed"
+    },
+    {
+      "blocking_gap": "needs_failure_boundary_to_predict_holdout_gate",
+      "gate_id": "failure_boundary_systematically_explained",
+      "status": "partial"
+    },
+    {
+      "blocking_gap": "needs_stable_superiority_over_strong_static_prior",
+      "gate_id": "strong_baseline_comparison",
+      "status": "failed"
+    },
+    {
+      "blocking_gap": "needs_field_outcome_validation",
+      "gate_id": "field_or_real_outcome_validation",
+      "status": "failed"
+    }
+  ],
+  "paper_claim_boundary": {
+    "allowed_claim": "R6 is a prior-anchored interaction simulation governance framework with diagnostic evidence and explicit blocked-update gates.",
+    "blocked_claim": "R6 is already a CCF-A-level algorithm with stable accuracy superiority over strong static priors."
+  },
+  "positive_assets": [
+    "prior_anchored_interaction_problem_reframed",
+    "no_interaction_control_and_public_proxy_baselines_available",
+    "failure_boundary_and_candidate_repair_are_auditable",
+    "unvalidated_updates_are_blocked_by_registry_and_gates",
+    "product_evidence_cards_make_claim_boundary_customer_visible"
+  ],
+  "readiness_checklist": [
+    {
+      "blocking_gap": "needs_formal_problem_and_theory_section",
+      "evidence": "active R6 specs define the problem and artifact chain, but no manuscript-level formal objective is complete.",
+      "gate_id": "formal_problem_defined",
+      "required_for_ccf_a": true,
+      "status": "partial"
+    },
+    {
+      "blocking_gap": "",
+      "evidence": "R6 ablation and transfer artifacts compare no-interaction prior with prior-anchored interaction.",
+      "gate_id": "no_interaction_baseline_and_interaction_operator",
+      "required_for_ccf_a": true,
+      "status": "passed"
+    },
+    {
+      "blocking_gap": "needs_outcome_feedback_transfer_beating_static_prior",
+      "evidence": "Mechanism cap lacks an in-condition same-family holdout, and outcome feedback transfers improve prior-interaction error but still fail the strong static-prior gate.",
+      "gate_id": "outcome_feedback_gated_update",
+      "required_for_ccf_a": true,
+      "status": "partial"
+    },
+    {
+      "blocking_gap": "needs_in_condition_same_family_rights_rule_holdout",
+      "evidence": "in_condition_holdout_count=0; mechanism_cap_l4_in_condition_transfer_passed=False",
+      "gate_id": "l4_in_condition_transfer",
+      "required_for_ccf_a": true,
+      "status": "failed"
+    },
+    {
+      "blocking_gap": "needs_failure_boundary_to_predict_holdout_gate",
+      "evidence": "ANES health over-amplification is diagnosed and capped, but the failure boundary has not passed in-condition transfer.",
+      "gate_id": "failure_boundary_systematically_explained",
+      "required_for_ccf_a": true,
+      "status": "partial"
+    },
+    {
+      "blocking_gap": "needs_stable_superiority_over_strong_static_prior",
+      "evidence": "Outcome feedback transfer improves prior-interaction error but fails the static-prior gate on holdout.",
+      "gate_id": "strong_baseline_comparison",
+      "required_for_ccf_a": true,
+      "status": "failed"
+    },
+    {
+      "blocking_gap": "needs_field_outcome_validation",
+      "evidence": "Current evidence is bounded public proxy evidence, not field outcome validation.",
+      "gate_id": "field_or_real_outcome_validation",
+      "required_for_ccf_a": true,
+      "status": "failed"
+    },
+    {
+      "blocking_gap": "",
+      "evidence": "product_evidence_card_count=5; static_narrative_fallback_allowed=False",
+      "gate_id": "product_claim_boundary",
+      "required_for_ccf_a": false,
+      "status": "passed"
+    }
+  ],
+  "recommended_next_research_steps": [
+    "find_or_collect_in_condition_same_family_holdout",
+    "make_outcome_feedback_transfer_beat_static_prior_or_reject_it",
+    "add_field_or_real_release_outcome_validation",
+    "formalize_interaction_operator_and_gated_update_theory",
+    "run_strong_baseline_comparison_after_l4_data_gate_passes"
+  ],
+  "risk_flags": [
+    "not_ccf_a_ready",
+    "l4_transfer_missing",
+    "field_validation_missing",
+    "strong_prior_superiority_not_proven"
+  ],
+  "run_id": "r6-ccfa-readiness-report-current-001",
+  "schema_version": "r6-ccfa-readiness-report-v1",
+  "source_refs": [
+    "r6-ccfa-readiness-report-current-001-transfer-protocol",
+    "r6-ccfa-readiness-report-current-001-holdout-ledger",
+    "r6-ccfa-readiness-report-current-001-product-evidence-cards"
+  ],
+  "status": "ccf_a_readiness_evaluated",
+  "verdict": {
+    "ccf_a_main_contribution_ready": false,
+    "decision": "not_ready_for_ccf_a_submission_as_main_algorithm",
+    "readiness_level": "L3_diagnostic_framework_not_L4_main_contribution",
+    "short_answer": "R6 has method framing, artifact governance, failure-boundary diagnosis, and Product evidence-chain value, but it has not passed L4 in-condition transfer or field validation, so it is not yet a CCF-A-level main contribution."
+  }
+}

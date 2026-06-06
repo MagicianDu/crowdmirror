@@ -81,6 +81,18 @@
 - 当前路线已从“继续补 public proxy / artifact 细节”切换到“方法定义、acceptance gates、cross-case transfer protocol 和 Product evidence card contract”。
 - 后续不再把泛泛增加 proxy 数量作为推进目标；新增数据必须服务于明确 gate，例如 in-condition same-family holdout 或 outcome feedback cross-case transfer。
 
+当前新增的 R6 方法验收实现单元：
+
+- `experiments/r6_cross_case_transfer_protocol.py`
+- `experiments/r6_in_condition_holdout_ledger.py`
+- `experiments/r6_product_evidence_cards.py`
+- `experiments/r6_ccfa_readiness_report.py`
+- `experiments/results/r6_cross_case_transfer_protocol/r6-cross-case-transfer-protocol-current-001.json`
+- `experiments/results/r6_in_condition_holdout_ledger/r6-in-condition-holdout-ledger-current-001.json`
+- `experiments/results/r6_product_evidence_cards/r6-product-evidence-cards-current-001.json`
+- `experiments/results/r6_ccfa_readiness_report/r6-ccfa-readiness-report-current-001.json`
+- `experiments/results/r6_evidence_report/r6-evidence-report-current-006.json`
+
 ## 已确认结论
 
 1. 强人口/客户/群体先验不是研究对手，而是仿真底座。
@@ -107,6 +119,11 @@
 22. 当前 R6 最强主张是：它已经形成能连接强先验、交互风险偏移、结果反馈、失败边界和受约束更新的可审计框架，但尚未证明稳定准确性优势或全局可迁移更新能力。
 23. mechanism cap 当前处于 `L3 partial`：source case 修复成立，部分 holdout 不回归，但缺少覆盖 cap 触发条件的独立同 family holdout，不能进入 runtime default。
 24. outcome feedback 当前处于 `L2 same-case improvement`：两个 public proxy 上 same-case error 均下降，但缺少 cross-case transfer protocol，不能宣称可迁移优化。
+25. cross-case transfer protocol 已实现：mechanism cap 的 ANES health -> HTOPS 是 `non_regression_only`，ANES health -> ANES climate 是 `condition_not_covered`；因此 mechanism cap 仍不是 L4。
+26. outcome feedback residual transfer 已实现：ANES health -> ANES climate 和 ANES climate -> ANES health 都能降低 prior-interaction error，但都没有 beat strong static prior，因此只能是 `non_regression_only`，不能升级为全局自动校准方法。
+27. in-condition holdout ledger 已实现：当前 `in_condition_holdout_count=0`，ANES health 是 source case，ANES climate 是 same-family 但 out-of-condition，HTOPS 是 out-of-family。
+28. Product evidence card contract 已实现：当前 5 张卡都含 `claim_status`、`allowed_claims`、`blocked_claims`、`source_artifact_ids`，并明确 `static_narrative_fallback_allowed=false`。
+29. CCF-A readiness report 已实现，当前结论是 `ccf_a_main_contribution_ready=false`；R6 还没有达到 CCF-A 级主贡献算法水准。
 
 ## 可复用资产
 
@@ -140,10 +157,10 @@ R6 开发时必须只 stage 本轮明确修改的文件。
 
 ## 下一步
 
-1. 实现 `cross-case transfer protocol artifact`，统一记录 source case、candidate update、frozen rule、holdout case、比较结果和 global update 阻断原因。
-2. 写出 `in-condition holdout` 搜索标准和数据选择 ledger；不再泛泛找公开数据，而是按 cap 触发条件和 case family 条件筛选。
-3. 定义 Product evidence card contract，把 claim status、allowed claim、blocked claim、source artifact、升级条件做成产品可消费结构。
-4. 只有当前三项完成后，才继续做有目标的数据接入或 Product demo/API 接线。
+1. Research 下一步只围绕 CCF-A readiness 的 6 个 failed/partial gate 推进：formal problem、outcome feedback transfer、L4 in-condition transfer、failure boundary predictive gate、strong static prior superiority、field/real outcome validation。
+2. 数据侧优先寻找或构造 in-condition same-family rights/rule holdout；必须满足 `static_prior_error <= 0.03` 且 `original_reject_delta > 0.02`，否则只进入 ledger，不进入方法升级证据。
+3. 方法侧需要让 outcome feedback transfer 不仅 beat prior-interaction，还要 beat strong static prior；否则应拒绝该更新范式，不继续包装成自动校准能力。
+4. Product 侧下一步可以接入 evidence cards，但只能消费 artifact 字段，不允许静态叙事兜底或准确预测宣称。
 
 ## 验收边界
 

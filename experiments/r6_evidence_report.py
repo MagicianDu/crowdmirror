@@ -11,9 +11,13 @@ if __package__ in {None, ""}:
 
 from experiments.r6_ablation_report import build_r6_ablation_report
 from experiments.r6_case_matrix import build_r6_case_matrix
+from experiments.r6_ccfa_readiness_report import build_r6_ccfa_readiness_report
 from experiments.r6_contracts import R6_CLAIM_BOUNDARY, assert_strict_json, non_empty_string, write_json_artifact
+from experiments.r6_cross_case_transfer_protocol import build_r6_cross_case_transfer_protocol
 from experiments.r6_followup_holdout_validation import build_r6_followup_holdout_validation
+from experiments.r6_in_condition_holdout_ledger import build_r6_in_condition_holdout_ledger
 from experiments.r6_mechanism_cap_ablation import build_r6_mechanism_cap_ablation
+from experiments.r6_product_evidence_cards import build_r6_product_evidence_cards
 from experiments.r6_product_report import build_r6_product_report
 from experiments.r6_public_outcome_proxy import build_r6_public_outcome_proxy
 
@@ -61,6 +65,28 @@ def build_r6_evidence_report(
     followup_holdout = build_r6_followup_holdout_validation(
         artifact_id=f"{artifact_id}-followup-holdout-validation",
         run_id=run_id,
+    )
+    transfer_protocol = build_r6_cross_case_transfer_protocol(
+        artifact_id=f"{artifact_id}-cross-case-transfer-protocol",
+        run_id=run_id,
+    )
+    holdout_ledger = build_r6_in_condition_holdout_ledger(
+        artifact_id=f"{artifact_id}-in-condition-holdout-ledger",
+        run_id=run_id,
+    )
+    product_evidence_cards = build_r6_product_evidence_cards(
+        artifact_id=f"{artifact_id}-product-evidence-cards",
+        run_id=run_id,
+        product_report=product_report,
+        transfer_protocol=transfer_protocol,
+        holdout_ledger=holdout_ledger,
+    )
+    ccfa_readiness = build_r6_ccfa_readiness_report(
+        artifact_id=f"{artifact_id}-ccfa-readiness-report",
+        run_id=run_id,
+        transfer_protocol=transfer_protocol,
+        holdout_ledger=holdout_ledger,
+        product_evidence_cards=product_evidence_cards,
     )
     ablation = build_r6_ablation_report(
         artifact_id=f"{artifact_id}-ablation",
@@ -155,6 +181,51 @@ def build_r6_evidence_report(
                 "global_update_accepted"
             ],
         },
+        "cross_case_transfer_protocol_summary": {
+            "artifact_id": transfer_protocol["artifact_id"],
+            "status": transfer_protocol["status"],
+            "mechanism_cap_l4_in_condition_transfer_passed": transfer_protocol[
+                "acceptance_gates"
+            ]["mechanism_cap_l4_in_condition_transfer_passed"],
+            "outcome_feedback_transfer_beats_prior_interaction": transfer_protocol[
+                "acceptance_gates"
+            ]["outcome_feedback_transfer_beats_prior_interaction"],
+            "outcome_feedback_transfer_beats_static_prior": transfer_protocol[
+                "acceptance_gates"
+            ]["outcome_feedback_transfer_beats_static_prior"],
+            "global_update_accepted": transfer_protocol["acceptance_gates"][
+                "global_update_accepted"
+            ],
+        },
+        "in_condition_holdout_ledger_summary": {
+            "artifact_id": holdout_ledger["artifact_id"],
+            "status": holdout_ledger["status"],
+            "in_condition_holdout_count": holdout_ledger["summary"][
+                "in_condition_holdout_count"
+            ],
+            "global_update_data_gate_passed": holdout_ledger["summary"][
+                "global_update_data_gate_passed"
+            ],
+        },
+        "product_evidence_cards_summary": {
+            "artifact_id": product_evidence_cards["artifact_id"],
+            "status": product_evidence_cards["status"],
+            "card_count": product_evidence_cards["card_count"],
+            "static_narrative_fallback_allowed": product_evidence_cards[
+                "demo_api_contract"
+            ]["static_narrative_fallback_allowed"],
+        },
+        "ccfa_readiness_summary": {
+            "artifact_id": ccfa_readiness["artifact_id"],
+            "status": ccfa_readiness["status"],
+            "ccf_a_main_contribution_ready": ccfa_readiness["verdict"][
+                "ccf_a_main_contribution_ready"
+            ],
+            "readiness_level": ccfa_readiness["verdict"]["readiness_level"],
+            "failed_required_gate_count": ccfa_readiness[
+                "failed_required_gate_count"
+            ],
+        },
         "acceptance_gates": {
             "public_outcome_proxy_connected": True,
             "second_public_outcome_proxy_connected": True,
@@ -179,9 +250,28 @@ def build_r6_evidence_report(
             "outcome_feedback_cross_case_transfer_available": followup_holdout[
                 "acceptance_gates"
             ]["outcome_feedback_cross_case_transfer_available"],
+            "cross_case_transfer_protocol_present": True,
+            "outcome_feedback_transfer_beats_static_prior": transfer_protocol[
+                "acceptance_gates"
+            ]["outcome_feedback_transfer_beats_static_prior"],
+            "in_condition_holdout_ledger_present": True,
+            "in_condition_holdout_found": holdout_ledger["summary"][
+                "in_condition_holdout_count"
+            ]
+            > 0,
+            "product_evidence_cards_present": True,
+            "ccfa_readiness_report_present": True,
+            "ccf_a_main_contribution_ready": ccfa_readiness["verdict"][
+                "ccf_a_main_contribution_ready"
+            ],
             "global_update_accepted": False,
         },
-        "remaining_gaps": _remaining_gaps_with_followup(followup_holdout),
+        "remaining_gaps": _remaining_gaps_with_method_gates(
+            followup_holdout=followup_holdout,
+            transfer_protocol=transfer_protocol,
+            holdout_ledger=holdout_ledger,
+            ccfa_readiness=ccfa_readiness,
+        ),
         "source_refs": [
             public_proxy["artifact_id"],
             second_public_proxy["artifact_id"],
@@ -190,6 +280,10 @@ def build_r6_evidence_report(
             product_report["artifact_id"],
             mechanism_cap_ablation["artifact_id"],
             followup_holdout["artifact_id"],
+            transfer_protocol["artifact_id"],
+            holdout_ledger["artifact_id"],
+            product_evidence_cards["artifact_id"],
+            ccfa_readiness["artifact_id"],
             ablation["artifact_id"],
             second_ablation["artifact_id"],
             third_ablation["artifact_id"],
@@ -206,10 +300,12 @@ def build_r6_evidence_report(
             "mixed_public_proxy_evidence",
             "mechanism_cap_not_runtime_default",
             "partial_holdout_not_runtime_acceptance",
+            "ccf_a_main_contribution_not_ready",
         ],
         "blocking_gaps": [
             "global_update_acceptance_blocked",
             "cross_case_validation_missing",
+            "ccf_a_readiness_failed",
         ],
     }
     assert_strict_json(report)
@@ -220,13 +316,22 @@ def write_r6_evidence_report(output: str | Path, **kwargs: Any) -> Path:
     return write_json_artifact(output, build_r6_evidence_report(**kwargs))
 
 
-def _remaining_gaps_with_followup(followup_holdout: dict[str, Any]) -> list[str]:
+def _remaining_gaps_with_method_gates(
+    *,
+    followup_holdout: dict[str, Any],
+    transfer_protocol: dict[str, Any],
+    holdout_ledger: dict[str, Any],
+    ccfa_readiness: dict[str, Any],
+) -> list[str]:
     gaps = [
         "needs_more_public_or_real_outcomes",
         "needs_holdout_case_for_feedback_update_acceptance",
         "needs_holdout_case_for_mechanism_cap_acceptance",
     ]
     gaps.extend(followup_holdout["blocking_gaps"])
+    gaps.extend(transfer_protocol["blocking_gaps"])
+    gaps.extend(holdout_ledger["blocking_gaps"])
+    gaps.extend(ccfa_readiness["blocking_gaps"])
     return sorted(set(gaps))
 
 

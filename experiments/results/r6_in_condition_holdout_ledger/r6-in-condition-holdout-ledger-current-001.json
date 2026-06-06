@@ -1,0 +1,194 @@
+{
+  "artifact_id": "r6-in-condition-holdout-ledger-current-001",
+  "blocking_gaps": [
+    "needs_in_condition_same_family_rights_rule_holdout",
+    "needs_independent_field_or_public_proxy_with_cap_condition"
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Holdout ledger is a data-selection gate, not evidence that the method is accurate."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "ledger_entries": [
+    {
+      "candidate_id": "anes_health_heldout:source_case",
+      "case_family_axes": {
+        "case_type": "rights_rule_change",
+        "measurement_level": "public_proxy",
+        "population_axis": "public_use_segment_schema",
+        "proxy_family": "public_health_insurance_preference",
+        "target_case_id": "generic-rights-rule-change"
+      },
+      "condition_checks": {
+        "independent_holdout_not_source_case": false,
+        "original_reject_delta_gt_cap": true,
+        "public_or_field_outcome_mapping_auditable": true,
+        "same_family_rights_rule_case": true,
+        "static_prior_error_lte_threshold": true
+      },
+      "ledger_status": "source_case_not_holdout",
+      "metrics": {
+        "observed_reject_proxy": 0.33,
+        "original_reject_delta": 0.07,
+        "prior_anchored_error": 0.05,
+        "static_prior_error": 0.02
+      },
+      "public_source": {
+        "source_name": "ANES 2024 public-use health heldout",
+        "split_role": "heldout",
+        "usable_row_count": 954
+      },
+      "role": "source_case",
+      "source_artifact_id": "r6-in-condition-holdout-ledger-current-001-anes_health_heldout-proxy",
+      "source_key": "anes_health_heldout",
+      "why_not_sufficient": [
+        "used_to_derive_candidate_update",
+        "cannot_validate_transfer"
+      ]
+    },
+    {
+      "candidate_id": "anes_climate_heldout:same_family_holdout",
+      "case_family_axes": {
+        "case_type": "rights_rule_change",
+        "measurement_level": "public_proxy",
+        "population_axis": "public_use_segment_schema",
+        "proxy_family": "climate_energy_regulation_preference",
+        "target_case_id": "generic-rights-rule-change"
+      },
+      "condition_checks": {
+        "independent_holdout_not_source_case": true,
+        "original_reject_delta_gt_cap": true,
+        "public_or_field_outcome_mapping_auditable": true,
+        "same_family_rights_rule_case": true,
+        "static_prior_error_lte_threshold": false
+      },
+      "ledger_status": "out_of_condition_holdout",
+      "metrics": {
+        "observed_reject_proxy": 0.25,
+        "original_reject_delta": 0.07,
+        "prior_anchored_error": 0.13,
+        "static_prior_error": 0.06
+      },
+      "public_source": {
+        "source_name": "ANES 2024 public-use climate-energy regulation heldout",
+        "split_role": "heldout",
+        "usable_row_count": 932
+      },
+      "role": "same_family_holdout",
+      "source_artifact_id": "r6-in-condition-holdout-ledger-current-001-anes_climate_heldout-proxy",
+      "source_key": "anes_climate_heldout",
+      "why_not_sufficient": [
+        "same_family_available_but_cap_trigger_not_exercised",
+        "usable_only_as_condition_not_covered_evidence"
+      ]
+    },
+    {
+      "candidate_id": "htops_cost_pressure:cross_proxy_holdout",
+      "case_family_axes": {
+        "case_type": "public_service_policy_change",
+        "measurement_level": "public_proxy",
+        "population_axis": "public_use_segment_schema",
+        "proxy_family": "cost_pressure_reaction",
+        "target_case_id": "generic-public-service-policy-change"
+      },
+      "condition_checks": {
+        "independent_holdout_not_source_case": true,
+        "original_reject_delta_gt_cap": true,
+        "public_or_field_outcome_mapping_auditable": true,
+        "same_family_rights_rule_case": false,
+        "static_prior_error_lte_threshold": false
+      },
+      "ledger_status": "out_of_family_holdout",
+      "metrics": {
+        "observed_reject_proxy": 0.47,
+        "original_reject_delta": 0.07,
+        "prior_anchored_error": 0.11,
+        "static_prior_error": 0.18
+      },
+      "public_source": {
+        "source_name": "HTOPS/HPS public-use cost pressure",
+        "split_role": "public_use_slice",
+        "usable_row_count": 7317
+      },
+      "role": "cross_proxy_holdout",
+      "source_artifact_id": "r6-in-condition-holdout-ledger-current-001-htops_cost_pressure-proxy",
+      "source_key": "htops_cost_pressure",
+      "why_not_sufficient": [
+        "case_family_does_not_match_cap_scope",
+        "usable_only_for_cross_proxy_non_regression"
+      ]
+    }
+  ],
+  "next_search_profile": {
+    "case_type": "rights_rule_change",
+    "examples_of_useful_sources": [
+      "independent public survey split with rights/rule reject response",
+      "field rollout outcome with segment-level reject proxy",
+      "customer policy-change cohort with no-interaction prior reconstruction"
+    ],
+    "impact_dimension": "rights_reduction_or_rule_constraint",
+    "measurement_level": "public_proxy_or_field_outcome",
+    "required_original_reject_delta_gt": 0.02,
+    "required_static_prior_error_lte": 0.03
+  },
+  "risk_flags": [
+    "no_in_condition_holdout_found",
+    "public_proxy_not_field_validation",
+    "global_update_blocked_by_data_gate"
+  ],
+  "run_id": "r6-in-condition-holdout-ledger-current-001",
+  "schema_version": "r6-in-condition-holdout-ledger-v1",
+  "selection_criteria": [
+    {
+      "criterion": "same_family_rights_rule_case",
+      "reason": "mechanism cap is scoped to rights/rule rejection amplification",
+      "required": true
+    },
+    {
+      "criterion": "independent_holdout_not_source_case",
+      "reason": "source-case repair cannot validate transfer",
+      "required": true
+    },
+    {
+      "criterion": "static_prior_error_lte_threshold",
+      "reason": "cap only applies when the static prior is already close",
+      "required": true,
+      "threshold": 0.03
+    },
+    {
+      "criterion": "original_reject_delta_gt_cap",
+      "reason": "holdout must actually exercise the capped amplification",
+      "required": true,
+      "threshold": 0.02
+    },
+    {
+      "criterion": "public_or_field_outcome_mapping_auditable",
+      "reason": "proxy mapping must be inspectable before it can support a gate",
+      "required": true
+    }
+  ],
+  "selection_target": {
+    "candidate_update": "rights_rule_reject_delta_cap_v1",
+    "cap_rule": {
+      "condition_static_prior_abs_error_lte": 0.03,
+      "max_aggregate_reject_delta": 0.02,
+      "scope": "rights_or_rule_change_rejection_amplification"
+    },
+    "purpose": "find an independent holdout that exercises the cap trigger condition"
+  },
+  "source_refs": [
+    "r6-in-condition-holdout-ledger-current-001-mechanism-cap-ablation",
+    "r6-in-condition-holdout-ledger-current-001-anes_health_heldout-proxy",
+    "r6-in-condition-holdout-ledger-current-001-anes_climate_heldout-proxy",
+    "r6-in-condition-holdout-ledger-current-001-htops_cost_pressure-proxy"
+  ],
+  "status": "ledger_ready_no_in_condition_holdout_found",
+  "summary": {
+    "candidate_count": 3,
+    "global_update_data_gate_passed": false,
+    "in_condition_holdout_count": 0,
+    "out_of_family_holdout_count": 1,
+    "same_family_out_of_condition_count": 1,
+    "source_case_not_holdout_count": 1
+  }
+}

@@ -292,3 +292,26 @@ R6 没有偏离主线，但已到达细节扩张边界。
 当前 R6 最强主张是：
 
 > R6 已形成一个能连接强先验、交互风险偏移、结果反馈、失败边界和受约束更新的可审计框架；它已经展示出诊断价值和产品证据链价值，但尚未证明稳定准确性优势或全局可迁移更新能力。
+
+## 12. 当前执行结果
+
+截至 2026-06-06，本 spec 中 P0/P1/P2 已实现为可计算 artifact：
+
+| 任务 | artifact | 当前结果 |
+| --- | --- | --- |
+| P0 cross-case transfer protocol artifact | `experiments/r6_cross_case_transfer_protocol.py` | 已能区分 `passed`、`non_regression_only`、`condition_not_covered`、`regressed`、`invalid_proxy`；当前 global update 仍 blocked |
+| P1 in-condition holdout 搜索标准 | `experiments/r6_in_condition_holdout_ledger.py` | 已输出数据选择 ledger；当前 `in_condition_holdout_count=0` |
+| P2 Product evidence card contract | `experiments/r6_product_evidence_cards.py` | 已输出 5 张证据卡；每张卡包含 `claim_status`、`allowed_claims`、`blocked_claims`、`source_artifact_ids` |
+| CCF-A readiness 判定 | `experiments/r6_ccfa_readiness_report.py` | `ccf_a_main_contribution_ready=false` |
+
+当前关键实验证据：
+
+- mechanism cap：source case 修复成立，HTOPS cross-proxy 不回归，但 ANES climate same-family holdout 没有覆盖 cap 触发条件，因此停留在 `L3_partial`。
+- outcome feedback：跨 case residual transfer 能降低 prior-interaction error，但仍输给 strong static prior，因此只能是 `non_regression_only`，不能升级为全局自动校准方法。
+- Product evidence cards：Product 侧证据链可展示，但明确阻断“准确预测”宣称。
+
+因此，R6 当前未达到 CCF-A 级主贡献算法水准。
+
+更准确的结论是：
+
+> R6 已达到“可审计方法框架 + 产品证据链 + 失败边界诊断”的阶段，但尚未达到“可投稿 CCF-A 主算法贡献”的阶段。核心缺口是 L4 in-condition transfer、field/real outcome validation、强静态先验上的稳定优势，以及更完整的形式化理论。

@@ -197,6 +197,13 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "mechanism_cap_same_family_cap_condition_covered": False,
         "mechanism_cap_same_family_validation_passed": False,
         "outcome_feedback_cross_case_transfer_available": False,
+        "cross_case_transfer_protocol_present": True,
+        "outcome_feedback_transfer_beats_static_prior": False,
+        "in_condition_holdout_ledger_present": True,
+        "in_condition_holdout_found": False,
+        "product_evidence_cards_present": True,
+        "ccfa_readiness_report_present": True,
+        "ccf_a_main_contribution_ready": False,
         "global_update_accepted": False,
     }
     assert report["followup_holdout_validation_summary"] == {
@@ -211,6 +218,33 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
     assert report["product_report_summary"]["mechanism_cap_status"] == (
         "diagnostic_candidate_not_runtime_default"
     )
+    assert report["cross_case_transfer_protocol_summary"] == {
+        "artifact_id": "r6-evidence-report-test-cross-case-transfer-protocol",
+        "status": "transfer_protocol_ready_global_update_blocked",
+        "mechanism_cap_l4_in_condition_transfer_passed": False,
+        "outcome_feedback_transfer_beats_prior_interaction": True,
+        "outcome_feedback_transfer_beats_static_prior": False,
+        "global_update_accepted": False,
+    }
+    assert report["in_condition_holdout_ledger_summary"] == {
+        "artifact_id": "r6-evidence-report-test-in-condition-holdout-ledger",
+        "status": "ledger_ready_no_in_condition_holdout_found",
+        "in_condition_holdout_count": 0,
+        "global_update_data_gate_passed": False,
+    }
+    assert report["product_evidence_cards_summary"] == {
+        "artifact_id": "r6-evidence-report-test-product-evidence-cards",
+        "status": "product_evidence_cards_ready",
+        "card_count": 5,
+        "static_narrative_fallback_allowed": False,
+    }
+    assert report["ccfa_readiness_summary"] == {
+        "artifact_id": "r6-evidence-report-test-ccfa-readiness-report",
+        "status": "ccf_a_readiness_evaluated",
+        "ccf_a_main_contribution_ready": False,
+        "readiness_level": "L3_diagnostic_framework_not_L4_main_contribution",
+        "failed_required_gate_count": 6,
+    }
     assert report["ablation_summary"]["prior_anchored_beats_no_interaction"] is True
     assert report["multi_proxy_summary"] == {
         "public_proxy_count": 3,
@@ -226,7 +260,12 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
     assert "needs_in_condition_same_family_rights_rule_holdout" in report[
         "remaining_gaps"
     ]
+    assert "needs_outcome_feedback_transfer_beating_static_prior" in report[
+        "remaining_gaps"
+    ]
+    assert "needs_field_outcome_validation" in report["remaining_gaps"]
     assert "same_case_feedback_not_global_acceptance" in report["risk_flags"]
+    assert "ccf_a_main_contribution_not_ready" in report["risk_flags"]
     json.dumps(report, allow_nan=False)
 
 
