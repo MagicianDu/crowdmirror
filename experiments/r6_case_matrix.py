@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import sys
 from pathlib import Path
@@ -22,10 +23,14 @@ def build_r6_case_matrix(
     artifact_id: str,
     run_id: str,
     case_templates: list[dict[str, Any]] | None = None,
+    public_outcome_proxy: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
-    templates = case_templates if case_templates is not None else R6_CASE_TEMPLATES
+    templates = _templates_with_public_proxy(
+        case_templates if case_templates is not None else R6_CASE_TEMPLATES,
+        public_outcome_proxy=public_outcome_proxy,
+    )
     packages = [
         build_r6_foundation_pipeline(
             artifact_id=f"{artifact_id}-{template['case_id']}",
@@ -35,12 +40,16 @@ def build_r6_case_matrix(
         for template in templates
     ]
     cases = [_case_summary(package) for package in packages]
+    public_outcome_case_count = sum(
+        1 for case in cases if case["outcome_source_level"] == "public_proxy"
+    )
     matrix = {
         "schema_version": R6_CASE_MATRIX_SCHEMA_VERSION,
         "artifact_id": artifact_id,
         "run_id": run_id,
         "status": "diagnostic_ready",
         "case_count": len(cases),
+        "public_outcome_proxy_case_count": public_outcome_case_count,
         "case_types_covered": [case["case_type"] for case in cases],
         "industry_binding": "generic_multi_case_templates",
         "cases": cases,
@@ -63,7 +72,8 @@ def build_r6_case_matrix(
             "no_cross_domain_accuracy_claim",
             "case_templates_are_fixture_level_evidence",
             "unvalidated_update_not_enabled",
-        ],
+        ]
+        + (["one_case_has_public_outcome_proxy"] if public_outcome_case_count else []),
         "blocking_gaps": [
             "needs_real_or_public_outcome_proxy_cases",
             "needs_holdout_validation_before_global_update_acceptance",
@@ -114,12 +124,34 @@ def _case_summary(package: dict[str, Any]) -> dict[str, Any]:
                 attribution["type"] for attribution in learning["error_attribution"]
             ],
         },
+        "outcome_source_level": outcome.get("outcome_source_level", "fixture_proxy"),
+        "data_quality_flags": outcome.get("data_quality_flags", []),
         "update_status": registry["overall_status"],
         "default_runtime_enabled": update["default_runtime_enabled"],
         "no_interaction_control_enabled": prior["no_interaction_control"]["enabled"],
         "outcome_feedback_available": bool(learning["error_attribution"]),
         "claim_boundary": R6_CLAIM_BOUNDARY,
     }
+
+
+def _templates_with_public_proxy(
+    templates: list[dict[str, Any]],
+    *,
+    public_outcome_proxy: dict[str, Any] | None,
+) -> list[dict[str, Any]]:
+    copied = [copy.deepcopy(template) for template in templates]
+    if public_outcome_proxy is None:
+        return copied
+    target_case_id = public_outcome_proxy["target_case_id"]
+    for template in copied:
+        if template["case_id"] == target_case_id:
+            template["outcome"] = {
+                **template.get("outcome", {}),
+                **public_outcome_proxy["outcome_override"],
+            }
+            template["public_outcome_proxy_artifact_id"] = public_outcome_proxy["artifact_id"]
+            return copied
+    raise ValueError(f"public outcome proxy target case not found: {target_case_id}")
 
 
 def main() -> int:

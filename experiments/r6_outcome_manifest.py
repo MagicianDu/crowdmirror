@@ -40,6 +40,7 @@ def build_r6_outcome_manifest(
         "claim_boundary": R6_CLAIM_BOUNDARY,
         "risk_flags": list(outcome_payload["risk_flags"]),
         "data_quality_flags": list(outcome_payload["data_quality_flags"]),
+        "outcome_source_level": outcome_payload.get("outcome_source_level", "fixture_proxy"),
         "blocking_gaps": [],
     }
     assert_strict_json(manifest)
@@ -77,4 +78,5 @@ def _default_outcome() -> dict[str, Any]:
         "source_refs": ["fixture:post_release_proxy_metrics"],
         "risk_flags": ["outcome_proxy_not_direct_attitude_truth"],
         "data_quality_flags": ["proxy_metric_not_direct_attitude"],
+        "outcome_source_level": "fixture_proxy",
     }

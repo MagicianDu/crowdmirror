@@ -1,0 +1,133 @@
+{
+  "artifact_id": "r6-public-outcome-proxy-current-001",
+  "blocking_gaps": [
+    "public_proxy_is_not_direct_release_outcome",
+    "needs_second_public_or_real_outcome_case"
+  ],
+  "by_segment": {
+    "fixed_income_inflation_stressed": {
+      "observed_behavior_change_proxy": 0.62,
+      "observed_reject_proxy": 0.38,
+      "observed_reject_proxy_raw": 0.3770806189894462,
+      "row_count": 1431,
+      "weighted_row_mass": 42698653.840810634
+    },
+    "general_population_cost_pressure": {
+      "observed_behavior_change_proxy": 0.45,
+      "observed_reject_proxy": 0.55,
+      "observed_reject_proxy_raw": 0.5457439071084338,
+      "row_count": 4658,
+      "weighted_row_mass": 160036222.564329
+    },
+    "low_income_food_insecure": {
+      "observed_behavior_change_proxy": 0.82,
+      "observed_reject_proxy": 0.18,
+      "observed_reject_proxy_raw": 0.17573130207551604,
+      "row_count": 123,
+      "weighted_row_mass": 8262982.894993074
+    },
+    "working_family_price_stressed": {
+      "observed_behavior_change_proxy": 0.65,
+      "observed_reject_proxy": 0.35,
+      "observed_reject_proxy_raw": 0.34742578498598675,
+      "row_count": 1105,
+      "weighted_row_mass": 41708041.095031805
+    }
+  },
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Official HPS/HTOPS PUF ingestion evidence only; not model-quality validation."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "data_quality_flags": [
+    "public_proxy_not_field_outcome",
+    "proxy_metric_not_direct_attitude_truth",
+    "same_dataset_proxy_not_cross_case_validation"
+  ],
+  "metrics": {
+    "observed_reject_proxy": 0.47,
+    "observed_reject_proxy_raw": 0.4724153321137064,
+    "row_count": 7317,
+    "weighted_row_mass": 252705900.3951645
+  },
+  "outcome_override": {
+    "by_segment": {
+      "fixed_income_inflation_stressed": {
+        "observed_behavior_change_proxy": 0.62,
+        "observed_reject_proxy": 0.38,
+        "observed_reject_proxy_raw": 0.3770806189894462,
+        "row_count": 1431,
+        "weighted_row_mass": 42698653.840810634
+      },
+      "general_population_cost_pressure": {
+        "observed_behavior_change_proxy": 0.45,
+        "observed_reject_proxy": 0.55,
+        "observed_reject_proxy_raw": 0.5457439071084338,
+        "row_count": 4658,
+        "weighted_row_mass": 160036222.564329
+      },
+      "low_income_food_insecure": {
+        "observed_behavior_change_proxy": 0.82,
+        "observed_reject_proxy": 0.18,
+        "observed_reject_proxy_raw": 0.17573130207551604,
+        "row_count": 123,
+        "weighted_row_mass": 8262982.894993074
+      },
+      "working_family_price_stressed": {
+        "observed_behavior_change_proxy": 0.65,
+        "observed_reject_proxy": 0.35,
+        "observed_reject_proxy_raw": 0.34742578498598675,
+        "row_count": 1105,
+        "weighted_row_mass": 41708041.095031805
+      }
+    },
+    "data_quality_flags": [
+      "public_proxy_not_field_outcome",
+      "proxy_metric_not_direct_attitude_truth",
+      "same_dataset_proxy_not_cross_case_validation"
+    ],
+    "metrics": {
+      "complaint_rate": 0.0,
+      "conversion_delta": -0.2,
+      "negative_sentiment_rate": 0.32,
+      "observed_reject_proxy": 0.47
+    },
+    "observation_window": "htops_2506_public_use_slice",
+    "outcome_source_level": "public_proxy",
+    "release_id": "htops_2506_public_cost_pressure_proxy",
+    "risk_flags": [
+      "not_field_validation",
+      "not_accuracy_superiority_evidence",
+      "public_proxy_requires_claim_boundary"
+    ],
+    "source_refs": [
+      "policy-reaction-htops-2506-public-ingestion-001",
+      "experiments/results/policy_reaction_benchmark/policy-reaction-htops-2506-public-ingestion-001.json",
+      "experiments/results/policy_data_intake/hps-htops-food-cost-intake.json"
+    ]
+  },
+  "public_source": {
+    "dataset_access_mode": "public_use_file_required",
+    "puf_row_count": 7485,
+    "skipped_row_count": 168,
+    "source_artifact_id": "policy-reaction-htops-2506-public-ingestion-001",
+    "source_schema_version": "policy-reaction-public-data-ingestion-v1",
+    "source_url": "https://www.census.gov/programs-surveys/household-pulse-survey/data/datasets.html",
+    "usable_row_count": 7317
+  },
+  "risk_flags": [
+    "not_field_validation",
+    "not_accuracy_superiority_evidence",
+    "public_proxy_requires_claim_boundary"
+  ],
+  "run_id": "r6-public-outcome-proxy-current-001",
+  "schema_version": "r6-public-outcome-proxy-v1",
+  "source_refs": [
+    "policy-reaction-htops-2506-public-ingestion-001",
+    "experiments/results/policy_reaction_benchmark/policy-reaction-htops-2506-public-ingestion-001.json",
+    "experiments/results/policy_data_intake/hps-htops-food-cost-intake.json"
+  ],
+  "status": "public_proxy_ready",
+  "target_case_id": "generic-public-service-policy-change",
+  "target_case_type": "public_service_policy_change"
+}

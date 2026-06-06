@@ -24,6 +24,15 @@
 - `experiments/results/r6_case_matrix/r6-case-matrix-current-001.json`
 - `experiments/results/r6_product_report/r6-product-report-current-001.json`
 
+当前新增的 R6 证据升级单元：
+
+- `experiments/r6_public_outcome_proxy.py`：将 HTOPS/HPS public-use ingestion artifact 转成 R6 public outcome proxy。
+- `experiments/r6_ablation_report.py`：比较 no-interaction prior、random noise、uncalibrated interaction、prior-anchored interaction 和 same-case outcome feedback update。
+- `experiments/r6_evidence_report.py`：回答当前 R6 是继续推进还是触发止损。
+- `experiments/results/r6_public_outcome_proxy/r6-public-outcome-proxy-current-001.json`
+- `experiments/results/r6_ablation_report/r6-ablation-report-current-001.json`
+- `experiments/results/r6_evidence_report/r6-evidence-report-current-001.json`
+
 ## 已确认结论
 
 1. 强人口/客户/群体先验不是研究对手，而是仿真底座。
@@ -31,6 +40,8 @@
 3. 没有真实 outcome 前，不能宣称交互仿真一定比静态先验更准。
 4. 真实 outcome 回来后，系统必须能做误差归因和方法更新。
 5. 垂直场景只能作为验证 case，不能成为方法定义。
+6. 当前 public proxy evidence 支持继续 R6，但只能作为诊断证据，不能作为 field validation 或跨域准确性结论。
+7. same-case outcome feedback update 即使降低误差，也必须保持 `blocked_same_case_only`，不能进入全局默认参数。
 
 ## 可复用资产
 
@@ -64,10 +75,10 @@ R6 开发时必须只 stage 本轮明确修改的文件。
 
 ## 下一步
 
-1. 接入至少 1 个真实或公开 outcome proxy，把 fixture outcome 升级为 public/proxy evidence。
-2. 给 lightweight interaction loop 增加 seed/scale、deterministic replay 和 random noise baseline。
-3. 增加 no-interaction prior、uncalibrated interaction、prior-anchored interaction、outcome-feedback update 的消融报告。
-4. 把 Product report 接到 demo/report ingestion，但继续保留 claim boundary。
+1. 再接入至少 1 个不同任务或不同来源的 public/real outcome proxy，避免单 proxy 结论偏置。
+2. 把 public proxy mapping review 文档化，说明 `baseline_no_new_support` 为什么只能作为 reject proxy。
+3. 将 evidence report 接到 Product report/demo ingestion，但继续保留 claim boundary。
+4. 用 follow-up 或 holdout case 验证 outcome feedback update，只有跨 case 不回归时才允许从 `blocked_same_case_only` 升级。
 
 ## 验收边界
 
