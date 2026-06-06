@@ -48,6 +48,11 @@
 - `experiments/results/r6_proxy_mapping_review/r6-proxy-mapping-review-current-001.json`
 - `experiments/results/r6_failure_boundary_report/r6-failure-boundary-report-anes-health-current-001.json`
 
+当前新增的 R6 mechanism cap ablation 单元：
+
+- `experiments/r6_mechanism_cap_ablation.py`
+- `experiments/results/r6_mechanism_cap_ablation/r6-mechanism-cap-ablation-current-001.json`
+
 ## 已确认结论
 
 1. 强人口/客户/群体先验不是研究对手，而是仿真底座。
@@ -61,6 +66,8 @@
 9. 当前结论不是“R6 稳定正效应成立”，而是“R6 已能发现正向信号和失败边界，值得继续但必须做跨 proxy/holdout 约束”。
 10. HTOPS 与 ANES 的 proxy mapping 已形成审计记录，二者都只能作为 bounded reject proxy，不能当作 field outcome 或直接态度真值。
 11. ANES health 失败边界已定位为 `interaction_over_amplifies_rejection_risk`：当静态先验已经接近 public proxy 时，rights/rule interaction profile 的 rejection amplification 会过冲。
+12. mechanism cap ablation 形成一个诊断候选：当 `static_prior_error <= 0.03` 且目标属于 rights/rule change 时，将 aggregate reject delta 限制到 `0.02`，可以把 ANES heldout proxy 的 prior-anchored error 从 `0.05` 降到 `0.00`，同时不影响 HTOPS proxy 上的正向信号。
+13. 上述 cap 仍是 `diagnostic_only`，`global_update_status=blocked_until_follow_up_holdout`；它证明 R6 能做失败归因和候选修复，但还不能宣称机制更新已通过全局验收。
 
 ## 可复用资产
 
@@ -94,10 +101,10 @@ R6 开发时必须只 stage 本轮明确修改的文件。
 
 ## 下一步
 
-1. 做 ANES failure boundary 的 mechanism cap ablation：当 static prior error 已很低时，限制 rights/rule rejection delta。
-2. 将 evidence report 接到 Product report/demo ingestion，但继续保留 claim boundary。
-3. 用 follow-up 或 holdout case 验证 outcome feedback update，只有跨 case 不回归时才允许从 `blocked_same_case_only` 升级。
-4. 继续接入第三个 public/real proxy，验证 mixed evidence 是否是机制边界问题还是任务选择偏差。
+1. 将 mechanism cap ablation 接到 Product report/demo ingestion，但继续保留 claim boundary，让产品侧展示“风险发现 -> 失败边界 -> 诊断候选修复 -> 仍需 holdout”的完整证据链。
+2. 用 follow-up 或 holdout case 验证 mechanism cap 和 outcome feedback update，只有跨 case 不回归时才允许从 `diagnostic_only` / `blocked_same_case_only` 升级。
+3. 继续接入第三个 public/real proxy，验证 mixed evidence 是否是机制边界问题还是任务选择偏差。
+4. 将 cap 规则扩展成可配置 policy，而不是写死在 runtime 默认参数中。
 
 ## 验收边界
 

@@ -1,0 +1,85 @@
+{
+  "artifact_id": "r6-mechanism-cap-ablation-current-001",
+  "blocking_gaps": [
+    "needs_follow_up_case_for_update_acceptance",
+    "needs_third_public_or_real_proxy"
+  ],
+  "cap_rule": {
+    "condition_static_prior_abs_error_lte": 0.03,
+    "max_aggregate_reject_delta": 0.02,
+    "scope": "rights_or_rule_change_rejection_amplification"
+  },
+  "case_results": [
+    {
+      "cap_applied": false,
+      "capped_prediction": 0.36,
+      "capped_prior_anchored_error": 0.11,
+      "capped_reject_delta": 0.07,
+      "failure_fixed": false,
+      "observed_reject_proxy": 0.47,
+      "original_prior_anchored_error": 0.11,
+      "original_prior_anchored_prediction": 0.36,
+      "original_reject_delta": 0.07,
+      "positive_signal_preserved": true,
+      "source_ablation_report_id": "r6-mechanism-cap-ablation-current-001-htops_cost_pressure-ablation",
+      "source_proxy_key": "htops_cost_pressure",
+      "source_public_outcome_proxy_id": "r6-mechanism-cap-ablation-current-001-htops_cost_pressure-proxy",
+      "static_prior_error": 0.18,
+      "static_prior_prediction": 0.29,
+      "target_case_id": "generic-public-service-policy-change",
+      "target_case_type": "public_service_policy_change"
+    },
+    {
+      "cap_applied": true,
+      "capped_prediction": 0.33,
+      "capped_prior_anchored_error": 0.0,
+      "capped_reject_delta": 0.02,
+      "failure_fixed": true,
+      "observed_reject_proxy": 0.33,
+      "original_prior_anchored_error": 0.05,
+      "original_prior_anchored_prediction": 0.38,
+      "original_reject_delta": 0.07,
+      "positive_signal_preserved": false,
+      "source_ablation_report_id": "r6-mechanism-cap-ablation-current-001-anes_health_heldout-ablation",
+      "source_proxy_key": "anes_health_heldout",
+      "source_public_outcome_proxy_id": "r6-mechanism-cap-ablation-current-001-anes_health_heldout-proxy",
+      "static_prior_error": 0.02,
+      "static_prior_prediction": 0.31,
+      "target_case_id": "generic-rights-rule-change",
+      "target_case_type": "rights_rule_change"
+    }
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Mechanism cap ablation is diagnostic only and not a global runtime update.",
+    "The cap is derived from public proxy behavior and requires holdout validation."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "recommended_update": {
+    "acceptance_requirement": "requires follow-up or cross-proxy holdout without HTOPS regression",
+    "default_runtime_enabled": false,
+    "status": "diagnostic_only",
+    "target_change": "cap rights/rule rejection amplification only when static prior is already close"
+  },
+  "risk_flags": [
+    "same_case_cap_not_global_update",
+    "public_proxy_not_field_validation",
+    "needs_follow_up_holdout"
+  ],
+  "run_id": "r6-mechanism-cap-ablation-current-001",
+  "schema_version": "r6-mechanism-cap-ablation-v1",
+  "source_refs": [
+    "r6-mechanism-cap-ablation-current-001-htops_cost_pressure-proxy",
+    "r6-mechanism-cap-ablation-current-001-anes_health_heldout-proxy",
+    "r6-mechanism-cap-ablation-current-001-htops_cost_pressure-ablation",
+    "r6-mechanism-cap-ablation-current-001-anes_health_heldout-ablation"
+  ],
+  "status": "diagnostic_cap_candidate_ready",
+  "summary": {
+    "cap_applied_count": 1,
+    "failure_fixed_count": 1,
+    "global_update_status": "blocked_until_follow_up_holdout",
+    "positive_signal_preserved_count": 1,
+    "public_proxy_count": 2
+  }
+}
