@@ -1,0 +1,61 @@
+{
+  "artifact_id": "r6-failure-boundary-report-anes-health-current-001",
+  "blocking_gaps": [
+    "needs_follow_up_case_for_update_acceptance",
+    "needs_mechanism_cap_ablation_before_runtime_default"
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Failure boundary is diagnostic only and not a global method update."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "diagnosis": {
+    "evidence": [
+      "no_interaction_prior is closer to the ANES heldout reject proxy",
+      "prior_anchored_interaction increases rejection from 0.31 to 0.38",
+      "observed reject proxy is 0.33, so the interaction shift overshoots"
+    ],
+    "primary_hypothesis": "rights/rule interaction profile imported too much rejection amplification for ANES health heldout segments where the static prior is already close.",
+    "suspect_mechanisms": [
+      "rights_loss_salience",
+      "peer_amplification",
+      "trust_shock"
+    ]
+  },
+  "failure_boundary": {
+    "failure_type": "interaction_over_amplifies_rejection_risk",
+    "no_interaction_error": 0.02,
+    "no_interaction_prediction": 0.31,
+    "observed_reject_proxy": 0.33,
+    "prior_anchored_error": 0.05,
+    "prior_anchored_prediction": 0.38,
+    "regression_delta": 0.03
+  },
+  "recommended_update": {
+    "acceptance_requirement": "requires follow-up or cross-proxy holdout case without regression",
+    "candidate_rule": {
+      "action": "cap aggregate reject delta at 0.02 before holdout validation",
+      "condition": "static_prior_absolute_error <= 0.03 on public proxy"
+    },
+    "default_runtime_enabled": false,
+    "status": "diagnostic_only",
+    "target_change": "shrink rights/rule rejection amplification when static prior error is already low"
+  },
+  "risk_flags": [
+    "same_case_proxy_not_global_update",
+    "public_proxy_not_field_validation",
+    "interaction_mechanism_regression_boundary"
+  ],
+  "run_id": "r6-failure-boundary-report-anes-health-current-001",
+  "schema_version": "r6-failure-boundary-report-v1",
+  "source_ablation_report_id": "r6-failure-boundary-report-anes-health-current-001-anes-health-ablation",
+  "source_proxy_key": "anes_health_heldout",
+  "source_public_outcome_proxy_id": "r6-failure-boundary-report-anes-health-current-001-anes-health-proxy",
+  "source_refs": [
+    "r6-failure-boundary-report-anes-health-current-001-anes-health-proxy",
+    "r6-failure-boundary-report-anes-health-current-001-anes-health-ablation",
+    "policy-reaction-anes-health-001-heldout"
+  ],
+  "status": "failure_boundary_ready",
+  "target_case_id": "generic-rights-rule-change"
+}

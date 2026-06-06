@@ -41,6 +41,13 @@
 - `experiments/results/r6_product_report/r6-product-report-current-002.json`
 - `experiments/results/r6_evidence_report/r6-evidence-report-current-002.json`
 
+当前新增的 R6 诊断收束单元：
+
+- `experiments/r6_proxy_mapping_review.py`
+- `experiments/r6_failure_boundary_report.py`
+- `experiments/results/r6_proxy_mapping_review/r6-proxy-mapping-review-current-001.json`
+- `experiments/results/r6_failure_boundary_report/r6-failure-boundary-report-anes-health-current-001.json`
+
 ## 已确认结论
 
 1. 强人口/客户/群体先验不是研究对手，而是仿真底座。
@@ -52,6 +59,8 @@
 7. same-case outcome feedback update 即使降低误差，也必须保持 `blocked_same_case_only`，不能进入全局默认参数。
 8. 双 proxy 结果是 mixed evidence：HTOPS public proxy 上 prior-anchored interaction 优于 no-interaction prior；ANES health heldout proxy 上 prior-anchored interaction 劣于 no-interaction prior。
 9. 当前结论不是“R6 稳定正效应成立”，而是“R6 已能发现正向信号和失败边界，值得继续但必须做跨 proxy/holdout 约束”。
+10. HTOPS 与 ANES 的 proxy mapping 已形成审计记录，二者都只能作为 bounded reject proxy，不能当作 field outcome 或直接态度真值。
+11. ANES health 失败边界已定位为 `interaction_over_amplifies_rejection_risk`：当静态先验已经接近 public proxy 时，rights/rule interaction profile 的 rejection amplification 会过冲。
 
 ## 可复用资产
 
@@ -85,10 +94,10 @@ R6 开发时必须只 stage 本轮明确修改的文件。
 
 ## 下一步
 
-1. 把 public proxy mapping review 文档化，分别解释 HTOPS `baseline_no_new_support` 和 ANES `private_insurance_plan` 为什么只能作为 reject proxy。
-2. 针对 ANES health 的失败边界诊断 interaction 机制是否过度放大 rejection risk。
-3. 将 evidence report 接到 Product report/demo ingestion，但继续保留 claim boundary。
-4. 用 follow-up 或 holdout case 验证 outcome feedback update，只有跨 case 不回归时才允许从 `blocked_same_case_only` 升级。
+1. 做 ANES failure boundary 的 mechanism cap ablation：当 static prior error 已很低时，限制 rights/rule rejection delta。
+2. 将 evidence report 接到 Product report/demo ingestion，但继续保留 claim boundary。
+3. 用 follow-up 或 holdout case 验证 outcome feedback update，只有跨 case 不回归时才允许从 `blocked_same_case_only` 升级。
+4. 继续接入第三个 public/real proxy，验证 mixed evidence 是否是机制边界问题还是任务选择偏差。
 
 ## 验收边界
 
