@@ -12,6 +12,7 @@ if __package__ in {None, ""}:
 from experiments.r6_ablation_report import build_r6_ablation_report
 from experiments.r6_case_matrix import build_r6_case_matrix
 from experiments.r6_contracts import R6_CLAIM_BOUNDARY, assert_strict_json, non_empty_string, write_json_artifact
+from experiments.r6_mechanism_cap_ablation import build_r6_mechanism_cap_ablation
 from experiments.r6_product_report import build_r6_product_report
 from experiments.r6_public_outcome_proxy import build_r6_public_outcome_proxy
 
@@ -41,10 +42,15 @@ def build_r6_evidence_report(
         run_id=run_id,
         public_outcome_proxies=public_proxies,
     )
+    mechanism_cap_ablation = build_r6_mechanism_cap_ablation(
+        artifact_id=f"{artifact_id}-mechanism-cap-ablation",
+        run_id=run_id,
+    )
     product_report = build_r6_product_report(
         artifact_id=f"{artifact_id}-product-report",
         run_id=run_id,
         case_matrix=case_matrix,
+        mechanism_cap_ablation=mechanism_cap_ablation,
     )
     ablation = build_r6_ablation_report(
         artifact_id=f"{artifact_id}-ablation",
@@ -114,6 +120,9 @@ def build_r6_evidence_report(
             "artifact_id": product_report["artifact_id"],
             "status": product_report["status"],
             "market_claim_status": product_report["decision_support"]["market_claim_status"],
+            "mechanism_cap_status": product_report["mechanism_cap_review"][
+                "claim_status"
+            ],
         },
         "acceptance_gates": {
             "public_outcome_proxy_connected": True,
@@ -123,19 +132,20 @@ def build_r6_evidence_report(
                 ablation["deterministic_replay"]["passed"]
                 and second_ablation["deterministic_replay"]["passed"]
             ),
+            "product_report_ingests_mechanism_cap": True,
             "global_update_accepted": False,
         },
         "remaining_gaps": [
             "needs_more_public_or_real_outcomes",
             "needs_holdout_case_for_feedback_update_acceptance",
-            "needs_public_proxy_mapping_review",
-            "needs_product_demo_report_ingestion",
+            "needs_holdout_case_for_mechanism_cap_acceptance",
         ],
         "source_refs": [
             public_proxy["artifact_id"],
             second_public_proxy["artifact_id"],
             case_matrix["artifact_id"],
             product_report["artifact_id"],
+            mechanism_cap_ablation["artifact_id"],
             ablation["artifact_id"],
             second_ablation["artifact_id"],
         ],
@@ -149,6 +159,7 @@ def build_r6_evidence_report(
             "same_case_feedback_not_global_acceptance",
             "not_cross_domain_accuracy_evidence",
             "mixed_public_proxy_evidence",
+            "mechanism_cap_not_runtime_default",
         ],
         "blocking_gaps": [
             "global_update_acceptance_blocked",

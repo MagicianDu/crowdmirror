@@ -53,6 +53,13 @@
 - `experiments/r6_mechanism_cap_ablation.py`
 - `experiments/results/r6_mechanism_cap_ablation/r6-mechanism-cap-ablation-current-001.json`
 
+当前新增的 R6 Product 证据链接入单元：
+
+- `experiments/r6_product_report.py` 支持 `mechanism_cap_ablation` ingestion。
+- `experiments/r6_evidence_report.py` 将 Product ingestion 纳入 acceptance gate。
+- `experiments/results/r6_product_report/r6-product-report-current-003.json`
+- `experiments/results/r6_evidence_report/r6-evidence-report-current-003.json`
+
 ## 已确认结论
 
 1. 强人口/客户/群体先验不是研究对手，而是仿真底座。
@@ -68,6 +75,8 @@
 11. ANES health 失败边界已定位为 `interaction_over_amplifies_rejection_risk`：当静态先验已经接近 public proxy 时，rights/rule interaction profile 的 rejection amplification 会过冲。
 12. mechanism cap ablation 形成一个诊断候选：当 `static_prior_error <= 0.03` 且目标属于 rights/rule change 时，将 aggregate reject delta 限制到 `0.02`，可以把 ANES heldout proxy 的 prior-anchored error 从 `0.05` 降到 `0.00`，同时不影响 HTOPS proxy 上的正向信号。
 13. 上述 cap 仍是 `diagnostic_only`，`global_update_status=blocked_until_follow_up_holdout`；它证明 R6 能做失败归因和候选修复，但还不能宣称机制更新已通过全局验收。
+14. Product report 已能展示完整证据链：`pre_release_risk_shift -> public_proxy_failure_boundary -> mechanism_cap_candidate`；其中 mechanism cap 的 `claim_status=diagnostic_candidate_not_runtime_default`，`default_runtime_enabled=false`。
+15. Evidence report 已将 Product ingestion 纳入 gate：`product_report_ingests_mechanism_cap=true`；旧的 `needs_product_demo_report_ingestion` 与 `needs_public_proxy_mapping_review` gap 不再保留。
 
 ## 可复用资产
 
@@ -101,10 +110,10 @@ R6 开发时必须只 stage 本轮明确修改的文件。
 
 ## 下一步
 
-1. 将 mechanism cap ablation 接到 Product report/demo ingestion，但继续保留 claim boundary，让产品侧展示“风险发现 -> 失败边界 -> 诊断候选修复 -> 仍需 holdout”的完整证据链。
-2. 用 follow-up 或 holdout case 验证 mechanism cap 和 outcome feedback update，只有跨 case 不回归时才允许从 `diagnostic_only` / `blocked_same_case_only` 升级。
-3. 继续接入第三个 public/real proxy，验证 mixed evidence 是否是机制边界问题还是任务选择偏差。
-4. 将 cap 规则扩展成可配置 policy，而不是写死在 runtime 默认参数中。
+1. 用 follow-up 或 holdout case 验证 mechanism cap 和 outcome feedback update，只有跨 case 不回归时才允许从 `diagnostic_only` / `blocked_same_case_only` 升级。
+2. 继续接入第三个 public/real proxy，验证 mixed evidence 是否是机制边界问题还是任务选择偏差。
+3. 将 cap 规则扩展成可配置 policy，而不是写死在 runtime 默认参数中。
+4. 将 Product 侧展示从 JSON report 接到 demo/API，但必须直接消费 artifact 字段，不允许写静态叙事兜底。
 
 ## 验收边界
 

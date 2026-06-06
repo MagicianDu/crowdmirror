@@ -157,8 +157,12 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "second_public_outcome_proxy_connected": True,
         "ablation_baselines_present": True,
         "deterministic_replay_passed": True,
+        "product_report_ingests_mechanism_cap": True,
         "global_update_accepted": False,
     }
+    assert report["product_report_summary"]["mechanism_cap_status"] == (
+        "diagnostic_candidate_not_runtime_default"
+    )
     assert report["ablation_summary"]["prior_anchored_beats_no_interaction"] is True
     assert report["multi_proxy_summary"] == {
         "public_proxy_count": 2,
@@ -168,6 +172,8 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "conclusion": "mixed_public_proxy_evidence",
     }
     assert "needs_more_public_or_real_outcomes" in report["remaining_gaps"]
+    assert "needs_product_demo_report_ingestion" not in report["remaining_gaps"]
+    assert "needs_public_proxy_mapping_review" not in report["remaining_gaps"]
     assert "same_case_feedback_not_global_acceptance" in report["risk_flags"]
     json.dumps(report, allow_nan=False)
 
