@@ -20,6 +20,9 @@ from experiments.r6_mechanism_cap_ablation import build_r6_mechanism_cap_ablatio
 from experiments.r6_product_evidence_cards import build_r6_product_evidence_cards
 from experiments.r6_product_report import build_r6_product_report
 from experiments.r6_public_outcome_proxy import build_r6_public_outcome_proxy
+from experiments.r6_risk_discovery_value_report import (
+    build_r6_risk_discovery_value_report,
+)
 
 
 R6_EVIDENCE_REPORT_SCHEMA_VERSION = "r6-evidence-report-v1"
@@ -81,12 +84,20 @@ def build_r6_evidence_report(
         transfer_protocol=transfer_protocol,
         holdout_ledger=holdout_ledger,
     )
+    risk_discovery_value = build_r6_risk_discovery_value_report(
+        artifact_id=f"{artifact_id}-risk-discovery-value-report",
+        run_id=run_id,
+        transfer_protocol=transfer_protocol,
+        holdout_ledger=holdout_ledger,
+        product_evidence_cards=product_evidence_cards,
+    )
     ccfa_readiness = build_r6_ccfa_readiness_report(
         artifact_id=f"{artifact_id}-ccfa-readiness-report",
         run_id=run_id,
         transfer_protocol=transfer_protocol,
         holdout_ledger=holdout_ledger,
         product_evidence_cards=product_evidence_cards,
+        risk_discovery_value_report=risk_discovery_value,
     )
     ablation = build_r6_ablation_report(
         artifact_id=f"{artifact_id}-ablation",
@@ -119,7 +130,9 @@ def build_r6_evidence_report(
             "reason": (
                 "Three public proxies are connected. One supports the prior-anchored "
                 "interaction signal, two expose non-improvement boundaries, and global "
-                "updates remain blocked."
+                "updates remain blocked. This is still worth continuing as risk "
+                "discovery because the static prior is the simulation base, not the "
+                "research opponent."
             ),
         },
         "public_outcome_proxies": [
@@ -193,6 +206,12 @@ def build_r6_evidence_report(
             "outcome_feedback_transfer_beats_static_prior": transfer_protocol[
                 "acceptance_gates"
             ]["outcome_feedback_transfer_beats_static_prior"],
+            "runtime_update_guard_passed": transfer_protocol["acceptance_gates"][
+                "runtime_update_guard_passed"
+            ],
+            "risk_discovery_value_path_open": transfer_protocol[
+                "acceptance_gates"
+            ]["risk_discovery_value_path_open"],
             "global_update_accepted": transfer_protocol["acceptance_gates"][
                 "global_update_accepted"
             ],
@@ -214,6 +233,19 @@ def build_r6_evidence_report(
             "static_narrative_fallback_allowed": product_evidence_cards[
                 "demo_api_contract"
             ]["static_narrative_fallback_allowed"],
+        },
+        "risk_discovery_value_summary": {
+            "artifact_id": risk_discovery_value["artifact_id"],
+            "status": risk_discovery_value["status"],
+            "static_prior_role": risk_discovery_value["objective_reframe"][
+                "static_prior_role"
+            ],
+            "r6_overall_worth_continuing": risk_discovery_value["decision"][
+                "r6_overall_worth_continuing"
+            ],
+            "runtime_update_default_ready": risk_discovery_value["decision"][
+                "runtime_update_default_ready"
+            ],
         },
         "ccfa_readiness_summary": {
             "artifact_id": ccfa_readiness["artifact_id"],
@@ -254,6 +286,17 @@ def build_r6_evidence_report(
             "outcome_feedback_transfer_beats_static_prior": transfer_protocol[
                 "acceptance_gates"
             ]["outcome_feedback_transfer_beats_static_prior"],
+            "runtime_update_guard_passed": transfer_protocol["acceptance_gates"][
+                "runtime_update_guard_passed"
+            ],
+            "risk_discovery_value_report_present": True,
+            "static_prior_role_reframed_as_foundation": (
+                risk_discovery_value["objective_reframe"]["static_prior_role"]
+                == "foundation_not_opponent"
+            ),
+            "risk_discovery_path_should_continue": risk_discovery_value[
+                "decision"
+            ]["r6_overall_worth_continuing"],
             "in_condition_holdout_ledger_present": True,
             "in_condition_holdout_found": holdout_ledger["summary"][
                 "in_condition_holdout_count"
@@ -270,6 +313,7 @@ def build_r6_evidence_report(
             followup_holdout=followup_holdout,
             transfer_protocol=transfer_protocol,
             holdout_ledger=holdout_ledger,
+            risk_discovery_value=risk_discovery_value,
             ccfa_readiness=ccfa_readiness,
         ),
         "source_refs": [
@@ -283,6 +327,7 @@ def build_r6_evidence_report(
             transfer_protocol["artifact_id"],
             holdout_ledger["artifact_id"],
             product_evidence_cards["artifact_id"],
+            risk_discovery_value["artifact_id"],
             ccfa_readiness["artifact_id"],
             ablation["artifact_id"],
             second_ablation["artifact_id"],
@@ -300,6 +345,7 @@ def build_r6_evidence_report(
             "mixed_public_proxy_evidence",
             "mechanism_cap_not_runtime_default",
             "partial_holdout_not_runtime_acceptance",
+            "static_prior_is_foundation_not_opponent",
             "ccf_a_main_contribution_not_ready",
         ],
         "blocking_gaps": [
@@ -321,6 +367,7 @@ def _remaining_gaps_with_method_gates(
     followup_holdout: dict[str, Any],
     transfer_protocol: dict[str, Any],
     holdout_ledger: dict[str, Any],
+    risk_discovery_value: dict[str, Any],
     ccfa_readiness: dict[str, Any],
 ) -> list[str]:
     gaps = [
@@ -331,6 +378,7 @@ def _remaining_gaps_with_method_gates(
     gaps.extend(followup_holdout["blocking_gaps"])
     gaps.extend(transfer_protocol["blocking_gaps"])
     gaps.extend(holdout_ledger["blocking_gaps"])
+    gaps.extend(risk_discovery_value["blocking_gaps"])
     gaps.extend(ccfa_readiness["blocking_gaps"])
     return sorted(set(gaps))
 

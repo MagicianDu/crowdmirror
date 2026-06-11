@@ -22,6 +22,9 @@ from experiments.r6_in_condition_holdout_ledger import (
     build_r6_in_condition_holdout_ledger,
 )
 from experiments.r6_product_evidence_cards import build_r6_product_evidence_cards
+from experiments.r6_risk_discovery_value_report import (
+    build_r6_risk_discovery_value_report,
+)
 
 
 R6_CCFA_READINESS_REPORT_SCHEMA_VERSION = "r6-ccfa-readiness-report-v1"
@@ -34,6 +37,7 @@ def build_r6_ccfa_readiness_report(
     transfer_protocol: dict[str, Any] | None = None,
     holdout_ledger: dict[str, Any] | None = None,
     product_evidence_cards: dict[str, Any] | None = None,
+    risk_discovery_value_report: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
@@ -54,10 +58,21 @@ def build_r6_ccfa_readiness_report(
             holdout_ledger=holdout_ledger,
         )
     )
+    risk_discovery_value_report = (
+        risk_discovery_value_report
+        or build_r6_risk_discovery_value_report(
+            artifact_id=f"{artifact_id}-risk-discovery-value-report",
+            run_id=run_id,
+            transfer_protocol=transfer_protocol,
+            holdout_ledger=holdout_ledger,
+            product_evidence_cards=product_evidence_cards,
+        )
+    )
     checklist = _readiness_checklist(
         transfer_protocol=transfer_protocol,
         holdout_ledger=holdout_ledger,
         product_evidence_cards=product_evidence_cards,
+        risk_discovery_value_report=risk_discovery_value_report,
     )
     failed_required = [
         item for item in checklist if item["required_for_ccf_a"] and item["status"] != "passed"
@@ -69,13 +84,14 @@ def build_r6_ccfa_readiness_report(
         "status": "ccf_a_readiness_evaluated",
         "verdict": {
             "ccf_a_main_contribution_ready": False,
-            "readiness_level": "L3_diagnostic_framework_not_L4_main_contribution",
+            "readiness_level": "L3_risk_discovery_framework_needs_validation",
             "decision": "not_ready_for_ccf_a_submission_as_main_algorithm",
             "short_answer": (
-                "R6 has method framing, artifact governance, failure-boundary diagnosis, "
-                "and Product evidence-chain value, but it has not passed L4 in-condition "
-                "transfer or field validation, so it is not yet a CCF-A-level main "
-                "contribution."
+                "R6 should be evaluated as a static-prior anchored risk-discovery "
+                "framework. The static prior is the simulation base, while interaction "
+                "adds auditable risk hypotheses. The framework is not CCF-A-ready until "
+                "risk-discovery holdout validation, decision-value metrics, and field "
+                "outcome validation are present."
             ),
         },
         "readiness_checklist": checklist,
@@ -90,6 +106,8 @@ def build_r6_ccfa_readiness_report(
         ],
         "positive_assets": [
             "prior_anchored_interaction_problem_reframed",
+            "static_prior_reframed_as_simulation_foundation",
+            "risk_discovery_value_report_added",
             "no_interaction_control_and_public_proxy_baselines_available",
             "failure_boundary_and_candidate_repair_are_auditable",
             "unvalidated_updates_are_blocked_by_registry_and_gates",
@@ -97,25 +115,27 @@ def build_r6_ccfa_readiness_report(
         ],
         "paper_claim_boundary": {
             "allowed_claim": (
-                "R6 is a prior-anchored interaction simulation governance framework "
-                "with diagnostic evidence and explicit blocked-update gates."
+                "R6 is a static-prior anchored risk-discovery framework with "
+                "diagnostic evidence, explicit blocked-update gates, and Product-visible "
+                "claim boundaries."
             ),
             "blocked_claim": (
-                "R6 is already a CCF-A-level algorithm with stable accuracy superiority "
-                "over strong static priors."
+                "R6 already guarantees aggregate predictive accuracy, field validity, "
+                "or default runtime updates beyond the static-prior foundation."
             ),
         },
         "recommended_next_research_steps": [
-            "find_or_collect_in_condition_same_family_holdout",
-            "make_outcome_feedback_transfer_beat_static_prior_or_reject_it",
+            "define_risk_discovery_decision_value_metric",
+            "bind_in_condition_holdout_to_risk_discovery_validation",
             "add_field_or_real_release_outcome_validation",
             "formalize_interaction_operator_and_gated_update_theory",
-            "run_strong_baseline_comparison_after_l4_data_gate_passes",
+            "compare_risk_discovery_value_against_static_prior_only_and_random_interaction",
         ],
         "source_refs": [
             transfer_protocol["artifact_id"],
             holdout_ledger["artifact_id"],
             product_evidence_cards["artifact_id"],
+            risk_discovery_value_report["artifact_id"],
         ],
         "claim_boundaries": [
             R6_CLAIM_BOUNDARY,
@@ -124,9 +144,10 @@ def build_r6_ccfa_readiness_report(
         "claim_boundary": R6_CLAIM_BOUNDARY,
         "risk_flags": [
             "not_ccf_a_ready",
-            "l4_transfer_missing",
+            "risk_discovery_holdout_validation_missing",
+            "decision_value_metric_missing",
             "field_validation_missing",
-            "strong_prior_superiority_not_proven",
+            "runtime_update_guard_not_passed",
         ],
         "blocking_gaps": sorted(
             {
@@ -149,31 +170,53 @@ def _readiness_checklist(
     transfer_protocol: dict[str, Any],
     holdout_ledger: dict[str, Any],
     product_evidence_cards: dict[str, Any],
+    risk_discovery_value_report: dict[str, Any],
 ) -> list[dict[str, Any]]:
     return [
         {
             "gate_id": "formal_problem_defined",
             "required_for_ccf_a": True,
             "status": "partial",
-            "evidence": "active R6 specs define the problem and artifact chain, but no manuscript-level formal objective is complete.",
+            "evidence": (
+                "active R6 specs define the prior-anchored risk-discovery problem, "
+                "but no manuscript-level formal objective is complete."
+            ),
             "blocking_gap": "needs_formal_problem_and_theory_section",
         },
         {
-            "gate_id": "no_interaction_baseline_and_interaction_operator",
+            "gate_id": "static_prior_foundation",
             "required_for_ccf_a": True,
             "status": "passed",
-            "evidence": "R6 ablation and transfer artifacts compare no-interaction prior with prior-anchored interaction.",
+            "evidence": (
+                "risk_discovery_report.static_prior_role="
+                f"{risk_discovery_value_report['objective_reframe']['static_prior_role']}"
+            ),
             "blocking_gap": "",
         },
         {
-            "gate_id": "outcome_feedback_gated_update",
+            "gate_id": "risk_discovery_objective_defined",
             "required_for_ccf_a": True,
-            "status": "partial",
-            "evidence": transfer_protocol["global_update_decision"]["reason"],
-            "blocking_gap": "needs_outcome_feedback_transfer_beating_static_prior",
+            "status": "passed",
+            "evidence": (
+                "interaction_role="
+                f"{risk_discovery_value_report['objective_reframe']['interaction_role']}"
+            ),
+            "blocking_gap": "",
         },
         {
-            "gate_id": "l4_in_condition_transfer",
+            "gate_id": "interaction_risk_signal_present",
+            "required_for_ccf_a": True,
+            "status": "passed",
+            "evidence": (
+                "interaction_delta_observable="
+                f"{risk_discovery_value_report['risk_discovery_gates']['interaction_delta_observable']}; "
+                "failure_boundary_detected="
+                f"{risk_discovery_value_report['risk_discovery_gates']['failure_boundary_detected']}"
+            ),
+            "blocking_gap": "",
+        },
+        {
+            "gate_id": "risk_discovery_holdout_validation",
             "required_for_ccf_a": True,
             "status": "failed",
             "evidence": (
@@ -182,21 +225,35 @@ def _readiness_checklist(
                 "mechanism_cap_l4_in_condition_transfer_passed="
                 f"{transfer_protocol['acceptance_gates']['mechanism_cap_l4_in_condition_transfer_passed']}"
             ),
-            "blocking_gap": "needs_in_condition_same_family_rights_rule_holdout",
+            "blocking_gap": "needs_risk_discovery_holdout_validation",
         },
         {
             "gate_id": "failure_boundary_systematically_explained",
             "required_for_ccf_a": True,
-            "status": "partial",
-            "evidence": "ANES health over-amplification is diagnosed and capped, but the failure boundary has not passed in-condition transfer.",
-            "blocking_gap": "needs_failure_boundary_to_predict_holdout_gate",
+            "status": "passed",
+            "evidence": (
+                "ANES health over-amplification is diagnosed, converted into a "
+                "candidate cap, and exposed through Product evidence cards; predictive "
+                "holdout validation is tracked by the risk-discovery holdout gate."
+            ),
+            "blocking_gap": "",
         },
         {
-            "gate_id": "strong_baseline_comparison",
+            "gate_id": "decision_value_metric",
             "required_for_ccf_a": True,
             "status": "failed",
-            "evidence": "Outcome feedback transfer improves prior-interaction error but fails the static-prior gate on holdout.",
-            "blocking_gap": "needs_stable_superiority_over_strong_static_prior",
+            "evidence": (
+                "decision_value_metric_present="
+                f"{risk_discovery_value_report['risk_discovery_gates']['decision_value_metric_present']}"
+            ),
+            "blocking_gap": "needs_decision_value_metric_topk_or_regret",
+        },
+        {
+            "gate_id": "runtime_update_guard",
+            "required_for_ccf_a": False,
+            "status": "failed",
+            "evidence": transfer_protocol["global_update_decision"]["reason"],
+            "blocking_gap": "needs_runtime_update_guard_before_default_enablement",
         },
         {
             "gate_id": "field_or_real_outcome_validation",

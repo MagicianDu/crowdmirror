@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-截至 2026-06-06，项目已从 R4/R5 的静态 heldout accuracy race 转向 R6：
+截至 2026-06-07，项目已从 R4/R5 的静态 heldout accuracy race 转向 R6：
 
 > 结果反馈约束的先验锚定交互仿真框架。
 
@@ -87,11 +87,21 @@
 - `experiments/r6_in_condition_holdout_ledger.py`
 - `experiments/r6_product_evidence_cards.py`
 - `experiments/r6_ccfa_readiness_report.py`
+- `experiments/r6_risk_discovery_value_report.py`
 - `experiments/results/r6_cross_case_transfer_protocol/r6-cross-case-transfer-protocol-current-001.json`
+- `experiments/results/r6_cross_case_transfer_protocol/r6-cross-case-transfer-protocol-current-002.json`
 - `experiments/results/r6_in_condition_holdout_ledger/r6-in-condition-holdout-ledger-current-001.json`
 - `experiments/results/r6_product_evidence_cards/r6-product-evidence-cards-current-001.json`
 - `experiments/results/r6_ccfa_readiness_report/r6-ccfa-readiness-report-current-001.json`
+- `experiments/results/r6_ccfa_readiness_report/r6-ccfa-readiness-report-current-002.json`
+- `experiments/results/r6_risk_discovery_value_report/r6-risk-discovery-value-report-current-001.json`
 - `experiments/results/r6_evidence_report/r6-evidence-report-current-006.json`
+- `experiments/results/r6_evidence_report/r6-evidence-report-current-007.json`
+
+当前新增的 R6 目标修正单元：
+
+- `experiments/r6_risk_discovery_value_report.py`：把 R6 从“全局击败静态先验”修正为“静态先验底座 + 交互风险发现 + 受护栏约束的结果反馈学习”。
+- 静态先验相关 gate 被拆分为两类：Research/Product 价值 gate 看风险发现、决策价值和可审计学习；runtime update gate 才要求候选更新不能伤害静态先验。
 
 ## 已确认结论
 
@@ -114,16 +124,17 @@
 17. outcome feedback update 在两个 public proxy 上都降低了 same-case error，但仍是 `blocked_same_case_only`；当前没有 cross-case transfer protocol，不能进入全局更新。
 18. 第三个 public proxy `anes_climate_heldout` 已接入：它是同 ANES public-use、不同政策域的 climate-energy regulation heldout，映射到 `generic-rights-rule-change` 的 bounded reject proxy，`observed_reject_proxy=0.25`。
 19. 第三个 proxy 让 holdout 结论更精确：当前不是“没有同 family holdout”，而是“同 family holdout 可用，但不覆盖 cap 触发条件”。在 climate holdout 上 static prior error 为 `0.06`，高于 cap 条件阈值 `0.03`，因此 `mechanism_cap_same_family_cap_condition_covered=false`、`global_update_accepted=false`。
-20. 三个 public proxy 的整体证据仍是 mixed evidence：HTOPS 上 prior-anchored interaction 为正向，ANES health 与 ANES climate 上都是 regression；因此 R6 只能继续作为有约束诊断框架推进，不能宣称稳定准确性优势。
+20. 三个 public proxy 的整体证据仍是 mixed evidence：HTOPS 上 prior-anchored interaction 为正向，ANES health 与 ANES climate 上都是 regression；因此 R6 只能继续作为有约束风险发现框架推进，不能宣称稳定预测准确性。
 21. 当前工作没有偏离 R6 主线，但已到达细节扩张边界；继续堆 proxy 或 JSON 变体收益不足，必须转向方法验收层。
-22. 当前 R6 最强主张是：它已经形成能连接强先验、交互风险偏移、结果反馈、失败边界和受约束更新的可审计框架，但尚未证明稳定准确性优势或全局可迁移更新能力。
+22. 当前 R6 最强主张是：它已经形成能连接强先验、交互风险偏移、结果反馈、失败边界和受约束更新的可审计框架；静态先验是仿真底座，交互层负责发现静态先验看不到的发布前风险和二阶影响。
 23. mechanism cap 当前处于 `L3 partial`：source case 修复成立，部分 holdout 不回归，但缺少覆盖 cap 触发条件的独立同 family holdout，不能进入 runtime default。
 24. outcome feedback 当前处于 `L2 same-case improvement`：两个 public proxy 上 same-case error 均下降，但缺少 cross-case transfer protocol，不能宣称可迁移优化。
 25. cross-case transfer protocol 已实现：mechanism cap 的 ANES health -> HTOPS 是 `non_regression_only`，ANES health -> ANES climate 是 `condition_not_covered`；因此 mechanism cap 仍不是 L4。
-26. outcome feedback residual transfer 已实现：ANES health -> ANES climate 和 ANES climate -> ANES health 都能降低 prior-interaction error，但都没有 beat strong static prior，因此只能是 `non_regression_only`，不能升级为全局自动校准方法。
+26. outcome feedback residual transfer 已实现：ANES health -> ANES climate 和 ANES climate -> ANES health 都能降低 prior-interaction error，但未通过 runtime update guard，因此不能升级为全局自动校准方法；这不等于 R6 风险发现主线失败。
 27. in-condition holdout ledger 已实现：当前 `in_condition_holdout_count=0`，ANES health 是 source case，ANES climate 是 same-family 但 out-of-condition，HTOPS 是 out-of-family。
 28. Product evidence card contract 已实现：当前 5 张卡都含 `claim_status`、`allowed_claims`、`blocked_claims`、`source_artifact_ids`，并明确 `static_narrative_fallback_allowed=false`。
-29. CCF-A readiness report 已实现，当前结论是 `ccf_a_main_contribution_ready=false`；R6 还没有达到 CCF-A 级主贡献算法水准。
+29. CCF-A readiness report 已实现，当前结论是 `ccf_a_main_contribution_ready=false`；R6 还没有达到 CCF-A 级主贡献算法水准，核心缺口改为风险发现 holdout validation、decision-value 指标、field outcome validation 和形式化理论。
+30. risk-discovery value report 已实现，当前结论是 `risk_discovery_value_framework_ready_needs_holdout_validation`；R6 值得继续作为先验锚定风险发现框架推进，但 runtime default update 仍被阻断。
 
 ## 可复用资产
 
@@ -157,10 +168,10 @@ R6 开发时必须只 stage 本轮明确修改的文件。
 
 ## 下一步
 
-1. Research 下一步只围绕 CCF-A readiness 的 6 个 failed/partial gate 推进：formal problem、outcome feedback transfer、L4 in-condition transfer、failure boundary predictive gate、strong static prior superiority、field/real outcome validation。
-2. 数据侧优先寻找或构造 in-condition same-family rights/rule holdout；必须满足 `static_prior_error <= 0.03` 且 `original_reject_delta > 0.02`，否则只进入 ledger，不进入方法升级证据。
-3. 方法侧需要让 outcome feedback transfer 不仅 beat prior-interaction，还要 beat strong static prior；否则应拒绝该更新范式，不继续包装成自动校准能力。
-4. Product 侧下一步可以接入 evidence cards，但只能消费 artifact 字段，不允许静态叙事兜底或准确预测宣称。
+1. Research 下一步只围绕 risk-discovery CCF-A readiness 的 4 个 required gap 推进：formal problem、risk-discovery holdout validation、decision-value metric、field/real outcome validation。
+2. 数据侧优先寻找或构造能验证风险发现价值的 in-condition holdout；对于候选 runtime update，仍需满足 `static_prior_error <= 0.03` 且 `original_reject_delta > 0.02` 等触发条件，否则只进入 ledger，不进入方法升级证据。
+3. 方法侧优先定义风险发现的决策价值指标，例如 top-k 风险 segment 命中、预警 regret reduction、干预优先级排序；outcome feedback 的“beat static prior”只作为 runtime default 更新护栏。
+4. Product 侧下一步可以接入 evidence cards 和 risk-discovery value summary，但只能消费 artifact 字段，不允许静态叙事兜底或准确预测宣称。
 
 ## 验收边界
 

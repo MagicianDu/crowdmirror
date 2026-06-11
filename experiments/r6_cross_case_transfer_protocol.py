@@ -68,6 +68,11 @@ def build_r6_cross_case_transfer_protocol(
                 "cap_condition",
             ],
         },
+        "static_prior_role": {
+            "role": "foundation_not_opponent",
+            "runtime_update_guard": "candidate_updates_must_not_hurt_static_prior_before_default_enablement",
+            "research_value_gate": "interaction_layer_must_discover_auditable_risk_not_visible_in_static_prior",
+        },
         "candidate_transfers": [
             mechanism_cap_transfer,
             outcome_feedback_transfer,
@@ -87,15 +92,21 @@ def build_r6_cross_case_transfer_protocol(
             "outcome_feedback_transfer_beats_static_prior": outcome_feedback_transfer[
                 "acceptance_gates"
             ]["beats_static_prior_on_holdout"],
+            "runtime_update_guard_passed": outcome_feedback_transfer[
+                "acceptance_gates"
+            ]["runtime_update_guard_passed"],
+            "risk_discovery_value_path_open": True,
             "global_update_accepted": False,
         },
         "global_update_decision": {
             "accepted": False,
             "decision": "blocked",
             "reason": (
-                "Mechanism cap lacks an in-condition same-family holdout, and outcome "
-                "feedback transfers improve prior-interaction error but still fail the "
-                "strong static-prior gate."
+                "Mechanism cap lacks an in-condition same-family holdout. Outcome "
+                "feedback transfers improve prior-interaction error, but default runtime "
+                "updates remain blocked because they do not clear the static-prior guard. "
+                "This blocks automatic update enablement, not the risk-discovery research "
+                "path."
             ),
         },
         "source_refs": [
@@ -105,18 +116,18 @@ def build_r6_cross_case_transfer_protocol(
         "claim_boundaries": [
             R6_CLAIM_BOUNDARY,
             "Cross-case transfer protocol is method-governance evidence, not field validation.",
-            "A non-regression transfer is not enough for CCF-A-level accuracy superiority.",
+            "The static prior is the simulator foundation; beating it is a runtime-update guard, not the whole R6 objective.",
         ],
         "claim_boundary": R6_CLAIM_BOUNDARY,
         "risk_flags": [
             "global_update_blocked",
             "mechanism_cap_l4_transfer_missing",
-            "outcome_feedback_fails_strong_prior_gate",
+            "outcome_feedback_runtime_update_guard_failed",
             "public_proxy_not_field_validation",
         ],
         "blocking_gaps": [
             "needs_in_condition_same_family_rights_rule_holdout",
-            "needs_outcome_feedback_transfer_beating_static_prior",
+            "needs_runtime_update_guard_before_default_enablement",
             "needs_field_outcome_validation",
         ],
     }
@@ -259,6 +270,10 @@ def _outcome_feedback_transfer(
                 trial["updated_error"] <= trial["static_prior_error"]
                 for trial in trials
             ),
+            "runtime_update_guard_passed": all(
+                trial["updated_error"] <= trial["static_prior_error"]
+                for trial in trials
+            ),
             "l4_in_condition_transfer_passed": all(
                 trial["transfer_status"] == "passed" for trial in trials
             ),
@@ -266,10 +281,11 @@ def _outcome_feedback_transfer(
         },
         "transfer_decision": {
             "accepted": False,
-            "decision": "blocked_by_strong_prior_gate",
+            "decision": "runtime_update_blocked_but_risk_discovery_continues",
             "reason": (
                 "Frozen residual transfer improves prior-interaction error on same-family "
-                "holdouts, but remains worse than the static prior baseline."
+                "holdouts, but remains worse than the static prior baseline. This blocks "
+                "default runtime enablement while preserving the risk-discovery signal."
             ),
         },
     }

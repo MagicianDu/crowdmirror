@@ -10,6 +10,9 @@ from experiments.r6_in_condition_holdout_ledger import (
     build_r6_in_condition_holdout_ledger,
 )
 from experiments.r6_product_evidence_cards import build_r6_product_evidence_cards
+from experiments.r6_risk_discovery_value_report import (
+    build_r6_risk_discovery_value_report,
+)
 
 
 def test_r6_cross_case_transfer_protocol_blocks_global_update_at_l3_partial():
@@ -27,7 +30,14 @@ def test_r6_cross_case_transfer_protocol_blocks_global_update_at_l3_partial():
         "outcome_feedback_transfer_available": True,
         "outcome_feedback_transfer_beats_prior_interaction": True,
         "outcome_feedback_transfer_beats_static_prior": False,
+        "runtime_update_guard_passed": False,
+        "risk_discovery_value_path_open": True,
         "global_update_accepted": False,
+    }
+    assert report["static_prior_role"] == {
+        "role": "foundation_not_opponent",
+        "runtime_update_guard": "candidate_updates_must_not_hurt_static_prior_before_default_enablement",
+        "research_value_gate": "interaction_layer_must_discover_auditable_risk_not_visible_in_static_prior",
     }
 
     by_type = {
@@ -60,9 +70,13 @@ def test_r6_cross_case_transfer_protocol_blocks_global_update_at_l3_partial():
         "cross_case_transfer_available": True,
         "beats_prior_interaction_on_holdout": True,
         "beats_static_prior_on_holdout": False,
+        "runtime_update_guard_passed": False,
         "l4_in_condition_transfer_passed": False,
         "global_update_accepted": False,
     }
+    assert feedback["transfer_decision"]["decision"] == (
+        "runtime_update_blocked_but_risk_discovery_continues"
+    )
     assert [
         (
             trial["trial_id"],
@@ -93,7 +107,49 @@ def test_r6_cross_case_transfer_protocol_blocks_global_update_at_l3_partial():
     ]
     assert report["global_update_decision"]["accepted"] is False
     assert "mechanism_cap_l4_transfer_missing" in report["risk_flags"]
-    assert "outcome_feedback_fails_strong_prior_gate" in report["risk_flags"]
+    assert "outcome_feedback_runtime_update_guard_failed" in report["risk_flags"]
+    assert "needs_runtime_update_guard_before_default_enablement" in report[
+        "blocking_gaps"
+    ]
+    assert "needs_outcome_feedback_transfer_beating_static_prior" not in report[
+        "blocking_gaps"
+    ]
+    json.dumps(report, allow_nan=False)
+
+
+def test_r6_risk_discovery_value_report_keeps_static_prior_as_foundation():
+    report = build_r6_risk_discovery_value_report(
+        artifact_id="r6-risk-discovery-value-test",
+        run_id="r6-risk-discovery-value-run",
+    )
+
+    assert report["schema_version"] == "r6-risk-discovery-value-report-v1"
+    assert report["status"] == "risk_discovery_value_framework_ready_needs_holdout_validation"
+    assert report["objective_reframe"] == {
+        "static_prior_role": "foundation_not_opponent",
+        "interaction_role": "discover_auditable_risk_shifts_beyond_static_prior",
+        "outcome_feedback_role": "learn_from_real_outcomes_under_runtime_guards",
+    }
+    assert report["risk_discovery_gates"] == {
+        "static_prior_foundation_present": True,
+        "interaction_delta_observable": True,
+        "failure_boundary_detected": True,
+        "product_evidence_cards_present": True,
+        "in_condition_holdout_bound": False,
+        "decision_value_metric_present": False,
+        "field_outcome_validated": False,
+    }
+    assert report["runtime_update_guard"] == {
+        "beat_static_prior_required_for_default_update": True,
+        "static_prior_gate_role": "runtime_update_guard_not_research_objective",
+        "outcome_feedback_runtime_default_accepted": False,
+    }
+    assert report["decision"]["r6_overall_worth_continuing"] is True
+    assert report["decision"]["runtime_update_default_ready"] is False
+    assert "needs_decision_value_metric_topk_or_regret" in report["blocking_gaps"]
+    assert "needs_runtime_update_guard_before_default_enablement" in report[
+        "blocking_gaps"
+    ]
     json.dumps(report, allow_nan=False)
 
 
@@ -171,23 +227,31 @@ def test_r6_ccfa_readiness_report_says_not_ready_for_ccf_a_main_contribution():
     assert report["status"] == "ccf_a_readiness_evaluated"
     assert report["verdict"] == {
         "ccf_a_main_contribution_ready": False,
-        "readiness_level": "L3_diagnostic_framework_not_L4_main_contribution",
+        "readiness_level": "L3_risk_discovery_framework_needs_validation",
         "decision": "not_ready_for_ccf_a_submission_as_main_algorithm",
         "short_answer": (
-            "R6 has method framing, artifact governance, failure-boundary diagnosis, "
-            "and Product evidence-chain value, but it has not passed L4 in-condition "
-            "transfer or field validation, so it is not yet a CCF-A-level main "
-            "contribution."
+            "R6 should be evaluated as a static-prior anchored risk-discovery "
+            "framework. The static prior is the simulation base, while interaction "
+            "adds auditable risk hypotheses. The framework is not CCF-A-ready until "
+            "risk-discovery holdout validation, decision-value metrics, and field "
+            "outcome validation are present."
         ),
     }
     by_gate = {item["gate_id"]: item for item in report["readiness_checklist"]}
-    assert by_gate["l4_in_condition_transfer"]["status"] == "failed"
-    assert by_gate["strong_baseline_comparison"]["status"] == "failed"
+    assert by_gate["static_prior_foundation"]["status"] == "passed"
+    assert by_gate["risk_discovery_objective_defined"]["status"] == "passed"
+    assert by_gate["decision_value_metric"]["status"] == "failed"
+    assert by_gate["runtime_update_guard"]["required_for_ccf_a"] is False
+    assert by_gate["runtime_update_guard"]["status"] == "failed"
     assert by_gate["field_or_real_outcome_validation"]["status"] == "failed"
     assert by_gate["product_claim_boundary"]["status"] == "passed"
-    assert report["failed_required_gate_count"] == 6
-    assert "needs_in_condition_same_family_rights_rule_holdout" in report["blocking_gaps"]
+    assert report["failed_required_gate_count"] == 4
+    assert "needs_risk_discovery_holdout_validation" in report["blocking_gaps"]
+    assert "needs_decision_value_metric_topk_or_regret" in report["blocking_gaps"]
     assert "needs_field_outcome_validation" in report["blocking_gaps"]
+    assert "needs_stable_superiority_over_strong_static_prior" not in report[
+        "blocking_gaps"
+    ]
     assert "not_ccf_a_ready" in report["risk_flags"]
     json.dumps(report, allow_nan=False)
 
@@ -213,6 +277,11 @@ def test_r6_new_method_gate_clis_write_artifacts(tmp_path):
             "experiments/r6_ccfa_readiness_report.py",
             "r6-ccfa-readiness-cli",
             "r6-ccfa-readiness-report-v1",
+        ),
+        (
+            "experiments/r6_risk_discovery_value_report.py",
+            "r6-risk-discovery-value-cli",
+            "r6-risk-discovery-value-report-v1",
         ),
     ]
     for script, artifact_id, schema_version in commands:

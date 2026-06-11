@@ -37,6 +37,12 @@ R6 必须同时满足：
 4. 真实 outcome 回来后，必须生成误差归因和受约束的方法更新候选。
 5. 垂直场景只能作为 case template，不能把方法过拟合到单一行业。
 
+关键修正：
+
+- 静态先验不是 R6 要击败的“对手”，而是大规模仿真的底座。
+- 候选更新如果要进入 runtime default，必须通过不伤害静态先验的护栏。
+- Research/Product 的主价值 gate 不是单一 aggregate accuracy race，而是：交互层是否发现静态先验看不到的风险、是否能形成可审计证据链、真实 outcome 回来后是否能学习失败边界并更新方法。
+
 ## 当前实现范围
 
 第一阶段只推进 R6 foundation：
@@ -78,3 +84,4 @@ R6 必须同时满足：
 - Product 报告必须保留 claim boundary，不能展示未验证准确性宣称。
 - 候选更新必须通过当前阶段 addendum 定义的 evidence level 和 acceptance gate，才能从 diagnostic 升级。
 - same-case outcome feedback improvement 不得直接包装成可迁移更新。
+- `beat static prior` 只作为 runtime update guard 使用，不作为 R6 整体研究目标。

@@ -199,6 +199,10 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "outcome_feedback_cross_case_transfer_available": False,
         "cross_case_transfer_protocol_present": True,
         "outcome_feedback_transfer_beats_static_prior": False,
+        "runtime_update_guard_passed": False,
+        "risk_discovery_value_report_present": True,
+        "static_prior_role_reframed_as_foundation": True,
+        "risk_discovery_path_should_continue": True,
         "in_condition_holdout_ledger_present": True,
         "in_condition_holdout_found": False,
         "product_evidence_cards_present": True,
@@ -224,7 +228,16 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "mechanism_cap_l4_in_condition_transfer_passed": False,
         "outcome_feedback_transfer_beats_prior_interaction": True,
         "outcome_feedback_transfer_beats_static_prior": False,
+        "runtime_update_guard_passed": False,
+        "risk_discovery_value_path_open": True,
         "global_update_accepted": False,
+    }
+    assert report["risk_discovery_value_summary"] == {
+        "artifact_id": "r6-evidence-report-test-risk-discovery-value-report",
+        "status": "risk_discovery_value_framework_ready_needs_holdout_validation",
+        "static_prior_role": "foundation_not_opponent",
+        "r6_overall_worth_continuing": True,
+        "runtime_update_default_ready": False,
     }
     assert report["in_condition_holdout_ledger_summary"] == {
         "artifact_id": "r6-evidence-report-test-in-condition-holdout-ledger",
@@ -242,8 +255,8 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "artifact_id": "r6-evidence-report-test-ccfa-readiness-report",
         "status": "ccf_a_readiness_evaluated",
         "ccf_a_main_contribution_ready": False,
-        "readiness_level": "L3_diagnostic_framework_not_L4_main_contribution",
-        "failed_required_gate_count": 6,
+        "readiness_level": "L3_risk_discovery_framework_needs_validation",
+        "failed_required_gate_count": 4,
     }
     assert report["ablation_summary"]["prior_anchored_beats_no_interaction"] is True
     assert report["multi_proxy_summary"] == {
@@ -260,11 +273,17 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
     assert "needs_in_condition_same_family_rights_rule_holdout" in report[
         "remaining_gaps"
     ]
-    assert "needs_outcome_feedback_transfer_beating_static_prior" in report[
+    assert "needs_runtime_update_guard_before_default_enablement" in report[
         "remaining_gaps"
     ]
+    assert "needs_outcome_feedback_transfer_beating_static_prior" not in report[
+        "remaining_gaps"
+    ]
+    assert "needs_risk_discovery_holdout_validation" in report["remaining_gaps"]
+    assert "needs_decision_value_metric_topk_or_regret" in report["remaining_gaps"]
     assert "needs_field_outcome_validation" in report["remaining_gaps"]
     assert "same_case_feedback_not_global_acceptance" in report["risk_flags"]
+    assert "static_prior_is_foundation_not_opponent" in report["risk_flags"]
     assert "ccf_a_main_contribution_not_ready" in report["risk_flags"]
     json.dumps(report, allow_nan=False)
 

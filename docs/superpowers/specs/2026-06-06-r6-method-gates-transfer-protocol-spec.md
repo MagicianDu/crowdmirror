@@ -26,7 +26,7 @@
 
 当前不能宣称：
 
-- R6 已经稳定比静态先验更准；
+- R6 已经保证预测准确或 field outcome 有效；
 - mechanism cap 已可进入 runtime default；
 - outcome feedback 已能跨 case 泛化；
 - public proxy 等价于真实 field outcome；
@@ -39,6 +39,12 @@
 - R6 能暴露失败边界；
 - R6 能生成受约束候选修复；
 - R6 能阻断未验证更新进入全局默认。
+
+关键修正：
+
+- 静态先验是大规模仿真的底座，不是 R6 的研究对手。
+- `beat static prior` 只作为候选更新进入 runtime default 前的安全护栏。
+- R6 的 Research/Product 价值 gate 应评价风险发现、决策价值、失败边界学习和证据链可审计性。
 
 ## 3. 方法对象定义
 
@@ -109,7 +115,9 @@ global update accepted = false
 
 ### 5.2 outcome feedback 升级 gate
 
-outcome feedback 从 `blocked_same_case_only` 升级必须满足：
+outcome feedback 从 `blocked_same_case_only` 升级有两层 gate：
+
+第一层是 risk-discovery / learning value gate，必须满足：
 
 1. source case feedback update 降低误差；
 2. 更新规则不是直接用 observed value 回填；
@@ -118,11 +126,19 @@ outcome feedback 从 `blocked_same_case_only` 升级必须满足：
 5. 在至少一个同 family case 上降低误差；
 6. 更新适用范围、回滚条件、监控指标明确。
 
+第二层是 runtime default guard，必须额外满足：
+
+1. 候选更新不能伤害静态先验底座；
+2. worst segment 不产生新增严重回归；
+3. 监控与回滚条件可执行。
+
 当前失败点：
 
 ```text
 same-case improvement = true
-cross-case transfer protocol = missing
+cross-case transfer protocol = available
+risk-discovery learning value = partial
+runtime update guard passed = false
 global update accepted = false
 ```
 
@@ -190,7 +206,7 @@ CCF-A 级主贡献至少需要：
 - 明确 outcome-feedback gated update；
 - 至少一个候选更新通过 L4；
 - 至少一个失败边界被系统性解释；
-- 与 prompt-only persona simulation、strong prior、random interaction、same-case feedback copy 做强 baseline 对比；
+- 与 prompt-only persona simulation、static-prior-only、random interaction、same-case feedback copy 做风险发现/决策价值 baseline 对比；
 - 不把 public proxy 包装成 field validation。
 
 ## 8. Product 主线收束
@@ -291,27 +307,37 @@ R6 没有偏离主线，但已到达细节扩张边界。
 
 当前 R6 最强主张是：
 
-> R6 已形成一个能连接强先验、交互风险偏移、结果反馈、失败边界和受约束更新的可审计框架；它已经展示出诊断价值和产品证据链价值，但尚未证明稳定准确性优势或全局可迁移更新能力。
+> R6 已形成一个能连接强先验、交互风险偏移、结果反馈、失败边界和受约束更新的可审计框架；它已经展示出风险发现价值和产品证据链价值，但尚未完成 decision-value 验证、field outcome 验证或 runtime default update 验收。
 
 ## 12. 当前执行结果
 
-截至 2026-06-06，本 spec 中 P0/P1/P2 已实现为可计算 artifact：
+截至 2026-06-07，本 spec 中 P0/P1/P2 和目标修正单元已实现为可计算 artifact：
 
 | 任务 | artifact | 当前结果 |
 | --- | --- | --- |
 | P0 cross-case transfer protocol artifact | `experiments/r6_cross_case_transfer_protocol.py` | 已能区分 `passed`、`non_regression_only`、`condition_not_covered`、`regressed`、`invalid_proxy`；当前 global update 仍 blocked |
 | P1 in-condition holdout 搜索标准 | `experiments/r6_in_condition_holdout_ledger.py` | 已输出数据选择 ledger；当前 `in_condition_holdout_count=0` |
 | P2 Product evidence card contract | `experiments/r6_product_evidence_cards.py` | 已输出 5 张证据卡；每张卡包含 `claim_status`、`allowed_claims`、`blocked_claims`、`source_artifact_ids` |
+| 目标修正 risk-discovery value report | `experiments/r6_risk_discovery_value_report.py` | 已把静态先验拆分为 simulation foundation 与 runtime update guard；当前 R6 继续作为 risk-discovery framework |
 | CCF-A readiness 判定 | `experiments/r6_ccfa_readiness_report.py` | `ccf_a_main_contribution_ready=false` |
 
 当前关键实验证据：
 
 - mechanism cap：source case 修复成立，HTOPS cross-proxy 不回归，但 ANES climate same-family holdout 没有覆盖 cap 触发条件，因此停留在 `L3_partial`。
-- outcome feedback：跨 case residual transfer 能降低 prior-interaction error，但仍输给 strong static prior，因此只能是 `non_regression_only`，不能升级为全局自动校准方法。
+- outcome feedback：跨 case residual transfer 能降低 prior-interaction error，但未通过 runtime update guard，因此不能升级为全局自动校准方法；这不是 R6 风险发现主线的止损信号。
 - Product evidence cards：Product 侧证据链可展示，但明确阻断“准确预测”宣称。
+- risk-discovery value report：已明确静态先验是 foundation，不是 opponent；当前 `risk_discovery_value_framework_ready_needs_holdout_validation`。
 
 因此，R6 当前未达到 CCF-A 级主贡献算法水准。
 
 更准确的结论是：
 
-> R6 已达到“可审计方法框架 + 产品证据链 + 失败边界诊断”的阶段，但尚未达到“可投稿 CCF-A 主算法贡献”的阶段。核心缺口是 L4 in-condition transfer、field/real outcome validation、强静态先验上的稳定优势，以及更完整的形式化理论。
+> R6 已达到“可审计方法框架 + 产品证据链 + 失败边界诊断”的阶段，但尚未达到“可投稿 CCF-A 主算法贡献”的阶段。核心缺口是 risk-discovery holdout validation、decision-value metric、field/real outcome validation，以及更完整的形式化理论。
+
+修正后的 CCF-A 缺口是：
+
+- formal problem / theory section；
+- risk-discovery holdout validation；
+- decision-value metric 与 baseline 对比；
+- field/real outcome validation；
+- runtime update guard 只影响默认更新能否启用，不再作为 R6 整体研究目标。
