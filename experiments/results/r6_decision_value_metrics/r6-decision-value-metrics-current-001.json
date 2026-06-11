@@ -1,0 +1,113 @@
+{
+  "acceptance_gates": {
+    "decision_regret_reduction_positive": true,
+    "decision_value_metric_present": true,
+    "decision_value_passed": false,
+    "false_alarm_rate_passed": false,
+    "static_prior_miss_recovery_observed": true,
+    "top_k_risk_hit_rate_passed": false
+  },
+  "artifact_id": "r6-decision-value-metrics-current-001",
+  "blocking_gaps": [
+    "needs_lower_false_alarm_rate",
+    "needs_risk_discovery_holdout_validation",
+    "needs_field_outcome_validation"
+  ],
+  "case_results": [
+    {
+      "artifact_id": "r6-decision-value-metrics-current-001-htops_cost_pressure-ablation",
+      "interaction_absolute_error": 0.11,
+      "interaction_delta_vs_static": 0.07,
+      "interaction_false_alarm": false,
+      "interaction_flags_new_risk": true,
+      "interaction_prediction": 0.36,
+      "observed_high_risk": true,
+      "observed_minus_static_prior": 0.18,
+      "observed_reject_proxy": 0.47,
+      "random_noise_prediction": 0.297,
+      "recovered_static_prior_miss": true,
+      "source_key": "htops_cost_pressure",
+      "static_absolute_error": 0.18,
+      "static_prior_flags_high_risk": false,
+      "static_prior_missed_high_risk": true,
+      "static_prior_prediction": 0.29,
+      "target_case_id": "generic-public-service-policy-change"
+    },
+    {
+      "artifact_id": "r6-decision-value-metrics-current-001-anes_health_heldout-ablation",
+      "interaction_absolute_error": 0.05,
+      "interaction_delta_vs_static": 0.07,
+      "interaction_false_alarm": true,
+      "interaction_flags_new_risk": true,
+      "interaction_prediction": 0.38,
+      "observed_high_risk": false,
+      "observed_minus_static_prior": 0.02,
+      "observed_reject_proxy": 0.33,
+      "random_noise_prediction": 0.317,
+      "recovered_static_prior_miss": false,
+      "source_key": "anes_health_heldout",
+      "static_absolute_error": 0.02,
+      "static_prior_flags_high_risk": false,
+      "static_prior_missed_high_risk": false,
+      "static_prior_prediction": 0.31,
+      "target_case_id": "generic-rights-rule-change"
+    },
+    {
+      "artifact_id": "r6-decision-value-metrics-current-001-anes_climate_heldout-ablation",
+      "interaction_absolute_error": 0.13,
+      "interaction_delta_vs_static": 0.07,
+      "interaction_false_alarm": true,
+      "interaction_flags_new_risk": true,
+      "interaction_prediction": 0.38,
+      "observed_high_risk": false,
+      "observed_minus_static_prior": -0.06,
+      "observed_reject_proxy": 0.25,
+      "random_noise_prediction": 0.317,
+      "recovered_static_prior_miss": false,
+      "source_key": "anes_climate_heldout",
+      "static_absolute_error": 0.06,
+      "static_prior_flags_high_risk": false,
+      "static_prior_missed_high_risk": false,
+      "static_prior_prediction": 0.31,
+      "target_case_id": "generic-rights-rule-change"
+    }
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Decision-value metrics evaluate risk discovery utility, not aggregate accuracy superiority."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "decision_value_passed": false,
+  "metric_definition": {
+    "decision_regret_reduction": "Reduction in missed high-risk cases when using interaction flags instead of static-prior high-risk flags.",
+    "high_risk_threshold": 0.4,
+    "interaction_delta_threshold": 0.03,
+    "static_miss_threshold": 0.05,
+    "static_prior_miss_recovery_rate": "Share of cases where static prior missed high risk and interaction flagged the risk before outcome evaluation.",
+    "top_k_risk_hit_rate": "Share of interaction-flagged new-risk cases whose observed reject proxy is high risk."
+  },
+  "risk_flags": [
+    "decision_value_not_field_validation",
+    "current_public_proxies_have_high_false_alarm_rate"
+  ],
+  "run_id": "r6-decision-value-current-001",
+  "schema_version": "r6-decision-value-metrics-v1",
+  "source_refs": [
+    "r6-decision-value-metrics-current-001-htops_cost_pressure-ablation",
+    "r6-decision-value-metrics-current-001-anes_health_heldout-ablation",
+    "r6-decision-value-metrics-current-001-anes_climate_heldout-ablation"
+  ],
+  "status": "decision_value_partial_high_false_alarm",
+  "summary": {
+    "case_count": 3,
+    "decision_regret_reduction": 1,
+    "false_alarm_count": 2,
+    "false_alarm_rate": 0.667,
+    "interaction_flagged_case_count": 3,
+    "interaction_flagged_observed_high_risk_count": 1,
+    "static_prior_miss_count": 1,
+    "static_prior_miss_recovered_count": 1,
+    "static_prior_miss_recovery_rate": 1.0,
+    "top_k_risk_hit_rate": 0.333
+  }
+}

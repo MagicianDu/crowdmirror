@@ -18,10 +18,14 @@ from experiments.r6_contracts import (
 from experiments.r6_cross_case_transfer_protocol import (
     build_r6_cross_case_transfer_protocol,
 )
+from experiments.r6_decision_value_metrics import build_r6_decision_value_metrics
 from experiments.r6_in_condition_holdout_ledger import (
     build_r6_in_condition_holdout_ledger,
 )
 from experiments.r6_product_evidence_cards import build_r6_product_evidence_cards
+from experiments.r6_risk_discovery_holdout_validation import (
+    build_r6_risk_discovery_holdout_validation,
+)
 
 
 R6_RISK_DISCOVERY_VALUE_REPORT_SCHEMA_VERSION = "r6-risk-discovery-value-report-v1"
@@ -34,6 +38,8 @@ def build_r6_risk_discovery_value_report(
     transfer_protocol: dict[str, Any] | None = None,
     holdout_ledger: dict[str, Any] | None = None,
     product_evidence_cards: dict[str, Any] | None = None,
+    decision_value_metrics: dict[str, Any] | None = None,
+    risk_discovery_holdout_validation: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
@@ -54,6 +60,18 @@ def build_r6_risk_discovery_value_report(
             holdout_ledger=holdout_ledger,
         )
     )
+    decision_value_metrics = decision_value_metrics or build_r6_decision_value_metrics(
+        artifact_id=f"{artifact_id}-decision-value-metrics",
+        run_id=run_id,
+    )
+    risk_discovery_holdout_validation = (
+        risk_discovery_holdout_validation
+        or build_r6_risk_discovery_holdout_validation(
+            artifact_id=f"{artifact_id}-risk-discovery-holdout-validation",
+            run_id=run_id,
+            decision_value_metrics=decision_value_metrics,
+        )
+    )
     gates = {
         "static_prior_foundation_present": True,
         "interaction_delta_observable": _has_card(
@@ -68,20 +86,61 @@ def build_r6_risk_discovery_value_report(
         "in_condition_holdout_bound": holdout_ledger["summary"][
             "global_update_data_gate_passed"
         ],
-        "decision_value_metric_present": False,
+        "decision_value_metric_present": True,
+        "decision_value_metric_passed": decision_value_metrics["decision_value_passed"],
+        "risk_discovery_holdout_validation_present": True,
+        "risk_discovery_holdout_passed": risk_discovery_holdout_validation[
+            "acceptance_gates"
+        ]["risk_discovery_holdout_passed"],
         "field_outcome_validated": False,
     }
+    decision_value_passed = decision_value_metrics["decision_value_passed"]
+    holdout_passed = risk_discovery_holdout_validation["acceptance_gates"][
+        "risk_discovery_holdout_passed"
+    ]
     report = {
         "schema_version": R6_RISK_DISCOVERY_VALUE_REPORT_SCHEMA_VERSION,
         "artifact_id": artifact_id,
         "run_id": run_id,
-        "status": "risk_discovery_value_framework_ready_needs_holdout_validation",
+        "status": (
+            "risk_discovery_value_ready_for_field_validation"
+            if decision_value_passed and holdout_passed
+            else "risk_discovery_value_partial_decision_metric_failed_holdout"
+        ),
         "objective_reframe": {
             "static_prior_role": "foundation_not_opponent",
             "interaction_role": "discover_auditable_risk_shifts_beyond_static_prior",
             "outcome_feedback_role": "learn_from_real_outcomes_under_runtime_guards",
         },
         "risk_discovery_gates": gates,
+        "decision_value_summary": {
+            "artifact_id": decision_value_metrics["artifact_id"],
+            "status": decision_value_metrics["status"],
+            "decision_value_passed": decision_value_metrics["decision_value_passed"],
+            "static_prior_miss_recovery_rate": decision_value_metrics["summary"][
+                "static_prior_miss_recovery_rate"
+            ],
+            "top_k_risk_hit_rate": decision_value_metrics["summary"][
+                "top_k_risk_hit_rate"
+            ],
+            "false_alarm_rate": decision_value_metrics["summary"][
+                "false_alarm_rate"
+            ],
+            "decision_regret_reduction": decision_value_metrics["summary"][
+                "decision_regret_reduction"
+            ],
+        },
+        "holdout_validation_summary": {
+            "artifact_id": risk_discovery_holdout_validation["artifact_id"],
+            "status": risk_discovery_holdout_validation["status"],
+            "risk_discovery_holdout_passed": holdout_passed,
+            "same_family_trial_count": risk_discovery_holdout_validation["summary"][
+                "same_family_trial_count"
+            ],
+            "passed_trial_count": risk_discovery_holdout_validation["summary"][
+                "passed_trial_count"
+            ],
+        },
         "runtime_update_guard": {
             "beat_static_prior_required_for_default_update": True,
             "static_prior_gate_role": "runtime_update_guard_not_research_objective",
@@ -93,7 +152,9 @@ def build_r6_risk_discovery_value_report(
             "r6_overall_worth_continuing": True,
             "decision": "continue_as_prior_anchored_risk_discovery_framework",
             "runtime_update_default_ready": False,
-            "ccf_a_risk_discovery_claim_ready": False,
+            "ccf_a_risk_discovery_claim_ready": (
+                decision_value_passed and holdout_passed
+            ),
             "reason": (
                 "Static prior is the simulator base. R6 value is judged by whether "
                 "the interaction layer surfaces auditable risk shifts, failure "
@@ -105,18 +166,19 @@ def build_r6_risk_discovery_value_report(
             "static_prior_foundation_present",
             "interaction_risk_shift_card_present",
             "failure_boundary_card_present",
+            "static_prior_miss_recovery_observed",
             "unvalidated_runtime_updates_blocked",
         ],
-        "blocking_gaps": [
-            "needs_risk_discovery_holdout_validation",
-            "needs_decision_value_metric_topk_or_regret",
-            "needs_field_outcome_validation",
-            "needs_runtime_update_guard_before_default_enablement",
-        ],
+        "blocking_gaps": _blocking_gaps(
+            decision_value_metrics=decision_value_metrics,
+            risk_discovery_holdout_validation=risk_discovery_holdout_validation,
+        ),
         "source_refs": [
             transfer_protocol["artifact_id"],
             holdout_ledger["artifact_id"],
             product_evidence_cards["artifact_id"],
+            decision_value_metrics["artifact_id"],
+            risk_discovery_holdout_validation["artifact_id"],
         ],
         "claim_boundaries": [
             R6_CLAIM_BOUNDARY,
@@ -125,8 +187,8 @@ def build_r6_risk_discovery_value_report(
         "claim_boundary": R6_CLAIM_BOUNDARY,
         "risk_flags": [
             "static_prior_is_foundation_not_opponent",
-            "risk_discovery_holdout_validation_missing",
-            "decision_value_metric_missing",
+            "risk_discovery_holdout_validation_failed",
+            "decision_value_metric_partial",
             "field_validation_missing",
             "runtime_update_guard_not_passed",
         ],
@@ -144,6 +206,26 @@ def write_r6_risk_discovery_value_report(output: str | Path, **kwargs: Any) -> P
 
 def _has_card(report: dict[str, Any], card_id: str) -> bool:
     return any(card["card_id"] == card_id for card in report["cards"])
+
+
+def _blocking_gaps(
+    *,
+    decision_value_metrics: dict[str, Any],
+    risk_discovery_holdout_validation: dict[str, Any],
+) -> list[str]:
+    gaps = [
+        "needs_field_outcome_validation",
+        "needs_runtime_update_guard_before_default_enablement",
+    ]
+    gaps.extend(decision_value_metrics["blocking_gaps"])
+    gaps.extend(risk_discovery_holdout_validation["blocking_gaps"])
+    if not decision_value_metrics["decision_value_passed"]:
+        gaps.append("needs_decision_value_metric_to_pass")
+    if not risk_discovery_holdout_validation["acceptance_gates"][
+        "risk_discovery_holdout_passed"
+    ]:
+        gaps.append("needs_risk_discovery_holdout_validation")
+    return sorted(set(gaps))
 
 
 def main() -> int:

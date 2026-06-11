@@ -144,8 +144,8 @@ def build_r6_ccfa_readiness_report(
         "claim_boundary": R6_CLAIM_BOUNDARY,
         "risk_flags": [
             "not_ccf_a_ready",
-            "risk_discovery_holdout_validation_missing",
-            "decision_value_metric_missing",
+            "risk_discovery_holdout_validation_failed",
+            "decision_value_metric_partial",
             "field_validation_missing",
             "runtime_update_guard_not_passed",
         ],
@@ -220,10 +220,12 @@ def _readiness_checklist(
             "required_for_ccf_a": True,
             "status": "failed",
             "evidence": (
-                "in_condition_holdout_count="
-                f"{holdout_ledger['summary']['in_condition_holdout_count']}; "
-                "mechanism_cap_l4_in_condition_transfer_passed="
-                f"{transfer_protocol['acceptance_gates']['mechanism_cap_l4_in_condition_transfer_passed']}"
+                "risk_discovery_holdout_passed="
+                f"{risk_discovery_value_report['holdout_validation_summary']['risk_discovery_holdout_passed']}; "
+                "same_family_trial_count="
+                f"{risk_discovery_value_report['holdout_validation_summary']['same_family_trial_count']}; "
+                "passed_trial_count="
+                f"{risk_discovery_value_report['holdout_validation_summary']['passed_trial_count']}"
             ),
             "blocking_gap": "needs_risk_discovery_holdout_validation",
         },
@@ -241,12 +243,29 @@ def _readiness_checklist(
         {
             "gate_id": "decision_value_metric",
             "required_for_ccf_a": True,
-            "status": "failed",
-            "evidence": (
-                "decision_value_metric_present="
-                f"{risk_discovery_value_report['risk_discovery_gates']['decision_value_metric_present']}"
+            "status": (
+                "passed"
+                if risk_discovery_value_report["decision_value_summary"][
+                    "decision_value_passed"
+                ]
+                else "partial"
             ),
-            "blocking_gap": "needs_decision_value_metric_topk_or_regret",
+            "evidence": (
+                "decision_value_metric_present=True; "
+                "static_prior_miss_recovery_rate="
+                f"{risk_discovery_value_report['decision_value_summary']['static_prior_miss_recovery_rate']}; "
+                "top_k_risk_hit_rate="
+                f"{risk_discovery_value_report['decision_value_summary']['top_k_risk_hit_rate']}; "
+                "false_alarm_rate="
+                f"{risk_discovery_value_report['decision_value_summary']['false_alarm_rate']}"
+            ),
+            "blocking_gap": (
+                ""
+                if risk_discovery_value_report["decision_value_summary"][
+                    "decision_value_passed"
+                ]
+                else "needs_decision_value_metric_to_pass"
+            ),
         },
         {
             "gate_id": "runtime_update_guard",

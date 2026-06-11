@@ -124,7 +124,7 @@ def test_r6_risk_discovery_value_report_keeps_static_prior_as_foundation():
     )
 
     assert report["schema_version"] == "r6-risk-discovery-value-report-v1"
-    assert report["status"] == "risk_discovery_value_framework_ready_needs_holdout_validation"
+    assert report["status"] == "risk_discovery_value_partial_decision_metric_failed_holdout"
     assert report["objective_reframe"] == {
         "static_prior_role": "foundation_not_opponent",
         "interaction_role": "discover_auditable_risk_shifts_beyond_static_prior",
@@ -136,8 +136,27 @@ def test_r6_risk_discovery_value_report_keeps_static_prior_as_foundation():
         "failure_boundary_detected": True,
         "product_evidence_cards_present": True,
         "in_condition_holdout_bound": False,
-        "decision_value_metric_present": False,
+        "decision_value_metric_present": True,
+        "decision_value_metric_passed": False,
+        "risk_discovery_holdout_validation_present": True,
+        "risk_discovery_holdout_passed": False,
         "field_outcome_validated": False,
+    }
+    assert report["decision_value_summary"] == {
+        "artifact_id": "r6-risk-discovery-value-test-decision-value-metrics",
+        "status": "decision_value_partial_high_false_alarm",
+        "decision_value_passed": False,
+        "static_prior_miss_recovery_rate": 1.0,
+        "top_k_risk_hit_rate": 0.333,
+        "false_alarm_rate": 0.667,
+        "decision_regret_reduction": 1,
+    }
+    assert report["holdout_validation_summary"] == {
+        "artifact_id": "r6-risk-discovery-value-test-risk-discovery-holdout-validation",
+        "status": "risk_discovery_holdout_failed_current_public_proxies",
+        "risk_discovery_holdout_passed": False,
+        "same_family_trial_count": 2,
+        "passed_trial_count": 0,
     }
     assert report["runtime_update_guard"] == {
         "beat_static_prior_required_for_default_update": True,
@@ -146,7 +165,8 @@ def test_r6_risk_discovery_value_report_keeps_static_prior_as_foundation():
     }
     assert report["decision"]["r6_overall_worth_continuing"] is True
     assert report["decision"]["runtime_update_default_ready"] is False
-    assert "needs_decision_value_metric_topk_or_regret" in report["blocking_gaps"]
+    assert "needs_lower_false_alarm_rate" in report["blocking_gaps"]
+    assert "needs_positive_same_family_source_signal" in report["blocking_gaps"]
     assert "needs_runtime_update_guard_before_default_enablement" in report[
         "blocking_gaps"
     ]
@@ -240,14 +260,15 @@ def test_r6_ccfa_readiness_report_says_not_ready_for_ccf_a_main_contribution():
     by_gate = {item["gate_id"]: item for item in report["readiness_checklist"]}
     assert by_gate["static_prior_foundation"]["status"] == "passed"
     assert by_gate["risk_discovery_objective_defined"]["status"] == "passed"
-    assert by_gate["decision_value_metric"]["status"] == "failed"
+    assert by_gate["decision_value_metric"]["status"] == "partial"
+    assert by_gate["risk_discovery_holdout_validation"]["status"] == "failed"
     assert by_gate["runtime_update_guard"]["required_for_ccf_a"] is False
     assert by_gate["runtime_update_guard"]["status"] == "failed"
     assert by_gate["field_or_real_outcome_validation"]["status"] == "failed"
     assert by_gate["product_claim_boundary"]["status"] == "passed"
     assert report["failed_required_gate_count"] == 4
     assert "needs_risk_discovery_holdout_validation" in report["blocking_gaps"]
-    assert "needs_decision_value_metric_topk_or_regret" in report["blocking_gaps"]
+    assert "needs_decision_value_metric_to_pass" in report["blocking_gaps"]
     assert "needs_field_outcome_validation" in report["blocking_gaps"]
     assert "needs_stable_superiority_over_strong_static_prior" not in report[
         "blocking_gaps"
@@ -282,6 +303,16 @@ def test_r6_new_method_gate_clis_write_artifacts(tmp_path):
             "experiments/r6_risk_discovery_value_report.py",
             "r6-risk-discovery-value-cli",
             "r6-risk-discovery-value-report-v1",
+        ),
+        (
+            "experiments/r6_decision_value_metrics.py",
+            "r6-decision-value-metrics-cli",
+            "r6-decision-value-metrics-v1",
+        ),
+        (
+            "experiments/r6_risk_discovery_holdout_validation.py",
+            "r6-risk-discovery-holdout-validation-cli",
+            "r6-risk-discovery-holdout-validation-v1",
         ),
     ]
     for script, artifact_id, schema_version in commands:

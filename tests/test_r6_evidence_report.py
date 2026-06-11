@@ -200,6 +200,10 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "cross_case_transfer_protocol_present": True,
         "outcome_feedback_transfer_beats_static_prior": False,
         "runtime_update_guard_passed": False,
+        "decision_value_metrics_present": True,
+        "decision_value_passed": False,
+        "risk_discovery_holdout_validation_present": True,
+        "risk_discovery_holdout_passed": False,
         "risk_discovery_value_report_present": True,
         "static_prior_role_reframed_as_foundation": True,
         "risk_discovery_path_should_continue": True,
@@ -234,10 +238,27 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
     }
     assert report["risk_discovery_value_summary"] == {
         "artifact_id": "r6-evidence-report-test-risk-discovery-value-report",
-        "status": "risk_discovery_value_framework_ready_needs_holdout_validation",
+        "status": "risk_discovery_value_partial_decision_metric_failed_holdout",
         "static_prior_role": "foundation_not_opponent",
         "r6_overall_worth_continuing": True,
         "runtime_update_default_ready": False,
+        "decision_value_passed": False,
+        "risk_discovery_holdout_passed": False,
+    }
+    assert report["decision_value_metrics_summary"] == {
+        "artifact_id": "r6-evidence-report-test-decision-value-metrics",
+        "status": "decision_value_partial_high_false_alarm",
+        "decision_value_passed": False,
+        "static_prior_miss_recovery_rate": 1.0,
+        "top_k_risk_hit_rate": 0.333,
+        "false_alarm_rate": 0.667,
+    }
+    assert report["risk_discovery_holdout_validation_summary"] == {
+        "artifact_id": "r6-evidence-report-test-risk-discovery-holdout-validation",
+        "status": "risk_discovery_holdout_failed_current_public_proxies",
+        "risk_discovery_holdout_passed": False,
+        "same_family_trial_count": 2,
+        "passed_trial_count": 0,
     }
     assert report["in_condition_holdout_ledger_summary"] == {
         "artifact_id": "r6-evidence-report-test-in-condition-holdout-ledger",
@@ -280,7 +301,9 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "remaining_gaps"
     ]
     assert "needs_risk_discovery_holdout_validation" in report["remaining_gaps"]
-    assert "needs_decision_value_metric_topk_or_regret" in report["remaining_gaps"]
+    assert "needs_decision_value_metric_to_pass" in report["remaining_gaps"]
+    assert "needs_lower_false_alarm_rate" in report["remaining_gaps"]
+    assert "needs_positive_same_family_source_signal" in report["remaining_gaps"]
     assert "needs_field_outcome_validation" in report["remaining_gaps"]
     assert "same_case_feedback_not_global_acceptance" in report["risk_flags"]
     assert "static_prior_is_foundation_not_opponent" in report["risk_flags"]

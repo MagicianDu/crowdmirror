@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-截至 2026-06-07，项目已从 R4/R5 的静态 heldout accuracy race 转向 R6：
+截至 2026-06-11，项目已从 R4/R5 的静态 heldout accuracy race 转向 R6：
 
 > 结果反馈约束的先验锚定交互仿真框架。
 
@@ -103,6 +103,17 @@
 - `experiments/r6_risk_discovery_value_report.py`：把 R6 从“全局击败静态先验”修正为“静态先验底座 + 交互风险发现 + 受护栏约束的结果反馈学习”。
 - 静态先验相关 gate 被拆分为两类：Research/Product 价值 gate 看风险发现、决策价值和可审计学习；runtime update gate 才要求候选更新不能伤害静态先验。
 
+当前新增的 R6 风险发现验证单元：
+
+- `experiments/r6_decision_value_metrics.py`
+- `experiments/r6_risk_discovery_holdout_validation.py`
+- `docs/superpowers/specs/2026-06-11-r6-risk-discovery-method-spec.md`
+- `experiments/results/r6_decision_value_metrics/r6-decision-value-metrics-current-001.json`
+- `experiments/results/r6_risk_discovery_holdout_validation/r6-risk-discovery-holdout-validation-current-001.json`
+- `experiments/results/r6_risk_discovery_value_report/r6-risk-discovery-value-report-current-002.json`
+- `experiments/results/r6_ccfa_readiness_report/r6-ccfa-readiness-report-current-003.json`
+- `experiments/results/r6_evidence_report/r6-evidence-report-current-008.json`
+
 ## 已确认结论
 
 1. 强人口/客户/群体先验不是研究对手，而是仿真底座。
@@ -135,6 +146,9 @@
 28. Product evidence card contract 已实现：当前 5 张卡都含 `claim_status`、`allowed_claims`、`blocked_claims`、`source_artifact_ids`，并明确 `static_narrative_fallback_allowed=false`。
 29. CCF-A readiness report 已实现，当前结论是 `ccf_a_main_contribution_ready=false`；R6 还没有达到 CCF-A 级主贡献算法水准，核心缺口改为风险发现 holdout validation、decision-value 指标、field outcome validation 和形式化理论。
 30. risk-discovery value report 已实现，当前结论是 `risk_discovery_value_framework_ready_needs_holdout_validation`；R6 值得继续作为先验锚定风险发现框架推进，但 runtime default update 仍被阻断。
+31. decision-value metrics 已实现，当前结论是 `decision_value_partial_high_false_alarm`：`static_prior_miss_recovery_rate=1.0`，说明 HTOPS 上存在一个静态先验漏报被交互层恢复；但 `top_k_risk_hit_rate=0.333`、`false_alarm_rate=0.667`，说明 ANES health / climate 暴露明显 false alarm。
+32. risk-discovery holdout validation 已实现，当前结论是 `risk_discovery_holdout_failed_current_public_proxies`：same-family ANES health -> climate 与 climate -> health 两个 trial 都没有通过，`passed_trial_count=0`。
+33. R6 当前不是失败，但也不是方法通过；更准确是“已从指标缺失推进到指标可计算，且当前指标显示 partial positive + high false alarm + holdout failed”。
 
 ## 可复用资产
 
@@ -168,10 +182,10 @@ R6 开发时必须只 stage 本轮明确修改的文件。
 
 ## 下一步
 
-1. Research 下一步只围绕 risk-discovery CCF-A readiness 的 4 个 required gap 推进：formal problem、risk-discovery holdout validation、decision-value metric、field/real outcome validation。
-2. 数据侧优先寻找或构造能验证风险发现价值的 in-condition holdout；对于候选 runtime update，仍需满足 `static_prior_error <= 0.03` 且 `original_reject_delta > 0.02` 等触发条件，否则只进入 ledger，不进入方法升级证据。
-3. 方法侧优先定义风险发现的决策价值指标，例如 top-k 风险 segment 命中、预警 regret reduction、干预优先级排序；outcome feedback 的“beat static prior”只作为 runtime default 更新护栏。
-4. Product 侧下一步可以接入 evidence cards 和 risk-discovery value summary，但只能消费 artifact 字段，不允许静态叙事兜底或准确预测宣称。
+1. Research 下一步只围绕 risk-discovery CCF-A readiness 的剩余 gap 推进：formal problem、decision-value metric 通过、risk-discovery holdout validation 通过、field/real outcome validation。
+2. 数据侧优先寻找或构造 positive same-family source signal + independent holdout，降低当前 `false_alarm_rate=0.667`，而不是继续泛泛增加 proxy。
+3. 方法侧下一步要降低 false alarm：调整 interaction risk flag、source signal 条件或 segment/case mapping；但任何改动必须重新跑 decision-value 和 holdout validation。
+4. Product 侧下一步接入 `decision_value_metrics_summary` 与 `risk_discovery_holdout_validation_summary`，展示“发现了一个静态先验漏报，但当前 false alarm 和 holdout 仍未过”的边界。
 
 ## 验收边界
 

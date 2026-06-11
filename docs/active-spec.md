@@ -6,6 +6,7 @@
 
 - `docs/superpowers/specs/2026-06-05-r6-outcome-feedback-prior-anchored-interaction-simulation-spec.md`
 - `docs/superpowers/specs/2026-06-06-r6-method-gates-transfer-protocol-spec.md`
+- `docs/superpowers/specs/2026-06-11-r6-risk-discovery-method-spec.md`
 
 工作名：
 
@@ -16,6 +17,7 @@
 
 - `2026-06-05-r6-outcome-feedback-prior-anchored-interaction-simulation-spec.md` 定义 R6 的总体问题、方法边界和 foundation artifact chain。
 - `2026-06-06-r6-method-gates-transfer-protocol-spec.md` 定义当前阶段的 evidence levels、acceptance gates、cross-case transfer protocol 和止损边界。
+- `2026-06-11-r6-risk-discovery-method-spec.md` 定义 R6 下一阶段的风险发现目标、decision-value 指标和 holdout validation 协议。
 
 后续实现若与历史 R2-R5、旧 prompt/persona 优化、单一 proxy 扩张路线冲突，以当前阶段 addendum 为准。
 
@@ -60,6 +62,8 @@ R6 必须同时满足：
 1. `cross-case transfer protocol artifact`
 2. `in-condition holdout 搜索标准`
 3. `Product evidence card contract`
+4. `decision-value metrics`
+5. `risk-discovery holdout validation`
 
 不再把“继续增加 public proxy 数量”作为默认目标；只有当新增数据能触发 acceptance gate，才进入数据接入。
 
@@ -85,3 +89,4 @@ R6 必须同时满足：
 - 候选更新必须通过当前阶段 addendum 定义的 evidence level 和 acceptance gate，才能从 diagnostic 升级。
 - same-case outcome feedback improvement 不得直接包装成可迁移更新。
 - `beat static prior` 只作为 runtime update guard 使用，不作为 R6 整体研究目标。
+- `decision-value metric` 已实现不等于 R6 通过；必须同时报告 hit rate、false alarm、regret reduction 和 holdout validation。

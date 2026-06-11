@@ -1,0 +1,90 @@
+{
+  "acceptance_gates": {
+    "field_outcome_validated": false,
+    "frozen_rule_has_no_holdout_outcome_leakage": true,
+    "passed_same_family_holdout_count_positive": false,
+    "positive_source_signal_available": false,
+    "risk_discovery_holdout_passed": false,
+    "risk_discovery_holdout_validation_present": true,
+    "same_family_holdout_available": true
+  },
+  "artifact_id": "r6-risk-discovery-holdout-validation-current-001",
+  "blocking_gaps": [
+    "needs_positive_same_family_source_signal",
+    "needs_lower_false_alarm_rate",
+    "needs_field_outcome_validation"
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Risk-discovery holdout validation tests frozen risk flags; it is not field validation."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "holdout_trials": [
+    {
+      "holdout_case": {
+        "holdout_signal_supported": false,
+        "interaction_flags_new_risk": true,
+        "observed_high_risk": false,
+        "source_key": "anes_climate_heldout",
+        "target_case_id": "generic-rights-rule-change"
+      },
+      "holdout_outcome_used_for_rule_derivation": false,
+      "holdout_signal_supported": false,
+      "same_family": true,
+      "source_case": {
+        "interaction_flags_new_risk": true,
+        "observed_high_risk": false,
+        "source_key": "anes_health_heldout",
+        "source_signal_supported": false,
+        "target_case_id": "generic-rights-rule-change"
+      },
+      "source_signal_supported": false,
+      "trial_id": "risk-discovery:anes_health_heldout->anes_climate_heldout",
+      "validation_status": "source_signal_not_supported"
+    },
+    {
+      "holdout_case": {
+        "holdout_signal_supported": false,
+        "interaction_flags_new_risk": true,
+        "observed_high_risk": false,
+        "source_key": "anes_health_heldout",
+        "target_case_id": "generic-rights-rule-change"
+      },
+      "holdout_outcome_used_for_rule_derivation": false,
+      "holdout_signal_supported": false,
+      "same_family": true,
+      "source_case": {
+        "interaction_flags_new_risk": true,
+        "observed_high_risk": false,
+        "source_key": "anes_climate_heldout",
+        "source_signal_supported": false,
+        "target_case_id": "generic-rights-rule-change"
+      },
+      "source_signal_supported": false,
+      "trial_id": "risk-discovery:anes_climate_heldout->anes_health_heldout",
+      "validation_status": "source_signal_not_supported"
+    }
+  ],
+  "risk_flags": [
+    "current_same_family_public_holdouts_do_not_validate_risk_discovery",
+    "not_field_validation"
+  ],
+  "run_id": "r6-risk-discovery-holdout-current-001",
+  "schema_version": "r6-risk-discovery-holdout-validation-v1",
+  "source_refs": [
+    "r6-risk-discovery-holdout-validation-current-001-decision-value-metrics"
+  ],
+  "status": "risk_discovery_holdout_failed_current_public_proxies",
+  "summary": {
+    "condition_not_met_count": 2,
+    "failed_trial_count": 2,
+    "passed_trial_count": 0,
+    "same_family_trial_count": 2,
+    "trial_count": 2
+  },
+  "validation_protocol": {
+    "holdout_outcome_used_for_rule_derivation": false,
+    "same_family_axis": "target_case_id",
+    "source_rule": "Freeze an interaction-delta risk flag from the source case; evaluate the frozen flag on same-family holdout outcomes."
+  }
+}

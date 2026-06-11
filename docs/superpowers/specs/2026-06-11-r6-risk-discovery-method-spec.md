@@ -1,0 +1,166 @@
+# R6 风险发现方法 Spec
+
+## 1. 目标修正
+
+R6 下一阶段不再追求“交互仿真整体比静态先验更准”。静态先验是大规模人群模拟底座，交互层的价值在于：
+
+1. 发现静态先验没有标出的发布前风险；
+2. 把这些风险变成可审计的风险假设；
+3. 在 outcome 或 holdout 回来后验证这些风险假设是否有决策价值；
+4. 只有在通过 runtime guard 后，才允许候选更新进入默认参数。
+
+因此 R6 的 Research 主张应从 accuracy superiority 改为：
+
+> 在强静态先验存在的情况下，交互仿真能否提供可验证的风险发现和决策价值。
+
+## 2. 方法对象
+
+R6 方法对象由四部分组成：
+
+```text
+Static Prior Foundation
+  -> Interaction Risk Discovery
+  -> Decision-Value Evaluation
+  -> Outcome-Feedback Guarded Learning
+```
+
+### 2.1 Static Prior Foundation
+
+静态先验定义无交互状态：
+
+```text
+P_static(y | segment, scenario)
+```
+
+它提供：
+
+- 大规模人群底座；
+- no-interaction control；
+- runtime update guard 的参照。
+
+静态先验不是被 R6 整体击败的对手。
+
+### 2.2 Interaction Risk Discovery
+
+交互层输出相对静态先验的风险偏移：
+
+```text
+delta_risk(segment) = P_interaction(reject | segment) - P_static(reject | segment)
+```
+
+风险发现候选不是“预测已经更准”，而是：
+
+```text
+interaction_flags_new_risk = delta_risk >= threshold
+```
+
+### 2.3 Decision-Value Evaluation
+
+风险发现是否有价值，用以下指标评估：
+
+| 指标 | 含义 |
+| --- | --- |
+| `static_prior_miss_recovery_rate` | 静态先验漏报的高风险中，有多少被交互层提前标出 |
+| `top_k_risk_hit_rate` | 交互层标出的风险中，有多少在 outcome 中确实高风险 |
+| `false_alarm_rate` | 交互层新增风险中，有多少没有 outcome 支持 |
+| `decision_regret_reduction` | 用交互风险替代静态先验风险列表后，漏掉的高风险数量是否下降 |
+
+这些指标评估的是决策价值，不是聚合 MAE 胜出。
+
+### 2.4 Outcome-Feedback Guarded Learning
+
+真实或公开 outcome 回来后，只能产生候选更新：
+
+```text
+candidate_update = f(error_attribution, failure_boundary)
+```
+
+候选更新进入 runtime default 前必须通过：
+
+- 不伤害静态先验底座；
+- same-family holdout validation；
+- worst segment guard；
+- field outcome 或客户业务 outcome 复核。
+
+## 3. 当前 Artifact 合同
+
+新增两个核心 artifact：
+
+1. `r6_decision_value_metrics.py`
+   - 输出 `r6-decision-value-metrics-v1`
+   - 计算风险发现的决策价值指标
+
+2. `r6_risk_discovery_holdout_validation.py`
+   - 输出 `r6-risk-discovery-holdout-validation-v1`
+   - 冻结 source case 的风险发现规则，在 same-family holdout 上验证
+
+总链路 artifact：
+
+- `r6_risk_discovery_value_report.py`
+- `r6_ccfa_readiness_report.py`
+- `r6_evidence_report.py`
+
+## 4. 当前实验结论
+
+截至 2026-06-11，当前 public proxy 证据结论为：
+
+| 指标 | 当前值 | 解释 |
+| --- | ---: | --- |
+| `static_prior_miss_recovery_rate` | 1.0 | HTOPS 中存在一个静态先验漏报，被交互风险发现恢复 |
+| `top_k_risk_hit_rate` | 0.333 | 交互层标出的风险只有 1/3 得到 outcome 支持 |
+| `false_alarm_rate` | 0.667 | ANES health / climate 暴露过度风险放大 |
+| `decision_regret_reduction` | 1 | 相对静态先验，交互层减少了一个漏报高风险 |
+| `risk_discovery_holdout_passed` | false | same-family ANES health -> climate / climate -> health 没有通过 |
+
+当前状态：
+
+```text
+decision_value_partial_high_false_alarm
+risk_discovery_holdout_failed_current_public_proxies
+```
+
+## 5. 当前 Claim Boundary
+
+可以宣称：
+
+- R6 已经有可计算的风险发现价值指标；
+- R6 在 HTOPS 上发现了一个静态先验漏报的风险；
+- R6 能把 ANES health / climate 的交互过度放大识别为 false alarm；
+- R6 能阻断未通过 holdout 的候选更新。
+
+不能宣称：
+
+- R6 已经证明交互仿真整体比静态先验更准；
+- R6 已经具备 CCF-A 主贡献算法水准；
+- R6 已经通过 same-family risk-discovery holdout；
+- R6 可以进入 runtime default update。
+
+## 6. CCF-A Gate
+
+R6 达到 CCF-A 主贡献前，至少需要关闭四个 gap：
+
+1. `needs_formal_problem_and_theory_section`
+2. `needs_decision_value_metric_to_pass`
+3. `needs_risk_discovery_holdout_validation`
+4. `needs_field_outcome_validation`
+
+其中第 2 项已经从“指标缺失”升级为“指标已实现但未通过”。
+
+## 7. 下一步实验要求
+
+下一步不应继续泛泛增加 proxy，而应寻找或构造满足以下条件的 holdout：
+
+1. same-family；
+2. source case 有 positive risk-discovery signal；
+3. holdout outcome 可评估 top-k risk hit；
+4. segment 或 case mapping 可审计；
+5. 能区分真实风险发现和 false alarm。
+
+如果新增 holdout 后仍满足：
+
+```text
+false_alarm_rate > 0.5
+risk_discovery_holdout_passed = false
+```
+
+则 R6 方法主张需要降级为 Product audit / failure diagnosis，而不是继续作为 CCF-A 主贡献推进。

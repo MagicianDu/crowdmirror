@@ -14,12 +14,16 @@ from experiments.r6_case_matrix import build_r6_case_matrix
 from experiments.r6_ccfa_readiness_report import build_r6_ccfa_readiness_report
 from experiments.r6_contracts import R6_CLAIM_BOUNDARY, assert_strict_json, non_empty_string, write_json_artifact
 from experiments.r6_cross_case_transfer_protocol import build_r6_cross_case_transfer_protocol
+from experiments.r6_decision_value_metrics import build_r6_decision_value_metrics
 from experiments.r6_followup_holdout_validation import build_r6_followup_holdout_validation
 from experiments.r6_in_condition_holdout_ledger import build_r6_in_condition_holdout_ledger
 from experiments.r6_mechanism_cap_ablation import build_r6_mechanism_cap_ablation
 from experiments.r6_product_evidence_cards import build_r6_product_evidence_cards
 from experiments.r6_product_report import build_r6_product_report
 from experiments.r6_public_outcome_proxy import build_r6_public_outcome_proxy
+from experiments.r6_risk_discovery_holdout_validation import (
+    build_r6_risk_discovery_holdout_validation,
+)
 from experiments.r6_risk_discovery_value_report import (
     build_r6_risk_discovery_value_report,
 )
@@ -84,21 +88,6 @@ def build_r6_evidence_report(
         transfer_protocol=transfer_protocol,
         holdout_ledger=holdout_ledger,
     )
-    risk_discovery_value = build_r6_risk_discovery_value_report(
-        artifact_id=f"{artifact_id}-risk-discovery-value-report",
-        run_id=run_id,
-        transfer_protocol=transfer_protocol,
-        holdout_ledger=holdout_ledger,
-        product_evidence_cards=product_evidence_cards,
-    )
-    ccfa_readiness = build_r6_ccfa_readiness_report(
-        artifact_id=f"{artifact_id}-ccfa-readiness-report",
-        run_id=run_id,
-        transfer_protocol=transfer_protocol,
-        holdout_ledger=holdout_ledger,
-        product_evidence_cards=product_evidence_cards,
-        risk_discovery_value_report=risk_discovery_value,
-    )
     ablation = build_r6_ablation_report(
         artifact_id=f"{artifact_id}-ablation",
         run_id=run_id,
@@ -113,6 +102,33 @@ def build_r6_evidence_report(
         artifact_id=f"{artifact_id}-ablation-anes-climate",
         run_id=run_id,
         public_outcome_proxy=third_public_proxy,
+    )
+    decision_value_metrics = build_r6_decision_value_metrics(
+        artifact_id=f"{artifact_id}-decision-value-metrics",
+        run_id=run_id,
+        ablation_reports=[ablation, second_ablation, third_ablation],
+    )
+    risk_discovery_holdout_validation = build_r6_risk_discovery_holdout_validation(
+        artifact_id=f"{artifact_id}-risk-discovery-holdout-validation",
+        run_id=run_id,
+        decision_value_metrics=decision_value_metrics,
+    )
+    risk_discovery_value = build_r6_risk_discovery_value_report(
+        artifact_id=f"{artifact_id}-risk-discovery-value-report",
+        run_id=run_id,
+        transfer_protocol=transfer_protocol,
+        holdout_ledger=holdout_ledger,
+        product_evidence_cards=product_evidence_cards,
+        decision_value_metrics=decision_value_metrics,
+        risk_discovery_holdout_validation=risk_discovery_holdout_validation,
+    )
+    ccfa_readiness = build_r6_ccfa_readiness_report(
+        artifact_id=f"{artifact_id}-ccfa-readiness-report",
+        run_id=run_id,
+        transfer_protocol=transfer_protocol,
+        holdout_ledger=holdout_ledger,
+        product_evidence_cards=product_evidence_cards,
+        risk_discovery_value_report=risk_discovery_value,
     )
     by_method = {result["method"]: result for result in ablation["baseline_results"]}
     prior_anchored_beats_no_interaction = (
@@ -234,6 +250,33 @@ def build_r6_evidence_report(
                 "demo_api_contract"
             ]["static_narrative_fallback_allowed"],
         },
+        "decision_value_metrics_summary": {
+            "artifact_id": decision_value_metrics["artifact_id"],
+            "status": decision_value_metrics["status"],
+            "decision_value_passed": decision_value_metrics["decision_value_passed"],
+            "static_prior_miss_recovery_rate": decision_value_metrics["summary"][
+                "static_prior_miss_recovery_rate"
+            ],
+            "top_k_risk_hit_rate": decision_value_metrics["summary"][
+                "top_k_risk_hit_rate"
+            ],
+            "false_alarm_rate": decision_value_metrics["summary"][
+                "false_alarm_rate"
+            ],
+        },
+        "risk_discovery_holdout_validation_summary": {
+            "artifact_id": risk_discovery_holdout_validation["artifact_id"],
+            "status": risk_discovery_holdout_validation["status"],
+            "risk_discovery_holdout_passed": risk_discovery_holdout_validation[
+                "acceptance_gates"
+            ]["risk_discovery_holdout_passed"],
+            "same_family_trial_count": risk_discovery_holdout_validation["summary"][
+                "same_family_trial_count"
+            ],
+            "passed_trial_count": risk_discovery_holdout_validation["summary"][
+                "passed_trial_count"
+            ],
+        },
         "risk_discovery_value_summary": {
             "artifact_id": risk_discovery_value["artifact_id"],
             "status": risk_discovery_value["status"],
@@ -246,6 +289,12 @@ def build_r6_evidence_report(
             "runtime_update_default_ready": risk_discovery_value["decision"][
                 "runtime_update_default_ready"
             ],
+            "decision_value_passed": risk_discovery_value["decision_value_summary"][
+                "decision_value_passed"
+            ],
+            "risk_discovery_holdout_passed": risk_discovery_value[
+                "holdout_validation_summary"
+            ]["risk_discovery_holdout_passed"],
         },
         "ccfa_readiness_summary": {
             "artifact_id": ccfa_readiness["artifact_id"],
@@ -289,6 +338,12 @@ def build_r6_evidence_report(
             "runtime_update_guard_passed": transfer_protocol["acceptance_gates"][
                 "runtime_update_guard_passed"
             ],
+            "decision_value_metrics_present": True,
+            "decision_value_passed": decision_value_metrics["decision_value_passed"],
+            "risk_discovery_holdout_validation_present": True,
+            "risk_discovery_holdout_passed": risk_discovery_holdout_validation[
+                "acceptance_gates"
+            ]["risk_discovery_holdout_passed"],
             "risk_discovery_value_report_present": True,
             "static_prior_role_reframed_as_foundation": (
                 risk_discovery_value["objective_reframe"]["static_prior_role"]
@@ -313,6 +368,8 @@ def build_r6_evidence_report(
             followup_holdout=followup_holdout,
             transfer_protocol=transfer_protocol,
             holdout_ledger=holdout_ledger,
+            decision_value_metrics=decision_value_metrics,
+            risk_discovery_holdout_validation=risk_discovery_holdout_validation,
             risk_discovery_value=risk_discovery_value,
             ccfa_readiness=ccfa_readiness,
         ),
@@ -327,6 +384,8 @@ def build_r6_evidence_report(
             transfer_protocol["artifact_id"],
             holdout_ledger["artifact_id"],
             product_evidence_cards["artifact_id"],
+            decision_value_metrics["artifact_id"],
+            risk_discovery_holdout_validation["artifact_id"],
             risk_discovery_value["artifact_id"],
             ccfa_readiness["artifact_id"],
             ablation["artifact_id"],
@@ -367,6 +426,8 @@ def _remaining_gaps_with_method_gates(
     followup_holdout: dict[str, Any],
     transfer_protocol: dict[str, Any],
     holdout_ledger: dict[str, Any],
+    decision_value_metrics: dict[str, Any],
+    risk_discovery_holdout_validation: dict[str, Any],
     risk_discovery_value: dict[str, Any],
     ccfa_readiness: dict[str, Any],
 ) -> list[str]:
@@ -378,6 +439,8 @@ def _remaining_gaps_with_method_gates(
     gaps.extend(followup_holdout["blocking_gaps"])
     gaps.extend(transfer_protocol["blocking_gaps"])
     gaps.extend(holdout_ledger["blocking_gaps"])
+    gaps.extend(decision_value_metrics["blocking_gaps"])
+    gaps.extend(risk_discovery_holdout_validation["blocking_gaps"])
     gaps.extend(risk_discovery_value["blocking_gaps"])
     gaps.extend(ccfa_readiness["blocking_gaps"])
     return sorted(set(gaps))
