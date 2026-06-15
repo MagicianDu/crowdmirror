@@ -98,6 +98,10 @@ candidate_update = f(error_attribution, failure_boundary)
    - 输出 `r6-risk-discovery-threshold-sweep-v1`
    - 扫描 `interaction_delta_threshold`，判断是否能靠阈值调优降低 false alarm
 
+4. `r6_false_alarm_discriminator.py`
+   - 输出 `r6-false-alarm-discriminator-v1`
+   - 在 threshold sweep 失败后，评估非阈值候选规则是否能区分 true risk 和 false alarm，并显式区分 diagnostic-only 与 accepted discriminator
+
 总链路 artifact：
 
 - `r6_risk_discovery_value_report.py`
@@ -116,6 +120,7 @@ candidate_update = f(error_attribution, failure_boundary)
 | `decision_regret_reduction` | 1 | 相对静态先验，交互层减少了一个漏报高风险 |
 | `risk_discovery_holdout_passed` | false | same-family ANES health -> climate / climate -> health 没有通过 |
 | `threshold_tuning_sufficient` | false | HTOPS 真风险和 ANES 误报的 `interaction_delta_vs_static` 都是 0.07，阈值无法分离 |
+| `false_alarm_discriminator_ready` | false | 当前 case/source family 候选能分开 1 个 true positive 与 2 个 false alarm，但无 in-family positive signal 或 holdout，因此不能验收 |
 
 当前状态：
 
@@ -123,6 +128,7 @@ candidate_update = f(error_attribution, failure_boundary)
 decision_value_partial_high_false_alarm
 risk_discovery_holdout_failed_current_public_proxies
 threshold_sweep_no_separating_rule
+false_alarm_discriminator_diagnostic_only
 ```
 
 ## 5. 当前 Claim Boundary
@@ -133,6 +139,7 @@ threshold_sweep_no_separating_rule
 - R6 在 HTOPS 上发现了一个静态先验漏报的风险；
 - R6 能把 ANES health / climate 的交互过度放大识别为 false alarm；
 - R6 已证明当前 false alarm 不是简单调 `interaction_delta_threshold` 能解决的问题；
+- R6 已诊断出当前 case/source family 规则可以分离 public proxy 样本，但这更像过拟合记忆而非泛化能力；
 - R6 能阻断未通过 holdout 的候选更新。
 
 不能宣称：
@@ -140,24 +147,28 @@ threshold_sweep_no_separating_rule
 - R6 已经证明交互仿真整体比静态先验更准；
 - R6 已经具备 CCF-A 主贡献算法水准；
 - R6 已经通过 same-family risk-discovery holdout；
+- R6 已经形成可泛化 false-alarm discriminator；
 - R6 可以进入 runtime default update。
 
 ## 6. CCF-A Gate
 
-R6 达到 CCF-A 主贡献前，至少需要关闭四个 gap：
+R6 达到 CCF-A 主贡献前，至少需要关闭五个 gap：
 
 1. `needs_formal_problem_and_theory_section`
 2. `needs_decision_value_metric_to_pass`
 3. `needs_risk_discovery_holdout_validation`
-4. `needs_field_outcome_validation`
+4. `needs_generalizable_false_alarm_discriminator`
+5. `needs_field_outcome_validation`
 
 其中第 2 项已经从“指标缺失”升级为“指标已实现但未通过”。
+第 4 项已经从“缺少非阈值方向”升级为“诊断组件已实现，但当前候选只在现有 public proxy 上可分离，不能泛化验收”。
 
 ## 7. 下一步实验要求
 
 下一步不应继续泛泛增加 proxy，也不应只调阈值。当前 threshold sweep 已显示 true signal
-和 false alarm 共享相同 `interaction_delta_vs_static=0.07`，因此需要引入非阈值的
-false-alarm discriminator，例如 case-level features、segment-level uncertainty、机制触发条件或
+和 false alarm 共享相同 `interaction_delta_vs_static=0.07`；第一版 false-alarm discriminator
+已证明 case/source family 规则可以分开当前样本，但属于 diagnostic-only。后续必须把它升级为可泛化的
+false-alarm discriminator，例如引入 case-level features、segment-level uncertainty、机制触发条件或
 in-condition holdout。新增 holdout 应满足以下条件：
 
 1. same-family；
@@ -165,6 +176,12 @@ in-condition holdout。新增 holdout 应满足以下条件：
 3. holdout outcome 可评估 top-k risk hit；
 4. segment 或 case mapping 可审计；
 5. 能区分真实风险发现和 false alarm。
+
+当前已经尝试的 target case family / source family discriminator 不能直接作为方法结论。后续只有在满足以下任一条件后，才允许从 diagnostic 升级：
+
+1. 同 family 中出现 positive source signal，并在独立 holdout 上保持 false alarm 下降；
+2. 新增发布前可用特征能跨 source family 解释 true positive 与 false alarm；
+3. field outcome 或客户业务 outcome 复核证明该 discriminator 能降低误报且不漏掉真实高风险。
 
 如果新增 holdout 后仍满足：
 

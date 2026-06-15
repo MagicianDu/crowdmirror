@@ -90,8 +90,9 @@ def build_r6_ccfa_readiness_report(
                 "R6 should be evaluated as a static-prior anchored risk-discovery "
                 "framework. The static prior is the simulation base, while interaction "
                 "adds auditable risk hypotheses. The framework is not CCF-A-ready until "
-                "risk-discovery holdout validation, decision-value metrics, and field "
-                "outcome validation are present."
+                "risk-discovery holdout validation, decision-value metrics, a "
+                "generalizable false-alarm discriminator, and field outcome validation "
+                "are present."
             ),
         },
         "readiness_checklist": checklist,
@@ -129,6 +130,7 @@ def build_r6_ccfa_readiness_report(
             "bind_in_condition_holdout_to_risk_discovery_validation",
             "add_field_or_real_release_outcome_validation",
             "formalize_interaction_operator_and_gated_update_theory",
+            "validate_generalizable_false_alarm_discriminator",
             "compare_risk_discovery_value_against_static_prior_only_and_random_interaction",
         ],
         "source_refs": [
@@ -146,6 +148,7 @@ def build_r6_ccfa_readiness_report(
             "not_ccf_a_ready",
             "risk_discovery_holdout_validation_failed",
             "decision_value_metric_partial",
+            "false_alarm_discriminator_not_runtime_ready",
             "field_validation_missing",
             "runtime_update_guard_not_passed",
         ],
@@ -265,6 +268,32 @@ def _readiness_checklist(
                     "decision_value_passed"
                 ]
                 else "needs_decision_value_metric_to_pass"
+            ),
+        },
+        {
+            "gate_id": "false_alarm_discriminator",
+            "required_for_ccf_a": True,
+            "status": (
+                "passed"
+                if risk_discovery_value_report["false_alarm_discriminator_summary"][
+                    "false_alarm_discriminator_ready"
+                ]
+                else "failed"
+            ),
+            "evidence": (
+                "current_proxy_separation_found="
+                f"{risk_discovery_value_report['false_alarm_discriminator_summary']['current_proxy_separation_found']}; "
+                "generalizable_discriminator_found="
+                f"{risk_discovery_value_report['false_alarm_discriminator_summary']['generalizable_discriminator_found']}; "
+                "accepted_candidate_count="
+                f"{risk_discovery_value_report['false_alarm_discriminator_summary']['accepted_candidate_count']}"
+            ),
+            "blocking_gap": (
+                ""
+                if risk_discovery_value_report["false_alarm_discriminator_summary"][
+                    "false_alarm_discriminator_ready"
+                ]
+                else "needs_generalizable_false_alarm_discriminator"
             ),
         },
         {

@@ -19,6 +19,9 @@ from experiments.r6_cross_case_transfer_protocol import (
     build_r6_cross_case_transfer_protocol,
 )
 from experiments.r6_decision_value_metrics import build_r6_decision_value_metrics
+from experiments.r6_false_alarm_discriminator import (
+    build_r6_false_alarm_discriminator,
+)
 from experiments.r6_in_condition_holdout_ledger import (
     build_r6_in_condition_holdout_ledger,
 )
@@ -43,6 +46,7 @@ def build_r6_risk_discovery_value_report(
     product_evidence_cards: dict[str, Any] | None = None,
     decision_value_metrics: dict[str, Any] | None = None,
     risk_discovery_threshold_sweep: dict[str, Any] | None = None,
+    false_alarm_discriminator: dict[str, Any] | None = None,
     risk_discovery_holdout_validation: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
@@ -73,6 +77,14 @@ def build_r6_risk_discovery_value_report(
         or build_r6_risk_discovery_threshold_sweep(
             artifact_id=f"{artifact_id}-threshold-sweep",
             run_id=run_id,
+        )
+    )
+    false_alarm_discriminator = (
+        false_alarm_discriminator
+        or build_r6_false_alarm_discriminator(
+            artifact_id=f"{artifact_id}-false-alarm-discriminator",
+            run_id=run_id,
+            decision_value_metrics=decision_value_metrics,
         )
     )
     risk_discovery_holdout_validation = (
@@ -106,6 +118,13 @@ def build_r6_risk_discovery_value_report(
         "false_alarm_reducible_by_threshold": risk_discovery_threshold_sweep[
             "summary"
         ]["false_alarm_reducible_by_threshold"],
+        "false_alarm_discriminator_present": True,
+        "false_alarm_discriminator_ready": false_alarm_discriminator[
+            "acceptance_gates"
+        ]["false_alarm_discriminator_ready"],
+        "generalizable_false_alarm_discriminator_found": false_alarm_discriminator[
+            "acceptance_gates"
+        ]["generalizable_discriminator_found"],
         "risk_discovery_holdout_validation_present": True,
         "risk_discovery_holdout_passed": risk_discovery_holdout_validation[
             "acceptance_gates"
@@ -115,6 +134,9 @@ def build_r6_risk_discovery_value_report(
     decision_value_passed = decision_value_metrics["decision_value_passed"]
     holdout_passed = risk_discovery_holdout_validation["acceptance_gates"][
         "risk_discovery_holdout_passed"
+    ]
+    false_alarm_discriminator_ready = false_alarm_discriminator["acceptance_gates"][
+        "false_alarm_discriminator_ready"
     ]
     report = {
         "schema_version": R6_RISK_DISCOVERY_VALUE_REPORT_SCHEMA_VERSION,
@@ -167,6 +189,23 @@ def build_r6_risk_discovery_value_report(
                 "summary"
             ]["true_signal_false_alarm_delta_overlap"],
         },
+        "false_alarm_discriminator_summary": {
+            "artifact_id": false_alarm_discriminator["artifact_id"],
+            "status": false_alarm_discriminator["status"],
+            "current_proxy_separation_found": false_alarm_discriminator[
+                "acceptance_gates"
+            ]["current_proxy_separation_found"],
+            "pre_outcome_safe_candidate_found": false_alarm_discriminator[
+                "acceptance_gates"
+            ]["pre_outcome_safe_candidate_found"],
+            "generalizable_discriminator_found": false_alarm_discriminator[
+                "acceptance_gates"
+            ]["generalizable_discriminator_found"],
+            "accepted_candidate_count": false_alarm_discriminator["summary"][
+                "accepted_candidate_count"
+            ],
+            "false_alarm_discriminator_ready": false_alarm_discriminator_ready,
+        },
         "holdout_validation_summary": {
             "artifact_id": risk_discovery_holdout_validation["artifact_id"],
             "status": risk_discovery_holdout_validation["status"],
@@ -190,7 +229,9 @@ def build_r6_risk_discovery_value_report(
             "decision": "continue_as_prior_anchored_risk_discovery_framework",
             "runtime_update_default_ready": False,
             "ccf_a_risk_discovery_claim_ready": (
-                decision_value_passed and holdout_passed
+                decision_value_passed
+                and holdout_passed
+                and false_alarm_discriminator_ready
             ),
             "reason": (
                 "Static prior is the simulator base. R6 value is judged by whether "
@@ -209,6 +250,7 @@ def build_r6_risk_discovery_value_report(
         "blocking_gaps": _blocking_gaps(
             decision_value_metrics=decision_value_metrics,
             risk_discovery_threshold_sweep=risk_discovery_threshold_sweep,
+            false_alarm_discriminator=false_alarm_discriminator,
             risk_discovery_holdout_validation=risk_discovery_holdout_validation,
         ),
         "source_refs": [
@@ -217,6 +259,7 @@ def build_r6_risk_discovery_value_report(
             product_evidence_cards["artifact_id"],
             decision_value_metrics["artifact_id"],
             risk_discovery_threshold_sweep["artifact_id"],
+            false_alarm_discriminator["artifact_id"],
             risk_discovery_holdout_validation["artifact_id"],
         ],
         "claim_boundaries": [
@@ -229,6 +272,7 @@ def build_r6_risk_discovery_value_report(
             "risk_discovery_holdout_validation_failed",
             "decision_value_metric_partial",
             "threshold_tuning_insufficient",
+            "false_alarm_discriminator_not_runtime_ready",
             "field_validation_missing",
             "runtime_update_guard_not_passed",
         ],
@@ -252,6 +296,7 @@ def _blocking_gaps(
     *,
     decision_value_metrics: dict[str, Any],
     risk_discovery_threshold_sweep: dict[str, Any],
+    false_alarm_discriminator: dict[str, Any],
     risk_discovery_holdout_validation: dict[str, Any],
 ) -> list[str]:
     gaps = [
@@ -259,7 +304,13 @@ def _blocking_gaps(
         "needs_runtime_update_guard_before_default_enablement",
     ]
     gaps.extend(decision_value_metrics["blocking_gaps"])
-    gaps.extend(risk_discovery_threshold_sweep["blocking_gaps"])
+    gaps.extend(
+        _threshold_gaps_after_discriminator(
+            risk_discovery_threshold_sweep=risk_discovery_threshold_sweep,
+            false_alarm_discriminator=false_alarm_discriminator,
+        )
+    )
+    gaps.extend(false_alarm_discriminator["blocking_gaps"])
     gaps.extend(risk_discovery_holdout_validation["blocking_gaps"])
     if not decision_value_metrics["decision_value_passed"]:
         gaps.append("needs_decision_value_metric_to_pass")
@@ -267,7 +318,27 @@ def _blocking_gaps(
         "risk_discovery_holdout_passed"
     ]:
         gaps.append("needs_risk_discovery_holdout_validation")
+    if not false_alarm_discriminator["acceptance_gates"][
+        "false_alarm_discriminator_ready"
+    ]:
+        gaps.append("needs_generalizable_false_alarm_discriminator")
     return sorted(set(gaps))
+
+
+def _threshold_gaps_after_discriminator(
+    *,
+    risk_discovery_threshold_sweep: dict[str, Any],
+    false_alarm_discriminator: dict[str, Any],
+) -> list[str]:
+    if not false_alarm_discriminator["acceptance_gates"][
+        "false_alarm_discriminator_present"
+    ]:
+        return risk_discovery_threshold_sweep["blocking_gaps"]
+    return [
+        gap
+        for gap in risk_discovery_threshold_sweep["blocking_gaps"]
+        if gap != "needs_non_threshold_false_alarm_discriminator"
+    ]
 
 
 def main() -> int:

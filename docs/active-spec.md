@@ -92,3 +92,4 @@ R6 必须同时满足：
 - `beat static prior` 只作为 runtime update guard 使用，不作为 R6 整体研究目标。
 - `decision-value metric` 已实现不等于 R6 通过；必须同时报告 hit rate、false alarm、regret reduction 和 holdout validation。
 - `interaction_delta_threshold` 调参不足以解释当前 false alarm；若 threshold sweep 显示真风险和误报共享相同 delta，下一步必须做非阈值 discriminator 或寻找 in-condition holdout。
+- `false-alarm discriminator` 已实现不等于 R6 通过；当前 case/source family 候选只算 diagnostic-only，必须通过 in-family positive signal、独立 holdout 或 field outcome 复核后才能进入 runtime gate。

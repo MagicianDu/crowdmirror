@@ -207,6 +207,9 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "risk_discovery_threshold_sweep_present": True,
         "threshold_tuning_sufficient": False,
         "false_alarm_reducible_by_threshold": False,
+        "false_alarm_discriminator_present": True,
+        "false_alarm_discriminator_ready": False,
+        "generalizable_false_alarm_discriminator_found": False,
         "risk_discovery_value_report_present": True,
         "static_prior_role_reframed_as_foundation": True,
         "risk_discovery_path_should_continue": True,
@@ -247,6 +250,7 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "runtime_update_default_ready": False,
         "decision_value_passed": False,
         "risk_discovery_holdout_passed": False,
+        "false_alarm_discriminator_ready": False,
     }
     assert report["decision_value_metrics_summary"] == {
         "artifact_id": "r6-evidence-report-test-decision-value-metrics",
@@ -264,6 +268,15 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "false_alarm_reducible_by_threshold": False,
         "best_threshold": 0.0,
         "true_signal_false_alarm_delta_overlap": True,
+    }
+    assert report["false_alarm_discriminator_summary"] == {
+        "artifact_id": "r6-evidence-report-test-false-alarm-discriminator",
+        "status": "false_alarm_discriminator_diagnostic_only",
+        "current_proxy_separation_found": True,
+        "pre_outcome_safe_candidate_found": True,
+        "generalizable_discriminator_found": False,
+        "accepted_candidate_count": 0,
+        "false_alarm_discriminator_ready": False,
     }
     assert report["risk_discovery_holdout_validation_summary"] == {
         "artifact_id": "r6-evidence-report-test-risk-discovery-holdout-validation",
@@ -289,7 +302,7 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "status": "ccf_a_readiness_evaluated",
         "ccf_a_main_contribution_ready": False,
         "readiness_level": "L3_risk_discovery_framework_needs_validation",
-        "failed_required_gate_count": 4,
+        "failed_required_gate_count": 5,
     }
     assert report["ablation_summary"]["prior_anchored_beats_no_interaction"] is True
     assert report["multi_proxy_summary"] == {
@@ -315,13 +328,17 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
     assert "needs_risk_discovery_holdout_validation" in report["remaining_gaps"]
     assert "needs_decision_value_metric_to_pass" in report["remaining_gaps"]
     assert "needs_lower_false_alarm_rate" in report["remaining_gaps"]
-    assert "needs_non_threshold_false_alarm_discriminator" in report[
+    assert "needs_non_threshold_false_alarm_discriminator" not in report[
         "remaining_gaps"
     ]
+    assert "needs_generalizable_false_alarm_discriminator" in report["remaining_gaps"]
+    assert "needs_discriminator_holdout_validation" in report["remaining_gaps"]
+    assert "needs_in_family_positive_signal" in report["remaining_gaps"]
     assert "needs_positive_same_family_source_signal" in report["remaining_gaps"]
     assert "needs_field_outcome_validation" in report["remaining_gaps"]
     assert "same_case_feedback_not_global_acceptance" in report["risk_flags"]
     assert "static_prior_is_foundation_not_opponent" in report["risk_flags"]
+    assert "false_alarm_discriminator_not_runtime_ready" in report["risk_flags"]
     assert "ccf_a_main_contribution_not_ready" in report["risk_flags"]
     json.dumps(report, allow_nan=False)
 
