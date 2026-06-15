@@ -1,0 +1,151 @@
+{
+  "artifact_id": "r6-ccfa-readiness-report-current-004",
+  "blocking_gaps": [
+    "needs_decision_value_metric_to_pass",
+    "needs_field_outcome_validation",
+    "needs_formal_problem_and_theory_section",
+    "needs_risk_discovery_holdout_validation"
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "CCF-A readiness report is a gate evaluation; failed gates must not be softened into positive claims."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "failed_required_gate_count": 4,
+  "failed_required_gates": [
+    {
+      "blocking_gap": "needs_formal_problem_and_theory_section",
+      "gate_id": "formal_problem_defined",
+      "status": "partial"
+    },
+    {
+      "blocking_gap": "needs_risk_discovery_holdout_validation",
+      "gate_id": "risk_discovery_holdout_validation",
+      "status": "failed"
+    },
+    {
+      "blocking_gap": "needs_decision_value_metric_to_pass",
+      "gate_id": "decision_value_metric",
+      "status": "partial"
+    },
+    {
+      "blocking_gap": "needs_field_outcome_validation",
+      "gate_id": "field_or_real_outcome_validation",
+      "status": "failed"
+    }
+  ],
+  "paper_claim_boundary": {
+    "allowed_claim": "R6 is a static-prior anchored risk-discovery framework with diagnostic evidence, explicit blocked-update gates, and Product-visible claim boundaries.",
+    "blocked_claim": "R6 already guarantees aggregate predictive accuracy, field validity, or default runtime updates beyond the static-prior foundation."
+  },
+  "positive_assets": [
+    "prior_anchored_interaction_problem_reframed",
+    "static_prior_reframed_as_simulation_foundation",
+    "risk_discovery_value_report_added",
+    "no_interaction_control_and_public_proxy_baselines_available",
+    "failure_boundary_and_candidate_repair_are_auditable",
+    "unvalidated_updates_are_blocked_by_registry_and_gates",
+    "product_evidence_cards_make_claim_boundary_customer_visible"
+  ],
+  "readiness_checklist": [
+    {
+      "blocking_gap": "needs_formal_problem_and_theory_section",
+      "evidence": "active R6 specs define the prior-anchored risk-discovery problem, but no manuscript-level formal objective is complete.",
+      "gate_id": "formal_problem_defined",
+      "required_for_ccf_a": true,
+      "status": "partial"
+    },
+    {
+      "blocking_gap": "",
+      "evidence": "risk_discovery_report.static_prior_role=foundation_not_opponent",
+      "gate_id": "static_prior_foundation",
+      "required_for_ccf_a": true,
+      "status": "passed"
+    },
+    {
+      "blocking_gap": "",
+      "evidence": "interaction_role=discover_auditable_risk_shifts_beyond_static_prior",
+      "gate_id": "risk_discovery_objective_defined",
+      "required_for_ccf_a": true,
+      "status": "passed"
+    },
+    {
+      "blocking_gap": "",
+      "evidence": "interaction_delta_observable=True; failure_boundary_detected=True",
+      "gate_id": "interaction_risk_signal_present",
+      "required_for_ccf_a": true,
+      "status": "passed"
+    },
+    {
+      "blocking_gap": "needs_risk_discovery_holdout_validation",
+      "evidence": "risk_discovery_holdout_passed=False; same_family_trial_count=2; passed_trial_count=0",
+      "gate_id": "risk_discovery_holdout_validation",
+      "required_for_ccf_a": true,
+      "status": "failed"
+    },
+    {
+      "blocking_gap": "",
+      "evidence": "ANES health over-amplification is diagnosed, converted into a candidate cap, and exposed through Product evidence cards; predictive holdout validation is tracked by the risk-discovery holdout gate.",
+      "gate_id": "failure_boundary_systematically_explained",
+      "required_for_ccf_a": true,
+      "status": "passed"
+    },
+    {
+      "blocking_gap": "needs_decision_value_metric_to_pass",
+      "evidence": "decision_value_metric_present=True; static_prior_miss_recovery_rate=1.0; top_k_risk_hit_rate=0.333; false_alarm_rate=0.667",
+      "gate_id": "decision_value_metric",
+      "required_for_ccf_a": true,
+      "status": "partial"
+    },
+    {
+      "blocking_gap": "needs_runtime_update_guard_before_default_enablement",
+      "evidence": "Mechanism cap lacks an in-condition same-family holdout. Outcome feedback transfers improve prior-interaction error, but default runtime updates remain blocked because they do not clear the static-prior guard. This blocks automatic update enablement, not the risk-discovery research path.",
+      "gate_id": "runtime_update_guard",
+      "required_for_ccf_a": false,
+      "status": "failed"
+    },
+    {
+      "blocking_gap": "needs_field_outcome_validation",
+      "evidence": "Current evidence is bounded public proxy evidence, not field outcome validation.",
+      "gate_id": "field_or_real_outcome_validation",
+      "required_for_ccf_a": true,
+      "status": "failed"
+    },
+    {
+      "blocking_gap": "",
+      "evidence": "product_evidence_card_count=5; static_narrative_fallback_allowed=False",
+      "gate_id": "product_claim_boundary",
+      "required_for_ccf_a": false,
+      "status": "passed"
+    }
+  ],
+  "recommended_next_research_steps": [
+    "define_risk_discovery_decision_value_metric",
+    "bind_in_condition_holdout_to_risk_discovery_validation",
+    "add_field_or_real_release_outcome_validation",
+    "formalize_interaction_operator_and_gated_update_theory",
+    "compare_risk_discovery_value_against_static_prior_only_and_random_interaction"
+  ],
+  "risk_flags": [
+    "not_ccf_a_ready",
+    "risk_discovery_holdout_validation_failed",
+    "decision_value_metric_partial",
+    "field_validation_missing",
+    "runtime_update_guard_not_passed"
+  ],
+  "run_id": "r6-ccfa-readiness-report-run",
+  "schema_version": "r6-ccfa-readiness-report-v1",
+  "source_refs": [
+    "r6-ccfa-readiness-report-current-004-transfer-protocol",
+    "r6-ccfa-readiness-report-current-004-holdout-ledger",
+    "r6-ccfa-readiness-report-current-004-product-evidence-cards",
+    "r6-ccfa-readiness-report-current-004-risk-discovery-value-report"
+  ],
+  "status": "ccf_a_readiness_evaluated",
+  "verdict": {
+    "ccf_a_main_contribution_ready": false,
+    "decision": "not_ready_for_ccf_a_submission_as_main_algorithm",
+    "readiness_level": "L3_risk_discovery_framework_needs_validation",
+    "short_answer": "R6 should be evaluated as a static-prior anchored risk-discovery framework. The static prior is the simulation base, while interaction adds auditable risk hypotheses. The framework is not CCF-A-ready until risk-discovery holdout validation, decision-value metrics, and field outcome validation are present."
+  }
+}

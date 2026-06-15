@@ -24,6 +24,9 @@ from experiments.r6_public_outcome_proxy import build_r6_public_outcome_proxy
 from experiments.r6_risk_discovery_holdout_validation import (
     build_r6_risk_discovery_holdout_validation,
 )
+from experiments.r6_risk_discovery_threshold_sweep import (
+    build_r6_risk_discovery_threshold_sweep,
+)
 from experiments.r6_risk_discovery_value_report import (
     build_r6_risk_discovery_value_report,
 )
@@ -113,6 +116,10 @@ def build_r6_evidence_report(
         run_id=run_id,
         decision_value_metrics=decision_value_metrics,
     )
+    risk_discovery_threshold_sweep = build_r6_risk_discovery_threshold_sweep(
+        artifact_id=f"{artifact_id}-risk-discovery-threshold-sweep",
+        run_id=run_id,
+    )
     risk_discovery_value = build_r6_risk_discovery_value_report(
         artifact_id=f"{artifact_id}-risk-discovery-value-report",
         run_id=run_id,
@@ -120,6 +127,7 @@ def build_r6_evidence_report(
         holdout_ledger=holdout_ledger,
         product_evidence_cards=product_evidence_cards,
         decision_value_metrics=decision_value_metrics,
+        risk_discovery_threshold_sweep=risk_discovery_threshold_sweep,
         risk_discovery_holdout_validation=risk_discovery_holdout_validation,
     )
     ccfa_readiness = build_r6_ccfa_readiness_report(
@@ -277,6 +285,25 @@ def build_r6_evidence_report(
                 "passed_trial_count"
             ],
         },
+        "risk_discovery_threshold_sweep_summary": {
+            "artifact_id": risk_discovery_threshold_sweep["artifact_id"],
+            "status": risk_discovery_threshold_sweep["status"],
+            "passing_threshold_found": risk_discovery_threshold_sweep[
+                "acceptance_gates"
+            ]["passing_threshold_found"],
+            "separating_threshold_found": risk_discovery_threshold_sweep[
+                "acceptance_gates"
+            ]["separating_threshold_found"],
+            "false_alarm_reducible_by_threshold": risk_discovery_threshold_sweep[
+                "summary"
+            ]["false_alarm_reducible_by_threshold"],
+            "best_threshold": risk_discovery_threshold_sweep["summary"][
+                "best_threshold"
+            ],
+            "true_signal_false_alarm_delta_overlap": risk_discovery_threshold_sweep[
+                "summary"
+            ]["true_signal_false_alarm_delta_overlap"],
+        },
         "risk_discovery_value_summary": {
             "artifact_id": risk_discovery_value["artifact_id"],
             "status": risk_discovery_value["status"],
@@ -344,6 +371,13 @@ def build_r6_evidence_report(
             "risk_discovery_holdout_passed": risk_discovery_holdout_validation[
                 "acceptance_gates"
             ]["risk_discovery_holdout_passed"],
+            "risk_discovery_threshold_sweep_present": True,
+            "threshold_tuning_sufficient": risk_discovery_threshold_sweep[
+                "decision"
+            ]["threshold_tuning_sufficient"],
+            "false_alarm_reducible_by_threshold": risk_discovery_threshold_sweep[
+                "summary"
+            ]["false_alarm_reducible_by_threshold"],
             "risk_discovery_value_report_present": True,
             "static_prior_role_reframed_as_foundation": (
                 risk_discovery_value["objective_reframe"]["static_prior_role"]
@@ -370,6 +404,7 @@ def build_r6_evidence_report(
             holdout_ledger=holdout_ledger,
             decision_value_metrics=decision_value_metrics,
             risk_discovery_holdout_validation=risk_discovery_holdout_validation,
+            risk_discovery_threshold_sweep=risk_discovery_threshold_sweep,
             risk_discovery_value=risk_discovery_value,
             ccfa_readiness=ccfa_readiness,
         ),
@@ -386,6 +421,7 @@ def build_r6_evidence_report(
             product_evidence_cards["artifact_id"],
             decision_value_metrics["artifact_id"],
             risk_discovery_holdout_validation["artifact_id"],
+            risk_discovery_threshold_sweep["artifact_id"],
             risk_discovery_value["artifact_id"],
             ccfa_readiness["artifact_id"],
             ablation["artifact_id"],
@@ -428,6 +464,7 @@ def _remaining_gaps_with_method_gates(
     holdout_ledger: dict[str, Any],
     decision_value_metrics: dict[str, Any],
     risk_discovery_holdout_validation: dict[str, Any],
+    risk_discovery_threshold_sweep: dict[str, Any],
     risk_discovery_value: dict[str, Any],
     ccfa_readiness: dict[str, Any],
 ) -> list[str]:
@@ -441,6 +478,7 @@ def _remaining_gaps_with_method_gates(
     gaps.extend(holdout_ledger["blocking_gaps"])
     gaps.extend(decision_value_metrics["blocking_gaps"])
     gaps.extend(risk_discovery_holdout_validation["blocking_gaps"])
+    gaps.extend(risk_discovery_threshold_sweep["blocking_gaps"])
     gaps.extend(risk_discovery_value["blocking_gaps"])
     gaps.extend(ccfa_readiness["blocking_gaps"])
     return sorted(set(gaps))

@@ -1,0 +1,264 @@
+{
+  "ablation_reports": [
+    {
+      "artifact_id": "r6-evidence-report-current-009-ablation",
+      "no_interaction_error": 0.18,
+      "outcome_feedback_global_status": "blocked_same_case_only",
+      "prior_anchored_beats_no_interaction": true,
+      "prior_anchored_error": 0.11,
+      "public_proxy_observed_reject": 0.47,
+      "target_case_id": "generic-public-service-policy-change"
+    },
+    {
+      "artifact_id": "r6-evidence-report-current-009-ablation-anes-health",
+      "no_interaction_error": 0.02,
+      "outcome_feedback_global_status": "blocked_same_case_only",
+      "prior_anchored_beats_no_interaction": false,
+      "prior_anchored_error": 0.05,
+      "public_proxy_observed_reject": 0.33,
+      "target_case_id": "generic-rights-rule-change"
+    },
+    {
+      "artifact_id": "r6-evidence-report-current-009-ablation-anes-climate",
+      "no_interaction_error": 0.06,
+      "outcome_feedback_global_status": "blocked_same_case_only",
+      "prior_anchored_beats_no_interaction": false,
+      "prior_anchored_error": 0.13,
+      "public_proxy_observed_reject": 0.25,
+      "target_case_id": "generic-rights-rule-change"
+    }
+  ],
+  "ablation_summary": {
+    "artifact_id": "r6-evidence-report-current-009-ablation",
+    "current_best_non_feedback_method": "prior_anchored_interaction",
+    "no_interaction_error": 0.18,
+    "outcome_feedback_global_status": "blocked_same_case_only",
+    "outcome_feedback_update_error": 0.04,
+    "prior_anchored_beats_no_interaction": true,
+    "prior_anchored_error": 0.11
+  },
+  "acceptance_gates": {
+    "ablation_baselines_present": true,
+    "ccf_a_main_contribution_ready": false,
+    "ccfa_readiness_report_present": true,
+    "cross_case_transfer_protocol_present": true,
+    "decision_value_metrics_present": true,
+    "decision_value_passed": false,
+    "deterministic_replay_passed": true,
+    "false_alarm_reducible_by_threshold": false,
+    "followup_holdout_validation_present": true,
+    "global_update_accepted": false,
+    "in_condition_holdout_found": false,
+    "in_condition_holdout_ledger_present": true,
+    "mechanism_cap_same_family_cap_condition_covered": false,
+    "mechanism_cap_same_family_holdout_available": true,
+    "mechanism_cap_same_family_validation_passed": false,
+    "outcome_feedback_cross_case_transfer_available": false,
+    "outcome_feedback_transfer_beats_static_prior": false,
+    "product_evidence_cards_present": true,
+    "product_report_ingests_mechanism_cap": true,
+    "public_outcome_proxy_connected": true,
+    "risk_discovery_holdout_passed": false,
+    "risk_discovery_holdout_validation_present": true,
+    "risk_discovery_path_should_continue": true,
+    "risk_discovery_threshold_sweep_present": true,
+    "risk_discovery_value_report_present": true,
+    "runtime_update_guard_passed": false,
+    "second_public_outcome_proxy_connected": true,
+    "static_prior_role_reframed_as_foundation": true,
+    "third_public_outcome_proxy_connected": true,
+    "threshold_tuning_sufficient": false
+  },
+  "artifact_id": "r6-evidence-report-current-009",
+  "blocking_gaps": [
+    "global_update_acceptance_blocked",
+    "cross_case_validation_missing",
+    "ccf_a_readiness_failed"
+  ],
+  "case_matrix_summary": {
+    "artifact_id": "r6-evidence-report-current-009-case-matrix",
+    "case_count": 3,
+    "public_outcome_proxy_case_count": 2
+  },
+  "ccfa_readiness_summary": {
+    "artifact_id": "r6-evidence-report-current-009-ccfa-readiness-report",
+    "ccf_a_main_contribution_ready": false,
+    "failed_required_gate_count": 4,
+    "readiness_level": "L3_risk_discovery_framework_needs_validation",
+    "status": "ccf_a_readiness_evaluated"
+  },
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "This is public proxy evidence only; it is not field validation."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "cross_case_transfer_protocol_summary": {
+    "artifact_id": "r6-evidence-report-current-009-cross-case-transfer-protocol",
+    "global_update_accepted": false,
+    "mechanism_cap_l4_in_condition_transfer_passed": false,
+    "outcome_feedback_transfer_beats_prior_interaction": true,
+    "outcome_feedback_transfer_beats_static_prior": false,
+    "risk_discovery_value_path_open": true,
+    "runtime_update_guard_passed": false,
+    "status": "transfer_protocol_ready_global_update_blocked"
+  },
+  "decision_value_metrics_summary": {
+    "artifact_id": "r6-evidence-report-current-009-decision-value-metrics",
+    "decision_value_passed": false,
+    "false_alarm_rate": 0.667,
+    "static_prior_miss_recovery_rate": 1.0,
+    "status": "decision_value_partial_high_false_alarm",
+    "top_k_risk_hit_rate": 0.333
+  },
+  "evidence_answer": {
+    "current_decision": "continue_r6_with_constraints",
+    "reason": "Three public proxies are connected. One supports the prior-anchored interaction signal, two expose non-improvement boundaries, and global updates remain blocked. This is still worth continuing as risk discovery because the static prior is the simulation base, not the research opponent.",
+    "stoploss_triggered": false
+  },
+  "followup_holdout_validation_summary": {
+    "artifact_id": "r6-evidence-report-current-009-followup-holdout-validation",
+    "global_update_accepted": false,
+    "mechanism_cap_upgrade_status": "partial_pass_needs_in_condition_same_family_holdout",
+    "outcome_feedback_upgrade_status": "blocked_same_case_only",
+    "status": "holdout_validation_partial"
+  },
+  "in_condition_holdout_ledger_summary": {
+    "artifact_id": "r6-evidence-report-current-009-in-condition-holdout-ledger",
+    "global_update_data_gate_passed": false,
+    "in_condition_holdout_count": 0,
+    "status": "ledger_ready_no_in_condition_holdout_found"
+  },
+  "multi_proxy_summary": {
+    "conclusion": "mixed_public_proxy_evidence",
+    "prior_anchored_positive_count": 1,
+    "prior_anchored_regression_count": 2,
+    "public_proxy_count": 3,
+    "public_proxy_source_count": 2
+  },
+  "product_evidence_cards_summary": {
+    "artifact_id": "r6-evidence-report-current-009-product-evidence-cards",
+    "card_count": 5,
+    "static_narrative_fallback_allowed": false,
+    "status": "product_evidence_cards_ready"
+  },
+  "product_report_summary": {
+    "artifact_id": "r6-evidence-report-current-009-product-report",
+    "market_claim_status": "diagnostic_workflow_ready_not_accuracy_claim",
+    "mechanism_cap_status": "diagnostic_candidate_not_runtime_default",
+    "status": "report_ready"
+  },
+  "public_outcome_proxies": [
+    {
+      "artifact_id": "r6-evidence-report-current-009-public-outcome-proxy",
+      "mapping_target_response_option": "baseline_no_new_support",
+      "observed_reject_proxy": 0.47,
+      "source_artifact_id": "policy-reaction-htops-2506-public-ingestion-001",
+      "source_key": "htops_cost_pressure",
+      "source_name": "HTOPS/HPS public-use cost pressure",
+      "target_case_id": "generic-public-service-policy-change",
+      "usable_row_count": 7317
+    },
+    {
+      "artifact_id": "r6-evidence-report-current-009-public-outcome-proxy-anes-health",
+      "mapping_target_response_option": "private_insurance_plan",
+      "observed_reject_proxy": 0.33,
+      "source_artifact_id": "policy-reaction-anes-health-001-heldout",
+      "source_key": "anes_health_heldout",
+      "source_name": "ANES 2024 public-use health heldout",
+      "target_case_id": "generic-rights-rule-change",
+      "usable_row_count": 954
+    },
+    {
+      "artifact_id": "r6-evidence-report-current-009-public-outcome-proxy-anes-climate",
+      "mapping_target_response_option": "oppose_more_regulation_or_spending",
+      "observed_reject_proxy": 0.25,
+      "source_artifact_id": "policy-reaction-anes-climate-001-heldout",
+      "source_key": "anes_climate_heldout",
+      "source_name": "ANES 2024 public-use climate-energy regulation heldout",
+      "target_case_id": "generic-rights-rule-change",
+      "usable_row_count": 932
+    }
+  ],
+  "public_outcome_proxy": {
+    "artifact_id": "r6-evidence-report-current-009-public-outcome-proxy",
+    "observed_reject_proxy": 0.47,
+    "source_url": "https://www.census.gov/programs-surveys/household-pulse-survey/data/datasets.html",
+    "target_case_id": "generic-public-service-policy-change",
+    "usable_row_count": 7317
+  },
+  "remaining_gaps": [
+    "needs_decision_value_metric_to_pass",
+    "needs_field_outcome_validation",
+    "needs_formal_problem_and_theory_section",
+    "needs_holdout_case_for_feedback_update_acceptance",
+    "needs_holdout_case_for_mechanism_cap_acceptance",
+    "needs_in_condition_same_family_rights_rule_holdout",
+    "needs_independent_field_or_public_proxy_with_cap_condition",
+    "needs_lower_false_alarm_rate",
+    "needs_more_public_or_real_outcomes",
+    "needs_non_threshold_false_alarm_discriminator",
+    "needs_outcome_feedback_cross_case_transfer_validation",
+    "needs_positive_same_family_source_signal",
+    "needs_real_or_field_outcome_proxy",
+    "needs_risk_discovery_holdout_validation",
+    "needs_runtime_update_guard_before_default_enablement"
+  ],
+  "risk_discovery_holdout_validation_summary": {
+    "artifact_id": "r6-evidence-report-current-009-risk-discovery-holdout-validation",
+    "passed_trial_count": 0,
+    "risk_discovery_holdout_passed": false,
+    "same_family_trial_count": 2,
+    "status": "risk_discovery_holdout_failed_current_public_proxies"
+  },
+  "risk_discovery_threshold_sweep_summary": {
+    "artifact_id": "r6-evidence-report-current-009-risk-discovery-threshold-sweep",
+    "best_threshold": 0.0,
+    "false_alarm_reducible_by_threshold": false,
+    "passing_threshold_found": false,
+    "separating_threshold_found": false,
+    "status": "threshold_sweep_no_separating_rule",
+    "true_signal_false_alarm_delta_overlap": true
+  },
+  "risk_discovery_value_summary": {
+    "artifact_id": "r6-evidence-report-current-009-risk-discovery-value-report",
+    "decision_value_passed": false,
+    "r6_overall_worth_continuing": true,
+    "risk_discovery_holdout_passed": false,
+    "runtime_update_default_ready": false,
+    "static_prior_role": "foundation_not_opponent",
+    "status": "risk_discovery_value_partial_decision_metric_failed_holdout"
+  },
+  "risk_flags": [
+    "public_proxy_not_field_validation",
+    "same_case_feedback_not_global_acceptance",
+    "not_cross_domain_accuracy_evidence",
+    "mixed_public_proxy_evidence",
+    "mechanism_cap_not_runtime_default",
+    "partial_holdout_not_runtime_acceptance",
+    "static_prior_is_foundation_not_opponent",
+    "ccf_a_main_contribution_not_ready"
+  ],
+  "run_id": "r6-evidence-report-run",
+  "schema_version": "r6-evidence-report-v1",
+  "source_refs": [
+    "r6-evidence-report-current-009-public-outcome-proxy",
+    "r6-evidence-report-current-009-public-outcome-proxy-anes-health",
+    "r6-evidence-report-current-009-public-outcome-proxy-anes-climate",
+    "r6-evidence-report-current-009-case-matrix",
+    "r6-evidence-report-current-009-product-report",
+    "r6-evidence-report-current-009-mechanism-cap-ablation",
+    "r6-evidence-report-current-009-followup-holdout-validation",
+    "r6-evidence-report-current-009-cross-case-transfer-protocol",
+    "r6-evidence-report-current-009-in-condition-holdout-ledger",
+    "r6-evidence-report-current-009-product-evidence-cards",
+    "r6-evidence-report-current-009-decision-value-metrics",
+    "r6-evidence-report-current-009-risk-discovery-holdout-validation",
+    "r6-evidence-report-current-009-risk-discovery-threshold-sweep",
+    "r6-evidence-report-current-009-risk-discovery-value-report",
+    "r6-evidence-report-current-009-ccfa-readiness-report",
+    "r6-evidence-report-current-009-ablation",
+    "r6-evidence-report-current-009-ablation-anes-health",
+    "r6-evidence-report-current-009-ablation-anes-climate"
+  ],
+  "status": "public_proxy_evidence_ready"
+}

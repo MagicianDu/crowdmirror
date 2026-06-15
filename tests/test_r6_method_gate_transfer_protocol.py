@@ -138,6 +138,9 @@ def test_r6_risk_discovery_value_report_keeps_static_prior_as_foundation():
         "in_condition_holdout_bound": False,
         "decision_value_metric_present": True,
         "decision_value_metric_passed": False,
+        "threshold_sweep_present": True,
+        "threshold_tuning_sufficient": False,
+        "false_alarm_reducible_by_threshold": False,
         "risk_discovery_holdout_validation_present": True,
         "risk_discovery_holdout_passed": False,
         "field_outcome_validated": False,
@@ -150,6 +153,15 @@ def test_r6_risk_discovery_value_report_keeps_static_prior_as_foundation():
         "top_k_risk_hit_rate": 0.333,
         "false_alarm_rate": 0.667,
         "decision_regret_reduction": 1,
+    }
+    assert report["threshold_sweep_summary"] == {
+        "artifact_id": "r6-risk-discovery-value-test-threshold-sweep",
+        "status": "threshold_sweep_no_separating_rule",
+        "passing_threshold_found": False,
+        "separating_threshold_found": False,
+        "false_alarm_reducible_by_threshold": False,
+        "best_threshold": 0.0,
+        "true_signal_false_alarm_delta_overlap": True,
     }
     assert report["holdout_validation_summary"] == {
         "artifact_id": "r6-risk-discovery-value-test-risk-discovery-holdout-validation",
@@ -166,6 +178,7 @@ def test_r6_risk_discovery_value_report_keeps_static_prior_as_foundation():
     assert report["decision"]["r6_overall_worth_continuing"] is True
     assert report["decision"]["runtime_update_default_ready"] is False
     assert "needs_lower_false_alarm_rate" in report["blocking_gaps"]
+    assert "needs_non_threshold_false_alarm_discriminator" in report["blocking_gaps"]
     assert "needs_positive_same_family_source_signal" in report["blocking_gaps"]
     assert "needs_runtime_update_guard_before_default_enablement" in report[
         "blocking_gaps"
@@ -313,6 +326,11 @@ def test_r6_new_method_gate_clis_write_artifacts(tmp_path):
             "experiments/r6_risk_discovery_holdout_validation.py",
             "r6-risk-discovery-holdout-validation-cli",
             "r6-risk-discovery-holdout-validation-v1",
+        ),
+        (
+            "experiments/r6_risk_discovery_threshold_sweep.py",
+            "r6-risk-discovery-threshold-sweep-cli",
+            "r6-risk-discovery-threshold-sweep-v1",
         ),
     ]
     for script, artifact_id, schema_version in commands:

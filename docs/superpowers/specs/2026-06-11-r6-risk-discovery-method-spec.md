@@ -94,6 +94,10 @@ candidate_update = f(error_attribution, failure_boundary)
    - 输出 `r6-risk-discovery-holdout-validation-v1`
    - 冻结 source case 的风险发现规则，在 same-family holdout 上验证
 
+3. `r6_risk_discovery_threshold_sweep.py`
+   - 输出 `r6-risk-discovery-threshold-sweep-v1`
+   - 扫描 `interaction_delta_threshold`，判断是否能靠阈值调优降低 false alarm
+
 总链路 artifact：
 
 - `r6_risk_discovery_value_report.py`
@@ -111,12 +115,14 @@ candidate_update = f(error_attribution, failure_boundary)
 | `false_alarm_rate` | 0.667 | ANES health / climate 暴露过度风险放大 |
 | `decision_regret_reduction` | 1 | 相对静态先验，交互层减少了一个漏报高风险 |
 | `risk_discovery_holdout_passed` | false | same-family ANES health -> climate / climate -> health 没有通过 |
+| `threshold_tuning_sufficient` | false | HTOPS 真风险和 ANES 误报的 `interaction_delta_vs_static` 都是 0.07，阈值无法分离 |
 
 当前状态：
 
 ```text
 decision_value_partial_high_false_alarm
 risk_discovery_holdout_failed_current_public_proxies
+threshold_sweep_no_separating_rule
 ```
 
 ## 5. 当前 Claim Boundary
@@ -126,6 +132,7 @@ risk_discovery_holdout_failed_current_public_proxies
 - R6 已经有可计算的风险发现价值指标；
 - R6 在 HTOPS 上发现了一个静态先验漏报的风险；
 - R6 能把 ANES health / climate 的交互过度放大识别为 false alarm；
+- R6 已证明当前 false alarm 不是简单调 `interaction_delta_threshold` 能解决的问题；
 - R6 能阻断未通过 holdout 的候选更新。
 
 不能宣称：
@@ -148,7 +155,10 @@ R6 达到 CCF-A 主贡献前，至少需要关闭四个 gap：
 
 ## 7. 下一步实验要求
 
-下一步不应继续泛泛增加 proxy，而应寻找或构造满足以下条件的 holdout：
+下一步不应继续泛泛增加 proxy，也不应只调阈值。当前 threshold sweep 已显示 true signal
+和 false alarm 共享相同 `interaction_delta_vs_static=0.07`，因此需要引入非阈值的
+false-alarm discriminator，例如 case-level features、segment-level uncertainty、机制触发条件或
+in-condition holdout。新增 holdout 应满足以下条件：
 
 1. same-family；
 2. source case 有 positive risk-discovery signal；

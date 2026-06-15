@@ -26,6 +26,9 @@ from experiments.r6_product_evidence_cards import build_r6_product_evidence_card
 from experiments.r6_risk_discovery_holdout_validation import (
     build_r6_risk_discovery_holdout_validation,
 )
+from experiments.r6_risk_discovery_threshold_sweep import (
+    build_r6_risk_discovery_threshold_sweep,
+)
 
 
 R6_RISK_DISCOVERY_VALUE_REPORT_SCHEMA_VERSION = "r6-risk-discovery-value-report-v1"
@@ -39,6 +42,7 @@ def build_r6_risk_discovery_value_report(
     holdout_ledger: dict[str, Any] | None = None,
     product_evidence_cards: dict[str, Any] | None = None,
     decision_value_metrics: dict[str, Any] | None = None,
+    risk_discovery_threshold_sweep: dict[str, Any] | None = None,
     risk_discovery_holdout_validation: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
@@ -64,6 +68,13 @@ def build_r6_risk_discovery_value_report(
         artifact_id=f"{artifact_id}-decision-value-metrics",
         run_id=run_id,
     )
+    risk_discovery_threshold_sweep = (
+        risk_discovery_threshold_sweep
+        or build_r6_risk_discovery_threshold_sweep(
+            artifact_id=f"{artifact_id}-threshold-sweep",
+            run_id=run_id,
+        )
+    )
     risk_discovery_holdout_validation = (
         risk_discovery_holdout_validation
         or build_r6_risk_discovery_holdout_validation(
@@ -88,6 +99,13 @@ def build_r6_risk_discovery_value_report(
         ],
         "decision_value_metric_present": True,
         "decision_value_metric_passed": decision_value_metrics["decision_value_passed"],
+        "threshold_sweep_present": True,
+        "threshold_tuning_sufficient": risk_discovery_threshold_sweep["decision"][
+            "threshold_tuning_sufficient"
+        ],
+        "false_alarm_reducible_by_threshold": risk_discovery_threshold_sweep[
+            "summary"
+        ]["false_alarm_reducible_by_threshold"],
         "risk_discovery_holdout_validation_present": True,
         "risk_discovery_holdout_passed": risk_discovery_holdout_validation[
             "acceptance_gates"
@@ -130,6 +148,25 @@ def build_r6_risk_discovery_value_report(
                 "decision_regret_reduction"
             ],
         },
+        "threshold_sweep_summary": {
+            "artifact_id": risk_discovery_threshold_sweep["artifact_id"],
+            "status": risk_discovery_threshold_sweep["status"],
+            "passing_threshold_found": risk_discovery_threshold_sweep[
+                "acceptance_gates"
+            ]["passing_threshold_found"],
+            "separating_threshold_found": risk_discovery_threshold_sweep[
+                "acceptance_gates"
+            ]["separating_threshold_found"],
+            "false_alarm_reducible_by_threshold": risk_discovery_threshold_sweep[
+                "summary"
+            ]["false_alarm_reducible_by_threshold"],
+            "best_threshold": risk_discovery_threshold_sweep["summary"][
+                "best_threshold"
+            ],
+            "true_signal_false_alarm_delta_overlap": risk_discovery_threshold_sweep[
+                "summary"
+            ]["true_signal_false_alarm_delta_overlap"],
+        },
         "holdout_validation_summary": {
             "artifact_id": risk_discovery_holdout_validation["artifact_id"],
             "status": risk_discovery_holdout_validation["status"],
@@ -171,6 +208,7 @@ def build_r6_risk_discovery_value_report(
         ],
         "blocking_gaps": _blocking_gaps(
             decision_value_metrics=decision_value_metrics,
+            risk_discovery_threshold_sweep=risk_discovery_threshold_sweep,
             risk_discovery_holdout_validation=risk_discovery_holdout_validation,
         ),
         "source_refs": [
@@ -178,6 +216,7 @@ def build_r6_risk_discovery_value_report(
             holdout_ledger["artifact_id"],
             product_evidence_cards["artifact_id"],
             decision_value_metrics["artifact_id"],
+            risk_discovery_threshold_sweep["artifact_id"],
             risk_discovery_holdout_validation["artifact_id"],
         ],
         "claim_boundaries": [
@@ -189,6 +228,7 @@ def build_r6_risk_discovery_value_report(
             "static_prior_is_foundation_not_opponent",
             "risk_discovery_holdout_validation_failed",
             "decision_value_metric_partial",
+            "threshold_tuning_insufficient",
             "field_validation_missing",
             "runtime_update_guard_not_passed",
         ],
@@ -211,6 +251,7 @@ def _has_card(report: dict[str, Any], card_id: str) -> bool:
 def _blocking_gaps(
     *,
     decision_value_metrics: dict[str, Any],
+    risk_discovery_threshold_sweep: dict[str, Any],
     risk_discovery_holdout_validation: dict[str, Any],
 ) -> list[str]:
     gaps = [
@@ -218,6 +259,7 @@ def _blocking_gaps(
         "needs_runtime_update_guard_before_default_enablement",
     ]
     gaps.extend(decision_value_metrics["blocking_gaps"])
+    gaps.extend(risk_discovery_threshold_sweep["blocking_gaps"])
     gaps.extend(risk_discovery_holdout_validation["blocking_gaps"])
     if not decision_value_metrics["decision_value_passed"]:
         gaps.append("needs_decision_value_metric_to_pass")

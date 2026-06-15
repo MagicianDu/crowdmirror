@@ -107,12 +107,17 @@
 
 - `experiments/r6_decision_value_metrics.py`
 - `experiments/r6_risk_discovery_holdout_validation.py`
+- `experiments/r6_risk_discovery_threshold_sweep.py`
 - `docs/superpowers/specs/2026-06-11-r6-risk-discovery-method-spec.md`
 - `experiments/results/r6_decision_value_metrics/r6-decision-value-metrics-current-001.json`
 - `experiments/results/r6_risk_discovery_holdout_validation/r6-risk-discovery-holdout-validation-current-001.json`
+- `experiments/results/r6_risk_discovery_threshold_sweep/r6-risk-discovery-threshold-sweep-current-001.json`
 - `experiments/results/r6_risk_discovery_value_report/r6-risk-discovery-value-report-current-002.json`
+- `experiments/results/r6_risk_discovery_value_report/r6-risk-discovery-value-report-current-003.json`
 - `experiments/results/r6_ccfa_readiness_report/r6-ccfa-readiness-report-current-003.json`
+- `experiments/results/r6_ccfa_readiness_report/r6-ccfa-readiness-report-current-004.json`
 - `experiments/results/r6_evidence_report/r6-evidence-report-current-008.json`
+- `experiments/results/r6_evidence_report/r6-evidence-report-current-009.json`
 
 ## 已确认结论
 
@@ -149,6 +154,7 @@
 31. decision-value metrics 已实现，当前结论是 `decision_value_partial_high_false_alarm`：`static_prior_miss_recovery_rate=1.0`，说明 HTOPS 上存在一个静态先验漏报被交互层恢复；但 `top_k_risk_hit_rate=0.333`、`false_alarm_rate=0.667`，说明 ANES health / climate 暴露明显 false alarm。
 32. risk-discovery holdout validation 已实现，当前结论是 `risk_discovery_holdout_failed_current_public_proxies`：same-family ANES health -> climate 与 climate -> health 两个 trial 都没有通过，`passed_trial_count=0`。
 33. R6 当前不是失败，但也不是方法通过；更准确是“已从指标缺失推进到指标可计算，且当前指标显示 partial positive + high false alarm + holdout failed”。
+34. risk-discovery threshold sweep 已实现，当前结论是 `threshold_sweep_no_separating_rule`：HTOPS 真风险和 ANES false alarm 的 `interaction_delta_vs_static` 都是 `0.07`，所以单纯调 `interaction_delta_threshold` 不能降低误报同时保留静态先验漏报恢复。下一步必须做非阈值 false-alarm discriminator 或寻找 in-condition holdout。
 
 ## 可复用资产
 
@@ -184,7 +190,7 @@ R6 开发时必须只 stage 本轮明确修改的文件。
 
 1. Research 下一步只围绕 risk-discovery CCF-A readiness 的剩余 gap 推进：formal problem、decision-value metric 通过、risk-discovery holdout validation 通过、field/real outcome validation。
 2. 数据侧优先寻找或构造 positive same-family source signal + independent holdout，降低当前 `false_alarm_rate=0.667`，而不是继续泛泛增加 proxy。
-3. 方法侧下一步要降低 false alarm：调整 interaction risk flag、source signal 条件或 segment/case mapping；但任何改动必须重新跑 decision-value 和 holdout validation。
+3. 方法侧下一步要降低 false alarm：由于 threshold sweep 已显示阈值无法分离当前真风险和误报，应优先引入 case-level features、segment-level uncertainty、机制触发条件或 in-condition holdout，而不是继续调 `interaction_delta_threshold`。
 4. Product 侧下一步接入 `decision_value_metrics_summary` 与 `risk_discovery_holdout_validation_summary`，展示“发现了一个静态先验漏报，但当前 false alarm 和 holdout 仍未过”的边界。
 
 ## 验收边界

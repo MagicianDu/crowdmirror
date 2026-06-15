@@ -64,6 +64,7 @@ R6 必须同时满足：
 3. `Product evidence card contract`
 4. `decision-value metrics`
 5. `risk-discovery holdout validation`
+6. `risk-discovery threshold sweep / false-alarm discriminator diagnosis`
 
 不再把“继续增加 public proxy 数量”作为默认目标；只有当新增数据能触发 acceptance gate，才进入数据接入。
 
@@ -90,3 +91,4 @@ R6 必须同时满足：
 - same-case outcome feedback improvement 不得直接包装成可迁移更新。
 - `beat static prior` 只作为 runtime update guard 使用，不作为 R6 整体研究目标。
 - `decision-value metric` 已实现不等于 R6 通过；必须同时报告 hit rate、false alarm、regret reduction 和 holdout validation。
+- `interaction_delta_threshold` 调参不足以解释当前 false alarm；若 threshold sweep 显示真风险和误报共享相同 delta，下一步必须做非阈值 discriminator 或寻找 in-condition holdout。

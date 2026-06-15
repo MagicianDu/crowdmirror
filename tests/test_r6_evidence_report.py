@@ -204,6 +204,9 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "decision_value_passed": False,
         "risk_discovery_holdout_validation_present": True,
         "risk_discovery_holdout_passed": False,
+        "risk_discovery_threshold_sweep_present": True,
+        "threshold_tuning_sufficient": False,
+        "false_alarm_reducible_by_threshold": False,
         "risk_discovery_value_report_present": True,
         "static_prior_role_reframed_as_foundation": True,
         "risk_discovery_path_should_continue": True,
@@ -252,6 +255,15 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "static_prior_miss_recovery_rate": 1.0,
         "top_k_risk_hit_rate": 0.333,
         "false_alarm_rate": 0.667,
+    }
+    assert report["risk_discovery_threshold_sweep_summary"] == {
+        "artifact_id": "r6-evidence-report-test-risk-discovery-threshold-sweep",
+        "status": "threshold_sweep_no_separating_rule",
+        "passing_threshold_found": False,
+        "separating_threshold_found": False,
+        "false_alarm_reducible_by_threshold": False,
+        "best_threshold": 0.0,
+        "true_signal_false_alarm_delta_overlap": True,
     }
     assert report["risk_discovery_holdout_validation_summary"] == {
         "artifact_id": "r6-evidence-report-test-risk-discovery-holdout-validation",
@@ -303,6 +315,9 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
     assert "needs_risk_discovery_holdout_validation" in report["remaining_gaps"]
     assert "needs_decision_value_metric_to_pass" in report["remaining_gaps"]
     assert "needs_lower_false_alarm_rate" in report["remaining_gaps"]
+    assert "needs_non_threshold_false_alarm_discriminator" in report[
+        "remaining_gaps"
+    ]
     assert "needs_positive_same_family_source_signal" in report["remaining_gaps"]
     assert "needs_field_outcome_validation" in report["remaining_gaps"]
     assert "same_case_feedback_not_global_acceptance" in report["risk_flags"]
