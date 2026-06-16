@@ -44,8 +44,8 @@
       "remaining_gaps"
     ],
     "source_artifact_ids": [
-      "r6-product-decision-report-current-001-story-package-evidence-report",
-      "r6-product-decision-report-current-001-story-package-gap-closure-report"
+      "r6-evidence-report-current-014",
+      "r6-gap-closure-report-current-001"
     ]
   },
   "report_contract": {
@@ -56,41 +56,49 @@
   "run_id": "r6-product-first-current-001",
   "schema_version": "r6-product-decision-report-v1",
   "source_refs": [
-    "r6-product-decision-report-current-001-story-package",
-    "r6-product-decision-report-current-001-story-package-scenario-intake",
-    "r6-product-decision-report-current-001-story-package-evidence-cards",
-    "r6-product-decision-report-current-001-story-package-evidence-report",
-    "r6-product-decision-report-current-001-story-package-gap-closure-report",
-    "r6-product-decision-report-current-001-story-package-evidence-cards-product-report",
-    "r6-product-decision-report-current-001-story-package-evidence-cards-transfer-protocol",
-    "r6-product-decision-report-current-001-story-package-evidence-cards-holdout-ledger",
-    "r6-product-decision-report-current-001-story-package-evidence-cards-mechanism-research-readiness-report",
-    "r6-product-decision-report-current-001-story-package-evidence-report-public-outcome-proxy",
-    "r6-product-decision-report-current-001-story-package-evidence-report-public-outcome-proxy-anes-health",
-    "r6-product-decision-report-current-001-story-package-evidence-report-public-outcome-proxy-anes-climate",
-    "r6-product-decision-report-current-001-story-package-evidence-report-case-matrix",
-    "r6-product-decision-report-current-001-story-package-evidence-report-product-report",
-    "r6-product-decision-report-current-001-story-package-evidence-report-mechanism-cap-ablation",
-    "r6-product-decision-report-current-001-story-package-evidence-report-followup-holdout-validation",
-    "r6-product-decision-report-current-001-story-package-evidence-report-cross-case-transfer-protocol",
-    "r6-product-decision-report-current-001-story-package-evidence-report-in-condition-holdout-ledger",
-    "r6-product-decision-report-current-001-story-package-evidence-report-mechanism-research-readiness-report",
-    "r6-product-decision-report-current-001-story-package-evidence-report-product-evidence-cards",
-    "r6-product-decision-report-current-001-story-package-evidence-report-decision-value-metrics",
-    "r6-product-decision-report-current-001-story-package-evidence-report-risk-discovery-holdout-validation",
-    "r6-product-decision-report-current-001-story-package-evidence-report-risk-discovery-threshold-sweep",
-    "r6-product-decision-report-current-001-story-package-evidence-report-false-alarm-discriminator",
-    "r6-product-decision-report-current-001-story-package-evidence-report-interaction-signal-validity",
-    "r6-product-decision-report-current-001-story-package-evidence-report-interaction-signal-validity-holdout-validation",
-    "r6-product-decision-report-current-001-story-package-evidence-report-risk-discovery-value-report",
-    "r6-product-decision-report-current-001-story-package-evidence-report-ccfa-readiness-report",
-    "r6-product-decision-report-current-001-story-package-evidence-report-gap-closure-report",
-    "r6-product-decision-report-current-001-story-package-evidence-report-ablation",
-    "r6-product-decision-report-current-001-story-package-evidence-report-ablation-anes-health",
-    "r6-product-decision-report-current-001-story-package-evidence-report-ablation-anes-climate",
-    "r6-product-decision-report-current-001-story-package-gap-closure-report-theory-framework",
-    "r6-product-decision-report-current-001-story-package-gap-closure-report-outcome-holdout-registry",
-    "r6-product-decision-report-current-001-story-package-gap-closure-report-behavioral-update-operator-v2"
+    "r6-product-story-package-current-001",
+    "r6-product-scenario-intake-current-001",
+    "r6-product-evidence-cards-current-003",
+    "r6-evidence-report-current-014",
+    "r6-gap-closure-report-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r6-product-scenario-intake-current-001",
+      "path": "experiments/results/r6_product_scenario_intake/r6-product-scenario-intake-current-001.json"
+    },
+    {
+      "artifact_id": "r6-product-report-current-003",
+      "path": "experiments/results/r6_product_report/r6-product-report-current-003.json"
+    },
+    {
+      "artifact_id": "r6-cross-case-transfer-protocol-current-002",
+      "path": "experiments/results/r6_cross_case_transfer_protocol/r6-cross-case-transfer-protocol-current-002.json"
+    },
+    {
+      "artifact_id": "r6-in-condition-holdout-ledger-current-001",
+      "path": "experiments/results/r6_in_condition_holdout_ledger/r6-in-condition-holdout-ledger-current-001.json"
+    },
+    {
+      "artifact_id": "r6-mechanism-research-readiness-report-current-001",
+      "path": "experiments/results/r6_mechanism_research_readiness_report/r6-mechanism-research-readiness-report-current-001.json"
+    },
+    {
+      "artifact_id": "r6-gap-closure-report-current-001",
+      "path": "experiments/results/r6_gap_closure_report/r6-gap-closure-report-current-001.json"
+    },
+    {
+      "artifact_id": "r6-evidence-report-current-014",
+      "path": "experiments/results/r6_evidence_report/r6-evidence-report-current-014.json"
+    },
+    {
+      "artifact_id": "r6-product-evidence-cards-current-003",
+      "path": "experiments/results/r6_product_evidence_cards/r6-product-evidence-cards-current-003.json"
+    },
+    {
+      "artifact_id": "r6-product-story-package-current-001",
+      "path": "experiments/results/r6_product_story_package/r6-product-story-package-current-001.json"
+    }
   ],
   "status": "decision_report_ready_guarded"
 }

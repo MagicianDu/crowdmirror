@@ -29,8 +29,9 @@ def test_r6_product_decision_report_exports_customer_readable_guarded_report():
     assert "field validation 已完成" in report["blocked_claims"]
     assert "runtime default 可以开启" in report["blocked_claims"]
     assert report["next_measurement_plan"]
-    assert "r6-product-decision-report-test-story-package" in report["source_refs"]
+    assert "r6-product-story-package-current-001" in report["source_refs"]
     assert len(report["source_refs"]) > 1
+    _assert_report_sources_resolvable(report)
     json.dumps(report, allow_nan=False)
 
 
@@ -55,6 +56,13 @@ def test_r6_product_decision_report_accepts_valid_story_package_and_extends_sour
         "r6-product-decision-report-test-story-package",
         "r6-story-source-1",
         "r6-story-source-2",
+    ]
+    assert report["source_registry"] == [
+        *story_package["source_registry"],
+        {
+            "artifact_id": "r6-product-decision-report-test-story-package",
+            "path": "direct_input:story_package",
+        },
     ]
 
 
@@ -213,10 +221,9 @@ def test_r6_product_decision_report_cli_writes_artifact_and_stdout_json(tmp_path
     assert artifact["artifact_id"] == "r6-product-decision-report-cli-test"
     assert artifact["report_contract"]["source_backed_only"] is True
     assert artifact["report_contract"]["static_narrative_fallback_allowed"] is False
-    assert "r6-product-decision-report-cli-test-story-package" in artifact[
-        "source_refs"
-    ]
+    assert "r6-product-story-package-current-001" in artifact["source_refs"]
     assert len(artifact["source_refs"]) > 1
+    _assert_report_sources_resolvable(artifact)
     json.dumps(artifact, allow_nan=False)
 
 
@@ -245,4 +252,25 @@ def _valid_story_package():
             },
         },
         "source_refs": ["r6-story-source-1", "r6-story-source-2"],
+        "source_registry": [
+            {
+                "artifact_id": "r6-story-source-1",
+                "path": "experiments/results/story-source-1.json",
+            },
+            {
+                "artifact_id": "r6-story-source-2",
+                "path": "experiments/results/story-source-2.json",
+            },
+        ],
     }
+
+
+def _assert_report_sources_resolvable(report):
+    registry_ids = {entry["artifact_id"] for entry in report["source_registry"]}
+    direct_ids = {report["artifact_id"]}
+    unresolved = {
+        source_ref
+        for source_ref in report["source_refs"]
+        if source_ref not in registry_ids and source_ref not in direct_ids
+    }
+    assert unresolved == set()

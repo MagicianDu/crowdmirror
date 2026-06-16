@@ -19,14 +19,24 @@ from experiments.r6_evidence_report import (
     R6_EVIDENCE_REPORT_SCHEMA_VERSION,
     build_r6_evidence_report,
 )
+from experiments.r6_cross_case_transfer_protocol import (
+    build_r6_cross_case_transfer_protocol,
+)
 from experiments.r6_gap_closure_report import (
     R6_GAP_CLOSURE_REPORT_SCHEMA_VERSION,
     build_r6_gap_closure_report,
+)
+from experiments.r6_in_condition_holdout_ledger import (
+    build_r6_in_condition_holdout_ledger,
+)
+from experiments.r6_mechanism_research_readiness_report import (
+    build_r6_mechanism_research_readiness_report,
 )
 from experiments.r6_product_evidence_cards import (
     R6_PRODUCT_EVIDENCE_CARDS_SCHEMA_VERSION,
     build_r6_product_evidence_cards,
 )
+from experiments.r6_product_report import build_r6_product_report
 from experiments.r6_product_scenario_intake import (
     R6_PRODUCT_SCENARIO_INTAKE_SCHEMA_VERSION,
     build_r6_product_scenario_intake,
@@ -49,6 +59,58 @@ R6_PRODUCT_STORY_DANGEROUS_CLAIM_STATUSES = {
     "runtime_default_ready",
     "ccf_a_ready",
 }
+R6_PRODUCT_STORY_CANONICAL_SOURCE_REGISTRY = [
+    {
+        "artifact_id": "r6-product-scenario-intake-current-001",
+        "path": (
+            "experiments/results/r6_product_scenario_intake/"
+            "r6-product-scenario-intake-current-001.json"
+        ),
+    },
+    {
+        "artifact_id": "r6-product-report-current-003",
+        "path": "experiments/results/r6_product_report/r6-product-report-current-003.json",
+    },
+    {
+        "artifact_id": "r6-cross-case-transfer-protocol-current-002",
+        "path": (
+            "experiments/results/r6_cross_case_transfer_protocol/"
+            "r6-cross-case-transfer-protocol-current-002.json"
+        ),
+    },
+    {
+        "artifact_id": "r6-in-condition-holdout-ledger-current-001",
+        "path": (
+            "experiments/results/r6_in_condition_holdout_ledger/"
+            "r6-in-condition-holdout-ledger-current-001.json"
+        ),
+    },
+    {
+        "artifact_id": "r6-mechanism-research-readiness-report-current-001",
+        "path": (
+            "experiments/results/r6_mechanism_research_readiness_report/"
+            "r6-mechanism-research-readiness-report-current-001.json"
+        ),
+    },
+    {
+        "artifact_id": "r6-gap-closure-report-current-001",
+        "path": (
+            "experiments/results/r6_gap_closure_report/"
+            "r6-gap-closure-report-current-001.json"
+        ),
+    },
+    {
+        "artifact_id": "r6-evidence-report-current-014",
+        "path": "experiments/results/r6_evidence_report/r6-evidence-report-current-014.json",
+    },
+    {
+        "artifact_id": "r6-product-evidence-cards-current-003",
+        "path": (
+            "experiments/results/r6_product_evidence_cards/"
+            "r6-product-evidence-cards-current-003.json"
+        ),
+    },
+]
 
 
 def build_r6_product_story_package(
@@ -61,24 +123,44 @@ def build_r6_product_story_package(
     run_id = non_empty_string(run_id, field="run_id")
     if scenario_intake is None:
         scenario_intake = build_r6_product_scenario_intake(
-            artifact_id=f"{artifact_id}-scenario-intake",
+            artifact_id="r6-product-scenario-intake-current-001",
             run_id=run_id,
         )
     scenario_intake_artifact_id = _validate_scenario_intake(scenario_intake)
 
     gap_closure_report = build_r6_gap_closure_report(
-        artifact_id=f"{artifact_id}-gap-closure-report",
+        artifact_id="r6-gap-closure-report-current-001",
         run_id=run_id,
     )
     gap_closure_artifact_id = _validate_gap_closure_report(gap_closure_report)
-    evidence_cards = build_r6_product_evidence_cards(
-        artifact_id=f"{artifact_id}-evidence-cards",
+    product_report = build_r6_product_report(
+        artifact_id="r6-product-report-current-003",
         run_id=run_id,
+    )
+    transfer_protocol = build_r6_cross_case_transfer_protocol(
+        artifact_id="r6-cross-case-transfer-protocol-current-002",
+        run_id=run_id,
+    )
+    holdout_ledger = build_r6_in_condition_holdout_ledger(
+        artifact_id="r6-in-condition-holdout-ledger-current-001",
+        run_id=run_id,
+    )
+    mechanism_research_readiness_report = build_r6_mechanism_research_readiness_report(
+        artifact_id="r6-mechanism-research-readiness-report-current-001",
+        run_id=run_id,
+    )
+    evidence_cards = build_r6_product_evidence_cards(
+        artifact_id="r6-product-evidence-cards-current-003",
+        run_id=run_id,
+        product_report=product_report,
+        transfer_protocol=transfer_protocol,
+        holdout_ledger=holdout_ledger,
+        mechanism_research_readiness_report=mechanism_research_readiness_report,
         gap_closure_report=gap_closure_report,
     )
     evidence_cards_artifact_id = _validate_product_evidence_cards(evidence_cards)
     evidence_report = build_r6_evidence_report(
-        artifact_id=f"{artifact_id}-evidence-report",
+        artifact_id="r6-evidence-report-current-014",
         run_id=run_id,
     )
     evidence_report_artifact_id = _validate_evidence_report(evidence_report)
@@ -109,6 +191,7 @@ def build_r6_product_story_package(
         "evidence_card_ids": evidence_card_ids,
         "customer_visible_claim_cards": _customer_visible_claim_cards(cards),
         "display_field_paths": display_field_paths,
+        "source_registry": _source_registry(scenario_intake_artifact_id),
         "ui_contract": {
             "consume_only_artifact_fields": True,
             "static_narrative_fallback_allowed": False,
@@ -478,10 +561,20 @@ def _source_refs(
         artifact_id = artifact.get("artifact_id")
         if isinstance(artifact_id, str):
             refs.append(artifact_id)
-        source_ref_list = artifact.get("source_refs")
-        if isinstance(source_ref_list, list):
-            refs.extend(ref for ref in source_ref_list if isinstance(ref, str))
     return _unique_strings(refs)
+
+
+def _source_registry(scenario_intake_artifact_id: str) -> list[dict[str, str]]:
+    registry = [dict(entry) for entry in R6_PRODUCT_STORY_CANONICAL_SOURCE_REGISTRY]
+    registry_ids = {entry["artifact_id"] for entry in registry}
+    if scenario_intake_artifact_id not in registry_ids:
+        registry.append(
+            {
+                "artifact_id": scenario_intake_artifact_id,
+                "path": "direct_input:scenario_intake",
+            }
+        )
+    return registry
 
 
 def _unique_strings(values: list[str]) -> list[str]:

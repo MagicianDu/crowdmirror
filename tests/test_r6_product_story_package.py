@@ -9,7 +9,10 @@ from experiments import r6_product_story_package as story_package
 from experiments.r6_gap_closure_report import build_r6_gap_closure_report
 from experiments.r6_product_evidence_cards import build_r6_product_evidence_cards
 from experiments.r6_product_scenario_intake import build_r6_product_scenario_intake
-from experiments.r6_product_story_package import build_r6_product_story_package
+from experiments.r6_product_story_package import (
+    R6_PRODUCT_STORY_CANONICAL_SOURCE_REGISTRY,
+    build_r6_product_story_package,
+)
 
 
 def test_r6_product_story_package_is_artifact_backed_and_no_static_fallback():
@@ -38,6 +41,9 @@ def test_r6_product_story_package_is_artifact_backed_and_no_static_fallback():
     assert package["ui_contract"]["all_customer_visible_claims_require_source_artifact"] is True
     assert "r6-gap-closure-status" in package["evidence_card_ids"]
     assert package["source_refs"]
+    for entry in R6_PRODUCT_STORY_CANONICAL_SOURCE_REGISTRY:
+        assert entry in package["source_registry"]
+    _assert_package_sources_resolvable(package)
     json.dumps(package, allow_nan=False)
 
 
@@ -131,15 +137,60 @@ def test_r6_product_story_package_cli_writes_artifact_and_stdout_json(tmp_path):
     assert artifact["artifact_id"] == "r6-product-story-package-cli-test"
     assert artifact["ui_contract"]["static_narrative_fallback_allowed"] is False
     assert "r6-gap-closure-status" in artifact["evidence_card_ids"]
+    _assert_package_sources_resolvable(artifact)
     json.dumps(artifact, allow_nan=False)
 
 
+def test_r6_product_story_package_default_sources_use_canonical_registry():
+    package = build_r6_product_story_package(
+        artifact_id="r6-product-story-package-test",
+        run_id="r6-product-first-run",
+    )
+
+    registry_ids = {entry["artifact_id"] for entry in package["source_registry"]}
+    assert "r6-product-report-current-003" in registry_ids
+    assert "r6-product-evidence-cards-current-003" in registry_ids
+    assert "r6-evidence-report-current-014" in registry_ids
+    assert "r6-product-story-package-test-evidence-cards-product-report" not in (
+        package["source_refs"]
+    )
+    _assert_package_sources_resolvable(package)
+
+
+def test_r6_product_current_story_and_decision_artifact_sources_are_resolvable():
+    repo_root = Path(__file__).resolve().parents[1]
+    story_artifact = json.loads(
+        (
+            repo_root
+            / "experiments/results/r6_product_story_package/"
+            / "r6-product-story-package-current-001.json"
+        ).read_text()
+    )
+    decision_artifact = json.loads(
+        (
+            repo_root
+            / "experiments/results/r6_product_decision_report/"
+            / "r6-product-decision-report-current-001.json"
+        ).read_text()
+    )
+
+    _assert_package_sources_resolvable(story_artifact)
+    _assert_report_sources_resolvable(decision_artifact)
+
+
 def _patch_cards(monkeypatch, *, card_mutation):
-    def fake_product_evidence_cards(*, artifact_id, run_id, gap_closure_report):
+    def fake_product_evidence_cards(
+        *,
+        artifact_id,
+        run_id,
+        gap_closure_report,
+        **kwargs,
+    ):
         report = build_r6_product_evidence_cards(
             artifact_id=artifact_id,
             run_id=run_id,
             gap_closure_report=gap_closure_report,
+            **kwargs,
         )
         cards = [dict(card) for card in report["cards"]]
         cards[0] = {**cards[0], **card_mutation}
@@ -150,3 +201,35 @@ def _patch_cards(monkeypatch, *, card_mutation):
         "build_r6_product_evidence_cards",
         fake_product_evidence_cards,
     )
+
+
+def _assert_package_sources_resolvable(package):
+    registry_ids = {entry["artifact_id"] for entry in package["source_registry"]}
+    direct_ids = {
+        package["artifact_id"],
+        *package["artifact_refs"].values(),
+    }
+    unresolved = set()
+    for source_ref in package["source_refs"]:
+        if source_ref not in registry_ids and source_ref not in direct_ids:
+            unresolved.add(source_ref)
+    for section in package["section_contracts"]:
+        for source_ref in section["source_artifact_ids"]:
+            if source_ref not in registry_ids and source_ref not in direct_ids:
+                unresolved.add(source_ref)
+    for card in package["customer_visible_claim_cards"]:
+        for source_ref in card["source_artifact_ids"]:
+            if source_ref not in registry_ids and source_ref not in direct_ids:
+                unresolved.add(source_ref)
+    assert unresolved == set()
+
+
+def _assert_report_sources_resolvable(report):
+    registry_ids = {entry["artifact_id"] for entry in report["source_registry"]}
+    direct_ids = {report["artifact_id"]}
+    unresolved = {
+        source_ref
+        for source_ref in report["source_refs"]
+        if source_ref not in registry_ids and source_ref not in direct_ids
+    }
+    assert unresolved == set()

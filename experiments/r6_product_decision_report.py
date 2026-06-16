@@ -30,6 +30,11 @@ R6_PRODUCT_DECISION_REPORT_CUSTOMER_SECTIONS = [
     "what_is_blocked",
     "what_to_measure_next",
 ]
+R6_PRODUCT_DECISION_DEFAULT_STORY_ARTIFACT_ID = "r6-product-story-package-current-001"
+R6_PRODUCT_DECISION_DEFAULT_STORY_ARTIFACT_PATH = (
+    "experiments/results/r6_product_story_package/"
+    "r6-product-story-package-current-001.json"
+)
 
 
 def build_r6_product_decision_report(
@@ -40,7 +45,11 @@ def build_r6_product_decision_report(
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
-    story_artifact_id = f"{artifact_id}-story-package"
+    story_artifact_id = (
+        R6_PRODUCT_DECISION_DEFAULT_STORY_ARTIFACT_ID
+        if story_package is None
+        else f"{artifact_id}-story-package"
+    )
     if story_package is None:
         story_package = build_r6_product_story_package(
             artifact_id=story_artifact_id,
@@ -72,6 +81,7 @@ def build_r6_product_decision_report(
         "source_refs": _unique_strings(
             [story_package["artifact_id"], *story_package["source_refs"]]
         ),
+        "source_registry": _source_registry_with_story_package(story_package),
         "claim_boundary": R6_CLAIM_BOUNDARY,
     }
     assert_strict_json(report)
@@ -147,7 +157,54 @@ def _validate_story_package(
             story_package.get("source_refs"),
             field="story_package.source_refs",
         ),
+        "source_registry": _validate_source_registry(
+            story_package.get("source_registry"),
+        ),
     }
+
+
+def _validate_source_registry(value: Any) -> list[dict[str, str]]:
+    if not isinstance(value, list):
+        raise ValueError("story_package.source_registry must be a non-empty list")
+    registry = []
+    for index, entry in enumerate(value):
+        if not isinstance(entry, dict):
+            raise ValueError(f"story_package.source_registry[{index}] must be an object")
+        registry.append(
+            {
+                "artifact_id": non_empty_string(
+                    entry.get("artifact_id"),
+                    field=f"story_package.source_registry[{index}].artifact_id",
+                ),
+                "path": non_empty_string(
+                    entry.get("path"),
+                    field=f"story_package.source_registry[{index}].path",
+                ),
+            }
+        )
+    if not registry:
+        raise ValueError("story_package.source_registry must be a non-empty list")
+    return registry
+
+
+def _source_registry_with_story_package(
+    story_package: dict[str, Any],
+) -> list[dict[str, str]]:
+    registry = [dict(entry) for entry in story_package["source_registry"]]
+    story_artifact_id = story_package["artifact_id"]
+    registry_ids = {entry["artifact_id"] for entry in registry}
+    if story_artifact_id not in registry_ids:
+        registry.append(
+            {
+                "artifact_id": story_artifact_id,
+                "path": (
+                    R6_PRODUCT_DECISION_DEFAULT_STORY_ARTIFACT_PATH
+                    if story_artifact_id == R6_PRODUCT_DECISION_DEFAULT_STORY_ARTIFACT_ID
+                    else "direct_input:story_package"
+                ),
+            }
+        )
+    return registry
 
 
 def _require_exact(report: dict[str, Any], *, field: str, expected: str) -> None:
