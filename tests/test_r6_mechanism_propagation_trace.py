@@ -47,6 +47,30 @@ def test_r6_mechanism_propagation_trace_builds_three_proxy_dynamic_paths():
     json.dumps(report, allow_nan=False)
 
 
+def test_r6_mechanism_propagation_trace_accepts_positional_args():
+    report = build_r6_mechanism_propagation_trace(
+        "r6-positional",
+        "r6-positional-run",
+    )
+
+    assert report["artifact_id"] == "r6-positional"
+    assert report["run_id"] == "r6-positional-run"
+    assert report["trace_summary"]["case_count"] == 3
+
+
+def test_r6_mechanism_propagation_trace_empty_proxy_list_is_explicit_input():
+    report = build_r6_mechanism_propagation_trace(
+        "r6-empty-proxy-list",
+        "r6-empty-proxy-list-run",
+        public_outcome_proxies=[],
+    )
+
+    assert report["trace_summary"]["case_count"] == 0
+    assert report["trace_summary"]["dynamic_path_count"] == 0
+    assert report["acceptance_gates"]["mechanism_trace_present"] is False
+    json.dumps(report, allow_nan=False)
+
+
 def test_r6_mechanism_propagation_trace_cli_writes_artifact(tmp_path):
     output = tmp_path / "r6-mechanism-propagation-trace.json"
 

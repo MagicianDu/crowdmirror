@@ -30,17 +30,19 @@ DEFAULT_SOURCE_KEYS = [
 
 
 def build_r6_mechanism_propagation_trace(
-    *,
     artifact_id: str,
     run_id: str,
     public_outcome_proxies: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
-    proxies = public_outcome_proxies or _default_public_outcome_proxies(
-        artifact_id=artifact_id,
-        run_id=run_id,
-    )
+    if public_outcome_proxies is None:
+        proxies = _default_public_outcome_proxies(
+            artifact_id=artifact_id,
+            run_id=run_id,
+        )
+    else:
+        proxies = public_outcome_proxies
     case_traces = [_build_case_trace(proxy) for proxy in proxies]
     dynamic_path_count = sum(len(trace["dynamic_paths"]) for trace in case_traces)
     report = {
