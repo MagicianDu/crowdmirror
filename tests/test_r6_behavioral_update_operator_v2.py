@@ -1,10 +1,17 @@
+import copy
 import json
 import subprocess
 import sys
 
+import pytest
+
 from experiments.r6_behavioral_update_operator_v2 import (
     build_r6_behavioral_update_operator_v2,
 )
+from experiments.r6_outcome_holdout_registry import (
+    build_r6_outcome_holdout_registry,
+)
+from experiments.r6_theory_framework import build_r6_theory_framework
 
 
 def test_r6_behavioral_update_operator_v2_adds_error_attribution_and_transfer_guards():
@@ -25,16 +32,81 @@ def test_r6_behavioral_update_operator_v2_adds_error_attribution_and_transfer_gu
     assert report["acceptance_gates"]["operator_v2_structured"] is True
     assert report["acceptance_gates"]["operator_v2_runtime_default_allowed"] is False
     assert report["acceptance_gates"]["independent_holdout_available"] is False
+    assert report["acceptance_gates"]["field_outcome_validated"] is False
+    assert report["acceptance_gates"]["ccf_a_main_contribution_ready"] is False
+    for candidate in report["candidate_updates"]:
+        assert candidate["error_attribution"]
+        assert candidate["transfer_preconditions"]
+        assert candidate["acceptance_status"] == "blocked_missing_independent_holdout"
+        assert candidate["runtime_default_allowed"] is False
+        assert candidate["prompt_patch_text"] == ""
     candidate = report["candidate_updates"][0]
     assert candidate["operator_family"] == "over_amplification_damping"
     assert candidate["error_attribution"]["primary_component"] == "over_amplification"
-    assert candidate["acceptance_status"] == "blocked_missing_independent_holdout"
-    assert candidate["runtime_default_allowed"] is False
-    assert candidate["prompt_patch_text"] == ""
     assert "independent_same_family_in_condition_holdout" in candidate[
         "transfer_preconditions"
     ]
     json.dumps(report, allow_nan=False)
+
+
+def test_r6_behavioral_update_operator_v2_rejects_malformed_holdout_availability():
+    holdout_registry = build_r6_outcome_holdout_registry(
+        artifact_id="r6-behavioral-update-operator-v2-holdout",
+        run_id="r6-gap-closure-run",
+    )
+    malformed_registry = copy.deepcopy(holdout_registry)
+    malformed_registry["registry_summary"][
+        "in_condition_independent_holdout_available"
+    ] = "yes"
+
+    with pytest.raises(
+        ValueError,
+        match=(
+            "holdout_registry.registry_summary."
+            "in_condition_independent_holdout_available must be a boolean"
+        ),
+    ):
+        build_r6_behavioral_update_operator_v2(
+            artifact_id="r6-behavioral-update-operator-v2-malformed-holdout",
+            run_id="r6-gap-closure-run",
+            holdout_registry=malformed_registry,
+        )
+
+
+def test_r6_behavioral_update_operator_v2_rejects_malformed_upstream_artifact_ids():
+    holdout_registry = build_r6_outcome_holdout_registry(
+        artifact_id="r6-behavioral-update-operator-v2-holdout",
+        run_id="r6-gap-closure-run",
+    )
+    malformed_registry = copy.deepcopy(holdout_registry)
+    malformed_registry["artifact_id"] = {"bad": "registry"}
+
+    with pytest.raises(
+        ValueError,
+        match="holdout_registry.artifact_id must be a non-empty string",
+    ):
+        build_r6_behavioral_update_operator_v2(
+            artifact_id="r6-behavioral-update-operator-v2-bad-registry-id",
+            run_id="r6-gap-closure-run",
+            holdout_registry=malformed_registry,
+        )
+
+    theory_framework = build_r6_theory_framework(
+        artifact_id="r6-behavioral-update-operator-v2-theory",
+        run_id="r6-gap-closure-run",
+    )
+    malformed_theory = copy.deepcopy(theory_framework)
+    malformed_theory["artifact_id"] = ["bad-theory"]
+
+    with pytest.raises(
+        ValueError,
+        match="theory_framework.artifact_id must be a non-empty string",
+    ):
+        build_r6_behavioral_update_operator_v2(
+            artifact_id="r6-behavioral-update-operator-v2-bad-theory-id",
+            run_id="r6-gap-closure-run",
+            theory_framework=malformed_theory,
+        )
 
 
 def test_r6_behavioral_update_operator_v2_cli_writes_artifact(tmp_path):

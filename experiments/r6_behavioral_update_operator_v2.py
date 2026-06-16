@@ -16,9 +16,13 @@ from experiments.r6_contracts import (
     write_json_artifact,
 )
 from experiments.r6_outcome_holdout_registry import (
+    R6_OUTCOME_HOLDOUT_REGISTRY_SCHEMA_VERSION,
     build_r6_outcome_holdout_registry,
 )
-from experiments.r6_theory_framework import build_r6_theory_framework
+from experiments.r6_theory_framework import (
+    R6_THEORY_FRAMEWORK_SCHEMA_VERSION,
+    build_r6_theory_framework,
+)
 
 
 R6_BEHAVIORAL_UPDATE_OPERATOR_V2_SCHEMA_VERSION = (
@@ -57,6 +61,8 @@ def build_r6_behavioral_update_operator_v2(
         raise ValueError("holdout_registry must be a JSON object")
     if not isinstance(theory_framework, dict):
         raise ValueError("theory_framework must be a JSON object")
+    _validate_holdout_registry(holdout_registry)
+    _validate_theory_framework(theory_framework)
 
     candidate_updates = _build_candidate_updates()
     report = {
@@ -94,6 +100,8 @@ def build_r6_behavioral_update_operator_v2(
             ),
             "signal_validity_holdout_validated": False,
             "real_or_field_outcome_proxy_available": False,
+            "field_outcome_validated": False,
+            "ccf_a_main_contribution_ready": False,
             "prompt_patch_absent": True,
         },
         "candidate_updates": candidate_updates,
@@ -225,10 +233,9 @@ def _build_candidate_updates() -> list[dict[str, Any]]:
 
 
 def _independent_holdout_available(holdout_registry: dict[str, Any]) -> bool:
+    _validate_holdout_registry(holdout_registry)
     registry_summary = holdout_registry.get("registry_summary", {})
-    if not isinstance(registry_summary, dict):
-        return False
-    return bool(registry_summary.get("in_condition_independent_holdout_available"))
+    return registry_summary["in_condition_independent_holdout_available"] is True
 
 
 def _source_refs(
@@ -236,11 +243,112 @@ def _source_refs(
     theory_framework: dict[str, Any],
 ) -> list[str]:
     refs = []
-    for artifact in (holdout_registry, theory_framework):
-        artifact_id = artifact.get("artifact_id")
-        if artifact_id:
-            refs.append(str(artifact_id))
+    for field, artifact in (
+        ("holdout_registry", holdout_registry),
+        ("theory_framework", theory_framework),
+    ):
+        refs.append(
+            non_empty_string(
+                artifact.get("artifact_id"),
+                field=f"{field}.artifact_id",
+            )
+        )
     return list(dict.fromkeys(refs))
+
+
+def _validate_holdout_registry(holdout_registry: dict[str, Any]) -> None:
+    _require_exact(
+        holdout_registry,
+        field="holdout_registry.schema_version",
+        expected=R6_OUTCOME_HOLDOUT_REGISTRY_SCHEMA_VERSION,
+    )
+    _require_exact(
+        holdout_registry,
+        field="holdout_registry.status",
+        expected="holdout_registry_ready_missing_required_slots",
+    )
+    non_empty_string(
+        holdout_registry.get("artifact_id"),
+        field="holdout_registry.artifact_id",
+    )
+    acceptance_gates = _require_object(
+        holdout_registry.get("acceptance_gates"),
+        field="holdout_registry.acceptance_gates",
+    )
+    _require_false(
+        acceptance_gates,
+        field="holdout_registry.acceptance_gates.runtime_default_allowed",
+    )
+    _require_false(
+        acceptance_gates,
+        field="holdout_registry.acceptance_gates.ccf_a_main_contribution_ready",
+    )
+    _require_false(
+        acceptance_gates,
+        field="holdout_registry.acceptance_gates.field_outcome_validated",
+    )
+    registry_summary = _require_object(
+        holdout_registry.get("registry_summary"),
+        field="holdout_registry.registry_summary",
+    )
+    availability = registry_summary.get("in_condition_independent_holdout_available")
+    if not isinstance(availability, bool):
+        raise ValueError(
+            "holdout_registry.registry_summary."
+            "in_condition_independent_holdout_available must be a boolean"
+        )
+
+
+def _validate_theory_framework(theory_framework: dict[str, Any]) -> None:
+    _require_exact(
+        theory_framework,
+        field="theory_framework.schema_version",
+        expected=R6_THEORY_FRAMEWORK_SCHEMA_VERSION,
+    )
+    _require_exact(
+        theory_framework,
+        field="theory_framework.status",
+        expected="theory_framework_ready",
+    )
+    non_empty_string(
+        theory_framework.get("artifact_id"),
+        field="theory_framework.artifact_id",
+    )
+    acceptance_gates = _require_object(
+        theory_framework.get("acceptance_gates"),
+        field="theory_framework.acceptance_gates",
+    )
+    _require_false(
+        acceptance_gates,
+        field="theory_framework.acceptance_gates.runtime_default_allowed",
+    )
+    _require_false(
+        acceptance_gates,
+        field="theory_framework.acceptance_gates.field_outcome_validated",
+    )
+
+
+def _require_object(value: Any, *, field: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ValueError(f"{field} must be a JSON object")
+    return value
+
+
+def _require_exact(
+    artifact: dict[str, Any],
+    *,
+    field: str,
+    expected: str,
+) -> None:
+    key = field.rsplit(".", maxsplit=1)[-1]
+    if artifact.get(key) != expected:
+        raise ValueError(f"{field} must be {expected}")
+
+
+def _require_false(artifact: dict[str, Any], *, field: str) -> None:
+    key = field.rsplit(".", maxsplit=1)[-1]
+    if artifact.get(key) is not False:
+        raise ValueError(f"{field} must be False")
 
 
 def main() -> int:
