@@ -35,7 +35,6 @@ _DEFAULT_OBSERVED_OUTCOME = {
 
 
 def build_r6_product_outcome_review(
-    *,
     artifact_id: str,
     run_id: str,
     observed_outcome: dict[str, Any] | None = None,

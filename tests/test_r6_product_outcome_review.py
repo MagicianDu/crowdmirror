@@ -52,6 +52,14 @@ def test_r6_product_outcome_review_uses_default_only_when_outcome_is_none():
     assert review["source_refs"] == ["generic-outcome-review-001"]
 
 
+def test_r6_product_outcome_review_accepts_positional_artifact_and_run_ids():
+    review = build_r6_product_outcome_review("artifact", "run")
+
+    assert review["artifact_id"] == "artifact"
+    assert review["run_id"] == "run"
+    assert review["status"] == "outcome_review_ready_update_blocked"
+
+
 @pytest.mark.parametrize("observed_outcome", [[], ""])
 def test_r6_product_outcome_review_rejects_bad_observed_outcome_type(
     observed_outcome,
