@@ -59,6 +59,16 @@ R6_PRODUCT_STORY_DANGEROUS_CLAIM_STATUSES = {
     "runtime_default_ready",
     "ccf_a_ready",
 }
+R6_PRODUCT_STORY_PROHIBITED_ALLOWED_CLAIM_TERMS = (
+    "field validation 已完成",
+    "field_outcome_validated=true",
+    "runtime default 可以开启",
+    "runtime_default_allowed=true",
+    "R6 已达到 CCF-A 主贡献",
+    "ccf_a_main_contribution_ready=true",
+    "accuracy_superiority_established",
+    "交互仿真稳定比静态先验更准",
+)
 R6_PRODUCT_STORY_CANONICAL_SOURCE_REGISTRY = [
     {
         "artifact_id": "r6-product-scenario-intake-current-001",
@@ -175,6 +185,7 @@ def build_r6_product_story_package(
         gap_closure_artifact_id=gap_closure_artifact_id,
         cards=cards,
     )
+    source_registry = _source_registry(scenario_intake_artifact_id)
     report = {
         "schema_version": R6_PRODUCT_STORY_PACKAGE_SCHEMA_VERSION,
         "artifact_id": artifact_id,
@@ -191,7 +202,7 @@ def build_r6_product_story_package(
         "evidence_card_ids": evidence_card_ids,
         "customer_visible_claim_cards": _customer_visible_claim_cards(cards),
         "display_field_paths": display_field_paths,
-        "source_registry": _source_registry(scenario_intake_artifact_id),
+        "source_registry": source_registry,
         "ui_contract": {
             "consume_only_artifact_fields": True,
             "static_narrative_fallback_allowed": False,
@@ -253,6 +264,7 @@ def build_r6_product_story_package(
         ),
         "claim_boundary": R6_CLAIM_BOUNDARY,
     }
+    _assert_source_refs_resolvable(report)
     assert_strict_json(report)
     return report
 
@@ -359,7 +371,7 @@ def _validate_product_evidence_cards(report: dict[str, Any]) -> str:
             card.get("claim_status"),
             field=f"product_evidence_cards.cards[{index}].claim_status",
         )
-        _require_non_empty_string_list(
+        _require_safe_allowed_claims(
             card.get("allowed_claims"),
             field=f"product_evidence_cards.cards[{index}].allowed_claims",
         )
@@ -375,8 +387,15 @@ def _validate_product_evidence_cards(report: dict[str, Any]) -> str:
             card.get("display_fields"),
             field=f"product_evidence_cards.cards[{index}].display_fields",
         )
-    if "r6-gap-closure-status" not in card_ids:
-        raise ValueError("product_evidence_cards.cards must include r6-gap-closure-status")
+    _require_card_ids(
+        card_ids,
+        required_card_ids=[
+            "static-prior-control",
+            "interaction-risk-shift",
+            "r6-gap-closure-status",
+        ],
+        field="product_evidence_cards.cards",
+    )
     contract = _require_object(
         report.get("demo_api_contract"),
         field="product_evidence_cards.demo_api_contract",
@@ -504,7 +523,7 @@ def _customer_visible_claim_cards(
                     card["claim_status"],
                     field=f"product_evidence_cards.cards[{index}].claim_status",
                 ),
-                "allowed_claims": _require_non_empty_string_list(
+                "allowed_claims": _require_safe_allowed_claims(
                     card["allowed_claims"],
                     field=f"product_evidence_cards.cards[{index}].allowed_claims",
                 ),
@@ -528,6 +547,29 @@ def _card_display_field_paths(cards: list[dict[str, Any]]) -> list[dict[str, Any
         }
         for card in cards
     ]
+
+
+def _require_safe_allowed_claims(value: Any, *, field: str) -> list[str]:
+    claims = _require_non_empty_string_list(value, field=field)
+    for index, claim in enumerate(claims):
+        for term in R6_PRODUCT_STORY_PROHIBITED_ALLOWED_CLAIM_TERMS:
+            if term in claim:
+                raise ValueError(
+                    f"{field}[{index}] contains prohibited customer-visible claim"
+                )
+    return claims
+
+
+def _require_card_ids(
+    card_ids: list[str],
+    *,
+    required_card_ids: list[str],
+    field: str,
+) -> None:
+    present = set(card_ids)
+    for required_card_id in required_card_ids:
+        if required_card_id not in present:
+            raise ValueError(f"{field} must include {required_card_id}")
 
 
 def _blocked_claims(
@@ -575,6 +617,63 @@ def _source_registry(scenario_intake_artifact_id: str) -> list[dict[str, str]]:
             }
         )
     return registry
+
+
+def _assert_source_refs_resolvable(report: dict[str, Any]) -> None:
+    registry_ids = {
+        non_empty_string(entry.get("artifact_id"), field="source_registry[].artifact_id")
+        for entry in report["source_registry"]
+        if isinstance(entry, dict)
+    }
+    direct_ids = {report["artifact_id"], *report["artifact_refs"].values()}
+    _assert_refs_resolvable(
+        report["source_refs"],
+        registry_ids=registry_ids,
+        direct_ids=direct_ids,
+        field="source_refs",
+    )
+    _assert_refs_resolvable(
+        report["next_measurement_plan"]["source_artifact_ids"],
+        registry_ids=registry_ids,
+        direct_ids=direct_ids,
+        field="next_measurement_plan.source_artifact_ids",
+    )
+    for index, section in enumerate(report["section_contracts"]):
+        _assert_refs_resolvable(
+            section["source_artifact_ids"],
+            registry_ids=registry_ids,
+            direct_ids=direct_ids,
+            field=f"section_contracts[{index}].source_artifact_ids",
+        )
+    for index, card in enumerate(report["customer_visible_claim_cards"]):
+        _assert_refs_resolvable(
+            card["source_artifact_ids"],
+            registry_ids=registry_ids,
+            direct_ids=direct_ids,
+            field=f"customer_visible_claim_cards[{index}].source_artifact_ids",
+        )
+    for index, display_path in enumerate(report["display_field_paths"]):
+        _assert_refs_resolvable(
+            display_path["source_artifact_ids"],
+            registry_ids=registry_ids,
+            direct_ids=direct_ids,
+            field=f"display_field_paths[{index}].source_artifact_ids",
+        )
+
+
+def _assert_refs_resolvable(
+    refs: list[str],
+    *,
+    registry_ids: set[str],
+    direct_ids: set[str],
+    field: str,
+) -> None:
+    for index, ref in enumerate(refs):
+        normalized = non_empty_string(ref, field=f"{field}[{index}]")
+        if normalized not in registry_ids and normalized not in direct_ids:
+            raise ValueError(
+                f"{field}[{index}] contains unregistered source artifact: {normalized}"
+            )
 
 
 def _unique_strings(values: list[str]) -> list[str]:

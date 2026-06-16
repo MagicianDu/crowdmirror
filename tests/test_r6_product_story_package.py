@@ -73,6 +73,66 @@ def test_r6_product_story_package_rejects_string_allowed_claims(monkeypatch):
         )
 
 
+def test_r6_product_story_package_rejects_dangerous_allowed_claim(monkeypatch):
+    _patch_cards(
+        monkeypatch,
+        card_mutation={"allowed_claims": ["field validation 已完成"]},
+    )
+
+    with pytest.raises(ValueError, match="allowed_claims"):
+        build_r6_product_story_package(
+            artifact_id="r6-product-story-package-dangerous-allowed-claim",
+            run_id="r6-product-first-run",
+        )
+
+
+def test_r6_product_story_package_rejects_unregistered_card_source(monkeypatch):
+    _patch_cards(
+        monkeypatch,
+        card_mutation={"source_artifact_ids": ["missing-source-artifact"]},
+    )
+
+    with pytest.raises(ValueError, match="source_artifact_ids"):
+        build_r6_product_story_package(
+            artifact_id="r6-product-story-package-missing-source",
+            run_id="r6-product-first-run",
+        )
+
+
+def test_r6_product_story_package_rejects_missing_required_card(monkeypatch):
+    def fake_product_evidence_cards(
+        *,
+        artifact_id,
+        run_id,
+        gap_closure_report,
+        **kwargs,
+    ):
+        report = build_r6_product_evidence_cards(
+            artifact_id=artifact_id,
+            run_id=run_id,
+            gap_closure_report=gap_closure_report,
+            **kwargs,
+        )
+        cards = [
+            card
+            for card in report["cards"]
+            if card["card_id"] != "static-prior-control"
+        ]
+        return {**report, "cards": cards}
+
+    monkeypatch.setattr(
+        story_package,
+        "build_r6_product_evidence_cards",
+        fake_product_evidence_cards,
+    )
+
+    with pytest.raises(ValueError, match="static-prior-control"):
+        build_r6_product_story_package(
+            artifact_id="r6-product-story-package-missing-required-card",
+            run_id="r6-product-first-run",
+        )
+
+
 def test_r6_product_story_package_rejects_empty_blocked_claims(monkeypatch):
     _patch_cards(monkeypatch, card_mutation={"blocked_claims": []})
 
@@ -205,6 +265,11 @@ def _patch_cards(monkeypatch, *, card_mutation):
 
 def _assert_package_sources_resolvable(package):
     registry_ids = {entry["artifact_id"] for entry in package["source_registry"]}
+    repo_root = Path(__file__).resolve().parents[1]
+    for entry in package["source_registry"]:
+        if entry["path"].startswith("experiments/"):
+            source_artifact = json.loads((repo_root / entry["path"]).read_text())
+            assert source_artifact["artifact_id"] == entry["artifact_id"]
     direct_ids = {
         package["artifact_id"],
         *package["artifact_refs"].values(),

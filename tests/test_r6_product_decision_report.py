@@ -172,6 +172,35 @@ def test_r6_product_decision_report_does_not_forward_string_current_gate_values(
     assert "current_gate_values" not in report["next_measurement_plan"]
 
 
+def test_r6_product_decision_report_rejects_unregistered_story_source_ref():
+    story_package = {
+        **_valid_story_package(),
+        "source_refs": ["r6-story-source-1", "missing-source-artifact"],
+    }
+
+    with pytest.raises(ValueError, match="story_package.source_refs"):
+        build_r6_product_decision_report(
+            artifact_id="r6-product-decision-report-test",
+            run_id="r6-product-first-run",
+            story_package=story_package,
+        )
+
+
+def test_r6_product_decision_report_rejects_bad_source_registry_path():
+    story_package = _valid_story_package()
+    story_package["source_registry"] = [
+        *story_package["source_registry"],
+        {"artifact_id": "missing-source-artifact", "path": ""},
+    ]
+
+    with pytest.raises(ValueError, match="source_registry"):
+        build_r6_product_decision_report(
+            artifact_id="r6-product-decision-report-test",
+            run_id="r6-product-first-run",
+            story_package=story_package,
+        )
+
+
 def test_r6_product_decision_report_rejects_static_narrative_fallback_enabled():
     story_package = _valid_story_package()
     story_package["ui_contract"] = {

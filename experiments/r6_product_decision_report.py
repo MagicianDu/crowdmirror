@@ -145,6 +145,18 @@ def _validate_story_package(
             field="story_package.next_measurement_plan.required_gate_paths",
         ),
     }
+    source_refs = _require_non_empty_string_list(
+        story_package.get("source_refs"),
+        field="story_package.source_refs",
+    )
+    source_registry = _validate_source_registry(
+        story_package.get("source_registry"),
+    )
+    _assert_story_sources_resolvable(
+        artifact_id=artifact_id,
+        source_refs=source_refs,
+        source_registry=source_registry,
+    )
     return {
         **story_package,
         "artifact_id": artifact_id,
@@ -153,13 +165,8 @@ def _validate_story_package(
             field="story_package.blocked_claims",
         ),
         "next_measurement_plan": normalized_next_measurement_plan,
-        "source_refs": _require_non_empty_string_list(
-            story_package.get("source_refs"),
-            field="story_package.source_refs",
-        ),
-        "source_registry": _validate_source_registry(
-            story_package.get("source_registry"),
-        ),
+        "source_refs": source_refs,
+        "source_registry": source_registry,
     }
 
 
@@ -185,6 +192,26 @@ def _validate_source_registry(value: Any) -> list[dict[str, str]]:
     if not registry:
         raise ValueError("story_package.source_registry must be a non-empty list")
     return registry
+
+
+def _assert_story_sources_resolvable(
+    *,
+    artifact_id: str,
+    source_refs: list[str],
+    source_registry: list[dict[str, str]],
+) -> None:
+    registry_ids = {entry["artifact_id"] for entry in source_registry}
+    direct_ids = {artifact_id}
+    for index, source_ref in enumerate(source_refs):
+        normalized = non_empty_string(
+            source_ref,
+            field=f"story_package.source_refs[{index}]",
+        )
+        if normalized not in registry_ids and normalized not in direct_ids:
+            raise ValueError(
+                "story_package.source_refs"
+                f"[{index}] contains unregistered source artifact: {normalized}"
+            )
 
 
 def _source_registry_with_story_package(
