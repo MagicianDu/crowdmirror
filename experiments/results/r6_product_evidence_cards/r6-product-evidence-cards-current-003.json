@@ -1,0 +1,211 @@
+{
+  "artifact_id": "r6-product-evidence-cards-current-003",
+  "blocking_gaps": [
+    "needs_demo_or_api_to_consume_cards",
+    "needs_field_outcome_before_accuracy_claim"
+  ],
+  "card_count": 8,
+  "cards": [
+    {
+      "allowed_claims": [
+        "\u7cfb\u7edf\u80fd\u5c55\u793a\u53d1\u5e03\u524d\u9759\u6001\u5148\u9a8c\u5206\u5e03",
+        "\u9759\u6001\u5148\u9a8c\u662f\u4ea4\u4e92\u4eff\u771f\u7684\u5bf9\u7167\u7ec4"
+      ],
+      "blocked_claims": [
+        "\u9759\u6001\u5148\u9a8c\u7b49\u4e8e\u771f\u5b9e\u53cd\u5e94",
+        "\u6ca1\u6709 outcome \u4e5f\u80fd\u8bc1\u660e\u9884\u6d4b\u51c6\u786e"
+      ],
+      "card_id": "static-prior-control",
+      "claim_status": "baseline_context_ready",
+      "display_fields": [
+        "pre_release.case_summaries[].static_prior",
+        "decision_support.market_claim_status"
+      ],
+      "source_artifact_ids": [
+        "r6-product-evidence-cards-current-003-product-report"
+      ],
+      "title": "\u9759\u6001\u5148\u9a8c\u4e0e no-interaction control"
+    },
+    {
+      "allowed_claims": [
+        "\u4ea4\u4e92\u5c42\u53ef\u4ee5\u5c55\u793a\u76f8\u5bf9\u9759\u6001\u5148\u9a8c\u7684\u98ce\u9669\u504f\u79fb",
+        "\u504f\u79fb\u7528\u4e8e\u53d1\u5e03\u524d\u98ce\u9669\u590d\u6838"
+      ],
+      "blocked_claims": [
+        "\u4ea4\u4e92\u504f\u79fb\u5df2\u7ecf\u88ab\u8bc1\u660e\u66f4\u51c6",
+        "\u4ea4\u4e92\u4eff\u771f\u53ef\u4ee5\u66ff\u4ee3\u771f\u5b9e outcome"
+      ],
+      "card_id": "interaction-risk-shift",
+      "claim_status": "risk_hypothesis_ready",
+      "display_fields": [
+        "pre_release.case_summaries[].interaction_shift",
+        "pre_release.case_summaries[].top_risk_segment"
+      ],
+      "source_artifact_ids": [
+        "r6-product-evidence-cards-current-003-product-report"
+      ],
+      "title": "\u4ea4\u4e92\u98ce\u9669\u504f\u79fb"
+    },
+    {
+      "allowed_claims": [
+        "mechanism cap \u53ef\u4ee5\u4fee\u590d source case \u7684\u8fc7\u5ea6\u653e\u5927",
+        "\u5df2\u6709 cross-proxy non-regression \u8bc1\u636e"
+      ],
+      "blocked_claims": [
+        "mechanism cap \u5df2\u53ef\u4f5c\u4e3a runtime default",
+        "mechanism cap \u5df2\u901a\u8fc7 CCF-A \u7ea7 L4 \u8fc1\u79fb\u9a8c\u8bc1"
+      ],
+      "card_id": "mechanism-cap-transfer",
+      "claim_status": "diagnostic_l3_partial_not_runtime_default",
+      "display_fields": [
+        "candidate_transfers[mechanism_cap].evidence_level",
+        "candidate_transfers[mechanism_cap].acceptance_gates",
+        "global_update_decision"
+      ],
+      "evidence_level": "L3_partial",
+      "source_artifact_ids": [
+        "r6-product-evidence-cards-current-003-product-report",
+        "r6-product-evidence-cards-current-003-transfer-protocol"
+      ],
+      "title": "\u673a\u5236 cap \u8fc1\u79fb\u9a8c\u6536"
+    },
+    {
+      "allowed_claims": [
+        "\u7ed3\u679c\u53cd\u9988\u53ef\u4ee5\u751f\u6210\u51bb\u7ed3 residual \u66f4\u65b0\u89c4\u5219",
+        "\u5f53\u524d same-family transfer \u53ea\u8fbe\u5230 non-regression \u5c42\u7ea7"
+      ],
+      "blocked_claims": [
+        "outcome feedback \u5df2\u7ecf\u5f62\u6210\u901a\u7528\u81ea\u52a8\u6821\u51c6\u5668",
+        "same-case improvement \u53ef\u4ee5\u76f4\u63a5\u8fdb\u5165\u5168\u5c40\u53c2\u6570"
+      ],
+      "card_id": "outcome-feedback-transfer",
+      "claim_status": "non_regression_only_not_global_update",
+      "display_fields": [
+        "candidate_transfers[outcome_feedback].holdout_trials",
+        "candidate_transfers[outcome_feedback].transfer_decision"
+      ],
+      "evidence_level": "L2_same_case_to_non_regression_transfer",
+      "source_artifact_ids": [
+        "r6-product-evidence-cards-current-003-transfer-protocol"
+      ],
+      "title": "\u7ed3\u679c\u53cd\u9988\u8fc1\u79fb"
+    },
+    {
+      "allowed_claims": [
+        "\u7cfb\u7edf\u80fd\u8bf4\u660e\u5f53\u524d\u516c\u5f00\u6570\u636e\u4e3a\u4f55\u4e0d\u8db3\u4ee5\u5347\u7ea7\u5019\u9009\u89c4\u5219",
+        "\u4e0b\u4e00\u6b65\u6570\u636e\u91c7\u96c6\u6761\u4ef6\u5df2\u7ecf\u660e\u786e"
+      ],
+      "blocked_claims": [
+        "\u5df2\u6709\u516c\u5f00 proxy \u8db3\u591f\u8bc1\u660e\u5168\u5c40\u53ef\u8fc1\u79fb",
+        "\u7ee7\u7eed\u589e\u52a0\u4efb\u610f proxy \u90fd\u80fd\u63d0\u5347\u8bba\u6587\u8bc1\u636e"
+      ],
+      "card_id": "holdout-data-gap",
+      "claim_status": "data_gate_blocked",
+      "display_fields": [
+        "selection_criteria",
+        "ledger_entries[].ledger_status",
+        "next_search_profile"
+      ],
+      "in_condition_holdout_count": 0,
+      "source_artifact_ids": [
+        "r6-product-evidence-cards-current-003-holdout-ledger"
+      ],
+      "title": "in-condition holdout \u7f3a\u53e3"
+    },
+    {
+      "allowed_claims": [
+        "\u7cfb\u7edf\u80fd\u5c55\u793a\u98ce\u9669\u4f20\u64ad\u8def\u5f84"
+      ],
+      "blocked_claims": [
+        "\u4f20\u64ad\u8def\u5f84\u5df2\u7ecf field validated"
+      ],
+      "card_id": "mechanism-propagation-path",
+      "claim_status": "diagnostic_trace_ready",
+      "display_fields": [
+        "readiness_gates.mechanism_trace_present",
+        "readiness_gates.dynamic_path_distinct_from_static_prior",
+        "readiness_summary.mechanism_positive_case_count",
+        "readiness_summary.mechanism_regression_case_count"
+      ],
+      "source_artifact_ids": [
+        "r6-product-evidence-cards-current-003-mechanism-research-readiness-report"
+      ],
+      "title": "\u673a\u5236\u4f20\u64ad\u8def\u5f84"
+    },
+    {
+      "allowed_claims": [
+        "outcome feedback \u53ef\u4ee5\u751f\u6210\u7ed3\u6784\u5316\u5019\u9009\u66f4\u65b0"
+      ],
+      "blocked_claims": [
+        "\u5019\u9009\u66f4\u65b0\u5df2\u53ef\u81ea\u52a8\u4e0a\u7ebf"
+      ],
+      "card_id": "behavioral-update-guard",
+      "claim_status": "blocked_update_guarded",
+      "display_fields": [
+        "readiness_gates.behavioral_update_operator_structured",
+        "readiness_gates.operator_holdout_non_regression",
+        "readiness_gates.runtime_default_allowed",
+        "decision.runtime_default_allowed"
+      ],
+      "source_artifact_ids": [
+        "r6-product-evidence-cards-current-003-mechanism-research-readiness-report"
+      ],
+      "title": "\u884c\u4e3a\u66f4\u65b0\u62a4\u680f"
+    },
+    {
+      "allowed_claims": [
+        "\u7406\u8bba\u3001\u6570\u636e\u3001\u65b9\u6cd5\u548c Product gap \u5df2\u88ab\u7ed3\u6784\u5316\u7ba1\u7406"
+      ],
+      "blocked_claims": [
+        "field validation \u5df2\u5b8c\u6210",
+        "runtime default \u53ef\u4ee5\u5f00\u542f",
+        "R6 \u5df2\u8fbe\u5230 CCF-A \u4e3b\u8d21\u732e"
+      ],
+      "card_id": "r6-gap-closure-status",
+      "claim_status": "gap_closure_artifact_ready_not_validated",
+      "display_fields": [
+        "gap_statuses",
+        "acceptance_gates.field_outcome_validated",
+        "acceptance_gates.ccf_a_main_contribution_ready",
+        "remaining_gaps"
+      ],
+      "source_artifact_ids": [
+        "r6-product-evidence-cards-current-003-gap-closure-report"
+      ],
+      "title": "R6.2 gap closure \u72b6\u6001"
+    }
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Product evidence cards are customer-facing claim boundaries, not accuracy proof."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "demo_api_contract": {
+    "consume_only_artifact_fields": true,
+    "rendering_rule": "UI may summarize card fields, but must not introduce claims that are not present in allowed_claims.",
+    "required_card_fields": [
+      "card_id",
+      "title",
+      "claim_status",
+      "allowed_claims",
+      "blocked_claims",
+      "source_artifact_ids"
+    ],
+    "static_narrative_fallback_allowed": false
+  },
+  "risk_flags": [
+    "product_claims_bounded_by_artifacts",
+    "no_static_demo_narrative_fallback",
+    "accuracy_claim_blocked"
+  ],
+  "run_id": "r6-gap-closure-current-001",
+  "schema_version": "r6-product-evidence-cards-v1",
+  "source_refs": [
+    "r6-product-evidence-cards-current-003-product-report",
+    "r6-product-evidence-cards-current-003-transfer-protocol",
+    "r6-product-evidence-cards-current-003-holdout-ledger",
+    "r6-product-evidence-cards-current-003-mechanism-research-readiness-report",
+    "r6-product-evidence-cards-current-003-gap-closure-report"
+  ],
+  "status": "product_evidence_cards_ready"
+}

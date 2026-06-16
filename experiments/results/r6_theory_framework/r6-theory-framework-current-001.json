@@ -1,0 +1,46 @@
+{
+  "acceptance_gates": {
+    "error_attribution_defined": true,
+    "field_outcome_validated": false,
+    "formal_problem_definition_present": true,
+    "risk_discovery_value_defined": true,
+    "runtime_default_allowed": false
+  },
+  "artifact_id": "r6-theory-framework-current-001",
+  "blocked_claims": [
+    "accuracy superiority is not established by this theory framework",
+    "field validated evidence is not present",
+    "runtime default enablement is blocked"
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "This theory framework defines a research artifact for guarded risk discovery; it is not CCF-A readiness, field validation, or runtime default approval."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "error_attribution_components": [
+    "static_prior_miss",
+    "propagation_direction_error",
+    "over_amplification",
+    "under_diffusion",
+    "topology_mismatch",
+    "outcome_mapping_noise"
+  ],
+  "formal_problem": {
+    "guarded_decision_rule": "Accept interaction evidence only when it improves recoverable risk discovery after false-alarm, guard-violation, and overfit penalties; otherwise keep the static prior as the decision base.",
+    "interaction_role": "risk_discovery_layer",
+    "operator_definition": "Interaction operates as a guarded update operator over a static-prior simulation baseline, surfacing auditable cases where local propagation evidence may recover static-prior miss.",
+    "static_prior_role": "simulation_foundation"
+  },
+  "risk_discovery_value_function": {
+    "formula": "recovered_static_prior_miss - false_alarm_penalty - guard_violation_penalty - overfit_penalty",
+    "optimization_target": "auditable_risk_discovery_not_raw_accuracy_superiority"
+  },
+  "risk_flags": [
+    "not_accuracy_superiority_evidence",
+    "not_field_validated",
+    "not_runtime_default"
+  ],
+  "run_id": "r6-gap-closure-current-001",
+  "schema_version": "r6-theory-framework-v1",
+  "status": "theory_framework_ready"
+}
