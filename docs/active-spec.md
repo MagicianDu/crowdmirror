@@ -65,6 +65,7 @@ R6 必须同时满足：
 4. `decision-value metrics`
 5. `risk-discovery holdout validation`
 6. `risk-discovery threshold sweep / false-alarm discriminator diagnosis`
+7. `Interaction Signal Validity Score / holdout validation`
 
 不再把“继续增加 public proxy 数量”作为默认目标；只有当新增数据能触发 acceptance gate，才进入数据接入。
 
@@ -94,3 +95,4 @@ R6 必须同时满足：
 - `interaction_delta_threshold` 调参不足以解释当前 false alarm；若 threshold sweep 显示真风险和误报共享相同 delta，下一步必须做非阈值 discriminator 或寻找 in-condition holdout。
 - `false-alarm discriminator` 已实现不等于 R6 通过；当前 case/source family 候选只算 diagnostic-only，不能作为核心规则。
 - `Interaction Signal Validity Score` 是当前非阈值主 gate；它必须显式排除 source/family 标签，并通过独立 holdout 或 field outcome 复核后才能从 diagnostic 升级。
+- `Interaction Signal Validity holdout validation` 已实现不等于 R6 通过；当前结论是 `source_supported_count=1`、`eligible_independent_holdout_count=2`、`passed_holdout_count=0`、`contradicted_holdout_count=2`，因此正向信号仍停留在 diagnostic。

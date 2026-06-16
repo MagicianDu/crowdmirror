@@ -28,6 +28,9 @@ from experiments.r6_in_condition_holdout_ledger import (
 from experiments.r6_interaction_signal_validity import (
     build_r6_interaction_signal_validity,
 )
+from experiments.r6_interaction_signal_validity_holdout_validation import (
+    build_r6_interaction_signal_validity_holdout_validation,
+)
 from experiments.r6_product_evidence_cards import build_r6_product_evidence_cards
 from experiments.r6_risk_discovery_holdout_validation import (
     build_r6_risk_discovery_holdout_validation,
@@ -51,6 +54,7 @@ def build_r6_risk_discovery_value_report(
     risk_discovery_threshold_sweep: dict[str, Any] | None = None,
     false_alarm_discriminator: dict[str, Any] | None = None,
     interaction_signal_validity: dict[str, Any] | None = None,
+    interaction_signal_validity_holdout_validation: dict[str, Any] | None = None,
     risk_discovery_holdout_validation: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
@@ -97,6 +101,14 @@ def build_r6_risk_discovery_value_report(
             artifact_id=f"{artifact_id}-interaction-signal-validity",
             run_id=run_id,
             decision_value_metrics=decision_value_metrics,
+        )
+    )
+    interaction_signal_validity_holdout_validation = (
+        interaction_signal_validity_holdout_validation
+        or build_r6_interaction_signal_validity_holdout_validation(
+            artifact_id=f"{artifact_id}-interaction-signal-validity-holdout-validation",
+            run_id=run_id,
+            interaction_signal_validity=interaction_signal_validity,
         )
     )
     risk_discovery_holdout_validation = (
@@ -146,6 +158,12 @@ def build_r6_risk_discovery_value_report(
                 "current_proxy_supported_signal_observed"
             ]
         ),
+        "interaction_signal_validity_holdout_validation_present": True,
+        "interaction_signal_validity_holdout_passed": (
+            interaction_signal_validity_holdout_validation["acceptance_gates"][
+                "interaction_signal_validity_holdout_passed"
+            ]
+        ),
         "risk_discovery_holdout_validation_present": True,
         "risk_discovery_holdout_passed": risk_discovery_holdout_validation[
             "acceptance_gates"
@@ -162,6 +180,9 @@ def build_r6_risk_discovery_value_report(
     interaction_signal_validity_generalized = interaction_signal_validity[
         "acceptance_gates"
     ]["interaction_signal_validity_generalized"]
+    signal_validity_holdout_passed = interaction_signal_validity_holdout_validation[
+        "acceptance_gates"
+    ]["interaction_signal_validity_holdout_passed"]
     report = {
         "schema_version": R6_RISK_DISCOVERY_VALUE_REPORT_SCHEMA_VERSION,
         "artifact_id": artifact_id,
@@ -249,6 +270,29 @@ def build_r6_risk_discovery_value_report(
                 interaction_signal_validity_generalized
             ),
         },
+        "interaction_signal_validity_holdout_summary": {
+            "artifact_id": interaction_signal_validity_holdout_validation["artifact_id"],
+            "status": interaction_signal_validity_holdout_validation["status"],
+            "source_supported_count": interaction_signal_validity_holdout_validation[
+                "summary"
+            ]["source_supported_count"],
+            "eligible_independent_holdout_count": (
+                interaction_signal_validity_holdout_validation["summary"][
+                    "eligible_independent_holdout_count"
+                ]
+            ),
+            "passed_holdout_count": interaction_signal_validity_holdout_validation[
+                "summary"
+            ]["passed_holdout_count"],
+            "contradicted_holdout_count": (
+                interaction_signal_validity_holdout_validation["summary"][
+                    "contradicted_holdout_count"
+                ]
+            ),
+            "interaction_signal_validity_holdout_passed": (
+                signal_validity_holdout_passed
+            ),
+        },
         "holdout_validation_summary": {
             "artifact_id": risk_discovery_holdout_validation["artifact_id"],
             "status": risk_discovery_holdout_validation["status"],
@@ -275,6 +319,7 @@ def build_r6_risk_discovery_value_report(
                 decision_value_passed
                 and holdout_passed
                 and interaction_signal_validity_generalized
+                and signal_validity_holdout_passed
             ),
             "reason": (
                 "Static prior is the simulator base. R6 value is judged by whether "
@@ -295,6 +340,9 @@ def build_r6_risk_discovery_value_report(
             risk_discovery_threshold_sweep=risk_discovery_threshold_sweep,
             false_alarm_discriminator=false_alarm_discriminator,
             interaction_signal_validity=interaction_signal_validity,
+            interaction_signal_validity_holdout_validation=(
+                interaction_signal_validity_holdout_validation
+            ),
             risk_discovery_holdout_validation=risk_discovery_holdout_validation,
         ),
         "source_refs": [
@@ -305,6 +353,7 @@ def build_r6_risk_discovery_value_report(
             risk_discovery_threshold_sweep["artifact_id"],
             false_alarm_discriminator["artifact_id"],
             interaction_signal_validity["artifact_id"],
+            interaction_signal_validity_holdout_validation["artifact_id"],
             risk_discovery_holdout_validation["artifact_id"],
         ],
         "claim_boundaries": [
@@ -344,6 +393,7 @@ def _blocking_gaps(
     risk_discovery_threshold_sweep: dict[str, Any],
     false_alarm_discriminator: dict[str, Any],
     interaction_signal_validity: dict[str, Any],
+    interaction_signal_validity_holdout_validation: dict[str, Any],
     risk_discovery_holdout_validation: dict[str, Any],
 ) -> list[str]:
     gaps = [
@@ -364,6 +414,7 @@ def _blocking_gaps(
         )
     )
     gaps.extend(interaction_signal_validity["blocking_gaps"])
+    gaps.extend(interaction_signal_validity_holdout_validation["blocking_gaps"])
     gaps.extend(risk_discovery_holdout_validation["blocking_gaps"])
     if not decision_value_metrics["decision_value_passed"]:
         gaps.append("needs_decision_value_metric_to_pass")

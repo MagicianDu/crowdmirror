@@ -213,6 +213,8 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "interaction_signal_validity_present": True,
         "interaction_signal_validity_generalized": False,
         "current_proxy_supported_interaction_signal_observed": True,
+        "interaction_signal_validity_holdout_validation_present": True,
+        "interaction_signal_validity_holdout_passed": False,
         "risk_discovery_value_report_present": True,
         "static_prior_role_reframed_as_foundation": True,
         "risk_discovery_path_should_continue": True,
@@ -255,6 +257,7 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "risk_discovery_holdout_passed": False,
         "false_alarm_discriminator_ready": False,
         "interaction_signal_validity_generalized": False,
+        "interaction_signal_validity_holdout_passed": False,
     }
     assert report["decision_value_metrics_summary"] == {
         "artifact_id": "r6-evidence-report-test-decision-value-metrics",
@@ -291,6 +294,15 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "accepted_count": 0,
         "interaction_signal_validity_generalized": False,
     }
+    assert report["interaction_signal_validity_holdout_summary"] == {
+        "artifact_id": "r6-evidence-report-test-interaction-signal-validity-holdout-validation",
+        "status": "interaction_signal_validity_holdout_failed_current_public_proxies",
+        "source_supported_count": 1,
+        "eligible_independent_holdout_count": 2,
+        "passed_holdout_count": 0,
+        "contradicted_holdout_count": 2,
+        "interaction_signal_validity_holdout_passed": False,
+    }
     assert report["risk_discovery_holdout_validation_summary"] == {
         "artifact_id": "r6-evidence-report-test-risk-discovery-holdout-validation",
         "status": "risk_discovery_holdout_failed_current_public_proxies",
@@ -315,7 +327,7 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "status": "ccf_a_readiness_evaluated",
         "ccf_a_main_contribution_ready": False,
         "readiness_level": "L3_risk_discovery_framework_needs_validation",
-        "failed_required_gate_count": 5,
+        "failed_required_gate_count": 6,
     }
     assert report["ablation_summary"]["prior_anchored_beats_no_interaction"] is True
     assert report["multi_proxy_summary"] == {
@@ -353,6 +365,7 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "remaining_gaps"
     ]
     assert "needs_signal_validity_holdout_validation" in report["remaining_gaps"]
+    assert "needs_independent_supported_signal_holdout" in report["remaining_gaps"]
     assert "needs_positive_same_family_source_signal" in report["remaining_gaps"]
     assert "needs_field_outcome_validation" in report["remaining_gaps"]
     assert "same_case_feedback_not_global_acceptance" in report["risk_flags"]

@@ -91,7 +91,8 @@ def build_r6_ccfa_readiness_report(
                 "framework. The static prior is the simulation base, while interaction "
                 "adds auditable risk hypotheses. The framework is not CCF-A-ready until "
                 "risk-discovery holdout validation, decision-value metrics, generalized "
-                "interaction signal validity, and field outcome validation are present."
+                "interaction signal validity, signal holdout validation, and field "
+                "outcome validation are present."
             ),
         },
         "readiness_checklist": checklist,
@@ -148,6 +149,7 @@ def build_r6_ccfa_readiness_report(
             "risk_discovery_holdout_validation_failed",
             "decision_value_metric_partial",
             "interaction_signal_validity_not_generalized",
+            "interaction_signal_validity_holdout_not_validated",
             "field_validation_missing",
             "runtime_update_guard_not_passed",
         ],
@@ -295,6 +297,34 @@ def _readiness_checklist(
                     "interaction_signal_validity_generalized"
                 ]
                 else "needs_interaction_signal_validity_generalization"
+            ),
+        },
+        {
+            "gate_id": "interaction_signal_validity_holdout_validation",
+            "required_for_ccf_a": True,
+            "status": (
+                "passed"
+                if risk_discovery_value_report[
+                    "interaction_signal_validity_holdout_summary"
+                ]["interaction_signal_validity_holdout_passed"]
+                else "failed"
+            ),
+            "evidence": (
+                "source_supported_count="
+                f"{risk_discovery_value_report['interaction_signal_validity_holdout_summary']['source_supported_count']}; "
+                "eligible_independent_holdout_count="
+                f"{risk_discovery_value_report['interaction_signal_validity_holdout_summary']['eligible_independent_holdout_count']}; "
+                "passed_holdout_count="
+                f"{risk_discovery_value_report['interaction_signal_validity_holdout_summary']['passed_holdout_count']}; "
+                "contradicted_holdout_count="
+                f"{risk_discovery_value_report['interaction_signal_validity_holdout_summary']['contradicted_holdout_count']}"
+            ),
+            "blocking_gap": (
+                ""
+                if risk_discovery_value_report[
+                    "interaction_signal_validity_holdout_summary"
+                ]["interaction_signal_validity_holdout_passed"]
+                else "needs_signal_validity_holdout_validation"
             ),
         },
         {

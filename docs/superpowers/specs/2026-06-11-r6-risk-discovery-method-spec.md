@@ -107,6 +107,11 @@ candidate_update = f(error_attribution, failure_boundary)
    - 用 segment pattern、mechanism alignment、counterfactual sensitivity、prior uncertainty、holdout consistency 五个维度评估交互信号有效性
    - `source_key`、`target_case_id`、`target_case_type` 只能用于 audit/report，不能作为评分特征
 
+6. `r6_interaction_signal_validity_holdout_validation.py`
+   - 输出 `r6-interaction-signal-validity-holdout-validation-v1`
+   - 固定 Interaction Signal Validity 的评分规则，把 source-supported signal 放到独立 public proxy holdout 上复核
+   - holdout 标签不参与 source 规则生成，只用于验收 `interaction_signal_validity_holdout_passed`
+
 总链路 artifact：
 
 - `r6_risk_discovery_value_report.py`
@@ -127,6 +132,7 @@ candidate_update = f(error_attribution, failure_boundary)
 | `threshold_tuning_sufficient` | false | HTOPS 真风险和 ANES 误报的 `interaction_delta_vs_static` 都是 0.07，阈值无法分离 |
 | `false_alarm_discriminator_ready` | false | 当前 case/source family 候选能分开 1 个 true positive 与 2 个 false alarm，但无 in-family positive signal 或 holdout，因此不能验收 |
 | `interaction_signal_validity_generalized` | false | HTOPS 为 `diagnostic_only`，ANES health / climate 为 `reject_as_likely_false_alarm`，但 `accepted_count=0`，尚未在 holdout/field outcome 上泛化 |
+| `interaction_signal_validity_holdout_passed` | false | 1 个 source-supported signal 在 2 个独立 public proxy holdout 上 0 个通过、2 个 contradicted，不能升级为泛化规则 |
 
 当前状态：
 
@@ -136,6 +142,7 @@ risk_discovery_holdout_failed_current_public_proxies
 threshold_sweep_no_separating_rule
 false_alarm_discriminator_diagnostic_only
 interaction_signal_validity_diagnostic_only
+interaction_signal_validity_holdout_failed_current_public_proxies
 ```
 
 ## 5. 当前 Claim Boundary
@@ -148,6 +155,7 @@ interaction_signal_validity_diagnostic_only
 - R6 已证明当前 false alarm 不是简单调 `interaction_delta_threshold` 能解决的问题；
 - R6 已诊断出当前 case/source family 规则可以分离 public proxy 样本，但这更像过拟合记忆而非泛化能力；
 - R6 已实现不依赖 source/family 标签的 Interaction Signal Validity Score，并识别出一个 current-proxy-supported 正向信号和两个 likely false alarm；
+- R6 已实现 Interaction Signal Validity holdout validation，并证明当前 source-supported 正向信号没有通过独立 public proxy holdout；
 - R6 能阻断未通过 holdout 的候选更新。
 
 不能宣称：
@@ -156,27 +164,30 @@ interaction_signal_validity_diagnostic_only
 - R6 已经具备 CCF-A 主贡献算法水准；
 - R6 已经通过 same-family risk-discovery holdout；
 - R6 已经形成可泛化 Interaction Signal Validity 规则；
+- R6 已经通过 Interaction Signal Validity 的独立 holdout validation；
 - R6 可以进入 runtime default update。
 
 ## 6. CCF-A Gate
 
-R6 达到 CCF-A 主贡献前，至少需要关闭五个 gap：
+R6 达到 CCF-A 主贡献前，至少需要关闭六个 gap：
 
 1. `needs_formal_problem_and_theory_section`
 2. `needs_decision_value_metric_to_pass`
 3. `needs_risk_discovery_holdout_validation`
 4. `needs_interaction_signal_validity_generalization`
-5. `needs_field_outcome_validation`
+5. `needs_signal_validity_holdout_validation`
+6. `needs_field_outcome_validation`
 
 其中第 2 项已经从“指标缺失”升级为“指标已实现但未通过”。
 第 4 项已经从“缺少非阈值方向”升级为“Interaction Signal Validity 诊断组件已实现，但当前只在 public proxy 上形成 supported/rejected 诊断，尚未泛化验收”。
+第 5 项已经从“未显式定义”升级为“holdout validation 已实现但当前未通过”。
 
 ## 7. 下一步实验要求
 
 下一步不应继续泛泛增加 proxy，也不应只调阈值。当前 threshold sweep 已显示 true signal
 和 false alarm 共享相同 `interaction_delta_vs_static=0.07`；第一版 false-alarm discriminator
 已证明 case/source family 规则可以分开当前样本，但属于 diagnostic-only。Interaction Signal Validity
-已经把主线从 family gate 升级为通用评分；后续必须验证这些评分维度是否能在独立 holdout 或 field outcome 上泛化。新增 holdout 应满足以下条件：
+已经把主线从 family gate 升级为通用评分；新增 holdout validation 显示当前 HTOPS 正向信号在 ANES health / climate heldout 上未通过。后续必须验证这些评分维度是否能在独立 supported holdout 或 field outcome 上泛化。新增 holdout 应满足以下条件：
 
 1. same-family；
 2. source case 有 positive risk-discovery signal；

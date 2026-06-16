@@ -23,6 +23,9 @@ from experiments.r6_in_condition_holdout_ledger import build_r6_in_condition_hol
 from experiments.r6_interaction_signal_validity import (
     build_r6_interaction_signal_validity,
 )
+from experiments.r6_interaction_signal_validity_holdout_validation import (
+    build_r6_interaction_signal_validity_holdout_validation,
+)
 from experiments.r6_mechanism_cap_ablation import build_r6_mechanism_cap_ablation
 from experiments.r6_product_evidence_cards import build_r6_product_evidence_cards
 from experiments.r6_product_report import build_r6_product_report
@@ -136,6 +139,13 @@ def build_r6_evidence_report(
         run_id=run_id,
         decision_value_metrics=decision_value_metrics,
     )
+    interaction_signal_validity_holdout_validation = (
+        build_r6_interaction_signal_validity_holdout_validation(
+            artifact_id=f"{artifact_id}-interaction-signal-validity-holdout-validation",
+            run_id=run_id,
+            interaction_signal_validity=interaction_signal_validity,
+        )
+    )
     risk_discovery_value = build_r6_risk_discovery_value_report(
         artifact_id=f"{artifact_id}-risk-discovery-value-report",
         run_id=run_id,
@@ -146,6 +156,9 @@ def build_r6_evidence_report(
         risk_discovery_threshold_sweep=risk_discovery_threshold_sweep,
         false_alarm_discriminator=false_alarm_discriminator,
         interaction_signal_validity=interaction_signal_validity,
+        interaction_signal_validity_holdout_validation=(
+            interaction_signal_validity_holdout_validation
+        ),
         risk_discovery_holdout_validation=risk_discovery_holdout_validation,
     )
     ccfa_readiness = build_r6_ccfa_readiness_report(
@@ -362,6 +375,31 @@ def build_r6_evidence_report(
                 ]
             ),
         },
+        "interaction_signal_validity_holdout_summary": {
+            "artifact_id": interaction_signal_validity_holdout_validation["artifact_id"],
+            "status": interaction_signal_validity_holdout_validation["status"],
+            "source_supported_count": interaction_signal_validity_holdout_validation[
+                "summary"
+            ]["source_supported_count"],
+            "eligible_independent_holdout_count": (
+                interaction_signal_validity_holdout_validation["summary"][
+                    "eligible_independent_holdout_count"
+                ]
+            ),
+            "passed_holdout_count": interaction_signal_validity_holdout_validation[
+                "summary"
+            ]["passed_holdout_count"],
+            "contradicted_holdout_count": (
+                interaction_signal_validity_holdout_validation["summary"][
+                    "contradicted_holdout_count"
+                ]
+            ),
+            "interaction_signal_validity_holdout_passed": (
+                interaction_signal_validity_holdout_validation["acceptance_gates"][
+                    "interaction_signal_validity_holdout_passed"
+                ]
+            ),
+        },
         "risk_discovery_value_summary": {
             "artifact_id": risk_discovery_value["artifact_id"],
             "status": risk_discovery_value["status"],
@@ -386,6 +424,9 @@ def build_r6_evidence_report(
             "interaction_signal_validity_generalized": risk_discovery_value[
                 "interaction_signal_validity_summary"
             ]["interaction_signal_validity_generalized"],
+            "interaction_signal_validity_holdout_passed": risk_discovery_value[
+                "interaction_signal_validity_holdout_summary"
+            ]["interaction_signal_validity_holdout_passed"],
         },
         "ccfa_readiness_summary": {
             "artifact_id": ccfa_readiness["artifact_id"],
@@ -458,6 +499,12 @@ def build_r6_evidence_report(
                     "current_proxy_supported_signal_observed"
                 ]
             ),
+            "interaction_signal_validity_holdout_validation_present": True,
+            "interaction_signal_validity_holdout_passed": (
+                interaction_signal_validity_holdout_validation["acceptance_gates"][
+                    "interaction_signal_validity_holdout_passed"
+                ]
+            ),
             "risk_discovery_value_report_present": True,
             "static_prior_role_reframed_as_foundation": (
                 risk_discovery_value["objective_reframe"]["static_prior_role"]
@@ -487,6 +534,9 @@ def build_r6_evidence_report(
             risk_discovery_threshold_sweep=risk_discovery_threshold_sweep,
             false_alarm_discriminator=false_alarm_discriminator,
             interaction_signal_validity=interaction_signal_validity,
+            interaction_signal_validity_holdout_validation=(
+                interaction_signal_validity_holdout_validation
+            ),
             risk_discovery_value=risk_discovery_value,
             ccfa_readiness=ccfa_readiness,
         ),
@@ -506,6 +556,7 @@ def build_r6_evidence_report(
             risk_discovery_threshold_sweep["artifact_id"],
             false_alarm_discriminator["artifact_id"],
             interaction_signal_validity["artifact_id"],
+            interaction_signal_validity_holdout_validation["artifact_id"],
             risk_discovery_value["artifact_id"],
             ccfa_readiness["artifact_id"],
             ablation["artifact_id"],
@@ -553,6 +604,7 @@ def _remaining_gaps_with_method_gates(
     risk_discovery_threshold_sweep: dict[str, Any],
     false_alarm_discriminator: dict[str, Any],
     interaction_signal_validity: dict[str, Any],
+    interaction_signal_validity_holdout_validation: dict[str, Any],
     risk_discovery_value: dict[str, Any],
     ccfa_readiness: dict[str, Any],
 ) -> list[str]:
@@ -579,6 +631,7 @@ def _remaining_gaps_with_method_gates(
         )
     )
     gaps.extend(interaction_signal_validity["blocking_gaps"])
+    gaps.extend(interaction_signal_validity_holdout_validation["blocking_gaps"])
     gaps.extend(risk_discovery_value["blocking_gaps"])
     gaps.extend(ccfa_readiness["blocking_gaps"])
     return sorted(set(gaps))

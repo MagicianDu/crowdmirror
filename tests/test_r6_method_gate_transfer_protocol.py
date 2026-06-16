@@ -147,6 +147,8 @@ def test_r6_risk_discovery_value_report_keeps_static_prior_as_foundation():
         "interaction_signal_validity_present": True,
         "interaction_signal_validity_generalized": False,
         "current_proxy_supported_interaction_signal_observed": True,
+        "interaction_signal_validity_holdout_validation_present": True,
+        "interaction_signal_validity_holdout_passed": False,
         "risk_discovery_holdout_validation_present": True,
         "risk_discovery_holdout_passed": False,
         "field_outcome_validated": False,
@@ -187,6 +189,15 @@ def test_r6_risk_discovery_value_report_keeps_static_prior_as_foundation():
         "accepted_count": 0,
         "interaction_signal_validity_generalized": False,
     }
+    assert report["interaction_signal_validity_holdout_summary"] == {
+        "artifact_id": "r6-risk-discovery-value-test-interaction-signal-validity-holdout-validation",
+        "status": "interaction_signal_validity_holdout_failed_current_public_proxies",
+        "source_supported_count": 1,
+        "eligible_independent_holdout_count": 2,
+        "passed_holdout_count": 0,
+        "contradicted_holdout_count": 2,
+        "interaction_signal_validity_holdout_passed": False,
+    }
     assert report["holdout_validation_summary"] == {
         "artifact_id": "r6-risk-discovery-value-test-risk-discovery-holdout-validation",
         "status": "risk_discovery_holdout_failed_current_public_proxies",
@@ -214,6 +225,7 @@ def test_r6_risk_discovery_value_report_keeps_static_prior_as_foundation():
         "blocking_gaps"
     ]
     assert "needs_signal_validity_holdout_validation" in report["blocking_gaps"]
+    assert "needs_independent_supported_signal_holdout" in report["blocking_gaps"]
     assert "needs_positive_same_family_source_signal" in report["blocking_gaps"]
     assert "needs_runtime_update_guard_before_default_enablement" in report[
         "blocking_gaps"
@@ -302,7 +314,8 @@ def test_r6_ccfa_readiness_report_says_not_ready_for_ccf_a_main_contribution():
             "framework. The static prior is the simulation base, while interaction "
             "adds auditable risk hypotheses. The framework is not CCF-A-ready until "
             "risk-discovery holdout validation, decision-value metrics, generalized "
-            "interaction signal validity, and field outcome validation are present."
+            "interaction signal validity, signal holdout validation, and field "
+            "outcome validation are present."
         ),
     }
     by_gate = {item["gate_id"]: item for item in report["readiness_checklist"]}
@@ -311,21 +324,26 @@ def test_r6_ccfa_readiness_report_says_not_ready_for_ccf_a_main_contribution():
     assert by_gate["decision_value_metric"]["status"] == "partial"
     assert by_gate["risk_discovery_holdout_validation"]["status"] == "failed"
     assert by_gate["interaction_signal_validity_generalized"]["status"] == "failed"
+    assert by_gate["interaction_signal_validity_holdout_validation"]["status"] == (
+        "failed"
+    )
     assert by_gate["runtime_update_guard"]["required_for_ccf_a"] is False
     assert by_gate["runtime_update_guard"]["status"] == "failed"
     assert by_gate["field_or_real_outcome_validation"]["status"] == "failed"
     assert by_gate["product_claim_boundary"]["status"] == "passed"
-    assert report["failed_required_gate_count"] == 5
+    assert report["failed_required_gate_count"] == 6
     assert "needs_risk_discovery_holdout_validation" in report["blocking_gaps"]
     assert "needs_decision_value_metric_to_pass" in report["blocking_gaps"]
     assert "needs_interaction_signal_validity_generalization" in report[
         "blocking_gaps"
     ]
+    assert "needs_signal_validity_holdout_validation" in report["blocking_gaps"]
     assert "needs_field_outcome_validation" in report["blocking_gaps"]
     assert "needs_stable_superiority_over_strong_static_prior" not in report[
         "blocking_gaps"
     ]
     assert "not_ccf_a_ready" in report["risk_flags"]
+    assert "interaction_signal_validity_holdout_not_validated" in report["risk_flags"]
     json.dumps(report, allow_nan=False)
 
 
@@ -380,6 +398,11 @@ def test_r6_new_method_gate_clis_write_artifacts(tmp_path):
             "experiments/r6_interaction_signal_validity.py",
             "r6-interaction-signal-validity-cli",
             "r6-interaction-signal-validity-v1",
+        ),
+        (
+            "experiments/r6_interaction_signal_validity_holdout_validation.py",
+            "r6-interaction-signal-validity-holdout-validation-cli",
+            "r6-interaction-signal-validity-holdout-validation-v1",
         ),
     ]
     for script, artifact_id, schema_version in commands:
