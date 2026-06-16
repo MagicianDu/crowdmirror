@@ -198,6 +198,8 @@
 42. R6.2 gap closure 第一阶段已接入 Product/evidence 链路：theory/data/method/product gap 已被结构化管理；但 `field_outcome_validated=false`、`runtime_default_allowed=false`、`ccf_a_main_contribution_ready=false`，仍不能声明 field validation 完成、runtime default 可开启或 R6 已达到 CCF-A 主贡献。
 43. 项目目标已调整为 Product-first：Research 不再默认冲 CCF-A 主贡献，而是作为理论、证据边界、误差归因和方法护栏；Product 是主交付目标，后续必须补齐 scenario intake、story package、decision report 和 outcome review 闭环。
 44. Product 下一阶段验收不是 demo 文案，而是 source-backed artifact/API contract：所有客户可见 claim 必须绑定 source artifact，`static_narrative_fallback_allowed=false` 继续保持。
+45. Product-first 第一阶段五个合同/证据 artifacts 已落盘：readiness index、scenario intake、story package、decision report、outcome review；其中 readiness 仍是 partial，scenario/story/decision 是 guarded ready，outcome review 是 update blocked。
+46. 当前可对 Product 侧声明的是“可审计决策链路已搭起”，不是“方法已 field validated”或“runtime default 可开启”；真实 outcome 回流只能生成 bounded candidate update，仍需 holdout/复核后才能默认启用。
 
 ## 可复用资产
 

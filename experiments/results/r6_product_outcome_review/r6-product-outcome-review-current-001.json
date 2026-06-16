@@ -1,0 +1,43 @@
+{
+  "artifact_id": "r6-product-outcome-review-current-001",
+  "candidate_update": {
+    "allowed_use": "review_artifact_and_followup_measurement_plan",
+    "blocked_use": "runtime_default_or_global_validation",
+    "scope": "same_outcome_review_only"
+  },
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "error_attribution": {
+    "interaction_error": "requires later metric and source review before changing interaction assumptions",
+    "risk_signal_classification": "candidate classification only until source audit and holdout",
+    "static_prior_error": "requires later metric and source review before changing priors"
+  },
+  "observed_outcome": {
+    "measurement_window": "post_release_30d",
+    "observed_signal": "risk_signal_requires_review",
+    "outcome_id": "generic-outcome-review-001",
+    "source_level": "field_proxy"
+  },
+  "review_outputs": [
+    "static_prior_error",
+    "interaction_error",
+    "risk_signal_classification",
+    "error_attribution",
+    "candidate_update",
+    "update_gate"
+  ],
+  "risk_flags": [
+    "same_outcome_review_not_global_validation",
+    "field_or_proxy_source_requires_audit"
+  ],
+  "run_id": "r6-product-first-current-001",
+  "schema_version": "r6-product-outcome-review-v1",
+  "source_refs": [
+    "generic-outcome-review-001"
+  ],
+  "status": "outcome_review_ready_update_blocked",
+  "update_gate": {
+    "candidate_update_generated": true,
+    "requires_holdout_before_default": true,
+    "runtime_default_allowed": false
+  }
+}

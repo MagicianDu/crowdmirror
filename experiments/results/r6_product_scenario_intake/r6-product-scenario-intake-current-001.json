@@ -1,0 +1,40 @@
+{
+  "artifact_id": "r6-product-scenario-intake-current-001",
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "product_contract": {
+    "can_drive_product_story_package": true,
+    "requires_evidence_cards": true,
+    "requires_static_prior_baseline": true,
+    "vertical_overfit_allowed": false
+  },
+  "risk_flags": [
+    "case_specific_input_not_research_method",
+    "scenario_assumptions_require_customer_review"
+  ],
+  "run_id": "r6-product-first-current-001",
+  "scenario": {
+    "alternative_scenarios": [
+      "no_change",
+      "phased_release",
+      "support_credit"
+    ],
+    "assumptions": [
+      "static prior is available",
+      "interaction risk is diagnostic"
+    ],
+    "change_type": "price",
+    "communication_plan": "announce_change_with_reason",
+    "decision_question": "Which population segments need risk review before release?",
+    "domain_binding": "case_input_not_method_definition",
+    "impact_dimensions": [
+      "price_sensitivity",
+      "fairness_concern",
+      "churn_risk"
+    ],
+    "method_family": "price_or_rule_change_reaction",
+    "scenario_id": "generic-price-or-rule-change-001",
+    "target_population": "affected_customers_or_public"
+  },
+  "schema_version": "r6-product-scenario-intake-v1",
+  "status": "scenario_intake_ready"
+}

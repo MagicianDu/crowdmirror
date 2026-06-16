@@ -1,0 +1,40 @@
+{
+  "allowed_claims": [
+    "R6 can support bounded pre-release risk discussion.",
+    "R6 evidence cards are available as customer-facing claim boundaries."
+  ],
+  "artifact_id": "r6-product-readiness-index-current-001",
+  "blocked_claims": [
+    "field validation \u5df2\u5b8c\u6210",
+    "runtime default \u53ef\u4ee5\u5f00\u542f",
+    "R6 \u5df2\u8fbe\u5230 CCF-A \u4e3b\u8d21\u732e",
+    "\u4ea4\u4e92\u4eff\u771f\u7a33\u5b9a\u6bd4\u9759\u6001\u5148\u9a8c\u66f4\u51c6"
+  ],
+  "blocking_gaps": [
+    "needs_product_scenario_intake",
+    "needs_customer_decision_report",
+    "needs_outcome_review_contract",
+    "needs_product_ui_or_api_contract"
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "product_goal": {
+    "not_default_goal": "ccf_a_main_contribution",
+    "primary": "usable_pre_release_risk_assessment_product",
+    "research_role": "theory_and_evidence_boundary_support"
+  },
+  "readiness_gates": {
+    "decision_report_ready": false,
+    "evidence_cards_ready": true,
+    "field_outcome_validated": false,
+    "outcome_review_ready": false,
+    "runtime_default_allowed": false,
+    "scenario_intake_ready": false,
+    "static_narrative_fallback_allowed": false
+  },
+  "run_id": "r6-product-first-current-001",
+  "schema_version": "r6-product-readiness-index-v1",
+  "source_refs": [
+    "r6-product-readiness-index-current-001-evidence-report"
+  ],
+  "status": "product_first_readiness_partial"
+}
