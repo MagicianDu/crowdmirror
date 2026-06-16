@@ -418,6 +418,28 @@ def test_r6_product_evidence_cards_reject_dangerous_gap_closure_gates(gate: str)
         )
 
 
+def test_r6_product_evidence_cards_reject_conflicting_runtime_default_gates():
+    gap_closure_report = build_r6_gap_closure_report(
+        artifact_id="r6-product-cards-gap-closure-report",
+        run_id="r6-gap-closure-run",
+    )
+    gap_closure_report = {
+        **gap_closure_report,
+        "acceptance_gates": {
+            **gap_closure_report["acceptance_gates"],
+            "runtime_default_allowed": False,
+            "operator_v2_runtime_default_allowed": True,
+        },
+    }
+
+    with pytest.raises(ValueError, match="operator_v2_runtime_default_allowed"):
+        build_r6_product_evidence_cards(
+            artifact_id="r6-product-cards-gap-closure-test",
+            run_id="r6-gap-closure-run",
+            gap_closure_report=gap_closure_report,
+        )
+
+
 def test_r6_product_evidence_cards_reject_blank_gap_closure_artifact_id():
     gap_closure_report = {
         **build_r6_gap_closure_report(

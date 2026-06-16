@@ -405,13 +405,6 @@ def _require_gate_false(
 
 
 def _require_runtime_default_blocked(gates: dict[str, Any]) -> None:
-    if "runtime_default_allowed" in gates:
-        _require_gate_false(
-            gates,
-            field="gap_closure_report.acceptance_gates.runtime_default_allowed",
-            gate="runtime_default_allowed",
-        )
-        return
     _require_gate_false(
         gates,
         field=(
@@ -420,6 +413,12 @@ def _require_runtime_default_blocked(gates: dict[str, Any]) -> None:
         ),
         gate="operator_v2_runtime_default_allowed",
     )
+    if "runtime_default_allowed" in gates:
+        _require_gate_false(
+            gates,
+            field="gap_closure_report.acceptance_gates.runtime_default_allowed",
+            gate="runtime_default_allowed",
+        )
 
 
 def _require_non_empty_string_list(value: Any, *, field: str) -> list[str]:
