@@ -196,6 +196,8 @@
 40. R6 mechanism-driven MVP 第一轮已实现，当前结论是 `mechanism_research_diagnostic_only`：机制传播 trace 能展示区别于静态先验的动态路径，但 mechanism ablation 仍是 1 个 positive、2 个 regression，behavioral update operator 被 holdout gate 阻断，不能作为 CCF-A 主贡献或 runtime default。
 41. Product guard 已保留并扩展：Product evidence cards 能展示 mechanism propagation path 和 behavioral update guard，但 blocked claims 继续禁止 field validation、accuracy superiority、automatic runtime update。
 42. R6.2 gap closure 第一阶段已接入 Product/evidence 链路：theory/data/method/product gap 已被结构化管理；但 `field_outcome_validated=false`、`runtime_default_allowed=false`、`ccf_a_main_contribution_ready=false`，仍不能声明 field validation 完成、runtime default 可开启或 R6 已达到 CCF-A 主贡献。
+43. 项目目标已调整为 Product-first：Research 不再默认冲 CCF-A 主贡献，而是作为理论、证据边界、误差归因和方法护栏；Product 是主交付目标，后续必须补齐 scenario intake、story package、decision report 和 outcome review 闭环。
+44. Product 下一阶段验收不是 demo 文案，而是 source-backed artifact/API contract：所有客户可见 claim 必须绑定 source artifact，`static_narrative_fallback_allowed=false` 继续保持。
 
 ## 可复用资产
 
@@ -224,15 +226,17 @@
 1. 旧 README、ROADMAP、paper 草案仍可能把开发目标拉回 persona / TextGrad / LCDU。
 2. `experiments/results` 被 `.gitignore` 的 `results/` 规则忽略，新 R6 证据 JSON 需要显式 `git add -f`。
 3. 当前 3 个 case 仍是 fixture-level evidence，不是真实跨域验证。
+4. 旧 CCF-A readiness 文档只能作为边界和历史评估，不再作为默认目标；后续优先做 Product 可用性、证据链、报告和 outcome review。
 
 R6 开发时必须只 stage 本轮明确修改的文件。
 
 ## 下一步
 
-1. Research 下一步按 `2026-06-16-r6-mechanism-driven-interaction-learning-design.md` 推进：先做 mechanism propagation trace，再做 behavioral update operator，最后接 outcome-feedback holdout validation。
-2. 数据侧不再泛泛增加 proxy；新增数据必须服务于机制传播验证、operator holdout 或 field outcome 复核。
-3. 方法侧停止继续优化当前 scoring candidate；它保留为 negative baseline 和 diagnostic gate。
-4. Product 侧保留并强化 `interaction_signal_validity_holdout_summary`、false-alarm diagnosis、blocked update reason 和 claim boundary，确保新 Research 方法不会污染 runtime default。
+1. Product 下一步按 `docs/superpowers/plans/2026-06-16-r6-product-first-solid-next-stage.md` 推进：先做 product readiness index、scenario intake、story package、decision report 和 outcome review。
+2. Research 下一步按 `2026-06-16-r6-mechanism-driven-interaction-learning-design.md` 保留方法支撑，但优先服务 Product 可信度和客户说服力。
+3. 数据侧不再泛泛增加 proxy；新增数据必须服务于 Product decision report、outcome review、operator holdout 或 field outcome 复核。
+4. 方法侧停止继续优化当前 scoring candidate；它保留为 negative baseline 和 diagnostic gate。
+5. Product 侧保留并强化 `interaction_signal_validity_holdout_summary`、false-alarm diagnosis、blocked update reason 和 claim boundary，确保新 Research 方法不会污染 runtime default。
 
 ## 验收边界
 

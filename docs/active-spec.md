@@ -8,6 +8,7 @@
 - `docs/superpowers/specs/2026-06-06-r6-method-gates-transfer-protocol-spec.md`
 - `docs/superpowers/specs/2026-06-11-r6-risk-discovery-method-spec.md`
 - `docs/superpowers/specs/2026-06-16-r6-mechanism-driven-interaction-learning-design.md`
+- `docs/superpowers/specs/2026-06-16-r6-product-first-solid-value-spec.md`
 
 工作名：
 
@@ -20,6 +21,7 @@
 - `2026-06-06-r6-method-gates-transfer-protocol-spec.md` 定义当前阶段的 evidence levels、acceptance gates、cross-case transfer protocol 和止损边界。
 - `2026-06-11-r6-risk-discovery-method-spec.md` 定义 R6 下一阶段的风险发现目标、decision-value 指标和 holdout validation 协议。
 - `2026-06-16-r6-mechanism-driven-interaction-learning-design.md` 定义当前 scoring candidate 止损后的方法升级方向：机制驱动交互传播、结构化 behavioral update operator、outcome-feedback learning，以及 Product guard 保留边界。
+- `2026-06-16-r6-product-first-solid-value-spec.md` 定义当前降级后的真实目标：不再默认冲 CCF-A 主贡献，而是把 Research 变成有理论和学术价值的产品可信度支撑，把 Product 作为主交付目标。
 
 后续实现若与历史 R2-R5、旧 prompt/persona 优化、单一 proxy 扩张路线冲突，以当前阶段 addendum 为准。
 
@@ -30,6 +32,17 @@
 当前目标是：
 
 > 基于真实人口、客户或群体先验，构建一个可审计的交互仿真沙盘，用于在政策、规则、价格、权益、服务变更发布前评估人群反应，并在真实结果回流后持续校正方法。
+
+当前优先级调整为 Product-first：
+
+> Research 要扎实，但不再以 CCF-A 主贡献为默认验收目标；Research 的职责是提供清晰理论定义、证据边界、误差归因和方法护栏。Product 是当前主交付目标，必须形成有价值、好用、可审计、能说服客户的发布前风险评估与发布后复盘产品。
+
+因此后续工作排序是：
+
+1. 先补完整 Product 工作流：输入场景、选择人群、运行静态先验与交互仿真、展示风险偏移、展示证据卡、导出决策报告。
+2. 再补 Product 可信度：所有结论必须绑定 artifact、source refs、claim boundary、blocked claims 和 remaining gaps。
+3. Research 继续作为技术壁垒支撑：强先验、交互传播、结果反馈学习、误差归因、失败边界和可审计 gate。
+4. 不再为了追逐 CCF-A 指标而牺牲产品可用性、解释性和客户工作流闭环。
 
 ## 当前方法边界
 
@@ -90,6 +103,9 @@ R6 必须同时满足：
 - 新代码和测试文件使用 `r6_` 前缀。
 - 测试优先运行 `tests/test_r6_*.py`。
 - 不运行或修改旧路线测试来证明 R6 成立，除非明确是在复用基础设施。
+- 新增 Product 能力必须先定义 artifact/API contract 和验收测试，不能只做 demo 文案。
+- Product 界面或报告不得出现无来源的静态叙事 fallback；所有客户可见结论必须来自可审计 artifact。
+- Product 优先交付顺序高于继续扩展 CCF-A readiness、LCDU、TextGrad 或 prompt/persona 优化路线。
 - Product 报告必须保留 claim boundary，不能展示未验证准确性宣称。
 - 候选更新必须通过当前阶段 addendum 定义的 evidence level 和 acceptance gate，才能从 diagnostic 升级。
 - same-case outcome feedback improvement 不得直接包装成可迁移更新。
