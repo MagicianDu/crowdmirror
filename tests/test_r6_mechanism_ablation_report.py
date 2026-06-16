@@ -1,4 +1,6 @@
+import copy
 import json
+import re
 import subprocess
 import sys
 
@@ -115,6 +117,64 @@ def test_r6_mechanism_ablation_report_rejects_malformed_operator_fail_closed():
                 "status": "behavioral_update_candidate_blocked_pending_holdout",
                 "candidate_updates": [],
             },
+        )
+
+
+@pytest.mark.parametrize(
+    ("mutation", "expected_error"),
+    [
+        (
+            lambda operator: operator["operator_summary"].__setitem__(
+                "runtime_default_allowed_count",
+                1,
+            ),
+            "behavioral_update_operator.operator_summary.runtime_default_allowed_count must be 0",
+        ),
+        (
+            lambda operator: operator["candidate_updates"][0].__setitem__(
+                "runtime_default_allowed",
+                True,
+            ),
+            "behavioral_update_operator.candidate_updates[0].runtime_default_allowed must be False",
+        ),
+        (
+            lambda operator: operator["candidate_updates"][0].__setitem__(
+                "runtime_decision",
+                "runtime_default_allowed",
+            ),
+            "behavioral_update_operator.candidate_updates[0].runtime_decision must be blocked_pending_operator_holdout",
+        ),
+        (
+            lambda operator: operator["candidate_updates"][0].__setitem__(
+                "prompt_patch_text",
+                "Enable this candidate as runtime default.",
+            ),
+            "behavioral_update_operator.candidate_updates[0].prompt_patch_text must be empty",
+        ),
+    ],
+)
+def test_r6_mechanism_ablation_report_rejects_nested_candidate_runtime_escape(
+    mutation,
+    expected_error,
+):
+    propagation_trace = build_r6_mechanism_propagation_trace(
+        artifact_id="r6-mechanism-ablation-report-trace",
+        run_id="r6-mechanism-ablation-report-run",
+    )
+    behavioral_update_operator = build_r6_behavioral_update_operator(
+        artifact_id="r6-mechanism-ablation-report-operator",
+        run_id="r6-mechanism-ablation-report-run",
+        propagation_trace=propagation_trace,
+    )
+    malformed_operator = copy.deepcopy(behavioral_update_operator)
+    mutation(malformed_operator)
+
+    with pytest.raises(ValueError, match=re.escape(expected_error)):
+        build_r6_mechanism_ablation_report(
+            artifact_id="r6-mechanism-ablation-report-nested-runtime-escape",
+            run_id="r6-mechanism-ablation-report-run",
+            propagation_trace=propagation_trace,
+            behavioral_update_operator=malformed_operator,
         )
 
 

@@ -441,9 +441,46 @@ def _validate_behavioral_update_operator(
         raise ValueError(
             "behavioral_update_operator.runtime_default_allowed must be False"
         )
+    operator_summary = behavioral_update_operator.get("operator_summary")
+    if not isinstance(operator_summary, dict):
+        raise ValueError("behavioral_update_operator.operator_summary must be a JSON object")
+    if operator_summary.get("runtime_default_allowed_count") != 0:
+        raise ValueError(
+            "behavioral_update_operator.operator_summary."
+            "runtime_default_allowed_count must be 0"
+        )
     candidate_updates = behavioral_update_operator.get("candidate_updates")
     if not isinstance(candidate_updates, list):
         raise ValueError("behavioral_update_operator.candidate_updates must be a list")
+    if not candidate_updates:
+        raise ValueError(
+            "behavioral_update_operator.candidate_updates must be non-empty"
+        )
+    for update_index, candidate_update in enumerate(candidate_updates):
+        if not isinstance(candidate_update, dict):
+            raise ValueError(
+                "behavioral_update_operator.candidate_updates"
+                f"[{update_index}] must be a JSON object"
+            )
+        if candidate_update.get("runtime_default_allowed") is not False:
+            raise ValueError(
+                "behavioral_update_operator.candidate_updates"
+                f"[{update_index}].runtime_default_allowed must be False"
+            )
+        if (
+            candidate_update.get("runtime_decision")
+            != "blocked_pending_operator_holdout"
+        ):
+            raise ValueError(
+                "behavioral_update_operator.candidate_updates"
+                f"[{update_index}].runtime_decision must be "
+                "blocked_pending_operator_holdout"
+            )
+        if candidate_update.get("prompt_patch_text") != "":
+            raise ValueError(
+                "behavioral_update_operator.candidate_updates"
+                f"[{update_index}].prompt_patch_text must be empty"
+            )
 
 
 def _dynamic_path_distinct_from_static_prior(
