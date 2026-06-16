@@ -277,6 +277,39 @@ def test_r6_mechanism_research_readiness_rejects_non_regression_status_mismatch(
         )
 
 
+def test_r6_mechanism_research_readiness_rejects_fake_holdout_identity():
+    operator_holdout_validation = build_r6_operator_holdout_validation(
+        artifact_id="r6-mechanism-research-readiness-fake-identity",
+        run_id="r6-mechanism-research-readiness-run",
+    )
+    malformed_holdout_validation = copy.deepcopy(operator_holdout_validation)
+    malformed_holdout_validation["holdout_trials"][0][
+        "candidate_update_id"
+    ] = "fake-operator"
+    malformed_holdout_validation["holdout_trials"][0][
+        "trial_id"
+    ] = "operator-holdout:fake-operator:anes"
+    malformed_holdout_validation["holdout_trials"][0][
+        "holdout_source_keys"
+    ] = ["fake_source"]
+    malformed_holdout_validation["holdout_trials"][0]["holdout_results"][0][
+        "source_key"
+    ] = "fake_source"
+
+    with pytest.raises(
+        ValueError,
+        match=(
+            "operator_holdout_validation.holdout_trials"
+            "\\[0\\].candidate_update_id must match current MVP"
+        ),
+    ):
+        build_r6_mechanism_research_readiness_report(
+            artifact_id="r6-mechanism-research-readiness-fake-identity",
+            run_id="r6-mechanism-research-readiness-run",
+            operator_holdout_validation=malformed_holdout_validation,
+        )
+
+
 def test_r6_operator_holdout_validation_cli_writes_artifact(tmp_path):
     output = tmp_path / "r6-operator-holdout-validation.json"
 

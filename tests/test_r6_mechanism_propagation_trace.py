@@ -67,6 +67,7 @@ def test_r6_mechanism_propagation_trace_empty_proxy_list_is_explicit_input():
 
     assert report["trace_summary"]["case_count"] == 0
     assert report["trace_summary"]["dynamic_path_count"] == 0
+    assert report["status"] == "mechanism_propagation_trace_insufficient_input"
     assert report["acceptance_gates"]["mechanism_trace_present"] is False
     json.dumps(report, allow_nan=False)
 

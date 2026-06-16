@@ -314,6 +314,20 @@ def test_r6_product_evidence_cards_require_claim_status_and_artifact_sources():
     json.dumps(cards, allow_nan=False)
 
 
+def test_r6_product_evidence_cards_default_path_keeps_mechanism_guard_cards():
+    cards = build_r6_product_evidence_cards(
+        artifact_id="r6-product-evidence-cards-default-test",
+        run_id="r6-product-evidence-cards-run",
+    )
+
+    assert cards["status"] == "product_evidence_cards_ready"
+    assert cards["card_count"] == 7
+    card_ids = {card["card_id"] for card in cards["cards"]}
+    assert "mechanism-propagation-path" in card_ids
+    assert "behavioral-update-guard" in card_ids
+    assert cards["demo_api_contract"]["static_narrative_fallback_allowed"] is False
+
+
 def test_r6_ccfa_readiness_report_says_not_ready_for_ccf_a_main_contribution():
     report = build_r6_ccfa_readiness_report(
         artifact_id="r6-ccfa-readiness-test",

@@ -25,6 +25,9 @@ from experiments.r6_mechanism_propagation_trace import (
     build_r6_mechanism_propagation_trace,
 )
 from experiments.r6_operator_holdout_validation import (
+    EXPECTED_OPERATOR_IDS,
+    OUT_OF_FAMILY_NON_REGRESSION_SOURCE_KEY,
+    SAME_FAMILY_HOLDOUT_SOURCE_KEYS,
     build_r6_operator_holdout_validation,
 )
 
@@ -42,6 +45,23 @@ R6_MECHANISM_ABLATION_REPORT_SCHEMA_VERSION = "r6-mechanism-ablation-report-v1"
 R6_OPERATOR_HOLDOUT_VALIDATION_SCHEMA_VERSION = (
     "r6-operator-holdout-validation-v1"
 )
+EXPECTED_HOLDOUT_RESULT_CASES = {
+    "anes_health_heldout": {
+        "case_id": "generic-rights-rule-change",
+        "case_type": "rights_rule_change",
+        "target_case_type": "rights_rule_change",
+    },
+    "anes_climate_heldout": {
+        "case_id": "generic-rights-rule-change",
+        "case_type": "rights_rule_change",
+        "target_case_type": "rights_rule_change",
+    },
+    "htops_cost_pressure": {
+        "case_id": "generic-public-service-policy-change",
+        "case_type": "public_service_policy_change",
+        "target_case_type": "public_service_policy_change",
+    },
+}
 
 
 def build_r6_mechanism_research_readiness_report(
@@ -431,12 +451,27 @@ def _validate_holdout_trials_against_summary(
     passed_trial_count = 0
     non_regression_trial_count = 0
     failed_same_family_status_count = 0
+    seen_trial_identities: set[tuple[str, str]] = set()
     for trial_index, trial in enumerate(holdout_trials):
         if not isinstance(trial, dict):
             raise ValueError(
                 "operator_holdout_validation.holdout_trials"
                 f"[{trial_index}] must be a JSON object"
             )
+        candidate_update_id = trial.get("candidate_update_id")
+        if candidate_update_id not in EXPECTED_OPERATOR_IDS:
+            raise ValueError(
+                "operator_holdout_validation.holdout_trials"
+                f"[{trial_index}].candidate_update_id must match current MVP"
+            )
+        trial_type = trial.get("trial_type")
+        _validate_holdout_trial_identity(
+            trial=trial,
+            trial_index=trial_index,
+            candidate_update_id=candidate_update_id,
+            trial_type=trial_type,
+        )
+        seen_trial_identities.add((candidate_update_id, trial_type))
         validation_status = trial.get("validation_status")
         passed = trial.get("passed")
         non_regression_only = trial.get("non_regression_only")
@@ -488,6 +523,11 @@ def _validate_holdout_trials_against_summary(
                 "operator_holdout_validation.holdout_trials"
                 f"[{trial_index}].holdout_results must be a non-empty list"
             )
+        _validate_holdout_results_identity(
+            holdout_results=holdout_results,
+            expected_source_keys=trial["holdout_source_keys"],
+            trial_index=trial_index,
+        )
         for result_index, result in enumerate(holdout_results):
             if not isinstance(result, dict):
                 raise ValueError(
@@ -501,6 +541,18 @@ def _validate_holdout_trials_against_summary(
                     f"[{trial_index}].holdout_results"
                     f"[{result_index}].runtime_default_allowed must be False"
                 )
+    expected_trial_identities = {
+        (operator_id, "same_family_current_public_proxy_holdout")
+        for operator_id in EXPECTED_OPERATOR_IDS
+    } | {
+        (operator_id, "out_of_family_non_regression")
+        for operator_id in EXPECTED_OPERATOR_IDS
+    }
+    if seen_trial_identities != expected_trial_identities:
+        raise ValueError(
+            "operator_holdout_validation.holdout_trials trial identity set "
+            "must match current MVP"
+        )
     if passed_trial_count != validation_summary["passed_trial_count"]:
         raise ValueError(
             "operator_holdout_validation.validation_summary."
@@ -519,6 +571,76 @@ def _validate_holdout_trials_against_summary(
             "operator_holdout_validation.validation_summary."
             "failed_trial_count must match holdout_trials"
         )
+
+
+def _validate_holdout_trial_identity(
+    *,
+    trial: dict[str, Any],
+    trial_index: int,
+    candidate_update_id: str,
+    trial_type: Any,
+) -> None:
+    if trial_type == "same_family_current_public_proxy_holdout":
+        expected_trial_id = f"operator-holdout:{candidate_update_id}:anes"
+        expected_source_keys = SAME_FAMILY_HOLDOUT_SOURCE_KEYS
+    elif trial_type == "out_of_family_non_regression":
+        expected_trial_id = (
+            f"operator-holdout:{candidate_update_id}:"
+            "htops-non-regression"
+        )
+        expected_source_keys = [OUT_OF_FAMILY_NON_REGRESSION_SOURCE_KEY]
+    else:
+        raise ValueError(
+            "operator_holdout_validation.holdout_trials"
+            f"[{trial_index}].trial_type must match current MVP"
+        )
+    if trial.get("trial_id") != expected_trial_id:
+        raise ValueError(
+            "operator_holdout_validation.holdout_trials"
+            f"[{trial_index}].trial_id must match current MVP"
+        )
+    if trial.get("holdout_source_keys") != expected_source_keys:
+        raise ValueError(
+            "operator_holdout_validation.holdout_trials"
+            f"[{trial_index}].holdout_source_keys must match current MVP"
+        )
+
+
+def _validate_holdout_results_identity(
+    *,
+    holdout_results: list[Any],
+    expected_source_keys: list[str],
+    trial_index: int,
+) -> None:
+    if len(holdout_results) != len(expected_source_keys):
+        raise ValueError(
+            "operator_holdout_validation.holdout_trials"
+            f"[{trial_index}].holdout_results source set must match current MVP"
+        )
+    for result_index, result in enumerate(holdout_results):
+        if not isinstance(result, dict):
+            continue
+        expected_source_key = expected_source_keys[result_index]
+        if result.get("source_key") != expected_source_key:
+            raise ValueError(
+                "operator_holdout_validation.holdout_trials"
+                f"[{trial_index}].holdout_results"
+                f"[{result_index}].source_key must match current MVP"
+            )
+        expected_case = EXPECTED_HOLDOUT_RESULT_CASES[expected_source_key]
+        for case_field, expected_value in expected_case.items():
+            if result.get(case_field) != expected_value:
+                raise ValueError(
+                    "operator_holdout_validation.holdout_trials"
+                    f"[{trial_index}].holdout_results"
+                    f"[{result_index}].{case_field} must match current MVP"
+                )
+        if result.get("method") != "mechanism_propagation":
+            raise ValueError(
+                "operator_holdout_validation.holdout_trials"
+                f"[{trial_index}].holdout_results"
+                f"[{result_index}].method must be mechanism_propagation"
+            )
 
 
 def _risk_flags(

@@ -60,6 +60,13 @@ def build_r6_product_evidence_cards(
         artifact_id=f"{artifact_id}-holdout-ledger",
         run_id=run_id,
     )
+    if mechanism_research_readiness_report is None:
+        mechanism_research_readiness_report = (
+            build_r6_mechanism_research_readiness_report(
+                artifact_id=f"{artifact_id}-mechanism-research-readiness-report",
+                run_id=run_id,
+            )
+        )
     cards = _cards(
         product_report=product_report,
         transfer_protocol=transfer_protocol,

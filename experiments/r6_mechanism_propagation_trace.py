@@ -45,11 +45,21 @@ def build_r6_mechanism_propagation_trace(
         proxies = public_outcome_proxies
     case_traces = [_build_case_trace(proxy) for proxy in proxies]
     dynamic_path_count = sum(len(trace["dynamic_paths"]) for trace in case_traces)
+    mechanism_trace_present = bool(case_traces)
+    dynamic_path_distinct_from_static_prior = mechanism_trace_present and all(
+        not path["static_prior_can_express_path"]
+        for trace in case_traces
+        for path in trace["dynamic_paths"]
+    )
     report = {
         "schema_version": R6_MECHANISM_PROPAGATION_TRACE_SCHEMA_VERSION,
         "artifact_id": artifact_id,
         "run_id": run_id,
-        "status": "mechanism_propagation_trace_ready",
+        "status": (
+            "mechanism_propagation_trace_ready"
+            if mechanism_trace_present
+            else "mechanism_propagation_trace_insufficient_input"
+        ),
         "trace_summary": {
             "case_count": len(case_traces),
             "trace_round_count": 3,
@@ -66,11 +76,9 @@ def build_r6_mechanism_propagation_trace(
             "field_outcome_validated": False,
         },
         "acceptance_gates": {
-            "mechanism_trace_present": bool(case_traces),
-            "dynamic_path_distinct_from_static_prior": all(
-                not path["static_prior_can_express_path"]
-                for trace in case_traces
-                for path in trace["dynamic_paths"]
+            "mechanism_trace_present": mechanism_trace_present,
+            "dynamic_path_distinct_from_static_prior": (
+                dynamic_path_distinct_from_static_prior
             ),
             "field_outcome_validated": False,
             "product_guard_required": True,
