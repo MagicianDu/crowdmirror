@@ -382,6 +382,14 @@ def _validate_operator_holdout_validation(
                 "operator_holdout_validation.validation_summary."
                 f"{field} must be {expected_value}"
             )
+    if (
+        "candidate_update_count" in validation_summary
+        and validation_summary.get("candidate_update_count") != 2
+    ):
+        raise ValueError(
+            "operator_holdout_validation.validation_summary."
+            "candidate_update_count must be 2"
+        )
     decision = operator_holdout_validation.get("decision")
     if not isinstance(decision, dict):
         raise ValueError("operator_holdout_validation.decision must be a JSON object")
@@ -414,6 +422,11 @@ def _validate_holdout_trials_against_summary(
     if len(holdout_trials) != 4:
         raise ValueError(
             "operator_holdout_validation.holdout_trials must contain 4 trials"
+        )
+    if validation_summary.get("holdout_trial_count") != len(holdout_trials):
+        raise ValueError(
+            "operator_holdout_validation.validation_summary."
+            "holdout_trial_count must match holdout_trials"
         )
     passed_trial_count = 0
     non_regression_trial_count = 0

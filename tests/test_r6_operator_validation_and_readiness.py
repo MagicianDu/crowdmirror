@@ -11,6 +11,9 @@ from experiments.r6_mechanism_ablation_report import (
 from experiments.r6_mechanism_research_readiness_report import (
     build_r6_mechanism_research_readiness_report,
 )
+from experiments.r6_behavioral_update_operator import (
+    build_r6_behavioral_update_operator,
+)
 from experiments.r6_operator_holdout_validation import (
     build_r6_operator_holdout_validation,
 )
@@ -72,6 +75,30 @@ def test_r6_operator_holdout_validation_rejects_runtime_default_ablation_row():
             artifact_id="r6-operator-holdout-validation-malformed-ablation",
             run_id="r6-operator-holdout-validation-run",
             mechanism_ablation_report=malformed_ablation_report,
+        )
+
+
+def test_r6_operator_holdout_validation_rejects_extra_blocked_candidate():
+    behavioral_update_operator = build_r6_behavioral_update_operator(
+        artifact_id="r6-operator-holdout-validation-operator",
+        run_id="r6-operator-holdout-validation-run",
+    )
+    malformed_operator = copy.deepcopy(behavioral_update_operator)
+    extra_candidate = copy.deepcopy(malformed_operator["candidate_updates"][0])
+    extra_candidate["operator_id"] = "extra-blocked-diagnostic-candidate"
+    malformed_operator["candidate_updates"].append(extra_candidate)
+
+    with pytest.raises(
+        ValueError,
+        match=(
+            "behavioral_update_operator.candidate_updates operator_id set "
+            "must exactly match current MVP"
+        ),
+    ):
+        build_r6_operator_holdout_validation(
+            artifact_id="r6-operator-holdout-validation-extra-candidate",
+            run_id="r6-operator-holdout-validation-run",
+            behavioral_update_operator=malformed_operator,
         )
 
 
@@ -198,6 +225,28 @@ def test_r6_mechanism_research_readiness_rejects_passed_trial_count_mismatch():
     ):
         build_r6_mechanism_research_readiness_report(
             artifact_id="r6-mechanism-research-readiness-passed-mismatch",
+            run_id="r6-mechanism-research-readiness-run",
+            operator_holdout_validation=malformed_holdout_validation,
+        )
+
+
+def test_r6_mechanism_research_readiness_rejects_holdout_trial_count_mismatch():
+    operator_holdout_validation = build_r6_operator_holdout_validation(
+        artifact_id="r6-mechanism-research-readiness-count-mismatch",
+        run_id="r6-mechanism-research-readiness-run",
+    )
+    malformed_holdout_validation = copy.deepcopy(operator_holdout_validation)
+    malformed_holdout_validation["validation_summary"]["holdout_trial_count"] = 99
+
+    with pytest.raises(
+        ValueError,
+        match=(
+            "operator_holdout_validation.validation_summary."
+            "holdout_trial_count must match holdout_trials"
+        ),
+    ):
+        build_r6_mechanism_research_readiness_report(
+            artifact_id="r6-mechanism-research-readiness-count-mismatch",
             run_id="r6-mechanism-research-readiness-run",
             operator_holdout_validation=malformed_holdout_validation,
         )

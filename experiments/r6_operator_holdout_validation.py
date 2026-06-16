@@ -38,6 +38,10 @@ R6_BEHAVIORAL_UPDATE_OPERATOR_STATUS = (
 )
 R6_MECHANISM_ABLATION_REPORT_SCHEMA_VERSION = "r6-mechanism-ablation-report-v1"
 R6_MECHANISM_ABLATION_REPORT_STATUS = "mechanism_ablation_diagnostic_only"
+EXPECTED_OPERATOR_IDS = {
+    "damp-rights-rule-over-amplification",
+    "boost-service-access-memory-activation",
+}
 SAME_FAMILY_HOLDOUT_SOURCE_KEYS = [
     "anes_health_heldout",
     "anes_climate_heldout",
@@ -363,10 +367,35 @@ def _validate_behavioral_update_operator(
             "behavioral_update_operator.acceptance_gates."
             "runtime_default_allowed must be False"
         )
+    operator_summary = behavioral_update_operator.get("operator_summary")
+    if not isinstance(operator_summary, dict):
+        raise ValueError(
+            "behavioral_update_operator.operator_summary must be a JSON object"
+        )
+    if operator_summary.get("candidate_update_count") != 2:
+        raise ValueError(
+            "behavioral_update_operator.operator_summary."
+            "candidate_update_count must be 2"
+        )
+    if operator_summary.get("runtime_default_allowed_count") != 0:
+        raise ValueError(
+            "behavioral_update_operator.operator_summary."
+            "runtime_default_allowed_count must be 0"
+        )
     candidate_updates = behavioral_update_operator.get("candidate_updates")
     if not isinstance(candidate_updates, list) or not candidate_updates:
         raise ValueError(
             "behavioral_update_operator.candidate_updates must be a non-empty list"
+        )
+    candidate_ids = [
+        candidate_update.get("operator_id")
+        for candidate_update in candidate_updates
+        if isinstance(candidate_update, dict)
+    ]
+    if set(candidate_ids) != EXPECTED_OPERATOR_IDS or len(candidate_ids) != 2:
+        raise ValueError(
+            "behavioral_update_operator.candidate_updates operator_id set "
+            "must exactly match current MVP"
         )
     for update_index, candidate_update in enumerate(candidate_updates):
         if not isinstance(candidate_update, dict):
