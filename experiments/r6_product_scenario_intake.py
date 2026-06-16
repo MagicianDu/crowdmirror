@@ -28,7 +28,12 @@ def build_r6_product_scenario_intake(
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
-    scenario_payload = scenario or _default_scenario()
+    if scenario is None:
+        scenario_payload = _default_scenario()
+    elif not isinstance(scenario, dict):
+        raise ValueError("scenario must be an object")
+    else:
+        scenario_payload = scenario
     normalized = {
         "scenario_id": non_empty_string(
             scenario_payload.get("scenario_id"), field="scenario.scenario_id"
