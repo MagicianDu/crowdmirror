@@ -43,6 +43,12 @@ R6_PRODUCT_STORY_PACKAGE_SECTIONS = [
     "blocked_claims",
     "next_measurement_plan",
 ]
+R6_PRODUCT_STORY_DANGEROUS_CLAIM_STATUSES = {
+    "accuracy_superiority_established",
+    "field_validated",
+    "runtime_default_ready",
+    "ccf_a_ready",
+}
 
 
 def build_r6_product_story_package(
@@ -266,6 +272,18 @@ def _validate_product_evidence_cards(report: dict[str, Any]) -> str:
                 field=f"product_evidence_cards.cards[{index}].card_id",
             )
         )
+        _validate_card_claim_status(
+            card.get("claim_status"),
+            field=f"product_evidence_cards.cards[{index}].claim_status",
+        )
+        _require_non_empty_string_list(
+            card.get("allowed_claims"),
+            field=f"product_evidence_cards.cards[{index}].allowed_claims",
+        )
+        _require_non_empty_string_list(
+            card.get("blocked_claims"),
+            field=f"product_evidence_cards.cards[{index}].blocked_claims",
+        )
         _require_non_empty_string_list(
             card.get("source_artifact_ids"),
             field=f"product_evidence_cards.cards[{index}].source_artifact_ids",
@@ -395,13 +413,22 @@ def _customer_visible_claim_cards(
     cards: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
     claim_cards = []
-    for card in cards:
+    for index, card in enumerate(cards):
         claim_cards.append(
             {
                 "card_id": card["card_id"],
-                "claim_status": card["claim_status"],
-                "allowed_claims": card["allowed_claims"],
-                "blocked_claims": card["blocked_claims"],
+                "claim_status": _validate_card_claim_status(
+                    card["claim_status"],
+                    field=f"product_evidence_cards.cards[{index}].claim_status",
+                ),
+                "allowed_claims": _require_non_empty_string_list(
+                    card["allowed_claims"],
+                    field=f"product_evidence_cards.cards[{index}].allowed_claims",
+                ),
+                "blocked_claims": _require_non_empty_string_list(
+                    card["blocked_claims"],
+                    field=f"product_evidence_cards.cards[{index}].blocked_claims",
+                ),
                 "source_artifact_ids": card["source_artifact_ids"],
                 "display_fields": card["display_fields"],
             }
@@ -426,9 +453,19 @@ def _blocked_claims(
     gap_closure_report: dict[str, Any],
 ) -> list[str]:
     claims = []
-    for card in cards:
-        claims.extend(card["blocked_claims"])
-    claims.extend(gap_closure_report.get("blocked_claims", []))
+    for index, card in enumerate(cards):
+        claims.extend(
+            _require_non_empty_string_list(
+                card.get("blocked_claims"),
+                field=f"product_evidence_cards.cards[{index}].blocked_claims",
+            )
+        )
+    claims.extend(
+        _require_non_empty_string_list(
+            gap_closure_report.get("blocked_claims"),
+            field="gap_closure_report.blocked_claims",
+        )
+    )
     return _unique_strings(claims)
 
 
@@ -456,6 +493,13 @@ def _unique_strings(values: list[str]) -> list[str]:
             seen.add(normalized)
             result.append(normalized)
     return result
+
+
+def _validate_card_claim_status(value: Any, *, field: str) -> str:
+    status = non_empty_string(value, field=field)
+    if status in R6_PRODUCT_STORY_DANGEROUS_CLAIM_STATUSES:
+        raise ValueError(f"{field} contains dangerous ready claim: {status}")
+    return status
 
 
 def _require_exact(report: dict[str, Any], *, field: str, expected: str) -> None:
