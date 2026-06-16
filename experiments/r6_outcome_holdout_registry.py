@@ -20,6 +20,29 @@ from experiments.r6_contracts import (
 R6_OUTCOME_HOLDOUT_REGISTRY_SCHEMA_VERSION = "r6-outcome-holdout-registry-v1"
 
 
+def _build_registry_summary(
+    *,
+    outcome_entries: list[dict[str, Any]],
+    missing_required_slots: list[dict[str, Any]],
+) -> dict[str, Any]:
+    return {
+        "registered_outcome_count": len(outcome_entries),
+        "independent_public_proxy_count": sum(
+            1
+            for entry in outcome_entries
+            if entry["outcome_type"] == "public_proxy" and entry["accepted_for_generalization"]
+        ),
+        "field_outcome_count": sum(
+            1 for entry in outcome_entries if entry["field_outcome_validated"]
+        ),
+        "missing_required_slot_count": len(missing_required_slots),
+        "in_condition_independent_holdout_available": any(
+            entry["in_condition_holdout"] and entry["accepted_for_generalization"]
+            for entry in outcome_entries
+        ),
+    }
+
+
 def build_r6_outcome_holdout_registry(*, artifact_id: str, run_id: str) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
@@ -72,18 +95,17 @@ def build_r6_outcome_holdout_registry(*, artifact_id: str, run_id: str) -> dict[
         "run_id": run_id,
         "status": "holdout_registry_ready_missing_required_slots",
         "outcome_entries": outcome_entries,
-        "registry_summary": {
-            "registered_outcome_count": len(outcome_entries),
-            "independent_public_proxy_count": 0,
-            "field_outcome_count": 0,
-            "missing_required_slot_count": len(missing_required_slots),
-            "in_condition_independent_holdout_available": False,
-        },
+        "registry_summary": _build_registry_summary(
+            outcome_entries=outcome_entries,
+            missing_required_slots=missing_required_slots,
+        ),
         "missing_required_slots": missing_required_slots,
         "acceptance_gates": {
             "holdout_registry_present": True,
             "independent_holdout_missing_slots_visible": True,
             "field_outcome_validated": False,
+            "runtime_default_allowed": False,
+            "ccf_a_main_contribution_ready": False,
         },
         "blocking_gaps": [
             "needs_independent_same_family_operator_holdout",

@@ -28,15 +28,41 @@ def test_r6_outcome_holdout_registry_marks_missing_independent_holdouts():
     assert by_key["anes_climate_heldout"]["independence_level"] == (
         "same_source_out_of_condition_proxy"
     )
+    for entry in registry["outcome_entries"]:
+        assert entry["in_condition_holdout"] is False
+        assert entry["field_outcome_validated"] is False
+        assert entry["accepted_for_generalization"] is False
+    assert not any(entry["accepted_for_generalization"] for entry in registry["outcome_entries"])
     missing = {slot["slot_id"] for slot in registry["missing_required_slots"]}
     assert missing == {
         "independent_same_family_in_condition_holdout",
         "independent_supported_signal_holdout",
         "real_field_outcome",
     }
-    assert registry["acceptance_gates"]["holdout_registry_present"] is True
-    assert registry["acceptance_gates"]["independent_holdout_missing_slots_visible"] is True
-    assert registry["acceptance_gates"]["field_outcome_validated"] is False
+    assert registry["registry_summary"] == {
+        "registered_outcome_count": len(registry["outcome_entries"]),
+        "independent_public_proxy_count": sum(
+            1
+            for entry in registry["outcome_entries"]
+            if entry["outcome_type"] == "public_proxy"
+            and entry["accepted_for_generalization"]
+        ),
+        "field_outcome_count": sum(
+            1 for entry in registry["outcome_entries"] if entry["field_outcome_validated"]
+        ),
+        "missing_required_slot_count": len(registry["missing_required_slots"]),
+        "in_condition_independent_holdout_available": any(
+            entry["in_condition_holdout"] and entry["accepted_for_generalization"]
+            for entry in registry["outcome_entries"]
+        ),
+    }
+    assert registry["acceptance_gates"] == {
+        "holdout_registry_present": True,
+        "independent_holdout_missing_slots_visible": True,
+        "field_outcome_validated": False,
+        "runtime_default_allowed": False,
+        "ccf_a_main_contribution_ready": False,
+    }
     json.dumps(registry, allow_nan=False)
 
 
