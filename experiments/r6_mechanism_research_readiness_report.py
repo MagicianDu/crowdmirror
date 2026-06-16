@@ -395,22 +395,74 @@ def _validate_operator_holdout_validation(
             "operator_holdout_validation.decision.runtime_default_allowed "
             "must be False"
         )
-    _validate_holdout_runtime_default_blocked(operator_holdout_validation)
+    _validate_holdout_trials_against_summary(
+        operator_holdout_validation=operator_holdout_validation,
+        validation_summary=validation_summary,
+    )
 
 
-def _validate_holdout_runtime_default_blocked(
+def _validate_holdout_trials_against_summary(
+    *,
     operator_holdout_validation: dict[str, Any],
+    validation_summary: dict[str, Any],
 ) -> None:
     holdout_trials = operator_holdout_validation.get("holdout_trials")
     if not isinstance(holdout_trials, list) or not holdout_trials:
         raise ValueError(
             "operator_holdout_validation.holdout_trials must be a non-empty list"
         )
+    if len(holdout_trials) != 4:
+        raise ValueError(
+            "operator_holdout_validation.holdout_trials must contain 4 trials"
+        )
+    passed_trial_count = 0
+    non_regression_trial_count = 0
+    failed_same_family_status_count = 0
     for trial_index, trial in enumerate(holdout_trials):
         if not isinstance(trial, dict):
             raise ValueError(
                 "operator_holdout_validation.holdout_trials"
                 f"[{trial_index}] must be a JSON object"
+            )
+        validation_status = trial.get("validation_status")
+        passed = trial.get("passed")
+        non_regression_only = trial.get("non_regression_only")
+        if passed is True:
+            passed_trial_count += 1
+        if non_regression_only is True:
+            if validation_status != "non_regression_out_of_family_only":
+                raise ValueError(
+                    "operator_holdout_validation.validation_summary."
+                    "non_regression_trial_count must match holdout_trials"
+                )
+            non_regression_trial_count += 1
+        elif validation_status == "non_regression_out_of_family_only":
+            raise ValueError(
+                "operator_holdout_validation.validation_summary."
+                "non_regression_trial_count must match holdout_trials"
+            )
+        if validation_status == "failed_same_family_holdout_regression":
+            if passed is not False:
+                raise ValueError(
+                    "operator_holdout_validation.validation_summary."
+                    "passed_trial_count must match holdout_trials"
+                )
+            if non_regression_only is not False:
+                raise ValueError(
+                    "operator_holdout_validation.validation_summary."
+                    "failed_trial_count must match holdout_trials"
+                )
+            failed_same_family_status_count += 1
+        elif validation_status == "non_regression_out_of_family_only":
+            if passed is not False:
+                raise ValueError(
+                    "operator_holdout_validation.validation_summary."
+                    "passed_trial_count must match holdout_trials"
+                )
+        else:
+            raise ValueError(
+                "operator_holdout_validation.holdout_trials"
+                f"[{trial_index}].validation_status is unsupported"
             )
         if trial.get("runtime_default_allowed") is not False:
             raise ValueError(
@@ -436,6 +488,24 @@ def _validate_holdout_runtime_default_blocked(
                     f"[{trial_index}].holdout_results"
                     f"[{result_index}].runtime_default_allowed must be False"
                 )
+    if passed_trial_count != validation_summary["passed_trial_count"]:
+        raise ValueError(
+            "operator_holdout_validation.validation_summary."
+            "passed_trial_count must match holdout_trials"
+        )
+    if (
+        non_regression_trial_count
+        != validation_summary["non_regression_trial_count"]
+    ):
+        raise ValueError(
+            "operator_holdout_validation.validation_summary."
+            "non_regression_trial_count must match holdout_trials"
+        )
+    if failed_same_family_status_count != validation_summary["failed_trial_count"]:
+        raise ValueError(
+            "operator_holdout_validation.validation_summary."
+            "failed_trial_count must match holdout_trials"
+        )
 
 
 def _risk_flags(

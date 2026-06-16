@@ -75,6 +75,62 @@ def test_r6_operator_holdout_validation_rejects_runtime_default_ablation_row():
         )
 
 
+def test_r6_operator_holdout_validation_rejects_anes_success_shape():
+    mechanism_ablation_report = build_r6_mechanism_ablation_report(
+        artifact_id="r6-operator-holdout-validation-anes-shape",
+        run_id="r6-operator-holdout-validation-run",
+    )
+    malformed_ablation_report = copy.deepcopy(mechanism_ablation_report)
+    for result in malformed_ablation_report["case_method_results"]:
+        if (
+            result["method"] == "mechanism_propagation"
+            and result["source_key"] in {"anes_health_heldout", "anes_climate_heldout"}
+        ):
+            result["mean_absolute_error"] = 0.0
+            result["beats_static_prior"] = True
+
+    with pytest.raises(
+        ValueError,
+        match=(
+            "mechanism_ablation_report selected ANES rows must have "
+            "beats_static_prior False"
+        ),
+    ):
+        build_r6_operator_holdout_validation(
+            artifact_id="r6-operator-holdout-validation-anes-success-shape",
+            run_id="r6-operator-holdout-validation-run",
+            mechanism_ablation_report=malformed_ablation_report,
+        )
+
+
+def test_r6_operator_holdout_validation_rejects_htops_regression_shape():
+    mechanism_ablation_report = build_r6_mechanism_ablation_report(
+        artifact_id="r6-operator-holdout-validation-htops-shape",
+        run_id="r6-operator-holdout-validation-run",
+    )
+    malformed_ablation_report = copy.deepcopy(mechanism_ablation_report)
+    for result in malformed_ablation_report["case_method_results"]:
+        if (
+            result["method"] == "mechanism_propagation"
+            and result["source_key"] == "htops_cost_pressure"
+        ):
+            result["mean_absolute_error"] = result["static_prior_error"] + 0.1
+            result["beats_static_prior"] = False
+
+    with pytest.raises(
+        ValueError,
+        match=(
+            "mechanism_ablation_report selected HTOPS row must have "
+            "beats_static_prior True"
+        ),
+    ):
+        build_r6_operator_holdout_validation(
+            artifact_id="r6-operator-holdout-validation-htops-regression-shape",
+            run_id="r6-operator-holdout-validation-run",
+            mechanism_ablation_report=malformed_ablation_report,
+        )
+
+
 def test_r6_mechanism_research_readiness_report_returns_diagnostic_only():
     report = build_r6_mechanism_research_readiness_report(
         artifact_id="r6-mechanism-research-readiness-test",
@@ -120,6 +176,53 @@ def test_r6_mechanism_research_readiness_rejects_contradictory_holdout_gate():
     ):
         build_r6_mechanism_research_readiness_report(
             artifact_id="r6-mechanism-research-readiness-malformed-holdout",
+            run_id="r6-mechanism-research-readiness-run",
+            operator_holdout_validation=malformed_holdout_validation,
+        )
+
+
+def test_r6_mechanism_research_readiness_rejects_passed_trial_count_mismatch():
+    operator_holdout_validation = build_r6_operator_holdout_validation(
+        artifact_id="r6-mechanism-research-readiness-passed-mismatch",
+        run_id="r6-mechanism-research-readiness-run",
+    )
+    malformed_holdout_validation = copy.deepcopy(operator_holdout_validation)
+    malformed_holdout_validation["holdout_trials"][0]["passed"] = True
+
+    with pytest.raises(
+        ValueError,
+        match=(
+            "operator_holdout_validation.validation_summary."
+            "passed_trial_count must match holdout_trials"
+        ),
+    ):
+        build_r6_mechanism_research_readiness_report(
+            artifact_id="r6-mechanism-research-readiness-passed-mismatch",
+            run_id="r6-mechanism-research-readiness-run",
+            operator_holdout_validation=malformed_holdout_validation,
+        )
+
+
+def test_r6_mechanism_research_readiness_rejects_non_regression_status_mismatch():
+    operator_holdout_validation = build_r6_operator_holdout_validation(
+        artifact_id="r6-mechanism-research-readiness-status-mismatch",
+        run_id="r6-mechanism-research-readiness-run",
+    )
+    malformed_holdout_validation = copy.deepcopy(operator_holdout_validation)
+    for trial in malformed_holdout_validation["holdout_trials"]:
+        if trial["non_regression_only"] is True:
+            trial["validation_status"] = "failed_same_family_holdout_regression"
+            break
+
+    with pytest.raises(
+        ValueError,
+        match=(
+            "operator_holdout_validation.validation_summary."
+            "non_regression_trial_count must match holdout_trials"
+        ),
+    ):
+        build_r6_mechanism_research_readiness_report(
+            artifact_id="r6-mechanism-research-readiness-status-mismatch",
             run_id="r6-mechanism-research-readiness-run",
             operator_holdout_validation=malformed_holdout_validation,
         )

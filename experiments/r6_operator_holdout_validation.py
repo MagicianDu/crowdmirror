@@ -497,6 +497,35 @@ def _validate_mechanism_ablation_selected_rows(
             "keys must exactly include "
             f"{sorted(EXPECTED_HOLDOUT_SOURCE_KEYS)}"
         )
+    _validate_current_mvp_holdout_shape(case_method_results)
+
+
+def _validate_current_mvp_holdout_shape(case_method_results: list[Any]) -> None:
+    selected_rows = [
+        result
+        for result in case_method_results
+        if isinstance(result, dict) and result.get("method") == "mechanism_propagation"
+    ]
+    anes_rows = [
+        result
+        for result in selected_rows
+        if result.get("source_key") in SAME_FAMILY_HOLDOUT_SOURCE_KEYS
+    ]
+    if any(result.get("beats_static_prior") is not False for result in anes_rows):
+        raise ValueError(
+            "mechanism_ablation_report selected ANES rows must have "
+            "beats_static_prior False"
+        )
+    htops_rows = [
+        result
+        for result in selected_rows
+        if result.get("source_key") == OUT_OF_FAMILY_NON_REGRESSION_SOURCE_KEY
+    ]
+    if any(result.get("beats_static_prior") is not True for result in htops_rows):
+        raise ValueError(
+            "mechanism_ablation_report selected HTOPS row must have "
+            "beats_static_prior True"
+        )
 
 
 def _source_refs(*artifacts: dict[str, Any]) -> list[str]:
