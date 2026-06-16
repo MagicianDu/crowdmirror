@@ -225,6 +225,8 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "product_guard_preserved": True,
         "ccfa_readiness_report_present": True,
         "ccf_a_main_contribution_ready": False,
+        "gap_closure_report_present": True,
+        "field_outcome_validated": False,
         "global_update_accepted": False,
     }
     assert report["followup_holdout_validation_summary"] == {
@@ -321,7 +323,7 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
     assert report["product_evidence_cards_summary"] == {
         "artifact_id": "r6-evidence-report-test-product-evidence-cards",
         "status": "product_evidence_cards_ready",
-        "card_count": 7,
+        "card_count": 8,
         "static_narrative_fallback_allowed": False,
     }
     assert report["mechanism_research_readiness_summary"] == {
@@ -382,12 +384,32 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
     assert "needs_positive_same_family_source_signal" in report["remaining_gaps"]
     assert "needs_operator_holdout_validation" in report["remaining_gaps"]
     assert "needs_field_outcome_validation" in report["remaining_gaps"]
+    assert "needs_real_or_field_outcome_proxy" in report["remaining_gaps"]
     assert "same_case_feedback_not_global_acceptance" in report["risk_flags"]
     assert "static_prior_is_foundation_not_opponent" in report["risk_flags"]
     assert "false_alarm_discriminator_not_runtime_ready" in report["risk_flags"]
     assert "interaction_signal_validity_not_generalized" in report["risk_flags"]
     assert "ccf_a_main_contribution_not_ready" in report["risk_flags"]
     json.dumps(report, allow_nan=False)
+
+
+def test_r6_evidence_report_includes_gap_closure_summary():
+    report = build_r6_evidence_report(
+        artifact_id="r6-evidence-gap-closure-test",
+        run_id="r6-gap-closure-run",
+    )
+
+    assert report["gap_closure_summary"] == {
+        "status": "gap_closure_artifact_ready",
+        "theory_gap": "closed_by_artifact",
+        "data_holdout_gap": "blocked_missing_data",
+        "method_operator_gap": "partial_diagnostic",
+        "product_gap": "closed_by_guarded_cards",
+    }
+    assert report["acceptance_gates"]["gap_closure_report_present"] is True
+    assert report["acceptance_gates"]["field_outcome_validated"] is False
+    assert "needs_real_or_field_outcome_proxy" in report["remaining_gaps"]
+    assert "r6-evidence-gap-closure-test-gap-closure-report" in report["source_refs"]
 
 
 def test_r6_evidence_report_cli_writes_artifact(tmp_path):

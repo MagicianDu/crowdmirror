@@ -19,6 +19,7 @@ from experiments.r6_false_alarm_discriminator import (
     build_r6_false_alarm_discriminator,
 )
 from experiments.r6_followup_holdout_validation import build_r6_followup_holdout_validation
+from experiments.r6_gap_closure_report import build_r6_gap_closure_report
 from experiments.r6_in_condition_holdout_ledger import build_r6_in_condition_holdout_ledger
 from experiments.r6_interaction_signal_validity import (
     build_r6_interaction_signal_validity,
@@ -100,6 +101,10 @@ def build_r6_evidence_report(
         artifact_id=f"{artifact_id}-mechanism-research-readiness-report",
         run_id=run_id,
     )
+    gap_closure_report = build_r6_gap_closure_report(
+        artifact_id=f"{artifact_id}-gap-closure-report",
+        run_id=run_id,
+    )
     product_evidence_cards = build_r6_product_evidence_cards(
         artifact_id=f"{artifact_id}-product-evidence-cards",
         run_id=run_id,
@@ -107,6 +112,7 @@ def build_r6_evidence_report(
         transfer_protocol=transfer_protocol,
         holdout_ledger=holdout_ledger,
         mechanism_research_readiness_report=mechanism_research_readiness,
+        gap_closure_report=gap_closure_report,
     )
     ablation = build_r6_ablation_report(
         artifact_id=f"{artifact_id}-ablation",
@@ -181,6 +187,25 @@ def build_r6_evidence_report(
     prior_anchored_beats_no_interaction = (
         by_method["prior_anchored_interaction"]["mean_absolute_error"]
         < by_method["no_interaction_prior"]["mean_absolute_error"]
+    )
+    remaining_gaps = _remaining_gaps_with_method_gates(
+        followup_holdout=followup_holdout,
+        transfer_protocol=transfer_protocol,
+        holdout_ledger=holdout_ledger,
+        decision_value_metrics=decision_value_metrics,
+        risk_discovery_holdout_validation=risk_discovery_holdout_validation,
+        risk_discovery_threshold_sweep=risk_discovery_threshold_sweep,
+        false_alarm_discriminator=false_alarm_discriminator,
+        interaction_signal_validity=interaction_signal_validity,
+        interaction_signal_validity_holdout_validation=(
+            interaction_signal_validity_holdout_validation
+        ),
+        risk_discovery_value=risk_discovery_value,
+        ccfa_readiness=ccfa_readiness,
+        mechanism_research_readiness=mechanism_research_readiness,
+    )
+    remaining_gaps = sorted(
+        set(remaining_gaps) | set(gap_closure_report["remaining_gaps"])
     )
     report = {
         "schema_version": R6_EVIDENCE_REPORT_SCHEMA_VERSION,
@@ -309,6 +334,17 @@ def build_r6_evidence_report(
             "runtime_default_allowed": mechanism_research_readiness["decision"][
                 "runtime_default_allowed"
             ],
+        },
+        "gap_closure_summary": {
+            "status": gap_closure_report["status"],
+            "theory_gap": gap_closure_report["gap_statuses"]["theory_gap"],
+            "data_holdout_gap": gap_closure_report["gap_statuses"][
+                "data_holdout_gap"
+            ],
+            "method_operator_gap": gap_closure_report["gap_statuses"][
+                "method_operator_gap"
+            ],
+            "product_gap": gap_closure_report["gap_statuses"]["product_gap"],
         },
         "decision_value_metrics_summary": {
             "artifact_id": decision_value_metrics["artifact_id"],
@@ -555,24 +591,11 @@ def build_r6_evidence_report(
             "ccf_a_main_contribution_ready": ccfa_readiness["verdict"][
                 "ccf_a_main_contribution_ready"
             ],
+            "gap_closure_report_present": True,
+            "field_outcome_validated": False,
             "global_update_accepted": False,
         },
-        "remaining_gaps": _remaining_gaps_with_method_gates(
-            followup_holdout=followup_holdout,
-            transfer_protocol=transfer_protocol,
-            holdout_ledger=holdout_ledger,
-            decision_value_metrics=decision_value_metrics,
-            risk_discovery_holdout_validation=risk_discovery_holdout_validation,
-            risk_discovery_threshold_sweep=risk_discovery_threshold_sweep,
-            false_alarm_discriminator=false_alarm_discriminator,
-            interaction_signal_validity=interaction_signal_validity,
-            interaction_signal_validity_holdout_validation=(
-                interaction_signal_validity_holdout_validation
-            ),
-            risk_discovery_value=risk_discovery_value,
-            ccfa_readiness=ccfa_readiness,
-            mechanism_research_readiness=mechanism_research_readiness,
-        ),
+        "remaining_gaps": remaining_gaps,
         "source_refs": [
             public_proxy["artifact_id"],
             second_public_proxy["artifact_id"],
@@ -593,6 +616,7 @@ def build_r6_evidence_report(
             interaction_signal_validity_holdout_validation["artifact_id"],
             risk_discovery_value["artifact_id"],
             ccfa_readiness["artifact_id"],
+            gap_closure_report["artifact_id"],
             ablation["artifact_id"],
             second_ablation["artifact_id"],
             third_ablation["artifact_id"],

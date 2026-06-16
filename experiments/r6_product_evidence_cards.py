@@ -39,6 +39,7 @@ def build_r6_product_evidence_cards(
     transfer_protocol: dict[str, Any] | None = None,
     holdout_ledger: dict[str, Any] | None = None,
     mechanism_research_readiness_report: dict[str, Any] | None = None,
+    gap_closure_report: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
@@ -72,6 +73,7 @@ def build_r6_product_evidence_cards(
         transfer_protocol=transfer_protocol,
         holdout_ledger=holdout_ledger,
         mechanism_research_readiness_report=mechanism_research_readiness_report,
+        gap_closure_report=gap_closure_report,
     )
     source_refs = [
         product_report["artifact_id"],
@@ -80,6 +82,8 @@ def build_r6_product_evidence_cards(
     ]
     if mechanism_research_readiness_report is not None:
         source_refs.append(mechanism_research_readiness_report["artifact_id"])
+    if gap_closure_report is not None:
+        source_refs.append(gap_closure_report["artifact_id"])
     report = {
         "schema_version": R6_PRODUCT_EVIDENCE_CARDS_SCHEMA_VERSION,
         "artifact_id": artifact_id,
@@ -133,6 +137,7 @@ def _cards(
     transfer_protocol: dict[str, Any],
     holdout_ledger: dict[str, Any],
     mechanism_research_readiness_report: dict[str, Any] | None = None,
+    gap_closure_report: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     mechanism_transfer = _candidate_by_type(transfer_protocol, "mechanism_cap")
     feedback_transfer = _candidate_by_type(
@@ -285,6 +290,29 @@ def _cards(
                     ],
                 },
             ]
+        )
+    if gap_closure_report is not None:
+        cards.append(
+            {
+                "card_id": "r6-gap-closure-status",
+                "title": "R6.2 gap closure 状态",
+                "claim_status": "gap_closure_artifact_ready_not_validated",
+                "allowed_claims": [
+                    "理论、数据、方法和 Product gap 已被结构化管理",
+                ],
+                "blocked_claims": [
+                    "field validation 已完成",
+                    "runtime default 可以开启",
+                    "R6 已达到 CCF-A 主贡献",
+                ],
+                "source_artifact_ids": [gap_closure_report["artifact_id"]],
+                "display_fields": [
+                    "gap_statuses",
+                    "acceptance_gates.field_outcome_validated",
+                    "acceptance_gates.ccf_a_main_contribution_ready",
+                    "remaining_gaps",
+                ],
+            }
         )
     return cards
 

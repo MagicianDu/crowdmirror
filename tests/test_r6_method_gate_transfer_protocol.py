@@ -6,6 +6,7 @@ from experiments.r6_ccfa_readiness_report import build_r6_ccfa_readiness_report
 from experiments.r6_cross_case_transfer_protocol import (
     build_r6_cross_case_transfer_protocol,
 )
+from experiments.r6_gap_closure_report import build_r6_gap_closure_report
 from experiments.r6_in_condition_holdout_ledger import (
     build_r6_in_condition_holdout_ledger,
 )
@@ -328,6 +329,36 @@ def test_r6_product_evidence_cards_default_path_keeps_mechanism_guard_cards():
     assert cards["demo_api_contract"]["static_narrative_fallback_allowed"] is False
 
 
+def test_r6_product_evidence_cards_ingest_gap_closure_report():
+    gap_closure_report = build_r6_gap_closure_report(
+        artifact_id="r6-product-cards-gap-closure-report",
+        run_id="r6-gap-closure-run",
+    )
+    cards = build_r6_product_evidence_cards(
+        artifact_id="r6-product-cards-gap-closure-test",
+        run_id="r6-gap-closure-run",
+        gap_closure_report=gap_closure_report,
+    )
+
+    card_ids = {card["card_id"] for card in cards["cards"]}
+    assert "r6-gap-closure-status" in card_ids
+    by_id = {card["card_id"]: card for card in cards["cards"]}
+    gap_card = by_id["r6-gap-closure-status"]
+    assert gap_card["title"] == "R6.2 gap closure 状态"
+    assert gap_card["claim_status"] == "gap_closure_artifact_ready_not_validated"
+    assert "理论、数据、方法和 Product gap 已被结构化管理" in gap_card[
+        "allowed_claims"
+    ]
+    assert "field validation 已完成" in gap_card["blocked_claims"]
+    assert "runtime default 可以开启" in gap_card["blocked_claims"]
+    assert "R6 已达到 CCF-A 主贡献" in gap_card["blocked_claims"]
+    assert gap_card["source_artifact_ids"] == [
+        "r6-product-cards-gap-closure-report"
+    ]
+    assert "r6-product-cards-gap-closure-report" in cards["source_refs"]
+    assert cards["demo_api_contract"]["static_narrative_fallback_allowed"] is False
+
+
 def test_r6_ccfa_readiness_report_says_not_ready_for_ccf_a_main_contribution():
     report = build_r6_ccfa_readiness_report(
         artifact_id="r6-ccfa-readiness-test",
@@ -459,6 +490,26 @@ def test_r6_new_method_gate_clis_write_artifacts(tmp_path):
             "experiments/r6_mechanism_research_readiness_report.py",
             "r6-mechanism-research-readiness-cli",
             "r6-mechanism-research-readiness-report-v1",
+        ),
+        (
+            "experiments/r6_theory_framework.py",
+            "r6-theory-framework-cli",
+            "r6-theory-framework-v1",
+        ),
+        (
+            "experiments/r6_outcome_holdout_registry.py",
+            "r6-outcome-holdout-registry-cli",
+            "r6-outcome-holdout-registry-v1",
+        ),
+        (
+            "experiments/r6_behavioral_update_operator_v2.py",
+            "r6-behavioral-update-operator-v2-cli",
+            "r6-behavioral-update-operator-v2",
+        ),
+        (
+            "experiments/r6_gap_closure_report.py",
+            "r6-gap-closure-report-cli",
+            "r6-gap-closure-report-v1",
         ),
     ]
     for script, artifact_id, schema_version in commands:
