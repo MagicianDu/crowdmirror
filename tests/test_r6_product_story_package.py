@@ -86,6 +86,31 @@ def test_r6_product_story_package_rejects_dangerous_allowed_claim(monkeypatch):
         )
 
 
+@pytest.mark.parametrize(
+    "dangerous_allowed_claim",
+    [
+        "field_validated",
+        "runtime_default_ready",
+        "ccf_a_ready",
+        "accuracy superiority established",
+    ],
+)
+def test_r6_product_story_package_rejects_dangerous_allowed_claim_variants(
+    monkeypatch,
+    dangerous_allowed_claim,
+):
+    _patch_cards(
+        monkeypatch,
+        card_mutation={"allowed_claims": [dangerous_allowed_claim]},
+    )
+
+    with pytest.raises(ValueError, match="allowed_claims"):
+        build_r6_product_story_package(
+            artifact_id="r6-product-story-package-dangerous-allowed-claim",
+            run_id="r6-product-first-run",
+        )
+
+
 def test_r6_product_story_package_rejects_unregistered_card_source(monkeypatch):
     _patch_cards(
         monkeypatch,

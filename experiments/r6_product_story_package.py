@@ -60,13 +60,18 @@ R6_PRODUCT_STORY_DANGEROUS_CLAIM_STATUSES = {
     "ccf_a_ready",
 }
 R6_PRODUCT_STORY_PROHIBITED_ALLOWED_CLAIM_TERMS = (
+    *R6_PRODUCT_STORY_DANGEROUS_CLAIM_STATUSES,
     "field validation 已完成",
     "field_outcome_validated=true",
+    "field validated",
     "runtime default 可以开启",
     "runtime_default_allowed=true",
+    "runtime default ready",
     "R6 已达到 CCF-A 主贡献",
     "ccf_a_main_contribution_ready=true",
+    "ccf a ready",
     "accuracy_superiority_established",
+    "accuracy superiority established",
     "交互仿真稳定比静态先验更准",
 )
 R6_PRODUCT_STORY_CANONICAL_SOURCE_REGISTRY = [
@@ -552,12 +557,17 @@ def _card_display_field_paths(cards: list[dict[str, Any]]) -> list[dict[str, Any
 def _require_safe_allowed_claims(value: Any, *, field: str) -> list[str]:
     claims = _require_non_empty_string_list(value, field=field)
     for index, claim in enumerate(claims):
+        normalized_claim = _normalized_claim_text(claim)
         for term in R6_PRODUCT_STORY_PROHIBITED_ALLOWED_CLAIM_TERMS:
-            if term in claim:
+            if _normalized_claim_text(term) in normalized_claim:
                 raise ValueError(
                     f"{field}[{index}] contains prohibited customer-visible claim"
                 )
     return claims
+
+
+def _normalized_claim_text(value: str) -> str:
+    return " ".join(value.lower().replace("_", " ").replace("-", " ").split())
 
 
 def _require_card_ids(
