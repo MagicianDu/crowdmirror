@@ -44,7 +44,13 @@ def test_r6_product_decision_report_accepts_valid_story_package_and_extends_sour
     )
 
     assert report["blocked_claims"] == story_package["blocked_claims"]
-    assert report["next_measurement_plan"] == story_package["next_measurement_plan"]
+    assert report["next_measurement_plan"] == {
+        "source_artifact_ids": ["r6-evidence-report", "r6-gap-closure-report"],
+        "required_gate_paths": [
+            "acceptance_gates.field_outcome_validated",
+            "acceptance_gates.global_update_accepted",
+        ],
+    }
     assert report["source_refs"] == [
         "r6-product-decision-report-test-story-package",
         "r6-story-source-1",
@@ -124,6 +130,38 @@ def test_r6_product_decision_report_rejects_bad_next_measurement_plan(
             run_id="r6-product-first-run",
             story_package=story_package,
         )
+
+
+def test_r6_product_decision_report_does_not_forward_measurement_narrative():
+    story_package = _valid_story_package()
+    story_package["next_measurement_plan"] = {
+        **story_package["next_measurement_plan"],
+        "narrative": "runtime default 可以开启",
+    }
+
+    report = build_r6_product_decision_report(
+        artifact_id="r6-product-decision-report-test",
+        run_id="r6-product-first-run",
+        story_package=story_package,
+    )
+
+    assert "narrative" not in report["next_measurement_plan"]
+
+
+def test_r6_product_decision_report_does_not_forward_string_current_gate_values():
+    story_package = _valid_story_package()
+    story_package["next_measurement_plan"] = {
+        **story_package["next_measurement_plan"],
+        "current_gate_values": "runtime default 可以开启",
+    }
+
+    report = build_r6_product_decision_report(
+        artifact_id="r6-product-decision-report-test",
+        run_id="r6-product-first-run",
+        story_package=story_package,
+    )
+
+    assert "current_gate_values" not in report["next_measurement_plan"]
 
 
 def test_r6_product_decision_report_rejects_static_narrative_fallback_enabled():

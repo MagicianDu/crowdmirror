@@ -126,7 +126,6 @@ def _validate_story_package(
         field="story_package.next_measurement_plan",
     )
     normalized_next_measurement_plan = {
-        **next_measurement_plan,
         "source_artifact_ids": _require_non_empty_string_list(
             next_measurement_plan.get("source_artifact_ids"),
             field="story_package.next_measurement_plan.source_artifact_ids",
