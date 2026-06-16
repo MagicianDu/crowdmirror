@@ -112,6 +112,7 @@
 - `experiments/r6_interaction_signal_validity.py`
 - `experiments/r6_interaction_signal_validity_holdout_validation.py`
 - `docs/superpowers/specs/2026-06-11-r6-risk-discovery-method-spec.md`
+- `docs/superpowers/specs/2026-06-16-r6-mechanism-driven-interaction-learning-design.md`
 - `experiments/results/r6_decision_value_metrics/r6-decision-value-metrics-current-001.json`
 - `experiments/results/r6_risk_discovery_holdout_validation/r6-risk-discovery-holdout-validation-current-001.json`
 - `experiments/results/r6_risk_discovery_threshold_sweep/r6-risk-discovery-threshold-sweep-current-001.json`
@@ -173,6 +174,8 @@
 35. false-alarm discriminator diagnosis 已实现，当前结论是 `false_alarm_discriminator_diagnostic_only`：target case family、source family、post-outcome static error 三类候选都能在当前 3 个 public proxy 上把 1 个 HTOPS true positive 和 2 个 ANES false alarm 分开，但 `accepted_candidate_count=0`、`generalizable_discriminator_found=false`。原因是当前可分离规则本质上是 case/source family 记忆，缺少 in-family positive signal 或外部 holdout，不能作为 runtime gate 或 CCF-A 主贡献证据。
 36. Interaction Signal Validity Score 已实现，当前结论是 `interaction_signal_validity_diagnostic_only`：评分特征显式排除 `source_key`、`target_case_id`、`target_case_type`，改用 `segment_pattern_score`、`mechanism_alignment_score`、`counterfactual_sensitivity_score`、`prior_uncertainty_score`、`holdout_consistency_score`。当前 HTOPS 得到 `validity_score=0.93` 且 `diagnostic_only`，ANES health / climate 得到 `validity_score=0.68` 且 `reject_as_likely_false_alarm`；这说明它比 case/source family gate 更通用，并产生了一个 current-proxy-supported 正向信号，但 `accepted_count=0`、`interaction_signal_validity_generalized=false`，仍不能宣称 R6 通过。
 37. Interaction Signal Validity holdout validation 已实现，当前结论是 `interaction_signal_validity_holdout_failed_current_public_proxies`：`source_supported_count=1`、`eligible_independent_holdout_count=2`、`passed_holdout_count=0`、`contradicted_holdout_count=2`。这说明 HTOPS 上的正向交互信号目前只是 source-supported diagnostic signal，尚未在独立 public proxy holdout 上泛化；当前新增的 gate 会把该信号阻断在 CCF-A 主贡献和 runtime default 之外，直到出现独立 supported holdout 或 field outcome 支持。
+38. 当前 scoring candidate 已止损为 Research 负结果和诊断基线；后续 Research 不再围绕 post-hoc score、阈值、prompt/persona patch 小修小补推进，而是转向机制驱动交互传播、结构化 behavioral update operator 和 outcome-feedback learning。
+39. Product 侧的 failure diagnosis、false-alarm gate、claim boundary、evidence cards 必须保留，作为所有新 Research 方法的外层 guard；Research 方法未过 gate 时，Product 只能展示 diagnostic / blocked，不允许展示 runtime default 或 field validated 声明。
 
 ## 可复用资产
 
@@ -206,10 +209,10 @@ R6 开发时必须只 stage 本轮明确修改的文件。
 
 ## 下一步
 
-1. Research 下一步只围绕 risk-discovery CCF-A readiness 的剩余 gap 推进：formal problem、decision-value metric 通过、risk-discovery holdout validation 通过、Interaction Signal Validity 泛化、signal holdout validation 通过、field/real outcome validation。
-2. 数据侧优先寻找或构造 positive same-family source signal + independent supported holdout，降低当前 `false_alarm_rate=0.667`，而不是继续泛泛增加 proxy。
-3. 方法侧下一步要降低 false alarm：由于 threshold sweep 已显示阈值无法分离当前真风险和误报，且当前 case/source family discriminator 有过拟合风险，应优先验证 Interaction Signal Validity 的发布前特征是否能在独立 holdout 或 field outcome 上稳定区分真实风险与误报。
-4. Product 侧下一步接入 `interaction_signal_validity_holdout_summary`，展示“当前有一个 current-proxy-supported 风险信号，但独立 holdout 未通过”的边界。
+1. Research 下一步按 `2026-06-16-r6-mechanism-driven-interaction-learning-design.md` 推进：先做 mechanism propagation trace，再做 behavioral update operator，最后接 outcome-feedback holdout validation。
+2. 数据侧不再泛泛增加 proxy；新增数据必须服务于机制传播验证、operator holdout 或 field outcome 复核。
+3. 方法侧停止继续优化当前 scoring candidate；它保留为 negative baseline 和 diagnostic gate。
+4. Product 侧保留并强化 `interaction_signal_validity_holdout_summary`、false-alarm diagnosis、blocked update reason 和 claim boundary，确保新 Research 方法不会污染 runtime default。
 
 ## 验收边界
 

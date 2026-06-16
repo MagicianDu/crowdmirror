@@ -7,6 +7,7 @@
 - `docs/superpowers/specs/2026-06-05-r6-outcome-feedback-prior-anchored-interaction-simulation-spec.md`
 - `docs/superpowers/specs/2026-06-06-r6-method-gates-transfer-protocol-spec.md`
 - `docs/superpowers/specs/2026-06-11-r6-risk-discovery-method-spec.md`
+- `docs/superpowers/specs/2026-06-16-r6-mechanism-driven-interaction-learning-design.md`
 
 工作名：
 
@@ -18,6 +19,7 @@
 - `2026-06-05-r6-outcome-feedback-prior-anchored-interaction-simulation-spec.md` 定义 R6 的总体问题、方法边界和 foundation artifact chain。
 - `2026-06-06-r6-method-gates-transfer-protocol-spec.md` 定义当前阶段的 evidence levels、acceptance gates、cross-case transfer protocol 和止损边界。
 - `2026-06-11-r6-risk-discovery-method-spec.md` 定义 R6 下一阶段的风险发现目标、decision-value 指标和 holdout validation 协议。
+- `2026-06-16-r6-mechanism-driven-interaction-learning-design.md` 定义当前 scoring candidate 止损后的方法升级方向：机制驱动交互传播、结构化 behavioral update operator、outcome-feedback learning，以及 Product guard 保留边界。
 
 后续实现若与历史 R2-R5、旧 prompt/persona 优化、单一 proxy 扩张路线冲突，以当前阶段 addendum 为准。
 
@@ -57,7 +59,7 @@ R6 必须同时满足：
 6. `r6_learning_report`
 7. `r6_update_registry`
 
-当前阶段已从 foundation artifact 扩展到方法验收层，只推进：
+当前阶段已从 foundation artifact 扩展到方法验收层；在当前 scoring candidate holdout failed 后，Research 主线升级为机制驱动交互学习，Product 保留诊断护栏。只推进：
 
 1. `cross-case transfer protocol artifact`
 2. `in-condition holdout 搜索标准`
@@ -66,6 +68,7 @@ R6 必须同时满足：
 5. `risk-discovery holdout validation`
 6. `risk-discovery threshold sweep / false-alarm discriminator diagnosis`
 7. `Interaction Signal Validity Score / holdout validation`
+8. `mechanism-driven interaction propagation / behavioral update operator`
 
 不再把“继续增加 public proxy 数量”作为默认目标；只有当新增数据能触发 acceptance gate，才进入数据接入。
 
@@ -96,3 +99,5 @@ R6 必须同时满足：
 - `false-alarm discriminator` 已实现不等于 R6 通过；当前 case/source family 候选只算 diagnostic-only，不能作为核心规则。
 - `Interaction Signal Validity Score` 是当前非阈值主 gate；它必须显式排除 source/family 标签，并通过独立 holdout 或 field outcome 复核后才能从 diagnostic 升级。
 - `Interaction Signal Validity holdout validation` 已实现不等于 R6 通过；当前结论是 `source_supported_count=1`、`eligible_independent_holdout_count=2`、`passed_holdout_count=0`、`contradicted_holdout_count=2`，因此正向信号仍停留在 diagnostic。
+- 当前 scoring candidate 不再作为 Research 主贡献继续优化；下一步必须转向机制传播 trace、结构化 behavioral update operator 和 outcome-feedback learning。
+- Product 的 failure diagnosis、false-alarm gate、claim boundary、evidence cards 是新方法外层 guard，不能因为 Research 换方法而降级或移除。
