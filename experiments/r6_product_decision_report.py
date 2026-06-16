@@ -15,7 +15,10 @@ from experiments.r6_contracts import (
     non_empty_string,
     write_json_artifact,
 )
-from experiments.r6_product_story_package import build_r6_product_story_package
+from experiments.r6_product_story_package import (
+    R6_PRODUCT_STORY_PACKAGE_SCHEMA_VERSION,
+    build_r6_product_story_package,
+)
 
 
 R6_PRODUCT_DECISION_REPORT_SCHEMA_VERSION = "r6-product-decision-report-v1"
@@ -33,12 +36,19 @@ def build_r6_product_decision_report(
     *,
     artifact_id: str,
     run_id: str,
+    story_package: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
-    story_package = build_r6_product_story_package(
-        artifact_id=f"{artifact_id}-story-package",
-        run_id=run_id,
+    story_artifact_id = f"{artifact_id}-story-package"
+    if story_package is None:
+        story_package = build_r6_product_story_package(
+            artifact_id=story_artifact_id,
+            run_id=run_id,
+        )
+    story_package = _validate_story_package(
+        story_package,
+        expected_artifact_id=story_artifact_id,
     )
     report = {
         "schema_version": R6_PRODUCT_DECISION_REPORT_SCHEMA_VERSION,
@@ -59,11 +69,121 @@ def build_r6_product_decision_report(
         },
         "blocked_claims": story_package["blocked_claims"],
         "next_measurement_plan": story_package["next_measurement_plan"],
-        "source_refs": [story_package["artifact_id"]],
+        "source_refs": _unique_strings(
+            [story_package["artifact_id"], *story_package["source_refs"]]
+        ),
         "claim_boundary": R6_CLAIM_BOUNDARY,
     }
     assert_strict_json(report)
     return report
+
+
+def _validate_story_package(
+    story_package: dict[str, Any],
+    *,
+    expected_artifact_id: str,
+) -> dict[str, Any]:
+    if not isinstance(story_package, dict):
+        raise ValueError("story_package must be an object")
+    _require_exact(
+        story_package,
+        field="story_package.schema_version",
+        expected=R6_PRODUCT_STORY_PACKAGE_SCHEMA_VERSION,
+    )
+    _require_exact(
+        story_package,
+        field="story_package.status",
+        expected="product_story_package_ready_guarded",
+    )
+    artifact_id = non_empty_string(
+        story_package.get("artifact_id"),
+        field="story_package.artifact_id",
+    )
+    expected_artifact_id = non_empty_string(
+        expected_artifact_id,
+        field="expected_artifact_id",
+    )
+    if artifact_id != expected_artifact_id:
+        raise ValueError(
+            "story_package.artifact_id must match expected story artifact id"
+        )
+    ui_contract = _require_object(
+        story_package.get("ui_contract"),
+        field="story_package.ui_contract",
+    )
+    if ui_contract.get("static_narrative_fallback_allowed") is not False:
+        raise ValueError(
+            "story_package.ui_contract.static_narrative_fallback_allowed "
+            "must be False"
+        )
+    if ui_contract.get("all_customer_visible_claims_require_source_artifact") is not True:
+        raise ValueError(
+            "story_package.ui_contract."
+            "all_customer_visible_claims_require_source_artifact must be True"
+        )
+    next_measurement_plan = _require_object(
+        story_package.get("next_measurement_plan"),
+        field="story_package.next_measurement_plan",
+    )
+    normalized_next_measurement_plan = {
+        **next_measurement_plan,
+        "source_artifact_ids": _require_non_empty_string_list(
+            next_measurement_plan.get("source_artifact_ids"),
+            field="story_package.next_measurement_plan.source_artifact_ids",
+        ),
+        "required_gate_paths": _require_non_empty_string_list(
+            next_measurement_plan.get("required_gate_paths"),
+            field="story_package.next_measurement_plan.required_gate_paths",
+        ),
+    }
+    return {
+        **story_package,
+        "artifact_id": artifact_id,
+        "blocked_claims": _require_non_empty_string_list(
+            story_package.get("blocked_claims"),
+            field="story_package.blocked_claims",
+        ),
+        "next_measurement_plan": normalized_next_measurement_plan,
+        "source_refs": _require_non_empty_string_list(
+            story_package.get("source_refs"),
+            field="story_package.source_refs",
+        ),
+    }
+
+
+def _require_exact(report: dict[str, Any], *, field: str, expected: str) -> None:
+    key = field.rsplit(".", 1)[-1]
+    if report.get(key) != expected:
+        raise ValueError(f"{field} must be {expected!r}")
+
+
+def _require_object(value: Any, *, field: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ValueError(f"{field} must be an object")
+    return value
+
+
+def _require_non_empty_string_list(value: Any, *, field: str) -> list[str]:
+    if not isinstance(value, list):
+        raise ValueError(f"{field} must be a non-empty list")
+    items = [
+        non_empty_string(item, field=f"{field}[{index}]")
+        for index, item in enumerate(value)
+    ]
+    if not items:
+        raise ValueError(f"{field} must be a non-empty list")
+    return items
+
+
+def _unique_strings(values: list[str]) -> list[str]:
+    seen = set()
+    result = []
+    for value in values:
+        normalized = non_empty_string(value, field="source_refs[]")
+        if normalized not in seen:
+            seen.add(normalized)
+            result.append(normalized)
+    return result
 
 
 def write_r6_product_decision_report(output: str | Path, **kwargs: Any) -> Path:
