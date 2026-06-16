@@ -41,6 +41,7 @@ def build_r6_behavioral_update_operator(
         raise ValueError("propagation_trace must be a JSON object")
 
     candidate_updates = _build_candidate_updates(propagation_trace)
+    _validate_candidate_provenance(candidate_updates)
     prompt_patch_update_count = sum(
         1 for update in candidate_updates if update["prompt_patch_text"]
     )
@@ -111,10 +112,12 @@ def _build_candidate_updates(
     rights_paths = _dynamic_path_refs(
         propagation_trace,
         case_id="generic-rights-rule-change",
+        path_type="peer_amplified_risk_diffusion",
     )
     service_paths = _dynamic_path_refs(
         propagation_trace,
         case_id="generic-public-service-policy-change",
+        path_type="memory_threshold_activation",
     )
     return [
         {
@@ -173,12 +176,15 @@ def _dynamic_path_refs(
     propagation_trace: dict[str, Any],
     *,
     case_id: str,
+    path_type: str,
 ) -> list[dict[str, Any]]:
     refs = []
     for case_trace in propagation_trace.get("case_traces", []):
         if case_trace.get("case_id") != case_id:
             continue
         for dynamic_path in case_trace.get("dynamic_paths", []):
+            if dynamic_path.get("path_type") != path_type:
+                continue
             refs.append(
                 {
                     "source_key": case_trace["source_key"],
@@ -191,6 +197,17 @@ def _dynamic_path_refs(
                 }
             )
     return refs
+
+
+def _validate_candidate_provenance(candidate_updates: list[dict[str, Any]]) -> None:
+    if any(
+        not update["source_dynamic_paths"] or not update["affected_segments"]
+        for update in candidate_updates
+    ):
+        raise ValueError(
+            "propagation_trace lacks required dynamic paths for behavioral "
+            "update operator"
+        )
 
 
 def _affected_segments(dynamic_paths: list[dict[str, Any]]) -> list[str]:
