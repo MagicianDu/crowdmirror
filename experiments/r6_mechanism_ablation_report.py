@@ -27,6 +27,15 @@ from experiments.r6_mechanism_propagation_trace import (
 R6_MECHANISM_ABLATION_REPORT_SCHEMA_VERSION = (
     "r6-mechanism-ablation-report-v1"
 )
+R6_MECHANISM_PROPAGATION_TRACE_SCHEMA_VERSION = (
+    "r6-mechanism-propagation-trace-v1"
+)
+R6_BEHAVIORAL_UPDATE_OPERATOR_SCHEMA_VERSION = (
+    "r6-behavioral-update-operator-v1"
+)
+R6_BEHAVIORAL_UPDATE_OPERATOR_STATUS = (
+    "behavioral_update_candidate_blocked_pending_holdout"
+)
 METHODS = [
     "static_prior",
     "no_propagation_interaction",
@@ -56,6 +65,7 @@ def build_r6_mechanism_ablation_report(
         )
     if not isinstance(propagation_trace, dict):
         raise ValueError("propagation_trace must be a JSON object")
+    case_traces = _validated_case_traces(propagation_trace)
     if behavioral_update_operator is None:
         behavioral_update_operator = build_r6_behavioral_update_operator(
             artifact_id=f"{artifact_id}-behavioral-update-operator",
@@ -64,10 +74,7 @@ def build_r6_mechanism_ablation_report(
         )
     if not isinstance(behavioral_update_operator, dict):
         raise ValueError("behavioral_update_operator must be a JSON object")
-
-    case_traces = propagation_trace.get("case_traces", [])
-    if not isinstance(case_traces, list):
-        raise ValueError("propagation_trace.case_traces must be a list")
+    _validate_behavioral_update_operator(behavioral_update_operator)
 
     case_method_results = [
         method_result
@@ -107,9 +114,8 @@ def build_r6_mechanism_ablation_report(
             ),
             "mechanism_ablation_positive": False,
             "false_alarm_not_hidden": mechanism_regression_case_count > 0,
-            "product_guard_preserved": not behavioral_update_operator.get(
-                "runtime_default_allowed",
-                False,
+            "product_guard_preserved": (
+                behavioral_update_operator["runtime_default_allowed"] is False
             ),
         },
         "case_method_results": case_method_results,
@@ -201,6 +207,7 @@ def _build_case_method_results(
             static_error=static_error,
             evaluation_status="diagnostic_baseline",
             evidence_boundary="deterministic_random_path_baseline",
+            baseline_type="deterministic_fixed_offset",
             random_seed="source_key_fixed_offset_v1",
         ),
         _prediction_result(
@@ -237,6 +244,7 @@ def _prediction_result(
     static_error: float,
     evaluation_status: str,
     evidence_boundary: str,
+    baseline_type: str | None = None,
     random_seed: str | None = None,
     source_dynamic_path_count: int | None = None,
 ) -> dict[str, Any]:
@@ -259,6 +267,8 @@ def _prediction_result(
         "runtime_default_allowed": False,
         "evidence_boundary": evidence_boundary,
     }
+    if baseline_type is not None:
+        result["baseline_type"] = baseline_type
     if random_seed is not None:
         result["random_seed"] = random_seed
     if source_dynamic_path_count is not None:
@@ -292,6 +302,7 @@ def _blocked_behavioral_update_result(
         "static_prior_error": static_error,
         "beats_static_prior": False,
         "evaluation_status": "blocked_pending_operator_holdout",
+        "global_update_status": "blocked_pending_operator_holdout",
         "runtime_decision": "blocked_pending_operator_holdout",
         "runtime_default_allowed": False,
         "candidate_update_ids": candidate_update_ids,
@@ -361,14 +372,91 @@ def _candidate_update_ids_for_case(
     return candidate_update_ids
 
 
+def _validated_case_traces(propagation_trace: dict[str, Any]) -> list[dict[str, Any]]:
+    if (
+        propagation_trace.get("schema_version")
+        != R6_MECHANISM_PROPAGATION_TRACE_SCHEMA_VERSION
+    ):
+        raise ValueError(
+            "propagation_trace.schema_version must be "
+            f"{R6_MECHANISM_PROPAGATION_TRACE_SCHEMA_VERSION}"
+        )
+    if propagation_trace.get("status") != "mechanism_propagation_trace_ready":
+        raise ValueError(
+            "propagation_trace.status must be mechanism_propagation_trace_ready"
+        )
+    case_traces = propagation_trace.get("case_traces")
+    if not isinstance(case_traces, list):
+        raise ValueError("propagation_trace.case_traces must be a list")
+    if not case_traces:
+        raise ValueError("propagation_trace.case_traces must be non-empty")
+    for case_index, case_trace in enumerate(case_traces):
+        if not isinstance(case_trace, dict):
+            raise ValueError(
+                f"propagation_trace.case_traces[{case_index}] must be a JSON object"
+            )
+        dynamic_paths = case_trace.get("dynamic_paths")
+        if not isinstance(dynamic_paths, list):
+            raise ValueError(
+                "propagation_trace.case_traces"
+                f"[{case_index}].dynamic_paths must be a list"
+            )
+        if not dynamic_paths:
+            raise ValueError(
+                "propagation_trace.case_traces"
+                f"[{case_index}].dynamic_paths must be non-empty"
+            )
+        for path_index, dynamic_path in enumerate(dynamic_paths):
+            if not isinstance(dynamic_path, dict):
+                raise ValueError(
+                    "propagation_trace.case_traces"
+                    f"[{case_index}].dynamic_paths[{path_index}] must be a JSON object"
+                )
+            if dynamic_path.get("static_prior_can_express_path") is not False:
+                raise ValueError(
+                    "propagation_trace.case_traces"
+                    f"[{case_index}].dynamic_paths[{path_index}]"
+                    ".static_prior_can_express_path must be False"
+                )
+    return case_traces
+
+
+def _validate_behavioral_update_operator(
+    behavioral_update_operator: dict[str, Any],
+) -> None:
+    if (
+        behavioral_update_operator.get("schema_version")
+        != R6_BEHAVIORAL_UPDATE_OPERATOR_SCHEMA_VERSION
+    ):
+        raise ValueError(
+            "behavioral_update_operator.schema_version must be "
+            f"{R6_BEHAVIORAL_UPDATE_OPERATOR_SCHEMA_VERSION}"
+        )
+    if behavioral_update_operator.get("status") != R6_BEHAVIORAL_UPDATE_OPERATOR_STATUS:
+        raise ValueError(
+            "behavioral_update_operator.status must be "
+            f"{R6_BEHAVIORAL_UPDATE_OPERATOR_STATUS}"
+        )
+    if behavioral_update_operator.get("runtime_default_allowed") is not False:
+        raise ValueError(
+            "behavioral_update_operator.runtime_default_allowed must be False"
+        )
+    candidate_updates = behavioral_update_operator.get("candidate_updates")
+    if not isinstance(candidate_updates, list):
+        raise ValueError("behavioral_update_operator.candidate_updates must be a list")
+
+
 def _dynamic_path_distinct_from_static_prior(
     propagation_trace: dict[str, Any],
 ) -> bool:
-    case_traces = propagation_trace.get("case_traces", [])
+    case_traces = propagation_trace["case_traces"]
     return bool(case_traces) and all(
-        not dynamic_path.get("static_prior_can_express_path", True)
+        case_trace.get("dynamic_paths")
+        and all(
+            dynamic_path.get("static_prior_can_express_path") is False
+            for dynamic_path in case_trace["dynamic_paths"]
+        )
         for case_trace in case_traces
-        for dynamic_path in case_trace.get("dynamic_paths", [])
     )
 
 
