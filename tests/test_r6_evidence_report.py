@@ -221,6 +221,8 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "in_condition_holdout_ledger_present": True,
         "in_condition_holdout_found": False,
         "product_evidence_cards_present": True,
+        "mechanism_driven_mvp_summary_present": True,
+        "product_guard_preserved": True,
         "ccfa_readiness_report_present": True,
         "ccf_a_main_contribution_ready": False,
         "global_update_accepted": False,
@@ -319,9 +321,20 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
     assert report["product_evidence_cards_summary"] == {
         "artifact_id": "r6-evidence-report-test-product-evidence-cards",
         "status": "product_evidence_cards_ready",
-        "card_count": 5,
+        "card_count": 7,
         "static_narrative_fallback_allowed": False,
     }
+    assert report["mechanism_research_readiness_summary"] == {
+        "artifact_id": "r6-evidence-report-test-mechanism-research-readiness-report",
+        "status": "mechanism_research_diagnostic_only",
+        "mechanism_mvp_result": "diagnostic_only",
+        "ccf_a_main_contribution_ready": False,
+        "runtime_default_allowed": False,
+    }
+    assert report["acceptance_gates"][
+        "mechanism_driven_mvp_summary_present"
+    ] is True
+    assert report["acceptance_gates"]["product_guard_preserved"] is True
     assert report["ccfa_readiness_summary"] == {
         "artifact_id": "r6-evidence-report-test-ccfa-readiness-report",
         "status": "ccf_a_readiness_evaluated",
@@ -367,6 +380,7 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
     assert "needs_signal_validity_holdout_validation" in report["remaining_gaps"]
     assert "needs_independent_supported_signal_holdout" in report["remaining_gaps"]
     assert "needs_positive_same_family_source_signal" in report["remaining_gaps"]
+    assert "needs_operator_holdout_validation" in report["remaining_gaps"]
     assert "needs_field_outcome_validation" in report["remaining_gaps"]
     assert "same_case_feedback_not_global_acceptance" in report["risk_flags"]
     assert "static_prior_is_foundation_not_opponent" in report["risk_flags"]

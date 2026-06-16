@@ -1,0 +1,134 @@
+{
+  "acceptance_gates": {
+    "operator_holdout_validated": false,
+    "operator_update_structured": true,
+    "product_guard_required": true,
+    "prompt_patch_absent": true,
+    "runtime_default_allowed": false
+  },
+  "artifact_id": "r6-behavioral-update-operator-current-001",
+  "blocking_gaps": [
+    "needs_operator_holdout_validation",
+    "needs_field_outcome_validation"
+  ],
+  "candidate_updates": [
+    {
+      "affected_segments": [
+        "rights_dependent_low_trust",
+        "rule_watchers"
+      ],
+      "derived_from_failure_boundary": "interaction_over_amplifies_rejection_risk",
+      "expected_repair": "Damp rejection amplification for rights or rule changes when the static prior is already close to observed bounded proxy outcomes.",
+      "new_false_alarm_risk": "Could suppress real rights or rule-change diffusion if the close-static-prior condition is not independently validated.",
+      "operator_id": "damp-rights-rule-over-amplification",
+      "parameter_delta": {
+        "max_reject_delta_when_static_prior_close": 0.02,
+        "static_prior_close_error_threshold": 0.03
+      },
+      "prompt_patch_text": "",
+      "runtime_decision": "blocked_pending_operator_holdout",
+      "runtime_default_allowed": false,
+      "source_dynamic_paths": [
+        {
+          "case_id": "generic-rights-rule-change",
+          "mechanism_sequence": [
+            "official_exposure",
+            "peer_or_community_amplification"
+          ],
+          "path_type": "peer_amplified_risk_diffusion",
+          "rounds": [
+            1,
+            2
+          ],
+          "source_key": "anes_health_heldout",
+          "source_segment_id": "rights_dependent_low_trust",
+          "target_segment_id": "rule_watchers"
+        },
+        {
+          "case_id": "generic-rights-rule-change",
+          "mechanism_sequence": [
+            "official_exposure",
+            "peer_or_community_amplification"
+          ],
+          "path_type": "peer_amplified_risk_diffusion",
+          "rounds": [
+            1,
+            2
+          ],
+          "source_key": "anes_climate_heldout",
+          "source_segment_id": "rights_dependent_low_trust",
+          "target_segment_id": "rule_watchers"
+        }
+      ],
+      "update_target": "cap_or_damping_rule"
+    },
+    {
+      "affected_segments": [
+        "low_dependency_high_trust",
+        "service_dependent_low_trust"
+      ],
+      "derived_from_failure_boundary": "static_prior_miss_under_interaction_diffusion",
+      "expected_repair": "Increase memory-threshold activation sensitivity for service access disruption paths that the static prior under-expresses.",
+      "new_false_alarm_risk": "Could over-trigger service access risk when peer amplification is fixture-specific rather than outcome-validated.",
+      "operator_id": "boost-service-access-memory-activation",
+      "parameter_delta": {
+        "memory_activation_threshold_delta": -0.1,
+        "min_peer_amplified_path_count": 1
+      },
+      "prompt_patch_text": "",
+      "runtime_decision": "blocked_pending_operator_holdout",
+      "runtime_default_allowed": false,
+      "source_dynamic_paths": [
+        {
+          "case_id": "generic-public-service-policy-change",
+          "mechanism_sequence": [
+            "official_exposure",
+            "peer_or_community_amplification",
+            "memory_accumulation_and_risk_activation"
+          ],
+          "path_type": "memory_threshold_activation",
+          "rounds": [
+            1,
+            2,
+            3
+          ],
+          "source_key": "htops_cost_pressure",
+          "source_segment_id": "low_dependency_high_trust",
+          "target_segment_id": "service_dependent_low_trust"
+        }
+      ],
+      "update_target": "activation_threshold"
+    }
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Behavioral update operator is a structured diagnostic candidate only; it is not a prompt patch, not field validation, and not runtime default behavior.",
+    "Product failure diagnosis, false-alarm gate, claim boundary, and evidence-card guard remain required for every candidate."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "operator_summary": {
+    "candidate_update_count": 2,
+    "field_outcome_validated": false,
+    "prompt_patch_update_count": 0,
+    "runtime_default_allowed_count": 0,
+    "structured_operator_update_count": 2
+  },
+  "risk_flags": [
+    "operator_update_not_runtime_default",
+    "operator_holdout_missing",
+    "field_outcome_validation_missing",
+    "product_guard_required"
+  ],
+  "run_id": "r6-behavioral-update-operator-current-001",
+  "runtime_default_allowed": false,
+  "schema_version": "r6-behavioral-update-operator-v1",
+  "source_refs": [
+    "r6-behavioral-update-operator-current-001-mechanism-propagation-trace",
+    "r6-behavioral-update-operator-current-001-mechanism-propagation-trace-htops_cost_pressure-proxy",
+    "r6-behavioral-update-operator-current-001-mechanism-propagation-trace-anes_health_heldout-proxy",
+    "r6-behavioral-update-operator-current-001-mechanism-propagation-trace-anes_climate_heldout-proxy",
+    "generic-public-service-policy-change",
+    "generic-rights-rule-change"
+  ],
+  "status": "behavioral_update_candidate_blocked_pending_holdout"
+}

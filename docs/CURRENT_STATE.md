@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-截至 2026-06-11，项目已从 R4/R5 的静态 heldout accuracy race 转向 R6：
+截至 2026-06-16，项目已从 R4/R5 的静态 heldout accuracy race 转向 R6：
 
 > 结果反馈约束的先验锚定交互仿真框架。
 
@@ -135,6 +135,23 @@
 - `experiments/results/r6_evidence_report/r6-evidence-report-current-011.json`
 - `experiments/results/r6_evidence_report/r6-evidence-report-current-012.json`
 
+当前新增的 R6 mechanism-driven MVP 和 Product guard 集成单元：
+
+- `experiments/r6_mechanism_propagation_trace.py`
+- `experiments/r6_behavioral_update_operator.py`
+- `experiments/r6_mechanism_ablation_report.py`
+- `experiments/r6_operator_holdout_validation.py`
+- `experiments/r6_mechanism_research_readiness_report.py`
+- `experiments/r6_product_evidence_cards.py` 支持 mechanism readiness 输入并扩展 Product guard cards。
+- `experiments/r6_evidence_report.py` 将 mechanism research readiness 纳入 summary、acceptance gates 和 remaining gaps。
+- `experiments/results/r6_mechanism_propagation_trace/r6-mechanism-propagation-trace-current-001.json`
+- `experiments/results/r6_behavioral_update_operator/r6-behavioral-update-operator-current-001.json`
+- `experiments/results/r6_mechanism_ablation_report/r6-mechanism-ablation-report-current-001.json`
+- `experiments/results/r6_operator_holdout_validation/r6-operator-holdout-validation-current-001.json`
+- `experiments/results/r6_mechanism_research_readiness_report/r6-mechanism-research-readiness-report-current-001.json`
+- `experiments/results/r6_product_evidence_cards/r6-product-evidence-cards-current-002.json`
+- `experiments/results/r6_evidence_report/r6-evidence-report-current-013.json`
+
 ## 已确认结论
 
 1. 强人口/客户/群体先验不是研究对手，而是仿真底座。
@@ -176,6 +193,8 @@
 37. Interaction Signal Validity holdout validation 已实现，当前结论是 `interaction_signal_validity_holdout_failed_current_public_proxies`：`source_supported_count=1`、`eligible_independent_holdout_count=2`、`passed_holdout_count=0`、`contradicted_holdout_count=2`。这说明 HTOPS 上的正向交互信号目前只是 source-supported diagnostic signal，尚未在独立 public proxy holdout 上泛化；当前新增的 gate 会把该信号阻断在 CCF-A 主贡献和 runtime default 之外，直到出现独立 supported holdout 或 field outcome 支持。
 38. 当前 scoring candidate 已止损为 Research 负结果和诊断基线；后续 Research 不再围绕 post-hoc score、阈值、prompt/persona patch 小修小补推进，而是转向机制驱动交互传播、结构化 behavioral update operator 和 outcome-feedback learning。
 39. Product 侧的 failure diagnosis、false-alarm gate、claim boundary、evidence cards 必须保留，作为所有新 Research 方法的外层 guard；Research 方法未过 gate 时，Product 只能展示 diagnostic / blocked，不允许展示 runtime default 或 field validated 声明。
+40. R6 mechanism-driven MVP 第一轮已实现，当前结论是 `mechanism_research_diagnostic_only`：机制传播 trace 能展示区别于静态先验的动态路径，但 mechanism ablation 仍是 1 个 positive、2 个 regression，behavioral update operator 被 holdout gate 阻断，不能作为 CCF-A 主贡献或 runtime default。
+41. Product guard 已保留并扩展：Product evidence cards 能展示 mechanism propagation path 和 behavioral update guard，但 blocked claims 继续禁止 field validation、accuracy superiority、automatic runtime update。
 
 ## 可复用资产
 

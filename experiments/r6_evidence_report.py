@@ -27,6 +27,9 @@ from experiments.r6_interaction_signal_validity_holdout_validation import (
     build_r6_interaction_signal_validity_holdout_validation,
 )
 from experiments.r6_mechanism_cap_ablation import build_r6_mechanism_cap_ablation
+from experiments.r6_mechanism_research_readiness_report import (
+    build_r6_mechanism_research_readiness_report,
+)
 from experiments.r6_product_evidence_cards import build_r6_product_evidence_cards
 from experiments.r6_product_report import build_r6_product_report
 from experiments.r6_public_outcome_proxy import build_r6_public_outcome_proxy
@@ -93,12 +96,17 @@ def build_r6_evidence_report(
         artifact_id=f"{artifact_id}-in-condition-holdout-ledger",
         run_id=run_id,
     )
+    mechanism_research_readiness = build_r6_mechanism_research_readiness_report(
+        artifact_id=f"{artifact_id}-mechanism-research-readiness-report",
+        run_id=run_id,
+    )
     product_evidence_cards = build_r6_product_evidence_cards(
         artifact_id=f"{artifact_id}-product-evidence-cards",
         run_id=run_id,
         product_report=product_report,
         transfer_protocol=transfer_protocol,
         holdout_ledger=holdout_ledger,
+        mechanism_research_readiness_report=mechanism_research_readiness,
     )
     ablation = build_r6_ablation_report(
         artifact_id=f"{artifact_id}-ablation",
@@ -288,6 +296,19 @@ def build_r6_evidence_report(
             "static_narrative_fallback_allowed": product_evidence_cards[
                 "demo_api_contract"
             ]["static_narrative_fallback_allowed"],
+        },
+        "mechanism_research_readiness_summary": {
+            "artifact_id": mechanism_research_readiness["artifact_id"],
+            "status": mechanism_research_readiness["status"],
+            "mechanism_mvp_result": mechanism_research_readiness["decision"][
+                "mechanism_mvp_result"
+            ],
+            "ccf_a_main_contribution_ready": mechanism_research_readiness[
+                "decision"
+            ]["ccf_a_main_contribution_ready"],
+            "runtime_default_allowed": mechanism_research_readiness["decision"][
+                "runtime_default_allowed"
+            ],
         },
         "decision_value_metrics_summary": {
             "artifact_id": decision_value_metrics["artifact_id"],
@@ -519,6 +540,17 @@ def build_r6_evidence_report(
             ]
             > 0,
             "product_evidence_cards_present": True,
+            "mechanism_driven_mvp_summary_present": True,
+            "product_guard_preserved": (
+                mechanism_research_readiness["readiness_gates"][
+                    "product_guard_preserved"
+                ]
+                and product_evidence_cards["demo_api_contract"][
+                    "static_narrative_fallback_allowed"
+                ]
+                is False
+                and "accuracy_claim_blocked" in product_evidence_cards["risk_flags"]
+            ),
             "ccfa_readiness_report_present": True,
             "ccf_a_main_contribution_ready": ccfa_readiness["verdict"][
                 "ccf_a_main_contribution_ready"
@@ -539,6 +571,7 @@ def build_r6_evidence_report(
             ),
             risk_discovery_value=risk_discovery_value,
             ccfa_readiness=ccfa_readiness,
+            mechanism_research_readiness=mechanism_research_readiness,
         ),
         "source_refs": [
             public_proxy["artifact_id"],
@@ -550,6 +583,7 @@ def build_r6_evidence_report(
             followup_holdout["artifact_id"],
             transfer_protocol["artifact_id"],
             holdout_ledger["artifact_id"],
+            mechanism_research_readiness["artifact_id"],
             product_evidence_cards["artifact_id"],
             decision_value_metrics["artifact_id"],
             risk_discovery_holdout_validation["artifact_id"],
@@ -578,6 +612,7 @@ def build_r6_evidence_report(
             "static_prior_is_foundation_not_opponent",
             "false_alarm_discriminator_not_runtime_ready",
             "interaction_signal_validity_not_generalized",
+            "mechanism_research_diagnostic_only",
             "ccf_a_main_contribution_not_ready",
         ],
         "blocking_gaps": [
@@ -607,6 +642,7 @@ def _remaining_gaps_with_method_gates(
     interaction_signal_validity_holdout_validation: dict[str, Any],
     risk_discovery_value: dict[str, Any],
     ccfa_readiness: dict[str, Any],
+    mechanism_research_readiness: dict[str, Any],
 ) -> list[str]:
     gaps = [
         "needs_more_public_or_real_outcomes",
@@ -634,6 +670,7 @@ def _remaining_gaps_with_method_gates(
     gaps.extend(interaction_signal_validity_holdout_validation["blocking_gaps"])
     gaps.extend(risk_discovery_value["blocking_gaps"])
     gaps.extend(ccfa_readiness["blocking_gaps"])
+    gaps.extend(mechanism_research_readiness["blocking_gaps"])
     return sorted(set(gaps))
 
 

@@ -1,0 +1,224 @@
+{
+  "acceptance_gates": {
+    "field_outcome_validated": false,
+    "operator_holdout_non_regression": false,
+    "operator_update_structured": true,
+    "product_guard_required": true,
+    "runtime_default_allowed": false
+  },
+  "artifact_id": "r6-operator-holdout-validation-current-001",
+  "blocking_gaps": [
+    "needs_operator_holdout_validation",
+    "needs_independent_same_family_operator_holdout",
+    "needs_field_outcome_validation"
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Operator holdout validation failed on current public proxies: ANES health/climate same-family holdouts contradict the candidate updates, while HTOPS only provides out-of-family non-regression evidence.",
+    "Structured behavioral update candidates remain diagnostic only; they are not field validation and cannot be Product runtime defaults."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "decision": {
+    "decision": "keep_operator_update_blocked",
+    "operator_holdout_passed": false,
+    "recommended_next_step": "add_independent_same_family_operator_holdout_or_field_outcome",
+    "runtime_default_allowed": false
+  },
+  "holdout_trials": [
+    {
+      "candidate_update_id": "damp-rights-rule-over-amplification",
+      "claim_boundary": "Same-family public proxy contradiction blocks runtime default; this is not field outcome validation.",
+      "failed_source_keys": [
+        "anes_health_heldout",
+        "anes_climate_heldout"
+      ],
+      "failure_reason": "Current ANES health/climate public proxy holdouts do not preserve mechanism performance over the static prior, so the structured operator update cannot generalize.",
+      "field_outcome_validated": false,
+      "holdout_results": [
+        {
+          "beats_static_prior": false,
+          "case_id": "generic-rights-rule-change",
+          "case_type": "rights_rule_change",
+          "evaluation_status": "diagnostic_candidate",
+          "evidence_boundary": "uses_mechanism_trace_dynamic_paths",
+          "mechanism_mean_absolute_error": 0.05,
+          "method": "mechanism_propagation",
+          "runtime_default_allowed": false,
+          "source_key": "anes_health_heldout",
+          "static_prior_error": 0.02,
+          "target_case_type": "rights_rule_change"
+        },
+        {
+          "beats_static_prior": false,
+          "case_id": "generic-rights-rule-change",
+          "case_type": "rights_rule_change",
+          "evaluation_status": "diagnostic_candidate",
+          "evidence_boundary": "uses_mechanism_trace_dynamic_paths",
+          "mechanism_mean_absolute_error": 0.13,
+          "method": "mechanism_propagation",
+          "runtime_default_allowed": false,
+          "source_key": "anes_climate_heldout",
+          "static_prior_error": 0.06,
+          "target_case_type": "rights_rule_change"
+        }
+      ],
+      "holdout_source_keys": [
+        "anes_health_heldout",
+        "anes_climate_heldout"
+      ],
+      "non_regression_only": false,
+      "passed": false,
+      "runtime_default_allowed": false,
+      "trial_id": "operator-holdout:damp-rights-rule-over-amplification:anes",
+      "trial_type": "same_family_current_public_proxy_holdout",
+      "validation_status": "failed_same_family_holdout_regression"
+    },
+    {
+      "candidate_update_id": "damp-rights-rule-over-amplification",
+      "claim_boundary": "Out-of-family non-regression evidence does not authorize Product runtime defaults.",
+      "failure_reason": "HTOPS is retained as an out-of-family non-regression check only; it cannot validate the candidate update as a same-family or field outcome operator.",
+      "field_outcome_validated": false,
+      "holdout_results": [
+        {
+          "beats_static_prior": true,
+          "case_id": "generic-public-service-policy-change",
+          "case_type": "public_service_policy_change",
+          "evaluation_status": "diagnostic_candidate",
+          "evidence_boundary": "uses_mechanism_trace_dynamic_paths",
+          "mechanism_mean_absolute_error": 0.11,
+          "method": "mechanism_propagation",
+          "runtime_default_allowed": false,
+          "source_key": "htops_cost_pressure",
+          "static_prior_error": 0.18,
+          "target_case_type": "public_service_policy_change"
+        }
+      ],
+      "holdout_source_keys": [
+        "htops_cost_pressure"
+      ],
+      "non_regression_only": true,
+      "passed": false,
+      "runtime_default_allowed": false,
+      "trial_id": "operator-holdout:damp-rights-rule-over-amplification:htops-non-regression",
+      "trial_type": "out_of_family_non_regression",
+      "validation_status": "non_regression_out_of_family_only"
+    },
+    {
+      "candidate_update_id": "boost-service-access-memory-activation",
+      "claim_boundary": "Same-family public proxy contradiction blocks runtime default; this is not field outcome validation.",
+      "failed_source_keys": [
+        "anes_health_heldout",
+        "anes_climate_heldout"
+      ],
+      "failure_reason": "Current ANES health/climate public proxy holdouts do not preserve mechanism performance over the static prior, so the structured operator update cannot generalize.",
+      "field_outcome_validated": false,
+      "holdout_results": [
+        {
+          "beats_static_prior": false,
+          "case_id": "generic-rights-rule-change",
+          "case_type": "rights_rule_change",
+          "evaluation_status": "diagnostic_candidate",
+          "evidence_boundary": "uses_mechanism_trace_dynamic_paths",
+          "mechanism_mean_absolute_error": 0.05,
+          "method": "mechanism_propagation",
+          "runtime_default_allowed": false,
+          "source_key": "anes_health_heldout",
+          "static_prior_error": 0.02,
+          "target_case_type": "rights_rule_change"
+        },
+        {
+          "beats_static_prior": false,
+          "case_id": "generic-rights-rule-change",
+          "case_type": "rights_rule_change",
+          "evaluation_status": "diagnostic_candidate",
+          "evidence_boundary": "uses_mechanism_trace_dynamic_paths",
+          "mechanism_mean_absolute_error": 0.13,
+          "method": "mechanism_propagation",
+          "runtime_default_allowed": false,
+          "source_key": "anes_climate_heldout",
+          "static_prior_error": 0.06,
+          "target_case_type": "rights_rule_change"
+        }
+      ],
+      "holdout_source_keys": [
+        "anes_health_heldout",
+        "anes_climate_heldout"
+      ],
+      "non_regression_only": false,
+      "passed": false,
+      "runtime_default_allowed": false,
+      "trial_id": "operator-holdout:boost-service-access-memory-activation:anes",
+      "trial_type": "same_family_current_public_proxy_holdout",
+      "validation_status": "failed_same_family_holdout_regression"
+    },
+    {
+      "candidate_update_id": "boost-service-access-memory-activation",
+      "claim_boundary": "Out-of-family non-regression evidence does not authorize Product runtime defaults.",
+      "failure_reason": "HTOPS is retained as an out-of-family non-regression check only; it cannot validate the candidate update as a same-family or field outcome operator.",
+      "field_outcome_validated": false,
+      "holdout_results": [
+        {
+          "beats_static_prior": true,
+          "case_id": "generic-public-service-policy-change",
+          "case_type": "public_service_policy_change",
+          "evaluation_status": "diagnostic_candidate",
+          "evidence_boundary": "uses_mechanism_trace_dynamic_paths",
+          "mechanism_mean_absolute_error": 0.11,
+          "method": "mechanism_propagation",
+          "runtime_default_allowed": false,
+          "source_key": "htops_cost_pressure",
+          "static_prior_error": 0.18,
+          "target_case_type": "public_service_policy_change"
+        }
+      ],
+      "holdout_source_keys": [
+        "htops_cost_pressure"
+      ],
+      "non_regression_only": true,
+      "passed": false,
+      "runtime_default_allowed": false,
+      "trial_id": "operator-holdout:boost-service-access-memory-activation:htops-non-regression",
+      "trial_type": "out_of_family_non_regression",
+      "validation_status": "non_regression_out_of_family_only"
+    }
+  ],
+  "risk_flags": [
+    "operator_update_blocked",
+    "operator_holdout_failed_current_public_proxies",
+    "out_of_family_non_regression_not_generalization",
+    "field_outcome_validation_missing",
+    "runtime_default_blocked"
+  ],
+  "run_id": "r6-operator-holdout-validation-current-001",
+  "schema_version": "r6-operator-holdout-validation-v1",
+  "source_refs": [
+    "r6-operator-holdout-validation-current-001-behavioral-update-operator",
+    "r6-operator-holdout-validation-current-001-mechanism-propagation-trace",
+    "r6-operator-holdout-validation-current-001-mechanism-propagation-trace-htops_cost_pressure-proxy",
+    "r6-operator-holdout-validation-current-001-mechanism-propagation-trace-anes_health_heldout-proxy",
+    "r6-operator-holdout-validation-current-001-mechanism-propagation-trace-anes_climate_heldout-proxy",
+    "generic-public-service-policy-change",
+    "generic-rights-rule-change",
+    "r6-operator-holdout-validation-current-001-mechanism-ablation-report"
+  ],
+  "status": "operator_holdout_validation_failed_current_public_proxies",
+  "validation_protocol": {
+    "candidate_source_rule": "Freeze each structured behavioral update candidate before looking at current public proxy holdout outcomes.",
+    "field_outcome_validated": false,
+    "holdout_label_used_for_candidate_derivation": false,
+    "out_of_family_non_regression_source_key": "htops_cost_pressure",
+    "runtime_default_requires_all_holdout_trials_to_pass": true,
+    "same_family_holdout_source_keys": [
+      "anes_health_heldout",
+      "anes_climate_heldout"
+    ]
+  },
+  "validation_summary": {
+    "candidate_update_count": 2,
+    "failed_trial_count": 2,
+    "holdout_trial_count": 4,
+    "non_regression_trial_count": 2,
+    "passed_trial_count": 0,
+    "runtime_default_allowed": false
+  }
+}

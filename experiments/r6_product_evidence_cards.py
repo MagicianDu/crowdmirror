@@ -22,6 +22,9 @@ from experiments.r6_in_condition_holdout_ledger import (
     build_r6_in_condition_holdout_ledger,
 )
 from experiments.r6_mechanism_cap_ablation import build_r6_mechanism_cap_ablation
+from experiments.r6_mechanism_research_readiness_report import (
+    build_r6_mechanism_research_readiness_report,
+)
 from experiments.r6_product_report import build_r6_product_report
 
 
@@ -35,6 +38,7 @@ def build_r6_product_evidence_cards(
     product_report: dict[str, Any] | None = None,
     transfer_protocol: dict[str, Any] | None = None,
     holdout_ledger: dict[str, Any] | None = None,
+    mechanism_research_readiness_report: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
@@ -60,7 +64,15 @@ def build_r6_product_evidence_cards(
         product_report=product_report,
         transfer_protocol=transfer_protocol,
         holdout_ledger=holdout_ledger,
+        mechanism_research_readiness_report=mechanism_research_readiness_report,
     )
+    source_refs = [
+        product_report["artifact_id"],
+        transfer_protocol["artifact_id"],
+        holdout_ledger["artifact_id"],
+    ]
+    if mechanism_research_readiness_report is not None:
+        source_refs.append(mechanism_research_readiness_report["artifact_id"])
     report = {
         "schema_version": R6_PRODUCT_EVIDENCE_CARDS_SCHEMA_VERSION,
         "artifact_id": artifact_id,
@@ -84,11 +96,7 @@ def build_r6_product_evidence_cards(
                 "not present in allowed_claims."
             ),
         },
-        "source_refs": [
-            product_report["artifact_id"],
-            transfer_protocol["artifact_id"],
-            holdout_ledger["artifact_id"],
-        ],
+        "source_refs": source_refs,
         "claim_boundaries": [
             R6_CLAIM_BOUNDARY,
             "Product evidence cards are customer-facing claim boundaries, not accuracy proof.",
@@ -117,13 +125,14 @@ def _cards(
     product_report: dict[str, Any],
     transfer_protocol: dict[str, Any],
     holdout_ledger: dict[str, Any],
+    mechanism_research_readiness_report: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     mechanism_transfer = _candidate_by_type(transfer_protocol, "mechanism_cap")
     feedback_transfer = _candidate_by_type(
         transfer_protocol,
         "outcome_feedback_residual_transfer",
     )
-    return [
+    cards = [
         {
             "card_id": "static-prior-control",
             "title": "静态先验与 no-interaction control",
@@ -225,6 +234,52 @@ def _cards(
             ],
         },
     ]
+    if mechanism_research_readiness_report is not None:
+        cards.extend(
+            [
+                {
+                    "card_id": "mechanism-propagation-path",
+                    "title": "机制传播路径",
+                    "claim_status": "diagnostic_trace_ready",
+                    "allowed_claims": [
+                        "系统能展示风险传播路径",
+                    ],
+                    "blocked_claims": [
+                        "传播路径已经 field validated",
+                    ],
+                    "source_artifact_ids": [
+                        mechanism_research_readiness_report["artifact_id"],
+                    ],
+                    "display_fields": [
+                        "readiness_gates.mechanism_trace_present",
+                        "readiness_gates.dynamic_path_distinct_from_static_prior",
+                        "readiness_summary.mechanism_positive_case_count",
+                        "readiness_summary.mechanism_regression_case_count",
+                    ],
+                },
+                {
+                    "card_id": "behavioral-update-guard",
+                    "title": "行为更新护栏",
+                    "claim_status": "blocked_update_guarded",
+                    "allowed_claims": [
+                        "outcome feedback 可以生成结构化候选更新",
+                    ],
+                    "blocked_claims": [
+                        "候选更新已可自动上线",
+                    ],
+                    "source_artifact_ids": [
+                        mechanism_research_readiness_report["artifact_id"],
+                    ],
+                    "display_fields": [
+                        "readiness_gates.behavioral_update_operator_structured",
+                        "readiness_gates.operator_holdout_non_regression",
+                        "readiness_gates.runtime_default_allowed",
+                        "decision.runtime_default_allowed",
+                    ],
+                },
+            ]
+        )
+    return cards
 
 
 def _candidate_by_type(report: dict[str, Any], candidate_type: str) -> dict[str, Any]:
@@ -241,10 +296,15 @@ def main() -> int:
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
 
+    mechanism_research_readiness_report = build_r6_mechanism_research_readiness_report(
+        artifact_id=f"{args.artifact_id}-mechanism-research-readiness-report",
+        run_id=args.run_id,
+    )
     output_path = write_r6_product_evidence_cards(
         args.output,
         artifact_id=args.artifact_id,
         run_id=args.run_id,
+        mechanism_research_readiness_report=mechanism_research_readiness_report,
     )
     report = json.loads(Path(output_path).read_text())
     print(

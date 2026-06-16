@@ -9,6 +9,9 @@ from experiments.r6_cross_case_transfer_protocol import (
 from experiments.r6_in_condition_holdout_ledger import (
     build_r6_in_condition_holdout_ledger,
 )
+from experiments.r6_mechanism_research_readiness_report import (
+    build_r6_mechanism_research_readiness_report,
+)
 from experiments.r6_product_evidence_cards import build_r6_product_evidence_cards
 from experiments.r6_risk_discovery_value_report import (
     build_r6_risk_discovery_value_report,
@@ -270,14 +273,19 @@ def test_r6_in_condition_holdout_ledger_separates_source_out_of_family_and_out_o
 
 
 def test_r6_product_evidence_cards_require_claim_status_and_artifact_sources():
+    mechanism_research_readiness_report = build_r6_mechanism_research_readiness_report(
+        artifact_id="r6-product-evidence-cards-test-mechanism-research-readiness",
+        run_id="r6-product-evidence-cards-run",
+    )
     cards = build_r6_product_evidence_cards(
         artifact_id="r6-product-evidence-cards-test",
         run_id="r6-product-evidence-cards-run",
+        mechanism_research_readiness_report=mechanism_research_readiness_report,
     )
 
     assert cards["schema_version"] == "r6-product-evidence-cards-v1"
     assert cards["status"] == "product_evidence_cards_ready"
-    assert cards["card_count"] == 5
+    assert cards["card_count"] == 7
     assert cards["demo_api_contract"]["consume_only_artifact_fields"] is True
     assert cards["demo_api_contract"]["static_narrative_fallback_allowed"] is False
     for card in cards["cards"]:
@@ -293,6 +301,15 @@ def test_r6_product_evidence_cards_require_claim_status_and_artifact_sources():
         "non_regression_only_not_global_update"
     )
     assert by_id["holdout-data-gap"]["claim_status"] == "data_gate_blocked"
+    assert by_id["mechanism-propagation-path"]["claim_status"] == (
+        "diagnostic_trace_ready"
+    )
+    assert by_id["behavioral-update-guard"]["claim_status"] == (
+        "blocked_update_guarded"
+    )
+    card_ids = {card["card_id"] for card in cards["cards"]}
+    assert "mechanism-propagation-path" in card_ids
+    assert "behavioral-update-guard" in card_ids
     assert "accuracy_claim_blocked" in cards["risk_flags"]
     json.dumps(cards, allow_nan=False)
 
@@ -403,6 +420,31 @@ def test_r6_new_method_gate_clis_write_artifacts(tmp_path):
             "experiments/r6_interaction_signal_validity_holdout_validation.py",
             "r6-interaction-signal-validity-holdout-validation-cli",
             "r6-interaction-signal-validity-holdout-validation-v1",
+        ),
+        (
+            "experiments/r6_mechanism_propagation_trace.py",
+            "r6-mechanism-propagation-trace-cli",
+            "r6-mechanism-propagation-trace-v1",
+        ),
+        (
+            "experiments/r6_behavioral_update_operator.py",
+            "r6-behavioral-update-operator-cli",
+            "r6-behavioral-update-operator-v1",
+        ),
+        (
+            "experiments/r6_mechanism_ablation_report.py",
+            "r6-mechanism-ablation-report-cli",
+            "r6-mechanism-ablation-report-v1",
+        ),
+        (
+            "experiments/r6_operator_holdout_validation.py",
+            "r6-operator-holdout-validation-cli",
+            "r6-operator-holdout-validation-v1",
+        ),
+        (
+            "experiments/r6_mechanism_research_readiness_report.py",
+            "r6-mechanism-research-readiness-cli",
+            "r6-mechanism-research-readiness-report-v1",
         ),
     ]
     for script, artifact_id, schema_version in commands:

@@ -1,0 +1,77 @@
+{
+  "artifact_id": "r6-mechanism-research-readiness-report-current-001",
+  "blocking_gaps": [
+    "needs_mechanism_holdout_validation",
+    "needs_operator_holdout_validation",
+    "needs_field_outcome_validation",
+    "needs_independent_same_family_operator_holdout"
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Readiness is diagnostic-only because a mechanism trace exists but operator holdout validation fails on current public proxies.",
+    "Research can continue under constraints; CCF-A main contribution and Product runtime defaults remain blocked."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "decision": {
+    "ccf_a_main_contribution_ready": false,
+    "continue_research_with_constraints": true,
+    "mechanism_mvp_result": "diagnostic_only",
+    "runtime_default_allowed": false
+  },
+  "readiness_gates": {
+    "behavioral_update_operator_structured": true,
+    "dynamic_path_distinct_from_static_prior": true,
+    "false_alarm_not_hidden": true,
+    "field_outcome_validated": false,
+    "mechanism_ablation_positive": false,
+    "mechanism_trace_present": true,
+    "operator_holdout_non_regression": false,
+    "product_guard_preserved": true,
+    "runtime_default_allowed": false
+  },
+  "readiness_summary": {
+    "field_outcome_validated": false,
+    "mechanism_positive_case_count": 1,
+    "mechanism_regression_case_count": 2,
+    "mechanism_trace_present": true,
+    "operator_candidate_count": 2,
+    "operator_holdout_passed_trial_count": 0,
+    "operator_holdout_trial_count": 4,
+    "runtime_default_allowed": false
+  },
+  "recommended_next_research_steps": [
+    "add_independent_same_family_operator_holdout",
+    "validate_operator_against_field_or_real_release_outcome",
+    "separate_generalizable_operator_evidence_from_public_proxy_diagnostics",
+    "keep_product_runtime_guard_fail_closed_until_holdout_passes"
+  ],
+  "research_boundary": {
+    "allowed_claim": "R6 mechanism MVP is a diagnostic research artifact with auditable dynamic-path traces, blocked structured operator candidates, visible ablation regressions, and explicit Product guards.",
+    "blocked_claim": "R6 mechanism MVP is not CCF-A main-contribution ready, not field outcome validated, and not allowed as Product runtime default behavior."
+  },
+  "risk_flags": [
+    "mechanism_ablation_not_ccf_a_ready",
+    "false_alarm_visible",
+    "runtime_default_blocked",
+    "operator_update_blocked",
+    "operator_holdout_failed_current_public_proxies",
+    "out_of_family_non_regression_not_generalization",
+    "field_outcome_validation_missing",
+    "mechanism_research_diagnostic_only",
+    "not_ccf_a_ready"
+  ],
+  "run_id": "r6-mechanism-research-readiness-report-current-001",
+  "schema_version": "r6-mechanism-research-readiness-report-v1",
+  "source_refs": [
+    "r6-mechanism-research-readiness-report-current-001-mechanism-propagation-trace",
+    "r6-mechanism-research-readiness-report-current-001-mechanism-propagation-trace-htops_cost_pressure-proxy",
+    "r6-mechanism-research-readiness-report-current-001-mechanism-propagation-trace-anes_health_heldout-proxy",
+    "r6-mechanism-research-readiness-report-current-001-mechanism-propagation-trace-anes_climate_heldout-proxy",
+    "generic-public-service-policy-change",
+    "generic-rights-rule-change",
+    "r6-mechanism-research-readiness-report-current-001-behavioral-update-operator",
+    "r6-mechanism-research-readiness-report-current-001-mechanism-ablation-report",
+    "r6-mechanism-research-readiness-report-current-001-operator-holdout-validation"
+  ],
+  "status": "mechanism_research_diagnostic_only"
+}
