@@ -181,7 +181,7 @@
 25. cross-case transfer protocol 已实现：mechanism cap 的 ANES health -> HTOPS 是 `non_regression_only`，ANES health -> ANES climate 是 `condition_not_covered`；因此 mechanism cap 仍不是 L4。
 26. outcome feedback residual transfer 已实现：ANES health -> ANES climate 和 ANES climate -> ANES health 都能降低 prior-interaction error，但未通过 runtime update guard，因此不能升级为全局自动校准方法；这不等于 R6 风险发现主线失败。
 27. in-condition holdout ledger 已实现：当前 `in_condition_holdout_count=0`，ANES health 是 source case，ANES climate 是 same-family 但 out-of-condition，HTOPS 是 out-of-family。
-28. Product evidence card contract 已实现：当前 5 张卡都含 `claim_status`、`allowed_claims`、`blocked_claims`、`source_artifact_ids`，并明确 `static_narrative_fallback_allowed=false`。
+28. Product evidence card contract 已实现：当前 7 张卡包含原有 5 张 base cards 和 2 张 mechanism guard cards，均含 `claim_status`、`allowed_claims`、`blocked_claims`、`source_artifact_ids`，并明确 `static_narrative_fallback_allowed=false`。
 29. CCF-A readiness report 已实现，当前结论是 `ccf_a_main_contribution_ready=false`；R6 还没有达到 CCF-A 级主贡献算法水准，核心缺口改为形式化问题与理论、风险发现 holdout validation、decision-value 指标、generalized interaction signal validity、signal holdout validation、field outcome validation。
 30. risk-discovery value report 已实现，当前结论是 `risk_discovery_value_partial_decision_metric_failed_holdout`；R6 值得继续作为先验锚定风险发现框架推进，但 runtime default update 仍被阻断。
 31. decision-value metrics 已实现，当前结论是 `decision_value_partial_high_false_alarm`：`static_prior_miss_recovery_rate=1.0`，说明 HTOPS 上存在一个静态先验漏报被交互层恢复；但 `top_k_risk_hit_rate=0.333`、`false_alarm_rate=0.667`，说明 ANES health / climate 暴露明显 false alarm。
