@@ -1,7 +1,13 @@
+import copy
 import json
 import subprocess
 import sys
 
+import pytest
+
+from experiments.r6_mechanism_ablation_report import (
+    build_r6_mechanism_ablation_report,
+)
 from experiments.r6_mechanism_research_readiness_report import (
     build_r6_mechanism_research_readiness_report,
 )
@@ -40,6 +46,35 @@ def test_r6_operator_holdout_validation_blocks_unvalidated_runtime_update():
     json.dumps(report, allow_nan=False)
 
 
+def test_r6_operator_holdout_validation_rejects_runtime_default_ablation_row():
+    mechanism_ablation_report = build_r6_mechanism_ablation_report(
+        artifact_id="r6-operator-holdout-validation-ablation",
+        run_id="r6-operator-holdout-validation-run",
+    )
+    malformed_ablation_report = copy.deepcopy(mechanism_ablation_report)
+    malformed_index = next(
+        index
+        for index, result in enumerate(malformed_ablation_report["case_method_results"])
+        if result["method"] == "mechanism_propagation"
+    )
+    malformed_ablation_report["case_method_results"][malformed_index][
+        "runtime_default_allowed"
+    ] = True
+
+    with pytest.raises(
+        ValueError,
+        match=(
+            "mechanism_ablation_report.case_method_results"
+            f"\\[{malformed_index}\\].runtime_default_allowed must be False"
+        ),
+    ):
+        build_r6_operator_holdout_validation(
+            artifact_id="r6-operator-holdout-validation-malformed-ablation",
+            run_id="r6-operator-holdout-validation-run",
+            mechanism_ablation_report=malformed_ablation_report,
+        )
+
+
 def test_r6_mechanism_research_readiness_report_returns_diagnostic_only():
     report = build_r6_mechanism_research_readiness_report(
         artifact_id="r6-mechanism-research-readiness-test",
@@ -64,6 +99,60 @@ def test_r6_mechanism_research_readiness_report_returns_diagnostic_only():
     assert report["readiness_gates"]["product_guard_preserved"] is True
     assert "needs_operator_holdout_validation" in report["blocking_gaps"]
     json.dumps(report, allow_nan=False)
+
+
+def test_r6_mechanism_research_readiness_rejects_contradictory_holdout_gate():
+    operator_holdout_validation = build_r6_operator_holdout_validation(
+        artifact_id="r6-mechanism-research-readiness-holdout",
+        run_id="r6-mechanism-research-readiness-run",
+    )
+    malformed_holdout_validation = copy.deepcopy(operator_holdout_validation)
+    malformed_holdout_validation["acceptance_gates"][
+        "operator_holdout_non_regression"
+    ] = True
+
+    with pytest.raises(
+        ValueError,
+        match=(
+            "operator_holdout_validation.acceptance_gates."
+            "operator_holdout_non_regression must be False"
+        ),
+    ):
+        build_r6_mechanism_research_readiness_report(
+            artifact_id="r6-mechanism-research-readiness-malformed-holdout",
+            run_id="r6-mechanism-research-readiness-run",
+            operator_holdout_validation=malformed_holdout_validation,
+        )
+
+
+def test_r6_operator_holdout_validation_cli_writes_artifact(tmp_path):
+    output = tmp_path / "r6-operator-holdout-validation.json"
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "experiments/r6_operator_holdout_validation.py",
+            "--artifact-id",
+            "r6-operator-holdout-validation-cli",
+            "--run-id",
+            "r6-operator-holdout-validation-run",
+            "--output",
+            str(output),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    assert output.read_text().endswith("\n")
+    report = json.loads(output.read_text())
+    assert report["schema_version"] == "r6-operator-holdout-validation-v1"
+    assert json.loads(completed.stdout) == {
+        "artifact_id": "r6-operator-holdout-validation-cli",
+        "output": str(output),
+        "status": "operator_holdout_validation_failed_current_public_proxies",
+    }
 
 
 def test_r6_mechanism_readiness_cli_writes_artifact(tmp_path):

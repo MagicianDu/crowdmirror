@@ -15,6 +15,7 @@ from experiments.r6_behavioral_update_operator import (
 from experiments.r6_contracts import (
     R6_CLAIM_BOUNDARY,
     assert_strict_json,
+    finite_number,
     non_empty_string,
     write_json_artifact,
 )
@@ -42,6 +43,10 @@ SAME_FAMILY_HOLDOUT_SOURCE_KEYS = [
     "anes_climate_heldout",
 ]
 OUT_OF_FAMILY_NON_REGRESSION_SOURCE_KEY = "htops_cost_pressure"
+EXPECTED_HOLDOUT_SOURCE_KEYS = {
+    *SAME_FAMILY_HOLDOUT_SOURCE_KEYS,
+    OUT_OF_FAMILY_NON_REGRESSION_SOURCE_KEY,
+}
 
 
 def build_r6_operator_holdout_validation(
@@ -433,6 +438,64 @@ def _validate_mechanism_ablation_report(
     if not isinstance(case_method_results, list) or not case_method_results:
         raise ValueError(
             "mechanism_ablation_report.case_method_results must be a non-empty list"
+        )
+    _validate_mechanism_ablation_selected_rows(case_method_results)
+
+
+def _validate_mechanism_ablation_selected_rows(
+    case_method_results: list[Any],
+) -> None:
+    selected_source_keys = []
+    for row_index, result in enumerate(case_method_results):
+        if not isinstance(result, dict):
+            raise ValueError(
+                "mechanism_ablation_report.case_method_results"
+                f"[{row_index}] must be a JSON object"
+            )
+        if result.get("method") != "mechanism_propagation":
+            continue
+        source_key = result.get("source_key")
+        if not isinstance(source_key, str) or not source_key:
+            raise ValueError(
+                "mechanism_ablation_report.case_method_results"
+                f"[{row_index}].source_key must be a non-empty string"
+            )
+        selected_source_keys.append(source_key)
+        if result.get("runtime_default_allowed") is not False:
+            raise ValueError(
+                "mechanism_ablation_report.case_method_results"
+                f"[{row_index}].runtime_default_allowed must be False"
+            )
+        mean_absolute_error = finite_number(
+            result.get("mean_absolute_error"),
+            field=(
+                "mechanism_ablation_report.case_method_results"
+                f"[{row_index}].mean_absolute_error"
+            ),
+        )
+        static_prior_error = finite_number(
+            result.get("static_prior_error"),
+            field=(
+                "mechanism_ablation_report.case_method_results"
+                f"[{row_index}].static_prior_error"
+            ),
+        )
+        expected_beats_static_prior = mean_absolute_error < static_prior_error
+        if result.get("beats_static_prior") is not expected_beats_static_prior:
+            raise ValueError(
+                "mechanism_ablation_report.case_method_results"
+                f"[{row_index}].beats_static_prior must equal "
+                "mean_absolute_error < static_prior_error"
+            )
+
+    if (
+        set(selected_source_keys) != EXPECTED_HOLDOUT_SOURCE_KEYS
+        or len(selected_source_keys) != len(EXPECTED_HOLDOUT_SOURCE_KEYS)
+    ):
+        raise ValueError(
+            "mechanism_ablation_report selected mechanism_propagation source "
+            "keys must exactly include "
+            f"{sorted(EXPECTED_HOLDOUT_SOURCE_KEYS)}"
         )
 
 

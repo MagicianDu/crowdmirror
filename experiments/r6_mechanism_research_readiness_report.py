@@ -350,6 +350,11 @@ def _validate_operator_holdout_validation(
         raise ValueError(
             "operator_holdout_validation.acceptance_gates must be a JSON object"
         )
+    if acceptance_gates.get("operator_holdout_non_regression") is not False:
+        raise ValueError(
+            "operator_holdout_validation.acceptance_gates."
+            "operator_holdout_non_regression must be False"
+        )
     if acceptance_gates.get("runtime_default_allowed") is not False:
         raise ValueError(
             "operator_holdout_validation.acceptance_gates."
@@ -360,6 +365,77 @@ def _validate_operator_holdout_validation(
             "operator_holdout_validation.acceptance_gates."
             "field_outcome_validated must be False"
         )
+    validation_summary = operator_holdout_validation.get("validation_summary")
+    if not isinstance(validation_summary, dict):
+        raise ValueError(
+            "operator_holdout_validation.validation_summary must be a JSON object"
+        )
+    expected_summary_values = {
+        "passed_trial_count": 0,
+        "non_regression_trial_count": 2,
+        "failed_trial_count": 2,
+        "runtime_default_allowed": False,
+    }
+    for field, expected_value in expected_summary_values.items():
+        if validation_summary.get(field) != expected_value:
+            raise ValueError(
+                "operator_holdout_validation.validation_summary."
+                f"{field} must be {expected_value}"
+            )
+    decision = operator_holdout_validation.get("decision")
+    if not isinstance(decision, dict):
+        raise ValueError("operator_holdout_validation.decision must be a JSON object")
+    if decision.get("operator_holdout_passed") is not False:
+        raise ValueError(
+            "operator_holdout_validation.decision.operator_holdout_passed "
+            "must be False"
+        )
+    if decision.get("runtime_default_allowed") is not False:
+        raise ValueError(
+            "operator_holdout_validation.decision.runtime_default_allowed "
+            "must be False"
+        )
+    _validate_holdout_runtime_default_blocked(operator_holdout_validation)
+
+
+def _validate_holdout_runtime_default_blocked(
+    operator_holdout_validation: dict[str, Any],
+) -> None:
+    holdout_trials = operator_holdout_validation.get("holdout_trials")
+    if not isinstance(holdout_trials, list) or not holdout_trials:
+        raise ValueError(
+            "operator_holdout_validation.holdout_trials must be a non-empty list"
+        )
+    for trial_index, trial in enumerate(holdout_trials):
+        if not isinstance(trial, dict):
+            raise ValueError(
+                "operator_holdout_validation.holdout_trials"
+                f"[{trial_index}] must be a JSON object"
+            )
+        if trial.get("runtime_default_allowed") is not False:
+            raise ValueError(
+                "operator_holdout_validation.holdout_trials"
+                f"[{trial_index}].runtime_default_allowed must be False"
+            )
+        holdout_results = trial.get("holdout_results")
+        if not isinstance(holdout_results, list) or not holdout_results:
+            raise ValueError(
+                "operator_holdout_validation.holdout_trials"
+                f"[{trial_index}].holdout_results must be a non-empty list"
+            )
+        for result_index, result in enumerate(holdout_results):
+            if not isinstance(result, dict):
+                raise ValueError(
+                    "operator_holdout_validation.holdout_trials"
+                    f"[{trial_index}].holdout_results"
+                    f"[{result_index}] must be a JSON object"
+                )
+            if result.get("runtime_default_allowed") is not False:
+                raise ValueError(
+                    "operator_holdout_validation.holdout_trials"
+                    f"[{trial_index}].holdout_results"
+                    f"[{result_index}].runtime_default_allowed must be False"
+                )
 
 
 def _risk_flags(
