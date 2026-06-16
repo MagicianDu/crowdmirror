@@ -361,6 +361,34 @@ def test_r6_product_evidence_cards_ingest_gap_closure_report():
     assert cards["demo_api_contract"]["static_narrative_fallback_allowed"] is False
 
 
+def test_r6_product_evidence_cards_cli_includes_gap_closure_status(tmp_path):
+    output = tmp_path / "r6-product-evidence-cards-current-003.json"
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "experiments/r6_product_evidence_cards.py",
+            "--artifact-id",
+            "r6-product-evidence-cards-current-003",
+            "--run-id",
+            "r6-method-gate-run",
+            "--output",
+            str(output),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    report = json.loads(output.read_text())
+    stdout = json.loads(completed.stdout)
+    card_ids = {card["card_id"] for card in report["cards"]}
+    assert "r6-gap-closure-status" in card_ids
+    assert report["card_count"] == 8
+    assert stdout["card_count"] == 8
+    assert report["demo_api_contract"]["static_narrative_fallback_allowed"] is False
+
+
 @pytest.mark.parametrize(
     ("field", "value"),
     [

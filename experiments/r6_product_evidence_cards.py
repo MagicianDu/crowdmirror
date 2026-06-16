@@ -18,6 +18,7 @@ from experiments.r6_contracts import (
 from experiments.r6_cross_case_transfer_protocol import (
     build_r6_cross_case_transfer_protocol,
 )
+from experiments.r6_gap_closure_report import build_r6_gap_closure_report
 from experiments.r6_in_condition_holdout_ledger import (
     build_r6_in_condition_holdout_ledger,
 )
@@ -448,11 +449,16 @@ def main() -> int:
         artifact_id=f"{args.artifact_id}-mechanism-research-readiness-report",
         run_id=args.run_id,
     )
+    gap_closure_report = build_r6_gap_closure_report(
+        artifact_id=f"{args.artifact_id}-gap-closure-report",
+        run_id=args.run_id,
+    )
     output_path = write_r6_product_evidence_cards(
         args.output,
         artifact_id=args.artifact_id,
         run_id=args.run_id,
         mechanism_research_readiness_report=mechanism_research_readiness_report,
+        gap_closure_report=gap_closure_report,
     )
     report = json.loads(Path(output_path).read_text())
     print(
