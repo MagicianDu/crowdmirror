@@ -29,6 +29,9 @@ from experiments.r6_product_report import build_r6_product_report
 
 
 R6_PRODUCT_EVIDENCE_CARDS_SCHEMA_VERSION = "r6-product-evidence-cards-v1"
+R6_GAP_CLOSURE_REPORT_SCHEMA_VERSION = "r6-gap-closure-report-v1"
+R6_GAP_CLOSURE_REPORT_STATUS = "gap_closure_artifact_ready"
+R6_GAP_CLOSURE_REQUIRED_REMAINING_GAP = "needs_real_or_field_outcome_proxy"
 
 
 def build_r6_product_evidence_cards(
@@ -43,6 +46,9 @@ def build_r6_product_evidence_cards(
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
+    gap_closure_artifact_id = None
+    if gap_closure_report is not None:
+        gap_closure_artifact_id = _validate_gap_closure_report(gap_closure_report)
     if product_report is None:
         mechanism_cap = build_r6_mechanism_cap_ablation(
             artifact_id=f"{artifact_id}-mechanism-cap-ablation",
@@ -73,7 +79,7 @@ def build_r6_product_evidence_cards(
         transfer_protocol=transfer_protocol,
         holdout_ledger=holdout_ledger,
         mechanism_research_readiness_report=mechanism_research_readiness_report,
-        gap_closure_report=gap_closure_report,
+        gap_closure_artifact_id=gap_closure_artifact_id,
     )
     source_refs = [
         product_report["artifact_id"],
@@ -82,8 +88,8 @@ def build_r6_product_evidence_cards(
     ]
     if mechanism_research_readiness_report is not None:
         source_refs.append(mechanism_research_readiness_report["artifact_id"])
-    if gap_closure_report is not None:
-        source_refs.append(gap_closure_report["artifact_id"])
+    if gap_closure_artifact_id is not None:
+        source_refs.append(gap_closure_artifact_id)
     report = {
         "schema_version": R6_PRODUCT_EVIDENCE_CARDS_SCHEMA_VERSION,
         "artifact_id": artifact_id,
@@ -137,7 +143,7 @@ def _cards(
     transfer_protocol: dict[str, Any],
     holdout_ledger: dict[str, Any],
     mechanism_research_readiness_report: dict[str, Any] | None = None,
-    gap_closure_report: dict[str, Any] | None = None,
+    gap_closure_artifact_id: str | None = None,
 ) -> list[dict[str, Any]]:
     mechanism_transfer = _candidate_by_type(transfer_protocol, "mechanism_cap")
     feedback_transfer = _candidate_by_type(
@@ -291,7 +297,7 @@ def _cards(
                 },
             ]
         )
-    if gap_closure_report is not None:
+    if gap_closure_artifact_id is not None:
         cards.append(
             {
                 "card_id": "r6-gap-closure-status",
@@ -305,7 +311,7 @@ def _cards(
                     "runtime default 可以开启",
                     "R6 已达到 CCF-A 主贡献",
                 ],
-                "source_artifact_ids": [gap_closure_report["artifact_id"]],
+                "source_artifact_ids": [gap_closure_artifact_id],
                 "display_fields": [
                     "gap_statuses",
                     "acceptance_gates.field_outcome_validated",
@@ -315,6 +321,114 @@ def _cards(
             }
         )
     return cards
+
+
+def _validate_gap_closure_report(report: dict[str, Any]) -> str:
+    if not isinstance(report, dict):
+        raise ValueError("gap_closure_report must be an object")
+    _require_exact(
+        report,
+        field="gap_closure_report.schema_version",
+        expected=R6_GAP_CLOSURE_REPORT_SCHEMA_VERSION,
+    )
+    _require_exact(
+        report,
+        field="gap_closure_report.status",
+        expected=R6_GAP_CLOSURE_REPORT_STATUS,
+    )
+    artifact_id = non_empty_string(
+        report.get("artifact_id"),
+        field="gap_closure_report.artifact_id",
+    )
+    acceptance_gates = _require_object(
+        report.get("acceptance_gates"),
+        field="gap_closure_report.acceptance_gates",
+    )
+    _require_gate_true(
+        acceptance_gates,
+        field="gap_closure_report.acceptance_gates.gap_closure_report_present",
+        gate="gap_closure_report_present",
+    )
+    _require_gate_false(
+        acceptance_gates,
+        field="gap_closure_report.acceptance_gates.field_outcome_validated",
+        gate="field_outcome_validated",
+    )
+    _require_runtime_default_blocked(acceptance_gates)
+    _require_gate_false(
+        acceptance_gates,
+        field="gap_closure_report.acceptance_gates.ccf_a_main_contribution_ready",
+        gate="ccf_a_main_contribution_ready",
+    )
+    remaining_gaps = _require_non_empty_string_list(
+        report.get("remaining_gaps"),
+        field="gap_closure_report.remaining_gaps",
+    )
+    if R6_GAP_CLOSURE_REQUIRED_REMAINING_GAP not in remaining_gaps:
+        raise ValueError(
+            "gap_closure_report.remaining_gaps must include "
+            f"{R6_GAP_CLOSURE_REQUIRED_REMAINING_GAP!r}"
+        )
+    return artifact_id
+
+
+def _require_object(value: Any, *, field: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ValueError(f"{field} must be an object")
+    return value
+
+
+def _require_exact(report: dict[str, Any], *, field: str, expected: str) -> None:
+    key = field.rsplit(".", 1)[-1]
+    if report.get(key) != expected:
+        raise ValueError(f"{field} must be {expected!r}")
+
+
+def _require_gate_true(
+    gates: dict[str, Any],
+    *,
+    field: str,
+    gate: str,
+) -> None:
+    if gates.get(gate) is not True:
+        raise ValueError(f"{field} must be True")
+
+
+def _require_gate_false(
+    gates: dict[str, Any],
+    *,
+    field: str,
+    gate: str,
+) -> None:
+    if gates.get(gate) is not False:
+        raise ValueError(f"{field} must be False")
+
+
+def _require_runtime_default_blocked(gates: dict[str, Any]) -> None:
+    if "runtime_default_allowed" in gates:
+        _require_gate_false(
+            gates,
+            field="gap_closure_report.acceptance_gates.runtime_default_allowed",
+            gate="runtime_default_allowed",
+        )
+        return
+    _require_gate_false(
+        gates,
+        field=(
+            "gap_closure_report.acceptance_gates."
+            "operator_v2_runtime_default_allowed"
+        ),
+        gate="operator_v2_runtime_default_allowed",
+    )
+
+
+def _require_non_empty_string_list(value: Any, *, field: str) -> list[str]:
+    if not isinstance(value, list):
+        raise ValueError(f"{field} must be a non-empty list")
+    items = [non_empty_string(item, field=f"{field}[]") for item in value]
+    if not items:
+        raise ValueError(f"{field} must be a non-empty list")
+    return items
 
 
 def _candidate_by_type(report: dict[str, Any], candidate_type: str) -> dict[str, Any]:

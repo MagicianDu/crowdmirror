@@ -2,6 +2,8 @@ import json
 import subprocess
 import sys
 
+import pytest
+
 from experiments.r6_ccfa_readiness_report import build_r6_ccfa_readiness_report
 from experiments.r6_cross_case_transfer_protocol import (
     build_r6_cross_case_transfer_protocol,
@@ -357,6 +359,102 @@ def test_r6_product_evidence_cards_ingest_gap_closure_report():
     ]
     assert "r6-product-cards-gap-closure-report" in cards["source_refs"]
     assert cards["demo_api_contract"]["static_narrative_fallback_allowed"] is False
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("schema_version", "forged-gap-closure-report"),
+        ("status", "field_validated"),
+    ],
+)
+def test_r6_product_evidence_cards_reject_bad_gap_closure_schema_or_status(
+    field: str,
+    value: str,
+):
+    gap_closure_report = {
+        **build_r6_gap_closure_report(
+            artifact_id="r6-product-cards-gap-closure-report",
+            run_id="r6-gap-closure-run",
+        ),
+        field: value,
+    }
+
+    with pytest.raises(ValueError, match=field):
+        build_r6_product_evidence_cards(
+            artifact_id="r6-product-cards-gap-closure-test",
+            run_id="r6-gap-closure-run",
+            gap_closure_report=gap_closure_report,
+        )
+
+
+@pytest.mark.parametrize(
+    "gate",
+    [
+        "field_outcome_validated",
+        "runtime_default_allowed",
+        "operator_v2_runtime_default_allowed",
+        "ccf_a_main_contribution_ready",
+    ],
+)
+def test_r6_product_evidence_cards_reject_dangerous_gap_closure_gates(gate: str):
+    gap_closure_report = build_r6_gap_closure_report(
+        artifact_id="r6-product-cards-gap-closure-report",
+        run_id="r6-gap-closure-run",
+    )
+    gap_closure_report = {
+        **gap_closure_report,
+        "acceptance_gates": {
+            **gap_closure_report["acceptance_gates"],
+            gate: True,
+        },
+    }
+
+    with pytest.raises(ValueError, match=gate):
+        build_r6_product_evidence_cards(
+            artifact_id="r6-product-cards-gap-closure-test",
+            run_id="r6-gap-closure-run",
+            gap_closure_report=gap_closure_report,
+        )
+
+
+def test_r6_product_evidence_cards_reject_blank_gap_closure_artifact_id():
+    gap_closure_report = {
+        **build_r6_gap_closure_report(
+            artifact_id="r6-product-cards-gap-closure-report",
+            run_id="r6-gap-closure-run",
+        ),
+        "artifact_id": "   ",
+    }
+
+    with pytest.raises(ValueError, match="artifact_id"):
+        build_r6_product_evidence_cards(
+            artifact_id="r6-product-cards-gap-closure-test",
+            run_id="r6-gap-closure-run",
+            gap_closure_report=gap_closure_report,
+        )
+
+
+def test_r6_product_evidence_cards_reject_gap_closure_without_required_remaining_gap():
+    gap_closure_report = build_r6_gap_closure_report(
+        artifact_id="r6-product-cards-gap-closure-report",
+        run_id="r6-gap-closure-run",
+    )
+    gap_closure_report = {
+        **gap_closure_report,
+        "remaining_gaps": [
+            gap
+            for gap in gap_closure_report["remaining_gaps"]
+            if gap != "needs_real_or_field_outcome_proxy"
+        ],
+    }
+
+    with pytest.raises(ValueError, match="needs_real_or_field_outcome_proxy"):
+        build_r6_product_evidence_cards(
+            artifact_id="r6-product-cards-gap-closure-test",
+            run_id="r6-gap-closure-run",
+            gap_closure_report=gap_closure_report,
+        )
 
 
 def test_r6_ccfa_readiness_report_says_not_ready_for_ccf_a_main_contribution():
