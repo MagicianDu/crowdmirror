@@ -20,6 +20,9 @@ from experiments.r6_false_alarm_discriminator import (
 )
 from experiments.r6_followup_holdout_validation import build_r6_followup_holdout_validation
 from experiments.r6_in_condition_holdout_ledger import build_r6_in_condition_holdout_ledger
+from experiments.r6_interaction_signal_validity import (
+    build_r6_interaction_signal_validity,
+)
 from experiments.r6_mechanism_cap_ablation import build_r6_mechanism_cap_ablation
 from experiments.r6_product_evidence_cards import build_r6_product_evidence_cards
 from experiments.r6_product_report import build_r6_product_report
@@ -128,6 +131,11 @@ def build_r6_evidence_report(
         run_id=run_id,
         decision_value_metrics=decision_value_metrics,
     )
+    interaction_signal_validity = build_r6_interaction_signal_validity(
+        artifact_id=f"{artifact_id}-interaction-signal-validity",
+        run_id=run_id,
+        decision_value_metrics=decision_value_metrics,
+    )
     risk_discovery_value = build_r6_risk_discovery_value_report(
         artifact_id=f"{artifact_id}-risk-discovery-value-report",
         run_id=run_id,
@@ -137,6 +145,7 @@ def build_r6_evidence_report(
         decision_value_metrics=decision_value_metrics,
         risk_discovery_threshold_sweep=risk_discovery_threshold_sweep,
         false_alarm_discriminator=false_alarm_discriminator,
+        interaction_signal_validity=interaction_signal_validity,
         risk_discovery_holdout_validation=risk_discovery_holdout_validation,
     )
     ccfa_readiness = build_r6_ccfa_readiness_report(
@@ -332,6 +341,27 @@ def build_r6_evidence_report(
                 "acceptance_gates"
             ]["false_alarm_discriminator_ready"],
         },
+        "interaction_signal_validity_summary": {
+            "artifact_id": interaction_signal_validity["artifact_id"],
+            "status": interaction_signal_validity["status"],
+            "mean_validity_score": interaction_signal_validity["summary"][
+                "mean_validity_score"
+            ],
+            "current_proxy_supported_signal_count": interaction_signal_validity[
+                "summary"
+            ]["current_proxy_supported_signal_count"],
+            "rejected_false_alarm_count": interaction_signal_validity["summary"][
+                "rejected_false_alarm_count"
+            ],
+            "accepted_count": interaction_signal_validity["summary"][
+                "accepted_count"
+            ],
+            "interaction_signal_validity_generalized": (
+                interaction_signal_validity["acceptance_gates"][
+                    "interaction_signal_validity_generalized"
+                ]
+            ),
+        },
         "risk_discovery_value_summary": {
             "artifact_id": risk_discovery_value["artifact_id"],
             "status": risk_discovery_value["status"],
@@ -353,6 +383,9 @@ def build_r6_evidence_report(
             "false_alarm_discriminator_ready": risk_discovery_value[
                 "false_alarm_discriminator_summary"
             ]["false_alarm_discriminator_ready"],
+            "interaction_signal_validity_generalized": risk_discovery_value[
+                "interaction_signal_validity_summary"
+            ]["interaction_signal_validity_generalized"],
         },
         "ccfa_readiness_summary": {
             "artifact_id": ccfa_readiness["artifact_id"],
@@ -416,6 +449,15 @@ def build_r6_evidence_report(
             "generalizable_false_alarm_discriminator_found": false_alarm_discriminator[
                 "acceptance_gates"
             ]["generalizable_discriminator_found"],
+            "interaction_signal_validity_present": True,
+            "interaction_signal_validity_generalized": interaction_signal_validity[
+                "acceptance_gates"
+            ]["interaction_signal_validity_generalized"],
+            "current_proxy_supported_interaction_signal_observed": (
+                interaction_signal_validity["acceptance_gates"][
+                    "current_proxy_supported_signal_observed"
+                ]
+            ),
             "risk_discovery_value_report_present": True,
             "static_prior_role_reframed_as_foundation": (
                 risk_discovery_value["objective_reframe"]["static_prior_role"]
@@ -444,6 +486,7 @@ def build_r6_evidence_report(
             risk_discovery_holdout_validation=risk_discovery_holdout_validation,
             risk_discovery_threshold_sweep=risk_discovery_threshold_sweep,
             false_alarm_discriminator=false_alarm_discriminator,
+            interaction_signal_validity=interaction_signal_validity,
             risk_discovery_value=risk_discovery_value,
             ccfa_readiness=ccfa_readiness,
         ),
@@ -462,6 +505,7 @@ def build_r6_evidence_report(
             risk_discovery_holdout_validation["artifact_id"],
             risk_discovery_threshold_sweep["artifact_id"],
             false_alarm_discriminator["artifact_id"],
+            interaction_signal_validity["artifact_id"],
             risk_discovery_value["artifact_id"],
             ccfa_readiness["artifact_id"],
             ablation["artifact_id"],
@@ -482,6 +526,7 @@ def build_r6_evidence_report(
             "partial_holdout_not_runtime_acceptance",
             "static_prior_is_foundation_not_opponent",
             "false_alarm_discriminator_not_runtime_ready",
+            "interaction_signal_validity_not_generalized",
             "ccf_a_main_contribution_not_ready",
         ],
         "blocking_gaps": [
@@ -507,6 +552,7 @@ def _remaining_gaps_with_method_gates(
     risk_discovery_holdout_validation: dict[str, Any],
     risk_discovery_threshold_sweep: dict[str, Any],
     false_alarm_discriminator: dict[str, Any],
+    interaction_signal_validity: dict[str, Any],
     risk_discovery_value: dict[str, Any],
     ccfa_readiness: dict[str, Any],
 ) -> list[str]:
@@ -526,7 +572,13 @@ def _remaining_gaps_with_method_gates(
             false_alarm_discriminator=false_alarm_discriminator,
         )
     )
-    gaps.extend(false_alarm_discriminator["blocking_gaps"])
+    gaps.extend(
+        _false_alarm_gaps_after_signal_validity(
+            false_alarm_discriminator=false_alarm_discriminator,
+            interaction_signal_validity=interaction_signal_validity,
+        )
+    )
+    gaps.extend(interaction_signal_validity["blocking_gaps"])
     gaps.extend(risk_discovery_value["blocking_gaps"])
     gaps.extend(ccfa_readiness["blocking_gaps"])
     return sorted(set(gaps))
@@ -546,6 +598,18 @@ def _threshold_gaps_after_discriminator(
         for gap in risk_discovery_threshold_sweep["blocking_gaps"]
         if gap != "needs_non_threshold_false_alarm_discriminator"
     ]
+
+
+def _false_alarm_gaps_after_signal_validity(
+    *,
+    false_alarm_discriminator: dict[str, Any],
+    interaction_signal_validity: dict[str, Any],
+) -> list[str]:
+    if interaction_signal_validity["acceptance_gates"][
+        "interaction_signal_validity_present"
+    ]:
+        return []
+    return false_alarm_discriminator["blocking_gaps"]
 
 
 def _public_proxy_summary(proxy: dict[str, Any]) -> dict[str, Any]:

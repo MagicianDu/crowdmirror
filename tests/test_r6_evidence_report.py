@@ -210,6 +210,9 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "false_alarm_discriminator_present": True,
         "false_alarm_discriminator_ready": False,
         "generalizable_false_alarm_discriminator_found": False,
+        "interaction_signal_validity_present": True,
+        "interaction_signal_validity_generalized": False,
+        "current_proxy_supported_interaction_signal_observed": True,
         "risk_discovery_value_report_present": True,
         "static_prior_role_reframed_as_foundation": True,
         "risk_discovery_path_should_continue": True,
@@ -251,6 +254,7 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "decision_value_passed": False,
         "risk_discovery_holdout_passed": False,
         "false_alarm_discriminator_ready": False,
+        "interaction_signal_validity_generalized": False,
     }
     assert report["decision_value_metrics_summary"] == {
         "artifact_id": "r6-evidence-report-test-decision-value-metrics",
@@ -277,6 +281,15 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
         "generalizable_discriminator_found": False,
         "accepted_candidate_count": 0,
         "false_alarm_discriminator_ready": False,
+    }
+    assert report["interaction_signal_validity_summary"] == {
+        "artifact_id": "r6-evidence-report-test-interaction-signal-validity",
+        "status": "interaction_signal_validity_diagnostic_only",
+        "mean_validity_score": 0.763,
+        "current_proxy_supported_signal_count": 1,
+        "rejected_false_alarm_count": 2,
+        "accepted_count": 0,
+        "interaction_signal_validity_generalized": False,
     }
     assert report["risk_discovery_holdout_validation_summary"] == {
         "artifact_id": "r6-evidence-report-test-risk-discovery-holdout-validation",
@@ -331,14 +344,21 @@ def test_r6_evidence_report_answers_continue_or_stoploss_boundary():
     assert "needs_non_threshold_false_alarm_discriminator" not in report[
         "remaining_gaps"
     ]
-    assert "needs_generalizable_false_alarm_discriminator" in report["remaining_gaps"]
-    assert "needs_discriminator_holdout_validation" in report["remaining_gaps"]
-    assert "needs_in_family_positive_signal" in report["remaining_gaps"]
+    assert "needs_generalizable_false_alarm_discriminator" not in report[
+        "remaining_gaps"
+    ]
+    assert "needs_discriminator_holdout_validation" not in report["remaining_gaps"]
+    assert "needs_in_family_positive_signal" not in report["remaining_gaps"]
+    assert "needs_interaction_signal_validity_generalization" in report[
+        "remaining_gaps"
+    ]
+    assert "needs_signal_validity_holdout_validation" in report["remaining_gaps"]
     assert "needs_positive_same_family_source_signal" in report["remaining_gaps"]
     assert "needs_field_outcome_validation" in report["remaining_gaps"]
     assert "same_case_feedback_not_global_acceptance" in report["risk_flags"]
     assert "static_prior_is_foundation_not_opponent" in report["risk_flags"]
     assert "false_alarm_discriminator_not_runtime_ready" in report["risk_flags"]
+    assert "interaction_signal_validity_not_generalized" in report["risk_flags"]
     assert "ccf_a_main_contribution_not_ready" in report["risk_flags"]
     json.dumps(report, allow_nan=False)
 

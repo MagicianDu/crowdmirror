@@ -1,0 +1,216 @@
+{
+  "acceptance_gates": {
+    "case_level_validity_scores_present": true,
+    "current_proxy_supported_signal_observed": true,
+    "field_outcome_validated": false,
+    "forbidden_label_features_excluded": true,
+    "interaction_signal_validity_generalized": false,
+    "interaction_signal_validity_present": true,
+    "likely_false_alarm_cases_identified": true
+  },
+  "artifact_id": "r6-interaction-signal-validity-current-001",
+  "blocking_gaps": [
+    "needs_interaction_signal_validity_generalization",
+    "needs_signal_validity_holdout_validation",
+    "needs_field_outcome_validation"
+  ],
+  "case_validity_scores": [
+    {
+      "audit": {
+        "public_proxy_artifact_id": "r6-interaction-signal-validity-current-001-htops_cost_pressure-proxy",
+        "source_key": "htops_cost_pressure",
+        "target_case_id": "generic-public-service-policy-change",
+        "target_case_type": "public_service_policy_change"
+      },
+      "classification": "diagnostic_only",
+      "classification_reason": "current_proxy_supports_signal_but_generalization_missing",
+      "component_scores": {
+        "counterfactual_sensitivity_score": 0.8,
+        "holdout_consistency_score": 1.0,
+        "mechanism_alignment_score": 1.0,
+        "prior_uncertainty_score": 0.8,
+        "segment_pattern_score": 1.0
+      },
+      "explanation": [
+        "validity_score=0.93",
+        "segment_pattern_score=1.0",
+        "mechanism_alignment_score=1.0",
+        "holdout_consistency_score=1.0",
+        "classification=diagnostic_only"
+      ],
+      "scoring_fingerprint": "4644fb1805430a64",
+      "scoring_inputs": {
+        "counterfactual_alternative_count": 2,
+        "holdout_outcome_support": "supported",
+        "interaction_delta_magnitude": 0.07,
+        "interaction_flags_new_risk": true,
+        "mechanism_impact_overlap": [
+          "access",
+          "concern",
+          "equity"
+        ],
+        "observed_high_risk": true,
+        "public_proxy_available": true,
+        "segment_delta_concentration": 0.6,
+        "segment_delta_span": 0.1,
+        "top_risk_segment_prior_uncertainty": 0.19
+      },
+      "validity_score": 0.93
+    },
+    {
+      "audit": {
+        "public_proxy_artifact_id": "r6-interaction-signal-validity-current-001-anes_health_heldout-proxy",
+        "source_key": "anes_health_heldout",
+        "target_case_id": "generic-rights-rule-change",
+        "target_case_type": "rights_rule_change"
+      },
+      "classification": "reject_as_likely_false_alarm",
+      "classification_reason": "current_proxy_contradicts_signal",
+      "component_scores": {
+        "counterfactual_sensitivity_score": 0.8,
+        "holdout_consistency_score": 0.0,
+        "mechanism_alignment_score": 1.0,
+        "prior_uncertainty_score": 0.8,
+        "segment_pattern_score": 1.0
+      },
+      "explanation": [
+        "validity_score=0.68",
+        "segment_pattern_score=1.0",
+        "mechanism_alignment_score=1.0",
+        "holdout_consistency_score=0.0",
+        "classification=reject_as_likely_false_alarm"
+      ],
+      "scoring_fingerprint": "c65b2b016ce8118b",
+      "scoring_inputs": {
+        "counterfactual_alternative_count": 2,
+        "holdout_outcome_support": "contradicted",
+        "interaction_delta_magnitude": 0.07,
+        "interaction_flags_new_risk": true,
+        "mechanism_impact_overlap": [
+          "fairness",
+          "rights",
+          "shock",
+          "trust"
+        ],
+        "observed_high_risk": false,
+        "public_proxy_available": true,
+        "segment_delta_concentration": 0.6,
+        "segment_delta_span": 0.1,
+        "top_risk_segment_prior_uncertainty": 0.2
+      },
+      "validity_score": 0.68
+    },
+    {
+      "audit": {
+        "public_proxy_artifact_id": "r6-interaction-signal-validity-current-001-anes_climate_heldout-proxy",
+        "source_key": "anes_climate_heldout",
+        "target_case_id": "generic-rights-rule-change",
+        "target_case_type": "rights_rule_change"
+      },
+      "classification": "reject_as_likely_false_alarm",
+      "classification_reason": "current_proxy_contradicts_signal",
+      "component_scores": {
+        "counterfactual_sensitivity_score": 0.8,
+        "holdout_consistency_score": 0.0,
+        "mechanism_alignment_score": 1.0,
+        "prior_uncertainty_score": 0.8,
+        "segment_pattern_score": 1.0
+      },
+      "explanation": [
+        "validity_score=0.68",
+        "segment_pattern_score=1.0",
+        "mechanism_alignment_score=1.0",
+        "holdout_consistency_score=0.0",
+        "classification=reject_as_likely_false_alarm"
+      ],
+      "scoring_fingerprint": "c65b2b016ce8118b",
+      "scoring_inputs": {
+        "counterfactual_alternative_count": 2,
+        "holdout_outcome_support": "contradicted",
+        "interaction_delta_magnitude": 0.07,
+        "interaction_flags_new_risk": true,
+        "mechanism_impact_overlap": [
+          "fairness",
+          "rights",
+          "shock",
+          "trust"
+        ],
+        "observed_high_risk": false,
+        "public_proxy_available": true,
+        "segment_delta_concentration": 0.6,
+        "segment_delta_span": 0.1,
+        "top_risk_segment_prior_uncertainty": 0.2
+      },
+      "validity_score": 0.68
+    }
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Interaction Signal Validity Score is a diagnostic validity score; without holdout or field validation it must not be treated as a generalized risk acceptance rule."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "decision": {
+    "decision": "continue_with_diagnostic_signal_validity",
+    "interaction_signal_validity_generalized": false,
+    "recommended_next_step": "add_holdout_or_field_outcome_for_signal_validity_generalization"
+  },
+  "risk_flags": [
+    "case_source_family_gate_not_used_for_scoring",
+    "current_proxy_supported_signal_observed",
+    "current_proxy_false_alarms_identified",
+    "interaction_signal_validity_not_generalized"
+  ],
+  "run_id": "r6-interaction-signal-validity-run-current-001",
+  "schema_version": "r6-interaction-signal-validity-v1",
+  "scoring_policy": {
+    "audit_fields_excluded_from_scoring": [
+      "source_key",
+      "target_case_id",
+      "target_case_type",
+      "public_proxy_artifact_id"
+    ],
+    "dimension_weights": {
+      "counterfactual_sensitivity_score": 0.15,
+      "holdout_consistency_score": 0.25,
+      "mechanism_alignment_score": 0.2,
+      "prior_uncertainty_score": 0.2,
+      "segment_pattern_score": 0.2
+    },
+    "forbidden_scoring_features": [
+      "source_key",
+      "target_case_id",
+      "target_case_type"
+    ],
+    "purpose": "Score whether an interaction risk signal has validity beyond the static prior without using source or policy-family labels as the core rule.",
+    "scoring_feature_names": [
+      "segment_delta_span",
+      "segment_delta_concentration",
+      "mechanism_impact_overlap",
+      "counterfactual_alternative_count",
+      "interaction_delta_magnitude",
+      "top_risk_segment_prior_uncertainty",
+      "holdout_outcome_support"
+    ]
+  },
+  "source_refs": [
+    "r6-interaction-signal-validity-current-001-decision-value-metrics",
+    "r6-interaction-signal-validity-current-001-htops_cost_pressure-proxy",
+    "r6-interaction-signal-validity-current-001-htops_cost_pressure-foundation-risk-shift",
+    "r6-interaction-signal-validity-current-001-anes_health_heldout-proxy",
+    "r6-interaction-signal-validity-current-001-anes_health_heldout-foundation-risk-shift",
+    "r6-interaction-signal-validity-current-001-anes_climate_heldout-proxy",
+    "r6-interaction-signal-validity-current-001-anes_climate_heldout-foundation-risk-shift"
+  ],
+  "status": "interaction_signal_validity_diagnostic_only",
+  "summary": {
+    "accepted_count": 0,
+    "case_count": 3,
+    "current_proxy_supported_signal_count": 1,
+    "diagnostic_only_count": 1,
+    "forbidden_label_feature_count": 0,
+    "generalized_accept_count": 0,
+    "mean_validity_score": 0.763,
+    "needs_more_outcome_count": 0,
+    "rejected_false_alarm_count": 2
+  }
+}

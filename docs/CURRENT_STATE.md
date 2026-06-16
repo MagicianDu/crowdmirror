@@ -109,20 +109,25 @@
 - `experiments/r6_risk_discovery_holdout_validation.py`
 - `experiments/r6_risk_discovery_threshold_sweep.py`
 - `experiments/r6_false_alarm_discriminator.py`
+- `experiments/r6_interaction_signal_validity.py`
 - `docs/superpowers/specs/2026-06-11-r6-risk-discovery-method-spec.md`
 - `experiments/results/r6_decision_value_metrics/r6-decision-value-metrics-current-001.json`
 - `experiments/results/r6_risk_discovery_holdout_validation/r6-risk-discovery-holdout-validation-current-001.json`
 - `experiments/results/r6_risk_discovery_threshold_sweep/r6-risk-discovery-threshold-sweep-current-001.json`
 - `experiments/results/r6_false_alarm_discriminator/r6-false-alarm-discriminator-current-001.json`
+- `experiments/results/r6_interaction_signal_validity/r6-interaction-signal-validity-current-001.json`
 - `experiments/results/r6_risk_discovery_value_report/r6-risk-discovery-value-report-current-002.json`
 - `experiments/results/r6_risk_discovery_value_report/r6-risk-discovery-value-report-current-003.json`
 - `experiments/results/r6_risk_discovery_value_report/r6-risk-discovery-value-report-current-004.json`
+- `experiments/results/r6_risk_discovery_value_report/r6-risk-discovery-value-report-current-005.json`
 - `experiments/results/r6_ccfa_readiness_report/r6-ccfa-readiness-report-current-003.json`
 - `experiments/results/r6_ccfa_readiness_report/r6-ccfa-readiness-report-current-004.json`
 - `experiments/results/r6_ccfa_readiness_report/r6-ccfa-readiness-report-current-005.json`
+- `experiments/results/r6_ccfa_readiness_report/r6-ccfa-readiness-report-current-006.json`
 - `experiments/results/r6_evidence_report/r6-evidence-report-current-008.json`
 - `experiments/results/r6_evidence_report/r6-evidence-report-current-009.json`
 - `experiments/results/r6_evidence_report/r6-evidence-report-current-010.json`
+- `experiments/results/r6_evidence_report/r6-evidence-report-current-011.json`
 
 ## 已确认结论
 
@@ -154,13 +159,14 @@
 26. outcome feedback residual transfer 已实现：ANES health -> ANES climate 和 ANES climate -> ANES health 都能降低 prior-interaction error，但未通过 runtime update guard，因此不能升级为全局自动校准方法；这不等于 R6 风险发现主线失败。
 27. in-condition holdout ledger 已实现：当前 `in_condition_holdout_count=0`，ANES health 是 source case，ANES climate 是 same-family 但 out-of-condition，HTOPS 是 out-of-family。
 28. Product evidence card contract 已实现：当前 5 张卡都含 `claim_status`、`allowed_claims`、`blocked_claims`、`source_artifact_ids`，并明确 `static_narrative_fallback_allowed=false`。
-29. CCF-A readiness report 已实现，当前结论是 `ccf_a_main_contribution_ready=false`；R6 还没有达到 CCF-A 级主贡献算法水准，核心缺口改为形式化问题与理论、风险发现 holdout validation、decision-value 指标、可泛化 false-alarm discriminator、field outcome validation。
+29. CCF-A readiness report 已实现，当前结论是 `ccf_a_main_contribution_ready=false`；R6 还没有达到 CCF-A 级主贡献算法水准，核心缺口改为形式化问题与理论、风险发现 holdout validation、decision-value 指标、generalized interaction signal validity、field outcome validation。
 30. risk-discovery value report 已实现，当前结论是 `risk_discovery_value_partial_decision_metric_failed_holdout`；R6 值得继续作为先验锚定风险发现框架推进，但 runtime default update 仍被阻断。
 31. decision-value metrics 已实现，当前结论是 `decision_value_partial_high_false_alarm`：`static_prior_miss_recovery_rate=1.0`，说明 HTOPS 上存在一个静态先验漏报被交互层恢复；但 `top_k_risk_hit_rate=0.333`、`false_alarm_rate=0.667`，说明 ANES health / climate 暴露明显 false alarm。
 32. risk-discovery holdout validation 已实现，当前结论是 `risk_discovery_holdout_failed_current_public_proxies`：same-family ANES health -> climate 与 climate -> health 两个 trial 都没有通过，`passed_trial_count=0`。
 33. R6 当前不是失败，但也不是方法通过；更准确是“已从指标缺失推进到指标可计算，且当前指标显示 partial positive + high false alarm + holdout failed”。
-34. risk-discovery threshold sweep 已实现，当前结论是 `threshold_sweep_no_separating_rule`：HTOPS 真风险和 ANES false alarm 的 `interaction_delta_vs_static` 都是 `0.07`，所以单纯调 `interaction_delta_threshold` 不能降低误报同时保留静态先验漏报恢复。下一步必须做非阈值 false-alarm discriminator 或寻找 in-condition holdout。
+34. risk-discovery threshold sweep 已实现，当前结论是 `threshold_sweep_no_separating_rule`：HTOPS 真风险和 ANES false alarm 的 `interaction_delta_vs_static` 都是 `0.07`，所以单纯调 `interaction_delta_threshold` 不能降低误报同时保留静态先验漏报恢复；后续已转向非阈值 Interaction Signal Validity 评分与 holdout/field 验证。
 35. false-alarm discriminator diagnosis 已实现，当前结论是 `false_alarm_discriminator_diagnostic_only`：target case family、source family、post-outcome static error 三类候选都能在当前 3 个 public proxy 上把 1 个 HTOPS true positive 和 2 个 ANES false alarm 分开，但 `accepted_candidate_count=0`、`generalizable_discriminator_found=false`。原因是当前可分离规则本质上是 case/source family 记忆，缺少 in-family positive signal 或外部 holdout，不能作为 runtime gate 或 CCF-A 主贡献证据。
+36. Interaction Signal Validity Score 已实现，当前结论是 `interaction_signal_validity_diagnostic_only`：评分特征显式排除 `source_key`、`target_case_id`、`target_case_type`，改用 `segment_pattern_score`、`mechanism_alignment_score`、`counterfactual_sensitivity_score`、`prior_uncertainty_score`、`holdout_consistency_score`。当前 HTOPS 得到 `validity_score=0.93` 且 `diagnostic_only`，ANES health / climate 得到 `validity_score=0.68` 且 `reject_as_likely_false_alarm`；这说明它比 case/source family gate 更通用，并产生了一个 current-proxy-supported 正向信号，但 `accepted_count=0`、`interaction_signal_validity_generalized=false`，仍不能宣称 R6 通过。
 
 ## 可复用资产
 
@@ -194,10 +200,10 @@ R6 开发时必须只 stage 本轮明确修改的文件。
 
 ## 下一步
 
-1. Research 下一步只围绕 risk-discovery CCF-A readiness 的剩余 gap 推进：formal problem、decision-value metric 通过、risk-discovery holdout validation 通过、false-alarm discriminator 泛化、field/real outcome validation。
+1. Research 下一步只围绕 risk-discovery CCF-A readiness 的剩余 gap 推进：formal problem、decision-value metric 通过、risk-discovery holdout validation 通过、Interaction Signal Validity 泛化、field/real outcome validation。
 2. 数据侧优先寻找或构造 positive same-family source signal + independent holdout，降低当前 `false_alarm_rate=0.667`，而不是继续泛泛增加 proxy。
-3. 方法侧下一步要降低 false alarm：由于 threshold sweep 已显示阈值无法分离当前真风险和误报，且当前 case/source family discriminator 有过拟合风险，应优先引入发布前可用的 case-level features、segment-level uncertainty、机制触发条件或 in-condition holdout。
-4. Product 侧下一步接入 `false_alarm_discriminator_summary`，展示“当前能诊断假阳性，但尚未形成可泛化过滤规则”的边界。
+3. 方法侧下一步要降低 false alarm：由于 threshold sweep 已显示阈值无法分离当前真风险和误报，且当前 case/source family discriminator 有过拟合风险，应优先验证 Interaction Signal Validity 的发布前特征是否能在独立 holdout 或 field outcome 上稳定区分真实风险与误报。
+4. Product 侧下一步接入 `interaction_signal_validity_summary`，展示“当前有一个 current-proxy-supported 风险信号，但尚未形成可泛化验收规则”的边界。
 
 ## 验收边界
 

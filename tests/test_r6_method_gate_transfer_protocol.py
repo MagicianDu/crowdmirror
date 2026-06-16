@@ -144,6 +144,9 @@ def test_r6_risk_discovery_value_report_keeps_static_prior_as_foundation():
         "false_alarm_discriminator_present": True,
         "false_alarm_discriminator_ready": False,
         "generalizable_false_alarm_discriminator_found": False,
+        "interaction_signal_validity_present": True,
+        "interaction_signal_validity_generalized": False,
+        "current_proxy_supported_interaction_signal_observed": True,
         "risk_discovery_holdout_validation_present": True,
         "risk_discovery_holdout_passed": False,
         "field_outcome_validated": False,
@@ -175,6 +178,15 @@ def test_r6_risk_discovery_value_report_keeps_static_prior_as_foundation():
         "accepted_candidate_count": 0,
         "false_alarm_discriminator_ready": False,
     }
+    assert report["interaction_signal_validity_summary"] == {
+        "artifact_id": "r6-risk-discovery-value-test-interaction-signal-validity",
+        "status": "interaction_signal_validity_diagnostic_only",
+        "mean_validity_score": 0.763,
+        "current_proxy_supported_signal_count": 1,
+        "rejected_false_alarm_count": 2,
+        "accepted_count": 0,
+        "interaction_signal_validity_generalized": False,
+    }
     assert report["holdout_validation_summary"] == {
         "artifact_id": "r6-risk-discovery-value-test-risk-discovery-holdout-validation",
         "status": "risk_discovery_holdout_failed_current_public_proxies",
@@ -193,9 +205,15 @@ def test_r6_risk_discovery_value_report_keeps_static_prior_as_foundation():
     assert "needs_non_threshold_false_alarm_discriminator" not in report[
         "blocking_gaps"
     ]
-    assert "needs_generalizable_false_alarm_discriminator" in report["blocking_gaps"]
-    assert "needs_discriminator_holdout_validation" in report["blocking_gaps"]
-    assert "needs_in_family_positive_signal" in report["blocking_gaps"]
+    assert "needs_generalizable_false_alarm_discriminator" not in report[
+        "blocking_gaps"
+    ]
+    assert "needs_discriminator_holdout_validation" not in report["blocking_gaps"]
+    assert "needs_in_family_positive_signal" not in report["blocking_gaps"]
+    assert "needs_interaction_signal_validity_generalization" in report[
+        "blocking_gaps"
+    ]
+    assert "needs_signal_validity_holdout_validation" in report["blocking_gaps"]
     assert "needs_positive_same_family_source_signal" in report["blocking_gaps"]
     assert "needs_runtime_update_guard_before_default_enablement" in report[
         "blocking_gaps"
@@ -283,9 +301,8 @@ def test_r6_ccfa_readiness_report_says_not_ready_for_ccf_a_main_contribution():
             "R6 should be evaluated as a static-prior anchored risk-discovery "
             "framework. The static prior is the simulation base, while interaction "
             "adds auditable risk hypotheses. The framework is not CCF-A-ready until "
-            "risk-discovery holdout validation, decision-value metrics, a "
-            "generalizable false-alarm discriminator, and field outcome validation "
-            "are present."
+            "risk-discovery holdout validation, decision-value metrics, generalized "
+            "interaction signal validity, and field outcome validation are present."
         ),
     }
     by_gate = {item["gate_id"]: item for item in report["readiness_checklist"]}
@@ -293,7 +310,7 @@ def test_r6_ccfa_readiness_report_says_not_ready_for_ccf_a_main_contribution():
     assert by_gate["risk_discovery_objective_defined"]["status"] == "passed"
     assert by_gate["decision_value_metric"]["status"] == "partial"
     assert by_gate["risk_discovery_holdout_validation"]["status"] == "failed"
-    assert by_gate["false_alarm_discriminator"]["status"] == "failed"
+    assert by_gate["interaction_signal_validity_generalized"]["status"] == "failed"
     assert by_gate["runtime_update_guard"]["required_for_ccf_a"] is False
     assert by_gate["runtime_update_guard"]["status"] == "failed"
     assert by_gate["field_or_real_outcome_validation"]["status"] == "failed"
@@ -301,7 +318,9 @@ def test_r6_ccfa_readiness_report_says_not_ready_for_ccf_a_main_contribution():
     assert report["failed_required_gate_count"] == 5
     assert "needs_risk_discovery_holdout_validation" in report["blocking_gaps"]
     assert "needs_decision_value_metric_to_pass" in report["blocking_gaps"]
-    assert "needs_generalizable_false_alarm_discriminator" in report["blocking_gaps"]
+    assert "needs_interaction_signal_validity_generalization" in report[
+        "blocking_gaps"
+    ]
     assert "needs_field_outcome_validation" in report["blocking_gaps"]
     assert "needs_stable_superiority_over_strong_static_prior" not in report[
         "blocking_gaps"
@@ -356,6 +375,11 @@ def test_r6_new_method_gate_clis_write_artifacts(tmp_path):
             "experiments/r6_false_alarm_discriminator.py",
             "r6-false-alarm-discriminator-cli",
             "r6-false-alarm-discriminator-v1",
+        ),
+        (
+            "experiments/r6_interaction_signal_validity.py",
+            "r6-interaction-signal-validity-cli",
+            "r6-interaction-signal-validity-v1",
         ),
     ]
     for script, artifact_id, schema_version in commands:

@@ -90,9 +90,8 @@ def build_r6_ccfa_readiness_report(
                 "R6 should be evaluated as a static-prior anchored risk-discovery "
                 "framework. The static prior is the simulation base, while interaction "
                 "adds auditable risk hypotheses. The framework is not CCF-A-ready until "
-                "risk-discovery holdout validation, decision-value metrics, a "
-                "generalizable false-alarm discriminator, and field outcome validation "
-                "are present."
+                "risk-discovery holdout validation, decision-value metrics, generalized "
+                "interaction signal validity, and field outcome validation are present."
             ),
         },
         "readiness_checklist": checklist,
@@ -130,7 +129,7 @@ def build_r6_ccfa_readiness_report(
             "bind_in_condition_holdout_to_risk_discovery_validation",
             "add_field_or_real_release_outcome_validation",
             "formalize_interaction_operator_and_gated_update_theory",
-            "validate_generalizable_false_alarm_discriminator",
+            "validate_interaction_signal_validity_on_holdout_or_field_outcome",
             "compare_risk_discovery_value_against_static_prior_only_and_random_interaction",
         ],
         "source_refs": [
@@ -148,7 +147,7 @@ def build_r6_ccfa_readiness_report(
             "not_ccf_a_ready",
             "risk_discovery_holdout_validation_failed",
             "decision_value_metric_partial",
-            "false_alarm_discriminator_not_runtime_ready",
+            "interaction_signal_validity_not_generalized",
             "field_validation_missing",
             "runtime_update_guard_not_passed",
         ],
@@ -271,29 +270,31 @@ def _readiness_checklist(
             ),
         },
         {
-            "gate_id": "false_alarm_discriminator",
+            "gate_id": "interaction_signal_validity_generalized",
             "required_for_ccf_a": True,
             "status": (
                 "passed"
-                if risk_discovery_value_report["false_alarm_discriminator_summary"][
-                    "false_alarm_discriminator_ready"
+                if risk_discovery_value_report["interaction_signal_validity_summary"][
+                    "interaction_signal_validity_generalized"
                 ]
                 else "failed"
             ),
             "evidence": (
-                "current_proxy_separation_found="
-                f"{risk_discovery_value_report['false_alarm_discriminator_summary']['current_proxy_separation_found']}; "
-                "generalizable_discriminator_found="
-                f"{risk_discovery_value_report['false_alarm_discriminator_summary']['generalizable_discriminator_found']}; "
+                "mean_validity_score="
+                f"{risk_discovery_value_report['interaction_signal_validity_summary']['mean_validity_score']}; "
+                "current_proxy_supported_signal_count="
+                f"{risk_discovery_value_report['interaction_signal_validity_summary']['current_proxy_supported_signal_count']}; "
+                "rejected_false_alarm_count="
+                f"{risk_discovery_value_report['interaction_signal_validity_summary']['rejected_false_alarm_count']}; "
                 "accepted_candidate_count="
-                f"{risk_discovery_value_report['false_alarm_discriminator_summary']['accepted_candidate_count']}"
+                f"{risk_discovery_value_report['interaction_signal_validity_summary']['accepted_count']}"
             ),
             "blocking_gap": (
                 ""
-                if risk_discovery_value_report["false_alarm_discriminator_summary"][
-                    "false_alarm_discriminator_ready"
+                if risk_discovery_value_report["interaction_signal_validity_summary"][
+                    "interaction_signal_validity_generalized"
                 ]
-                else "needs_generalizable_false_alarm_discriminator"
+                else "needs_interaction_signal_validity_generalization"
             ),
         },
         {
