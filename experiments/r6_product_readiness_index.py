@@ -21,13 +21,20 @@ from experiments.r6_evidence_report import build_r6_evidence_report
 R6_PRODUCT_READINESS_INDEX_SCHEMA_VERSION = "r6-product-readiness-index-v1"
 
 
-def build_r6_product_readiness_index(*, artifact_id: str, run_id: str) -> dict[str, Any]:
+def build_r6_product_readiness_index(
+    *,
+    artifact_id: str,
+    run_id: str,
+    evidence_report: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
-    evidence_report = build_r6_evidence_report(
-        artifact_id=f"{artifact_id}-evidence-report",
-        run_id=run_id,
-    )
+    if evidence_report is None:
+        evidence_report = build_r6_evidence_report(
+            artifact_id=f"{artifact_id}-evidence-report",
+            run_id=run_id,
+        )
+    evidence_artifact_id = evidence_report.get("artifact_id")
     report = {
         "schema_version": R6_PRODUCT_READINESS_INDEX_SCHEMA_VERSION,
         "artifact_id": artifact_id,
@@ -40,9 +47,7 @@ def build_r6_product_readiness_index(*, artifact_id: str, run_id: str) -> dict[s
         },
         "readiness_gates": {
             "scenario_intake_ready": False,
-            "evidence_cards_ready": evidence_report["acceptance_gates"][
-                "product_evidence_cards_present"
-            ],
+            "evidence_cards_ready": _evidence_cards_ready(evidence_report),
             "decision_report_ready": False,
             "outcome_review_ready": False,
             "static_narrative_fallback_allowed": False,
@@ -65,11 +70,39 @@ def build_r6_product_readiness_index(*, artifact_id: str, run_id: str) -> dict[s
             "R6 已达到 CCF-A 主贡献",
             "交互仿真稳定比静态先验更准",
         ],
-        "source_refs": [evidence_report["artifact_id"]],
+        "source_refs": (
+            [evidence_artifact_id]
+            if isinstance(evidence_artifact_id, str) and evidence_artifact_id.strip()
+            else []
+        ),
         "claim_boundary": R6_CLAIM_BOUNDARY,
     }
     assert_strict_json(report)
     return report
+
+
+def _evidence_cards_ready(evidence_report: dict[str, Any]) -> bool:
+    acceptance_gates = evidence_report.get("acceptance_gates")
+    product_evidence_cards_summary = evidence_report.get(
+        "product_evidence_cards_summary"
+    )
+    if not isinstance(acceptance_gates, dict) or not isinstance(
+        product_evidence_cards_summary,
+        dict,
+    ):
+        return False
+    card_count = product_evidence_cards_summary.get("card_count")
+    if isinstance(card_count, bool) or not isinstance(card_count, int):
+        return False
+    return (
+        acceptance_gates.get("product_evidence_cards_present") is True
+        and acceptance_gates.get("product_guard_preserved") is True
+        and product_evidence_cards_summary.get("status")
+        == "product_evidence_cards_ready"
+        and card_count >= 8
+        and product_evidence_cards_summary.get("static_narrative_fallback_allowed")
+        is False
+    )
 
 
 def write_r6_product_readiness_index(output: str | Path, **kwargs: Any) -> Path:

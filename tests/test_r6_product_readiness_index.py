@@ -1,5 +1,9 @@
 import json
+import subprocess
+import sys
+from pathlib import Path
 
+from experiments.r6_evidence_report import build_r6_evidence_report
 from experiments.r6_product_readiness_index import build_r6_product_readiness_index
 
 
@@ -26,3 +30,82 @@ def test_r6_product_readiness_index_prioritizes_product_without_overclaiming():
     assert "needs_customer_decision_report" in report["blocking_gaps"]
     assert "field validation 已完成" in report["blocked_claims"]
     json.dumps(report, allow_nan=False)
+
+
+def test_r6_product_readiness_index_fails_closed_when_product_guard_is_not_preserved():
+    evidence_report = _valid_evidence_report()
+    evidence_report["acceptance_gates"]["product_guard_preserved"] = False
+
+    assert _evidence_cards_ready(evidence_report) is False
+
+
+def test_r6_product_readiness_index_fails_closed_when_static_fallback_is_allowed():
+    evidence_report = _valid_evidence_report()
+    evidence_report["product_evidence_cards_summary"][
+        "static_narrative_fallback_allowed"
+    ] = True
+
+    assert _evidence_cards_ready(evidence_report) is False
+
+
+def test_r6_product_readiness_index_fails_closed_when_card_count_is_too_low():
+    evidence_report = _valid_evidence_report()
+    evidence_report["product_evidence_cards_summary"]["card_count"] = 7
+
+    assert _evidence_cards_ready(evidence_report) is False
+
+
+def test_r6_product_readiness_index_fails_closed_when_evidence_summary_is_missing():
+    evidence_report = _valid_evidence_report()
+    del evidence_report["product_evidence_cards_summary"]
+
+    assert _evidence_cards_ready(evidence_report) is False
+
+
+def test_r6_product_readiness_index_cli_writes_parseable_artifact(tmp_path):
+    output = tmp_path / "r6-product-readiness-index.json"
+    script = (
+        Path(__file__).resolve().parents[1]
+        / "experiments"
+        / "r6_product_readiness_index.py"
+    )
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(script),
+            "--artifact-id",
+            "r6-product-readiness-index-cli-test",
+            "--run-id",
+            "r6-product-readiness-index-cli-run",
+            "--output",
+            str(output),
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    stdout_payload = json.loads(result.stdout)
+    artifact = json.loads(output.read_text())
+    assert stdout_payload["artifact_id"] == "r6-product-readiness-index-cli-test"
+    assert stdout_payload["status"] == "product_first_readiness_partial"
+    assert stdout_payload["output"] == str(output)
+    assert artifact["status"] == "product_first_readiness_partial"
+    assert artifact["artifact_id"] == "r6-product-readiness-index-cli-test"
+
+
+def _valid_evidence_report():
+    return build_r6_evidence_report(
+        artifact_id="r6-product-readiness-index-test-evidence-report",
+        run_id="r6-product-first-run",
+    )
+
+
+def _evidence_cards_ready(evidence_report):
+    report = build_r6_product_readiness_index(
+        artifact_id="r6-product-readiness-index-test",
+        run_id="r6-product-first-run",
+        evidence_report=evidence_report,
+    )
+    return report["readiness_gates"]["evidence_cards_ready"]
