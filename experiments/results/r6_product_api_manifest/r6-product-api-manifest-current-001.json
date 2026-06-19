@@ -1,0 +1,198 @@
+{
+  "allowed_claims": [
+    "Product API manifest exposes the source-backed R6 artifact chain.",
+    "Customer-facing reports can consume guarded artifacts without static narrative fallback."
+  ],
+  "api_contract": {
+    "customer_visible_claims_require_source_artifact": true,
+    "field_outcome_validated": false,
+    "runtime_default_allowed": false,
+    "source_backed_only": true,
+    "static_narrative_fallback_allowed": false
+  },
+  "artifact_id": "r6-product-api-manifest-current-001",
+  "artifact_paths": {
+    "decision_report": "experiments/results/r6_product_decision_report/r6-product-decision-report-current-001.json",
+    "outcome_review": "experiments/results/r6_product_outcome_review/r6-product-outcome-review-current-001.json",
+    "readiness_index": "experiments/results/r6_product_readiness_index/r6-product-readiness-index-current-001.json",
+    "scenario_intake": "experiments/results/r6_product_scenario_intake/r6-product-scenario-intake-current-001.json",
+    "story_package": "experiments/results/r6_product_story_package/r6-product-story-package-current-001.json"
+  },
+  "artifact_refs": {
+    "decision_report": "r6-product-decision-report-current-001",
+    "outcome_review": "r6-product-outcome-review-current-001",
+    "readiness_index": "r6-product-readiness-index-current-001",
+    "scenario_intake": "r6-product-scenario-intake-current-001",
+    "story_package": "r6-product-story-package-current-001"
+  },
+  "blocked_claims": [
+    "field validation \u5df2\u5b8c\u6210",
+    "runtime default \u53ef\u4ee5\u5f00\u542f",
+    "R6 \u5df2\u8fbe\u5230 CCF-A \u4e3b\u8d21\u732e",
+    "\u4ea4\u4e92\u4eff\u771f\u7a33\u5b9a\u6bd4\u9759\u6001\u5148\u9a8c\u66f4\u51c6",
+    "\u9759\u6001\u5148\u9a8c\u7b49\u4e8e\u771f\u5b9e\u53cd\u5e94",
+    "\u6ca1\u6709 outcome \u4e5f\u80fd\u8bc1\u660e\u9884\u6d4b\u51c6\u786e",
+    "\u4ea4\u4e92\u504f\u79fb\u5df2\u7ecf\u88ab\u8bc1\u660e\u66f4\u51c6",
+    "\u4ea4\u4e92\u4eff\u771f\u53ef\u4ee5\u66ff\u4ee3\u771f\u5b9e outcome",
+    "mechanism cap \u5df2\u53ef\u4f5c\u4e3a runtime default",
+    "mechanism cap \u5df2\u901a\u8fc7 CCF-A \u7ea7 L4 \u8fc1\u79fb\u9a8c\u8bc1",
+    "outcome feedback \u5df2\u7ecf\u5f62\u6210\u901a\u7528\u81ea\u52a8\u6821\u51c6\u5668",
+    "same-case improvement \u53ef\u4ee5\u76f4\u63a5\u8fdb\u5165\u5168\u5c40\u53c2\u6570",
+    "\u5df2\u6709\u516c\u5f00 proxy \u8db3\u591f\u8bc1\u660e\u5168\u5c40\u53ef\u8fc1\u79fb",
+    "\u7ee7\u7eed\u589e\u52a0\u4efb\u610f proxy \u90fd\u80fd\u63d0\u5347\u8bba\u6587\u8bc1\u636e",
+    "\u4f20\u64ad\u8def\u5f84\u5df2\u7ecf field validated",
+    "\u5019\u9009\u66f4\u65b0\u5df2\u53ef\u81ea\u52a8\u4e0a\u7ebf",
+    "ccf_a_main_contribution_ready",
+    "field_outcome_validated",
+    "runtime_default_allowed",
+    "accuracy_superiority_established"
+  ],
+  "blocking_gaps": [
+    "needs_field_outcome_validation",
+    "needs_runtime_default_holdout_review",
+    "needs_customer_facing_ui_integration"
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "display_contract": {
+    "blocked_claims_required": true,
+    "claim_boundary_required": true,
+    "entry_endpoint": "/r6/product/decision-report",
+    "required_sections": [
+      "what_changed",
+      "who_is_at_risk",
+      "why_risk_moved",
+      "what_is_supported_by_evidence",
+      "what_is_blocked",
+      "what_to_measure_next"
+    ],
+    "source_registry_required": true
+  },
+  "endpoints": [
+    {
+      "endpoint_id": "product_readiness",
+      "method": "GET",
+      "path": "/r6/product/readiness",
+      "response_contract": "source_artifact_json",
+      "source_artifact_ids": [
+        "r6-product-readiness-index-current-001"
+      ]
+    },
+    {
+      "endpoint_id": "scenario_intake",
+      "method": "GET",
+      "path": "/r6/product/scenario-intake",
+      "response_contract": "source_artifact_json",
+      "source_artifact_ids": [
+        "r6-product-scenario-intake-current-001"
+      ]
+    },
+    {
+      "endpoint_id": "story_package",
+      "method": "GET",
+      "path": "/r6/product/story-package",
+      "response_contract": "source_artifact_json",
+      "source_artifact_ids": [
+        "r6-product-story-package-current-001"
+      ]
+    },
+    {
+      "endpoint_id": "decision_report",
+      "method": "GET",
+      "path": "/r6/product/decision-report",
+      "response_contract": "source_artifact_json",
+      "source_artifact_ids": [
+        "r6-product-decision-report-current-001"
+      ]
+    },
+    {
+      "endpoint_id": "outcome_review",
+      "method": "GET",
+      "path": "/r6/product/outcome-review",
+      "response_contract": "source_artifact_json",
+      "source_artifact_ids": [
+        "r6-product-outcome-review-current-001"
+      ]
+    },
+    {
+      "endpoint_id": "source_registry",
+      "method": "GET",
+      "path": "/r6/product/source-registry",
+      "response_contract": "r6_product_api_manifest.source_registry",
+      "source_artifact_ids": [
+        "r6-product-readiness-index-current-001",
+        "r6-product-scenario-intake-current-001",
+        "r6-product-story-package-current-001",
+        "r6-product-decision-report-current-001",
+        "r6-product-outcome-review-current-001"
+      ]
+    }
+  ],
+  "readiness_gates": {
+    "field_outcome_validated": false,
+    "product_api_manifest_ready": true,
+    "runtime_default_allowed": false
+  },
+  "run_id": "r6-product-api-current-001",
+  "schema_version": "r6-product-api-manifest-v1",
+  "source_refs": [
+    "r6-product-readiness-index-current-001",
+    "r6-product-scenario-intake-current-001",
+    "r6-product-story-package-current-001",
+    "r6-product-decision-report-current-001",
+    "r6-product-outcome-review-current-001",
+    "r6-product-evidence-cards-current-003",
+    "r6-evidence-report-current-014",
+    "r6-gap-closure-report-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r6-product-readiness-index-current-001",
+      "path": "experiments/results/r6_product_readiness_index/r6-product-readiness-index-current-001.json"
+    },
+    {
+      "artifact_id": "r6-product-scenario-intake-current-001",
+      "path": "experiments/results/r6_product_scenario_intake/r6-product-scenario-intake-current-001.json"
+    },
+    {
+      "artifact_id": "r6-product-story-package-current-001",
+      "path": "experiments/results/r6_product_story_package/r6-product-story-package-current-001.json"
+    },
+    {
+      "artifact_id": "r6-product-decision-report-current-001",
+      "path": "experiments/results/r6_product_decision_report/r6-product-decision-report-current-001.json"
+    },
+    {
+      "artifact_id": "r6-product-outcome-review-current-001",
+      "path": "experiments/results/r6_product_outcome_review/r6-product-outcome-review-current-001.json"
+    },
+    {
+      "artifact_id": "r6-product-report-current-003",
+      "path": "experiments/results/r6_product_report/r6-product-report-current-003.json"
+    },
+    {
+      "artifact_id": "r6-cross-case-transfer-protocol-current-002",
+      "path": "experiments/results/r6_cross_case_transfer_protocol/r6-cross-case-transfer-protocol-current-002.json"
+    },
+    {
+      "artifact_id": "r6-in-condition-holdout-ledger-current-001",
+      "path": "experiments/results/r6_in_condition_holdout_ledger/r6-in-condition-holdout-ledger-current-001.json"
+    },
+    {
+      "artifact_id": "r6-mechanism-research-readiness-report-current-001",
+      "path": "experiments/results/r6_mechanism_research_readiness_report/r6-mechanism-research-readiness-report-current-001.json"
+    },
+    {
+      "artifact_id": "r6-gap-closure-report-current-001",
+      "path": "experiments/results/r6_gap_closure_report/r6-gap-closure-report-current-001.json"
+    },
+    {
+      "artifact_id": "r6-evidence-report-current-014",
+      "path": "experiments/results/r6_evidence_report/r6-evidence-report-current-014.json"
+    },
+    {
+      "artifact_id": "r6-product-evidence-cards-current-003",
+      "path": "experiments/results/r6_product_evidence_cards/r6-product-evidence-cards-current-003.json"
+    }
+  ],
+  "status": "product_api_manifest_ready_guarded"
+}

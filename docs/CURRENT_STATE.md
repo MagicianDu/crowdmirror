@@ -201,6 +201,7 @@
 45. Product-first 第一阶段五个合同/证据 artifacts 已落盘：readiness index、scenario intake、story package、decision report、outcome review；其中 readiness 仍是 partial，scenario/story/decision 是 guarded ready，outcome review 是 update blocked。
 46. 当前可对 Product 侧声明的是“可审计决策链路已搭起”，不是“方法已 field validated”或“runtime default 可开启”；真实 outcome 回流只能生成 bounded candidate update，仍需 holdout/复核后才能默认启用。
 47. Product contract readiness 已更新为 scenario/story/decision/outcome 合同就绪，但 overall readiness 仍是 `product_first_readiness_partial`；story package 和 decision report 的 source refs 已从合成 ID 修正为 canonical source registry，UI/API 可解析到已落盘 source artifact，仍不能声明 field validated 或 runtime default。
+48. Product API manifest 已实现并落盘为 `r6-product-api-manifest-current-001`：它聚合 readiness、scenario intake、story package、decision report、outcome review 五个 current artifacts，暴露 endpoint contract、source registry 和 source-backed display contract；readiness 中 `needs_product_ui_or_api_contract` 已关闭，但仍保留 `needs_customer_facing_ui_integration`、`needs_field_outcome_validation` 和 `needs_runtime_default_holdout_review`。
 
 ## 可复用资产
 

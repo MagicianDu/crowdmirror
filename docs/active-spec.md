@@ -82,6 +82,7 @@ R6 必须同时满足：
 6. `risk-discovery threshold sweep / false-alarm discriminator diagnosis`
 7. `Interaction Signal Validity Score / holdout validation`
 8. `mechanism-driven interaction propagation / behavioral update operator`
+9. `Product API manifest / source registry contract`
 
 不再把“继续增加 public proxy 数量”作为默认目标；只有当新增数据能触发 acceptance gate，才进入数据接入。
 
