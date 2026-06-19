@@ -1,0 +1,79 @@
+{
+  "allowed_claims": [
+    "Research evidence can support guarded trend and interval reporting as partial current-proxy evidence.",
+    "Risk distribution, abnormal segments, mechanism explanation, and outcome feedback remain guarded until false-alarm and holdout gaps close."
+  ],
+  "artifact_id": "r6-research-product-value-support-current-001",
+  "blocked_claims": [
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf",
+    "\u7cfb\u7edf\u53ef\u4ee5\u7cbe\u786e\u9884\u6d4b\u5355\u70b9\u7ed3\u679c",
+    "field validation \u5df2\u5b8c\u6210",
+    "runtime default \u53ef\u4ee5\u5f00\u542f",
+    "Research \u5df2\u5b8c\u6574\u652f\u6491 Product \u5168\u90e8\u6838\u5fc3\u4ef7\u503c"
+  ],
+  "blocking_gaps": [
+    "needs_trend_interval_holdout_support",
+    "needs_false_alarm_control",
+    "needs_field_outcome_validation",
+    "needs_runtime_default_holdout_review"
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "overall_product_core_value_supported": false,
+  "run_id": "r6-product-value-current-001",
+  "schema_version": "r6-research-product-value-support-v1",
+  "source_refs": [
+    "r6-trend-interval-risk-metrics-current-001",
+    "r6-mechanism-research-readiness-report-current-001"
+  ],
+  "status": "product_value_support_partial",
+  "support_matrix": [
+    {
+      "product_value": "trend_direction",
+      "source_artifact_ids": [
+        "r6-trend-interval-risk-metrics-current-001"
+      ],
+      "source_metric": "trend_direction_accuracy",
+      "support_status": "partial_current_proxy"
+    },
+    {
+      "product_value": "risk_interval",
+      "source_artifact_ids": [
+        "r6-trend-interval-risk-metrics-current-001"
+      ],
+      "source_metric": "interval_coverage",
+      "support_status": "partial_current_proxy"
+    },
+    {
+      "product_value": "risk_distribution",
+      "source_artifact_ids": [
+        "r6-trend-interval-risk-metrics-current-001"
+      ],
+      "source_metric": "risk_ranking_quality",
+      "support_status": "partial_high_false_alarm"
+    },
+    {
+      "product_value": "abnormal_segments",
+      "source_artifact_ids": [
+        "r6-trend-interval-risk-metrics-current-001"
+      ],
+      "source_metric": "abnormal_segment_recall",
+      "support_status": "diagnostic_only"
+    },
+    {
+      "product_value": "mechanism_explanation",
+      "source_artifact_ids": [
+        "r6-mechanism-research-readiness-report-current-001"
+      ],
+      "source_metric": "mechanism_research_status",
+      "support_status": "diagnostic_only"
+    },
+    {
+      "product_value": "outcome_feedback_learning",
+      "source_artifact_ids": [
+        "r6-mechanism-research-readiness-report-current-001"
+      ],
+      "source_metric": "runtime_default_allowed",
+      "support_status": "blocked_until_holdout_or_field_outcome"
+    }
+  ]
+}

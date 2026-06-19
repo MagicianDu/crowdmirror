@@ -35,6 +35,10 @@ R6_PRODUCT_API_MANIFEST_DEFAULT_PATHS = {
         "experiments/results/r6_product_decision_report/"
         "r6-product-decision-report-current-001.json"
     ),
+    "customer_value_report": (
+        "experiments/results/r6_product_customer_value_report/"
+        "r6-product-customer-value-report-current-001.json"
+    ),
     "outcome_review": (
         "experiments/results/r6_product_outcome_review/"
         "r6-product-outcome-review-current-001.json"
@@ -53,6 +57,10 @@ R6_PRODUCT_API_REQUIRED_ARTIFACTS = {
     "decision_report": (
         "r6-product-decision-report-v1",
         "decision_report_ready_guarded",
+    ),
+    "customer_value_report": (
+        "r6-product-customer-value-report-v1",
+        "customer_value_report_ready_guarded",
     ),
     "outcome_review": (
         "r6-product-outcome-review-v1",
@@ -76,6 +84,7 @@ def build_r6_product_api_manifest(
     }
     _validate_story_package(artifacts["story_package"])
     _validate_decision_report(artifacts["decision_report"])
+    _validate_customer_value_report(artifacts["customer_value_report"])
     _validate_runtime_boundaries(
         readiness_index=artifacts["readiness_index"],
         outcome_review=artifacts["outcome_review"],
@@ -90,6 +99,7 @@ def build_r6_product_api_manifest(
         artifact_refs=artifact_refs,
         story_package=artifacts["story_package"],
         decision_report=artifacts["decision_report"],
+        customer_value_report=artifacts["customer_value_report"],
     )
     _assert_registry_paths_match_artifacts(source_registry)
     endpoints = _endpoints(artifact_refs)
@@ -122,14 +132,18 @@ def build_r6_product_api_manifest(
                 *artifact_refs.values(),
                 *artifacts["story_package"].get("source_refs", []),
                 *artifacts["decision_report"].get("source_refs", []),
+                *artifacts["customer_value_report"].get("source_refs", []),
             ]
         ),
         "display_contract": {
-            "entry_endpoint": "/r6/product/decision-report",
-            "required_sections": artifacts["decision_report"]["customer_sections"],
+            "entry_endpoint": "/r6/product/customer-value-report",
+            "required_sections": artifacts["customer_value_report"][
+                "customer_sections"
+            ],
             "claim_boundary_required": True,
             "blocked_claims_required": True,
             "source_registry_required": True,
+            "precise_point_prediction_allowed": False,
         },
         "blocking_gaps": [
             "needs_field_outcome_validation",
@@ -145,6 +159,7 @@ def build_r6_product_api_manifest(
                 *artifacts["readiness_index"].get("blocked_claims", []),
                 *artifacts["story_package"].get("blocked_claims", []),
                 *artifacts["decision_report"].get("blocked_claims", []),
+                *artifacts["customer_value_report"].get("blocked_claims", []),
                 "field validation 已完成",
                 "runtime default 可以开启",
             ]
@@ -247,6 +262,44 @@ def _validate_decision_report(decision_report: dict[str, Any]) -> None:
     )
 
 
+def _validate_customer_value_report(customer_value_report: dict[str, Any]) -> None:
+    contract = _require_object(
+        customer_value_report.get("report_contract"),
+        field="customer_value_report.report_contract",
+    )
+    if contract.get("source_backed_only") is not True:
+        raise ValueError(
+            "customer_value_report.report_contract.source_backed_only must be True"
+        )
+    if contract.get("static_narrative_fallback_allowed") is not False:
+        raise ValueError(
+            "customer_value_report.report_contract.static_narrative_fallback_allowed "
+            "must be False"
+        )
+    if contract.get("precise_point_prediction_allowed") is not False:
+        raise ValueError(
+            "customer_value_report.report_contract.precise_point_prediction_allowed "
+            "must be False"
+        )
+    _assert_artifact_sources_resolvable(
+        artifact=customer_value_report,
+        artifact_label="customer_value_report",
+        direct_refs={customer_value_report["artifact_id"]},
+        source_fields=[
+            ("source_refs", customer_value_report.get("source_refs")),
+            *[
+                (
+                    f"section_contracts[{index}].source_artifact_ids",
+                    section.get("source_artifact_ids"),
+                )
+                for index, section in enumerate(
+                    customer_value_report["section_contracts"]
+                )
+            ],
+        ],
+    )
+
+
 def _validate_runtime_boundaries(
     *,
     readiness_index: dict[str, Any],
@@ -305,6 +358,7 @@ def _source_registry(
     artifact_refs: dict[str, str],
     story_package: dict[str, Any],
     decision_report: dict[str, Any],
+    customer_value_report: dict[str, Any],
 ) -> list[dict[str, str]]:
     entries = [
         {
@@ -315,6 +369,7 @@ def _source_registry(
     ]
     entries.extend(story_package["source_registry"])
     entries.extend(decision_report["source_registry"])
+    entries.extend(customer_value_report["source_registry"])
     return _dedupe_registry(entries)
 
 
@@ -324,6 +379,11 @@ def _endpoints(artifact_refs: dict[str, str]) -> list[dict[str, Any]]:
         _endpoint("scenario_intake", "/r6/product/scenario-intake", artifact_refs["scenario_intake"]),
         _endpoint("story_package", "/r6/product/story-package", artifact_refs["story_package"]),
         _endpoint("decision_report", "/r6/product/decision-report", artifact_refs["decision_report"]),
+        _endpoint(
+            "customer_value_report",
+            "/r6/product/customer-value-report",
+            artifact_refs["customer_value_report"],
+        ),
         _endpoint("outcome_review", "/r6/product/outcome-review", artifact_refs["outcome_review"]),
         {
             "endpoint_id": "source_registry",

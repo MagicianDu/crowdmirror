@@ -8,7 +8,8 @@
     "field validation \u5df2\u5b8c\u6210",
     "runtime default \u53ef\u4ee5\u5f00\u542f",
     "R6 \u5df2\u8fbe\u5230 CCF-A \u4e3b\u8d21\u732e",
-    "\u4ea4\u4e92\u4eff\u771f\u7a33\u5b9a\u6bd4\u9759\u6001\u5148\u9a8c\u66f4\u51c6"
+    "\u4ea4\u4e92\u4eff\u771f\u7a33\u5b9a\u6bd4\u9759\u6001\u5148\u9a8c\u66f4\u51c6",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
   ],
   "blocking_gaps": [
     "needs_customer_facing_ui_integration",
@@ -18,6 +19,7 @@
   "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
   "contract_readiness": {
     "contract_ready_is_not_field_validation": true,
+    "customer_value_report_contract_ready": true,
     "decision_report_contract_ready": true,
     "outcome_review_contract_ready": true,
     "product_api_manifest_contract_ready": true,
@@ -30,17 +32,20 @@
     "research_role": "theory_and_evidence_boundary_support"
   },
   "readiness_gates": {
+    "customer_value_report_ready": true,
     "decision_report_ready": true,
     "evidence_cards_ready": true,
     "field_outcome_validated": false,
     "outcome_review_ready": true,
     "product_api_manifest_ready": true,
+    "research_product_value_support_ready": true,
     "runtime_default_allowed": false,
     "scenario_intake_ready": true,
     "static_narrative_fallback_allowed": false,
-    "story_package_ready": true
+    "story_package_ready": true,
+    "trend_interval_risk_metrics_ready": true
   },
-  "run_id": "r6-product-first-current-001",
+  "run_id": "r6-product-value-current-001",
   "schema_version": "r6-product-readiness-index-v1",
   "source_refs": [
     "r6-product-readiness-index-current-001-evidence-report"

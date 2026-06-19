@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-截至 2026-06-16，项目已从 R4/R5 的静态 heldout accuracy race 转向 R6：
+截至 2026-06-19，项目已从 R4/R5 的静态 heldout accuracy race 转向 R6：
 
 > 结果反馈约束的先验锚定交互仿真框架。
 
@@ -202,6 +202,8 @@
 46. 当前可对 Product 侧声明的是“可审计决策链路已搭起”，不是“方法已 field validated”或“runtime default 可开启”；真实 outcome 回流只能生成 bounded candidate update，仍需 holdout/复核后才能默认启用。
 47. Product contract readiness 已更新为 scenario/story/decision/outcome 合同就绪，但 overall readiness 仍是 `product_first_readiness_partial`；story package 和 decision report 的 source refs 已从合成 ID 修正为 canonical source registry，UI/API 可解析到已落盘 source artifact，仍不能声明 field validated 或 runtime default。
 48. Product API manifest 已实现并落盘为 `r6-product-api-manifest-current-001`：它聚合 readiness、scenario intake、story package、decision report、outcome review 五个 current artifacts，暴露 endpoint contract、source registry 和 source-backed display contract；readiness 中 `needs_product_ui_or_api_contract` 已关闭，但仍保留 `needs_customer_facing_ui_integration`、`needs_field_outcome_validation` 和 `needs_runtime_default_holdout_review`。
+49. 产品/研究目标已进一步修正：人群模拟不再定位为“精准预测系统”，Product 对外定位改为“人群反应趋势与风险区间模拟器”；Research 不再以“点预测 beat 静态先验”为唯一目标，而是验证交互仿真是否在强静态先验基础上改善趋势判断、区间校准、风险排序、异常群体识别和决策价值。对应 active addendum 为 `docs/superpowers/specs/2026-06-19-r6-trend-interval-risk-positioning.md`。
+50. Research/Product 双线补强第一轮已完成并落盘：`r6-trend-interval-risk-metrics-current-001` 显示 `trend_direction_accuracy=0.667`、`interval_coverage=0.667`、`risk_ranking_quality=0.333`、`false_alarm_rate=0.667`，因此 Research 对 Product 核心价值的支撑状态是 `product_value_support_partial`，不是 fully supported。Product 已新增 `r6-product-customer-value-report-current-001` 和 customer value report API endpoint，可展示趋势、区间、风险分布、异常群体和机制解释，但必须保留 guarded/blocked claims，不能声明精准预测、field validation 或 runtime default。
 
 ## 可复用资产
 
@@ -218,6 +220,8 @@
 - TextGrad/prompt/persona patch 作为核心优化路径。
 - R4/R5 当前 interaction 或 mechanism-state 作为准确性主贡献。
 - 单一垂直行业 demo 作为方法本体。
+- “精准预测系统”或“单点结果精确预测”作为产品承诺。
+- “点预测 beat 静态先验”作为 Research 唯一验收目标。
 
 ## 当前工作区风险
 
@@ -231,13 +235,14 @@
 2. `experiments/results` 被 `.gitignore` 的 `results/` 规则忽略，新 R6 证据 JSON 需要显式 `git add -f`。
 3. 当前 3 个 case 仍是 fixture-level evidence，不是真实跨域验证。
 4. 旧 CCF-A readiness 文档只能作为边界和历史评估，不再作为默认目标；后续优先做 Product 可用性、证据链、报告和 outcome review。
+5. 旧文档中如果出现“精准预测”“accuracy superiority”或“点预测 beat 静态先验”叙事，必须按当前 active spec 降权为 blocked claim 或 runtime update guard。
 
 R6 开发时必须只 stage 本轮明确修改的文件。
 
 ## 下一步
 
-1. Product 下一步按 `docs/superpowers/plans/2026-06-16-r6-product-first-solid-next-stage.md` 推进：先做 product readiness index、scenario intake、story package、decision report 和 outcome review。
-2. Research 下一步按 `2026-06-16-r6-mechanism-driven-interaction-learning-design.md` 保留方法支撑，但优先服务 Product 可信度和客户说服力。
+1. Product 下一步在既有 API manifest 和 `r6-product-customer-value-report-current-001` 基础上推进真实客户可见 UI 集成：展示静态先验、交互仿真趋势方向、可信数值区间、风险分布、异常群体、机制解释、证据卡、blocked claims 和 outcome review 入口。
+2. Research 下一步按 `2026-06-19-r6-trend-interval-risk-positioning.md` 和 `2026-06-16-r6-mechanism-driven-interaction-learning-design.md` 继续补强方法支撑；当前首轮指标显示趋势/区间是 partial current-proxy evidence，风险排序和 false-alarm control 仍是主要 gap。
 3. 数据侧不再泛泛增加 proxy；新增数据必须服务于 Product decision report、outcome review、operator holdout 或 field outcome 复核。
 4. 方法侧停止继续优化当前 scoring candidate；它保留为 negative baseline 和 diagnostic gate。
 5. Product 侧保留并强化 `interaction_signal_validity_holdout_summary`、false-alarm diagnosis、blocked update reason 和 claim boundary，确保新 Research 方法不会污染 runtime default。
@@ -255,5 +260,6 @@ R6 开发时必须只 stage 本轮明确修改的文件。
 第一阶段不宣称：
 
 - 交互仿真已经比静态先验更准；
+- 系统可以精确预测单点结果；
 - 方法已经具备跨行业真实预测能力；
 - LLM agent 交互等价于真实人群行为。

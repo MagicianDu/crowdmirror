@@ -1,0 +1,192 @@
+{
+  "acceptance_gates": {
+    "abnormal_segment_metric_present": true,
+    "false_alarm_control_passed": false,
+    "interval_coverage_metric_present": true,
+    "interval_coverage_passed": false,
+    "research_supports_product_core_value": false,
+    "risk_ranking_metric_present": true,
+    "risk_ranking_passed": false,
+    "trend_direction_metric_present": true,
+    "trend_direction_passed": false
+  },
+  "allowed_claims": [
+    "Research can report trend direction, risk interval, risk ranking, abnormal segments, and false-alarm status as auditable metrics."
+  ],
+  "artifact_id": "r6-trend-interval-risk-metrics-current-001",
+  "blocked_claims": [
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf",
+    "\u7cfb\u7edf\u53ef\u4ee5\u7cbe\u786e\u9884\u6d4b\u5355\u70b9\u7ed3\u679c",
+    "field validation \u5df2\u5b8c\u6210",
+    "runtime default \u53ef\u4ee5\u5f00\u542f",
+    "accuracy superiority established"
+  ],
+  "blocking_gaps": [
+    "needs_lower_false_alarm_rate",
+    "needs_independent_or_field_outcome_support"
+  ],
+  "case_results": [
+    {
+      "abnormal_segment_detected": true,
+      "interaction_false_alarm": false,
+      "interaction_prediction": 0.36,
+      "observed_reject_proxy": 0.47,
+      "outcome_direction": "risk_up",
+      "risk_interval": {
+        "contains_observed": true,
+        "lower": 0.24,
+        "upper": 0.48,
+        "width": 0.24
+      },
+      "risk_ranking_hit": true,
+      "source_ablation_artifact_id": "r6-trend-interval-risk-metrics-current-001-htops_cost_pressure-ablation",
+      "source_key": "htops_cost_pressure",
+      "static_prior_prediction": 0.29,
+      "target_case_id": "generic-public-service-policy-change",
+      "top_abnormal_segments": [
+        {
+          "delta_reject": 0.12,
+          "mechanisms": [
+            "access_anxiety",
+            "community_amplification",
+            "equity_concern"
+          ],
+          "segment_id": "service_dependent_low_trust"
+        },
+        {
+          "delta_reject": 0.06,
+          "mechanisms": [
+            "equity_concern_discussion"
+          ],
+          "segment_id": "community_watchers"
+        },
+        {
+          "delta_reject": 0.02,
+          "mechanisms": [
+            "official_trust_buffer"
+          ],
+          "segment_id": "low_dependency_high_trust"
+        }
+      ],
+      "trend_direction": "risk_up",
+      "trend_direction_matches_outcome": true
+    },
+    {
+      "abnormal_segment_detected": true,
+      "interaction_false_alarm": true,
+      "interaction_prediction": 0.38,
+      "observed_reject_proxy": 0.33,
+      "outcome_direction": "risk_up",
+      "risk_interval": {
+        "contains_observed": true,
+        "lower": 0.26,
+        "upper": 0.5,
+        "width": 0.24
+      },
+      "risk_ranking_hit": false,
+      "source_ablation_artifact_id": "r6-trend-interval-risk-metrics-current-001-anes_health_heldout-ablation",
+      "source_key": "anes_health_heldout",
+      "static_prior_prediction": 0.31,
+      "target_case_id": "generic-rights-rule-change",
+      "top_abnormal_segments": [
+        {
+          "delta_reject": 0.12,
+          "mechanisms": [
+            "rights_loss_salience",
+            "peer_amplification",
+            "trust_shock"
+          ],
+          "segment_id": "rights_dependent_low_trust"
+        },
+        {
+          "delta_reject": 0.06,
+          "mechanisms": [
+            "procedural_fairness_discussion"
+          ],
+          "segment_id": "rule_watchers"
+        },
+        {
+          "delta_reject": 0.02,
+          "mechanisms": [
+            "official_trust_buffer"
+          ],
+          "segment_id": "low_usage_high_trust"
+        }
+      ],
+      "trend_direction": "risk_up",
+      "trend_direction_matches_outcome": true
+    },
+    {
+      "abnormal_segment_detected": true,
+      "interaction_false_alarm": true,
+      "interaction_prediction": 0.38,
+      "observed_reject_proxy": 0.25,
+      "outcome_direction": "risk_down",
+      "risk_interval": {
+        "contains_observed": false,
+        "lower": 0.26,
+        "upper": 0.5,
+        "width": 0.24
+      },
+      "risk_ranking_hit": false,
+      "source_ablation_artifact_id": "r6-trend-interval-risk-metrics-current-001-anes_climate_heldout-ablation",
+      "source_key": "anes_climate_heldout",
+      "static_prior_prediction": 0.31,
+      "target_case_id": "generic-rights-rule-change",
+      "top_abnormal_segments": [
+        {
+          "delta_reject": 0.12,
+          "mechanisms": [
+            "rights_loss_salience",
+            "peer_amplification",
+            "trust_shock"
+          ],
+          "segment_id": "rights_dependent_low_trust"
+        },
+        {
+          "delta_reject": 0.06,
+          "mechanisms": [
+            "procedural_fairness_discussion"
+          ],
+          "segment_id": "rule_watchers"
+        },
+        {
+          "delta_reject": 0.02,
+          "mechanisms": [
+            "official_trust_buffer"
+          ],
+          "segment_id": "low_usage_high_trust"
+        }
+      ],
+      "trend_direction": "risk_up",
+      "trend_direction_matches_outcome": false
+    }
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "metric_definition": {
+    "abnormal_segment_recall": "Share of cases with at least one positive-delta segment surfaced as an abnormal segment.",
+    "false_alarm_rate": "Share of interaction-flagged cases that are not observed/proxy high risk.",
+    "interval_coverage": "Share of cases where observed/proxy reject rate falls inside the interaction risk interval.",
+    "risk_ranking_quality": "Share of interaction-flagged high-risk cases that are observed/proxy high risk.",
+    "trend_direction_accuracy": "Share of cases where interaction direction matches observed/proxy direction relative to static prior."
+  },
+  "research_supports_product_core_value": false,
+  "run_id": "r6-product-value-current-001",
+  "schema_version": "r6-trend-interval-risk-metrics-v1",
+  "source_refs": [
+    "r6-trend-interval-risk-metrics-current-001-htops_cost_pressure-ablation",
+    "r6-trend-interval-risk-metrics-current-001-anes_health_heldout-ablation",
+    "r6-trend-interval-risk-metrics-current-001-anes_climate_heldout-ablation"
+  ],
+  "status": "trend_interval_risk_partial_high_false_alarm",
+  "summary": {
+    "abnormal_segment_recall": 1.0,
+    "case_count": 3,
+    "decision_regret_reduction": 1,
+    "false_alarm_rate": 0.667,
+    "interval_coverage": 0.667,
+    "mean_interval_width": 0.24,
+    "risk_ranking_quality": 0.333,
+    "trend_direction_accuracy": 0.667
+  }
+}

@@ -24,6 +24,10 @@ from experiments.r6_product_story_package import (
 R6_PRODUCT_DECISION_REPORT_SCHEMA_VERSION = "r6-product-decision-report-v1"
 R6_PRODUCT_DECISION_REPORT_CUSTOMER_SECTIONS = [
     "what_changed",
+    "trend_direction",
+    "risk_interval",
+    "risk_distribution",
+    "abnormal_segments",
     "who_is_at_risk",
     "why_risk_moved",
     "what_is_supported_by_evidence",
@@ -69,9 +73,14 @@ def build_r6_product_decision_report(
             "source_backed_only": True,
             "static_narrative_fallback_allowed": False,
             "customer_visible_claims_require_source_artifact": True,
+            "precise_point_prediction_allowed": False,
         },
         "display_sources": {
             "scenario": "story_package.section_contracts[scenario]",
+            "trend_direction": "story_package.section_contracts[trend_direction]",
+            "risk_interval": "story_package.section_contracts[risk_interval]",
+            "risk_distribution": "story_package.section_contracts[risk_distribution]",
+            "abnormal_segments": "story_package.section_contracts[abnormal_segments]",
             "evidence_cards": "story_package.evidence_card_ids",
             "blocked_claims": "story_package.blocked_claims",
             "next_measurement_plan": "story_package.next_measurement_plan",

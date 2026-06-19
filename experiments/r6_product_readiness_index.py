@@ -52,6 +52,9 @@ def build_r6_product_readiness_index(
             "decision_report_ready": True,
             "outcome_review_ready": True,
             "product_api_manifest_ready": True,
+            "trend_interval_risk_metrics_ready": True,
+            "research_product_value_support_ready": True,
+            "customer_value_report_ready": True,
             "static_narrative_fallback_allowed": False,
             "field_outcome_validated": False,
             "runtime_default_allowed": False,
@@ -60,6 +63,7 @@ def build_r6_product_readiness_index(
             "scenario_intake_contract_ready": True,
             "story_package_contract_ready": True,
             "decision_report_contract_ready": True,
+            "customer_value_report_contract_ready": True,
             "outcome_review_contract_ready": True,
             "product_api_manifest_contract_ready": True,
             "contract_ready_is_not_field_validation": True,
@@ -78,6 +82,7 @@ def build_r6_product_readiness_index(
             "runtime default 可以开启",
             "R6 已达到 CCF-A 主贡献",
             "交互仿真稳定比静态先验更准",
+            "精准预测系统",
         ],
         "source_refs": (
             [evidence_artifact_id]

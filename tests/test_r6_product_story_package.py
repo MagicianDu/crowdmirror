@@ -32,6 +32,10 @@ def test_r6_product_story_package_is_artifact_backed_and_no_static_fallback():
         "scenario",
         "static_prior_baseline",
         "interaction_risk_shift",
+        "trend_direction",
+        "risk_interval",
+        "risk_distribution",
+        "abnormal_segments",
         "evidence_cards",
         "gap_closure",
         "blocked_claims",
@@ -40,6 +44,7 @@ def test_r6_product_story_package_is_artifact_backed_and_no_static_fallback():
     assert package["ui_contract"]["static_narrative_fallback_allowed"] is False
     assert package["ui_contract"]["all_customer_visible_claims_require_source_artifact"] is True
     assert "r6-gap-closure-status" in package["evidence_card_ids"]
+    assert "r6-product-customer-value-report-current-001" in package["source_refs"]
     assert package["source_refs"]
     for entry in R6_PRODUCT_STORY_CANONICAL_SOURCE_REGISTRY:
         assert entry in package["source_registry"]

@@ -1,0 +1,292 @@
+{
+  "allowed_claims": [
+    "Product can display trend, interval, distribution, abnormal segments, and mechanism explanation from source-backed artifacts.",
+    "Current output is guarded and does not claim field validation or precise point prediction."
+  ],
+  "artifact_id": "r6-product-customer-value-report-current-001",
+  "blocked_claims": [
+    "\u9759\u6001\u5148\u9a8c\u7b49\u4e8e\u771f\u5b9e\u53cd\u5e94",
+    "\u6ca1\u6709 outcome \u4e5f\u80fd\u8bc1\u660e\u9884\u6d4b\u51c6\u786e",
+    "\u4ea4\u4e92\u504f\u79fb\u5df2\u7ecf\u88ab\u8bc1\u660e\u66f4\u51c6",
+    "\u4ea4\u4e92\u4eff\u771f\u53ef\u4ee5\u66ff\u4ee3\u771f\u5b9e outcome",
+    "mechanism cap \u5df2\u53ef\u4f5c\u4e3a runtime default",
+    "mechanism cap \u5df2\u901a\u8fc7 CCF-A \u7ea7 L4 \u8fc1\u79fb\u9a8c\u8bc1",
+    "outcome feedback \u5df2\u7ecf\u5f62\u6210\u901a\u7528\u81ea\u52a8\u6821\u51c6\u5668",
+    "same-case improvement \u53ef\u4ee5\u76f4\u63a5\u8fdb\u5165\u5168\u5c40\u53c2\u6570",
+    "\u5df2\u6709\u516c\u5f00 proxy \u8db3\u591f\u8bc1\u660e\u5168\u5c40\u53ef\u8fc1\u79fb",
+    "\u7ee7\u7eed\u589e\u52a0\u4efb\u610f proxy \u90fd\u80fd\u63d0\u5347\u8bba\u6587\u8bc1\u636e",
+    "\u4f20\u64ad\u8def\u5f84\u5df2\u7ecf field validated",
+    "\u5019\u9009\u66f4\u65b0\u5df2\u53ef\u81ea\u52a8\u4e0a\u7ebf",
+    "field validation \u5df2\u5b8c\u6210",
+    "runtime default \u53ef\u4ee5\u5f00\u542f",
+    "R6 \u5df2\u8fbe\u5230 CCF-A \u4e3b\u8d21\u732e",
+    "ccf_a_main_contribution_ready",
+    "field_outcome_validated",
+    "runtime_default_allowed",
+    "accuracy_superiority_established",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf",
+    "\u7cfb\u7edf\u53ef\u4ee5\u7cbe\u786e\u9884\u6d4b\u5355\u70b9\u7ed3\u679c",
+    "Research \u5df2\u5b8c\u6574\u652f\u6491 Product \u5168\u90e8\u6838\u5fc3\u4ef7\u503c"
+  ],
+  "blocking_gaps": [
+    "needs_customer_facing_ui_integration",
+    "needs_field_outcome_validation",
+    "needs_runtime_default_holdout_review"
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "customer_sections": [
+    "static_prior_baseline",
+    "trend_direction",
+    "risk_interval",
+    "risk_distribution",
+    "abnormal_segments",
+    "mechanism_explanation",
+    "evidence_and_blocked_claims",
+    "outcome_review_plan"
+  ],
+  "display_payload": {
+    "abnormal_segments": [
+      {
+        "segments": [
+          {
+            "delta_reject": 0.12,
+            "mechanisms": [
+              "access_anxiety",
+              "community_amplification",
+              "equity_concern"
+            ],
+            "segment_id": "service_dependent_low_trust"
+          },
+          {
+            "delta_reject": 0.06,
+            "mechanisms": [
+              "equity_concern_discussion"
+            ],
+            "segment_id": "community_watchers"
+          },
+          {
+            "delta_reject": 0.02,
+            "mechanisms": [
+              "official_trust_buffer"
+            ],
+            "segment_id": "low_dependency_high_trust"
+          }
+        ],
+        "source_key": "htops_cost_pressure",
+        "support_status": "diagnostic_only"
+      },
+      {
+        "segments": [
+          {
+            "delta_reject": 0.12,
+            "mechanisms": [
+              "rights_loss_salience",
+              "peer_amplification",
+              "trust_shock"
+            ],
+            "segment_id": "rights_dependent_low_trust"
+          },
+          {
+            "delta_reject": 0.06,
+            "mechanisms": [
+              "procedural_fairness_discussion"
+            ],
+            "segment_id": "rule_watchers"
+          },
+          {
+            "delta_reject": 0.02,
+            "mechanisms": [
+              "official_trust_buffer"
+            ],
+            "segment_id": "low_usage_high_trust"
+          }
+        ],
+        "source_key": "anes_health_heldout",
+        "support_status": "diagnostic_only"
+      },
+      {
+        "segments": [
+          {
+            "delta_reject": 0.12,
+            "mechanisms": [
+              "rights_loss_salience",
+              "peer_amplification",
+              "trust_shock"
+            ],
+            "segment_id": "rights_dependent_low_trust"
+          },
+          {
+            "delta_reject": 0.06,
+            "mechanisms": [
+              "procedural_fairness_discussion"
+            ],
+            "segment_id": "rule_watchers"
+          },
+          {
+            "delta_reject": 0.02,
+            "mechanisms": [
+              "official_trust_buffer"
+            ],
+            "segment_id": "low_usage_high_trust"
+          }
+        ],
+        "source_key": "anes_climate_heldout",
+        "support_status": "diagnostic_only"
+      }
+    ],
+    "mechanism_explanation": {
+      "claim_status": "diagnostic_only",
+      "support_status": "diagnostic_only"
+    },
+    "risk_distribution": {
+      "false_alarm_rate": 0.667,
+      "risk_ranking_quality": 0.333,
+      "support_status": "partial_high_false_alarm"
+    },
+    "risk_interval": {
+      "cases": [
+        {
+          "observed_reject_proxy": 0.47,
+          "risk_interval": {
+            "contains_observed": true,
+            "lower": 0.24,
+            "upper": 0.48,
+            "width": 0.24
+          },
+          "source_key": "htops_cost_pressure"
+        },
+        {
+          "observed_reject_proxy": 0.33,
+          "risk_interval": {
+            "contains_observed": true,
+            "lower": 0.26,
+            "upper": 0.5,
+            "width": 0.24
+          },
+          "source_key": "anes_health_heldout"
+        },
+        {
+          "observed_reject_proxy": 0.25,
+          "risk_interval": {
+            "contains_observed": false,
+            "lower": 0.26,
+            "upper": 0.5,
+            "width": 0.24
+          },
+          "source_key": "anes_climate_heldout"
+        }
+      ],
+      "summary_metric": 0.667,
+      "support_status": "partial_current_proxy"
+    },
+    "trend_direction": {
+      "cases": [
+        {
+          "matches_outcome": true,
+          "outcome_direction": "risk_up",
+          "source_key": "htops_cost_pressure",
+          "trend_direction": "risk_up"
+        },
+        {
+          "matches_outcome": true,
+          "outcome_direction": "risk_up",
+          "source_key": "anes_health_heldout",
+          "trend_direction": "risk_up"
+        },
+        {
+          "matches_outcome": false,
+          "outcome_direction": "risk_down",
+          "source_key": "anes_climate_heldout",
+          "trend_direction": "risk_up"
+        }
+      ],
+      "summary_metric": 0.667,
+      "support_status": "partial_current_proxy"
+    }
+  },
+  "positioning": "\u4eba\u7fa4\u53cd\u5e94\u8d8b\u52bf\u4e0e\u98ce\u9669\u533a\u95f4\u6a21\u62df\u5668",
+  "report_contract": {
+    "field_outcome_validated": false,
+    "precise_point_prediction_allowed": false,
+    "runtime_default_allowed": false,
+    "source_backed_only": true,
+    "static_narrative_fallback_allowed": false
+  },
+  "run_id": "r6-product-value-current-001",
+  "schema_version": "r6-product-customer-value-report-v1",
+  "section_contracts": [
+    {
+      "section_id": "static_prior_baseline",
+      "source_artifact_ids": [
+        "r6-product-decision-report-current-001"
+      ]
+    },
+    {
+      "section_id": "trend_direction",
+      "source_artifact_ids": [
+        "r6-trend-interval-risk-metrics-current-001",
+        "r6-research-product-value-support-current-001"
+      ]
+    },
+    {
+      "section_id": "risk_interval",
+      "source_artifact_ids": [
+        "r6-trend-interval-risk-metrics-current-001",
+        "r6-research-product-value-support-current-001"
+      ]
+    },
+    {
+      "section_id": "risk_distribution",
+      "source_artifact_ids": [
+        "r6-trend-interval-risk-metrics-current-001",
+        "r6-research-product-value-support-current-001"
+      ]
+    },
+    {
+      "section_id": "abnormal_segments",
+      "source_artifact_ids": [
+        "r6-trend-interval-risk-metrics-current-001",
+        "r6-research-product-value-support-current-001"
+      ]
+    },
+    {
+      "section_id": "mechanism_explanation",
+      "source_artifact_ids": [
+        "r6-research-product-value-support-current-001"
+      ]
+    },
+    {
+      "section_id": "evidence_and_blocked_claims",
+      "source_artifact_ids": [
+        "r6-product-decision-report-current-001",
+        "r6-research-product-value-support-current-001"
+      ]
+    },
+    {
+      "section_id": "outcome_review_plan",
+      "source_artifact_ids": [
+        "r6-product-decision-report-current-001"
+      ]
+    }
+  ],
+  "source_refs": [
+    "r6-product-decision-report-current-001",
+    "r6-trend-interval-risk-metrics-current-001",
+    "r6-research-product-value-support-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r6-product-decision-report-current-001",
+      "path": "experiments/results/r6_product_decision_report/r6-product-decision-report-current-001.json"
+    },
+    {
+      "artifact_id": "r6-trend-interval-risk-metrics-current-001",
+      "path": "experiments/results/r6_trend_interval_risk_metrics/r6-trend-interval-risk-metrics-current-001.json"
+    },
+    {
+      "artifact_id": "r6-research-product-value-support-current-001",
+      "path": "experiments/results/r6_research_product_value_support/r6-research-product-value-support-current-001.json"
+    }
+  ],
+  "status": "customer_value_report_ready_guarded"
+}

@@ -35,6 +35,7 @@ def test_r6_product_api_manifest_exposes_guarded_artifact_contract():
         "scenario_intake",
         "story_package",
         "decision_report",
+        "customer_value_report",
         "outcome_review",
         "source_registry",
     }
@@ -43,8 +44,10 @@ def test_r6_product_api_manifest_exposes_guarded_artifact_contract():
         "scenario_intake": "r6-product-scenario-intake-current-001",
         "story_package": "r6-product-story-package-current-001",
         "decision_report": "r6-product-decision-report-current-001",
+        "customer_value_report": "r6-product-customer-value-report-current-001",
         "outcome_review": "r6-product-outcome-review-current-001",
     }
+    assert "r6-product-customer-value-report-current-001" in manifest["source_refs"]
     _assert_manifest_sources_resolvable(manifest)
     json.dumps(manifest, allow_nan=False)
 
@@ -157,6 +160,10 @@ def _copy_current_product_artifacts(tmp_path):
         "decision_report": (
             "experiments/results/r6_product_decision_report/"
             "r6-product-decision-report-current-001.json"
+        ),
+        "customer_value_report": (
+            "experiments/results/r6_product_customer_value_report/"
+            "r6-product-customer-value-report-current-001.json"
         ),
         "outcome_review": (
             "experiments/results/r6_product_outcome_review/"

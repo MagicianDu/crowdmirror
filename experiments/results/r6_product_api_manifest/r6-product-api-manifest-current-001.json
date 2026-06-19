@@ -12,6 +12,7 @@
   },
   "artifact_id": "r6-product-api-manifest-current-001",
   "artifact_paths": {
+    "customer_value_report": "experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json",
     "decision_report": "experiments/results/r6_product_decision_report/r6-product-decision-report-current-001.json",
     "outcome_review": "experiments/results/r6_product_outcome_review/r6-product-outcome-review-current-001.json",
     "readiness_index": "experiments/results/r6_product_readiness_index/r6-product-readiness-index-current-001.json",
@@ -19,6 +20,7 @@
     "story_package": "experiments/results/r6_product_story_package/r6-product-story-package-current-001.json"
   },
   "artifact_refs": {
+    "customer_value_report": "r6-product-customer-value-report-current-001",
     "decision_report": "r6-product-decision-report-current-001",
     "outcome_review": "r6-product-outcome-review-current-001",
     "readiness_index": "r6-product-readiness-index-current-001",
@@ -30,6 +32,7 @@
     "runtime default \u53ef\u4ee5\u5f00\u542f",
     "R6 \u5df2\u8fbe\u5230 CCF-A \u4e3b\u8d21\u732e",
     "\u4ea4\u4e92\u4eff\u771f\u7a33\u5b9a\u6bd4\u9759\u6001\u5148\u9a8c\u66f4\u51c6",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf",
     "\u9759\u6001\u5148\u9a8c\u7b49\u4e8e\u771f\u5b9e\u53cd\u5e94",
     "\u6ca1\u6709 outcome \u4e5f\u80fd\u8bc1\u660e\u9884\u6d4b\u51c6\u786e",
     "\u4ea4\u4e92\u504f\u79fb\u5df2\u7ecf\u88ab\u8bc1\u660e\u66f4\u51c6",
@@ -45,7 +48,9 @@
     "ccf_a_main_contribution_ready",
     "field_outcome_validated",
     "runtime_default_allowed",
-    "accuracy_superiority_established"
+    "accuracy_superiority_established",
+    "\u7cfb\u7edf\u53ef\u4ee5\u7cbe\u786e\u9884\u6d4b\u5355\u70b9\u7ed3\u679c",
+    "Research \u5df2\u5b8c\u6574\u652f\u6491 Product \u5168\u90e8\u6838\u5fc3\u4ef7\u503c"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -56,14 +61,17 @@
   "display_contract": {
     "blocked_claims_required": true,
     "claim_boundary_required": true,
-    "entry_endpoint": "/r6/product/decision-report",
+    "entry_endpoint": "/r6/product/customer-value-report",
+    "precise_point_prediction_allowed": false,
     "required_sections": [
-      "what_changed",
-      "who_is_at_risk",
-      "why_risk_moved",
-      "what_is_supported_by_evidence",
-      "what_is_blocked",
-      "what_to_measure_next"
+      "static_prior_baseline",
+      "trend_direction",
+      "risk_interval",
+      "risk_distribution",
+      "abnormal_segments",
+      "mechanism_explanation",
+      "evidence_and_blocked_claims",
+      "outcome_review_plan"
     ],
     "source_registry_required": true
   },
@@ -105,6 +113,15 @@
       ]
     },
     {
+      "endpoint_id": "customer_value_report",
+      "method": "GET",
+      "path": "/r6/product/customer-value-report",
+      "response_contract": "source_artifact_json",
+      "source_artifact_ids": [
+        "r6-product-customer-value-report-current-001"
+      ]
+    },
+    {
       "endpoint_id": "outcome_review",
       "method": "GET",
       "path": "/r6/product/outcome-review",
@@ -123,6 +140,7 @@
         "r6-product-scenario-intake-current-001",
         "r6-product-story-package-current-001",
         "r6-product-decision-report-current-001",
+        "r6-product-customer-value-report-current-001",
         "r6-product-outcome-review-current-001"
       ]
     }
@@ -132,17 +150,20 @@
     "product_api_manifest_ready": true,
     "runtime_default_allowed": false
   },
-  "run_id": "r6-product-api-current-001",
+  "run_id": "r6-product-value-current-001",
   "schema_version": "r6-product-api-manifest-v1",
   "source_refs": [
     "r6-product-readiness-index-current-001",
     "r6-product-scenario-intake-current-001",
     "r6-product-story-package-current-001",
     "r6-product-decision-report-current-001",
+    "r6-product-customer-value-report-current-001",
     "r6-product-outcome-review-current-001",
     "r6-product-evidence-cards-current-003",
     "r6-evidence-report-current-014",
-    "r6-gap-closure-report-current-001"
+    "r6-gap-closure-report-current-001",
+    "r6-trend-interval-risk-metrics-current-001",
+    "r6-research-product-value-support-current-001"
   ],
   "source_registry": [
     {
@@ -160,6 +181,10 @@
     {
       "artifact_id": "r6-product-decision-report-current-001",
       "path": "experiments/results/r6_product_decision_report/r6-product-decision-report-current-001.json"
+    },
+    {
+      "artifact_id": "r6-product-customer-value-report-current-001",
+      "path": "experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json"
     },
     {
       "artifact_id": "r6-product-outcome-review-current-001",
@@ -192,6 +217,14 @@
     {
       "artifact_id": "r6-product-evidence-cards-current-003",
       "path": "experiments/results/r6_product_evidence_cards/r6-product-evidence-cards-current-003.json"
+    },
+    {
+      "artifact_id": "r6-trend-interval-risk-metrics-current-001",
+      "path": "experiments/results/r6_trend_interval_risk_metrics/r6-trend-interval-risk-metrics-current-001.json"
+    },
+    {
+      "artifact_id": "r6-research-product-value-support-current-001",
+      "path": "experiments/results/r6_research_product_value_support/r6-research-product-value-support-current-001.json"
     }
   ],
   "status": "product_api_manifest_ready_guarded"

@@ -9,6 +9,7 @@
 - `docs/superpowers/specs/2026-06-11-r6-risk-discovery-method-spec.md`
 - `docs/superpowers/specs/2026-06-16-r6-mechanism-driven-interaction-learning-design.md`
 - `docs/superpowers/specs/2026-06-16-r6-product-first-solid-value-spec.md`
+- `docs/superpowers/specs/2026-06-19-r6-trend-interval-risk-positioning.md`
 
 工作名：
 
@@ -22,16 +23,21 @@
 - `2026-06-11-r6-risk-discovery-method-spec.md` 定义 R6 下一阶段的风险发现目标、decision-value 指标和 holdout validation 协议。
 - `2026-06-16-r6-mechanism-driven-interaction-learning-design.md` 定义当前 scoring candidate 止损后的方法升级方向：机制驱动交互传播、结构化 behavioral update operator、outcome-feedback learning，以及 Product guard 保留边界。
 - `2026-06-16-r6-product-first-solid-value-spec.md` 定义当前降级后的真实目标：不再默认冲 CCF-A 主贡献，而是把 Research 变成有理论和学术价值的产品可信度支撑，把 Product 作为主交付目标。
+- `2026-06-19-r6-trend-interval-risk-positioning.md` 定义最新目标修正：产品定位为“人群反应趋势与风险区间模拟器”，Research 不再以点预测 beat 静态先验为唯一目标，而是验证趋势判断、区间校准、风险排序、异常群体识别和决策价值。
 
 后续实现若与历史 R2-R5、旧 prompt/persona 优化、单一 proxy 扩张路线冲突，以当前阶段 addendum 为准。
 
 ## 当前目标
 
-项目当前目标不是继续证明某个 prompt、persona、TextGrad、LCDU、R4 interaction 或 R5 mechanism-state 变体在单一静态数据集上更准。
+项目当前目标不是继续证明某个 prompt、persona、TextGrad、LCDU、R4 interaction 或 R5 mechanism-state 变体在单一静态数据集上更准，也不是把人群模拟包装成“精准预测系统”。
 
 当前目标是：
 
-> 基于真实人口、客户或群体先验，构建一个可审计的交互仿真沙盘，用于在政策、规则、价格、权益、服务变更发布前评估人群反应，并在真实结果回流后持续校正方法。
+> 基于真实人口、客户或群体先验，构建一个可审计的交互仿真沙盘，用于在政策、规则、价格、权益、服务变更发布前输出人群反应趋势方向、可信数值区间、风险分布、异常群体和机制解释，并在真实结果回流后持续校正方法。
+
+Product 对外定位是：
+
+> 人群反应趋势与风险区间模拟器。
 
 当前优先级调整为 Product-first：
 
@@ -39,9 +45,9 @@
 
 因此后续工作排序是：
 
-1. 先补完整 Product 工作流：输入场景、选择人群、运行静态先验与交互仿真、展示风险偏移、展示证据卡、导出决策报告。
+1. 先补完整 Product 工作流：输入场景、选择人群、运行静态先验与交互仿真、展示趋势方向、风险区间、风险分布、异常群体、机制解释、证据卡，并导出决策报告。
 2. 再补 Product 可信度：所有结论必须绑定 artifact、source refs、claim boundary、blocked claims 和 remaining gaps。
-3. Research 继续作为技术壁垒支撑：强先验、交互传播、结果反馈学习、误差归因、失败边界和可审计 gate。
+3. Research 继续作为技术壁垒支撑：强先验、交互传播、趋势判断、区间校准、风险排序、异常群体识别、结果反馈学习、误差归因、失败边界和可审计 gate。
 4. 不再为了追逐 CCF-A 指标而牺牲产品可用性、解释性和客户工作流闭环。
 
 ## 当前方法边界
@@ -58,7 +64,7 @@ R6 必须同时满足：
 
 - 静态先验不是 R6 要击败的“对手”，而是大规模仿真的底座。
 - 候选更新如果要进入 runtime default，必须通过不伤害静态先验的护栏。
-- Research/Product 的主价值 gate 不是单一 aggregate accuracy race，而是：交互层是否发现静态先验看不到的风险、是否能形成可审计证据链、真实 outcome 回来后是否能学习失败边界并更新方法。
+- Research/Product 的主价值 gate 不是单一 aggregate accuracy race，也不是单点预测误差竞赛，而是：交互层是否改善趋势判断、区间校准、风险排序、异常群体识别和决策价值；是否发现静态先验看不到的风险；是否能形成可审计证据链；真实 outcome 回来后是否能学习失败边界并更新方法。
 
 ## 当前实现范围
 
@@ -83,6 +89,9 @@ R6 必须同时满足：
 7. `Interaction Signal Validity Score / holdout validation`
 8. `mechanism-driven interaction propagation / behavioral update operator`
 9. `Product API manifest / source registry contract`
+10. `trend / interval / risk metrics`
+11. `Research -> Product value support matrix`
+12. `Product customer value report`
 
 不再把“继续增加 public proxy 数量”作为默认目标；只有当新增数据能触发 acceptance gate，才进入数据接入。
 
@@ -108,6 +117,7 @@ R6 必须同时满足：
 - Product 界面或报告不得出现无来源的静态叙事 fallback；所有客户可见结论必须来自可审计 artifact。
 - Product 优先交付顺序高于继续扩展 CCF-A readiness、LCDU、TextGrad 或 prompt/persona 优化路线。
 - Product 报告必须保留 claim boundary，不能展示未验证准确性宣称。
+- Product 报告不得承诺精确预测单点结果；客户可见输出必须优先展示趋势方向、可信数值区间、风险分布、异常群体和机制解释。
 - 候选更新必须通过当前阶段 addendum 定义的 evidence level 和 acceptance gate，才能从 diagnostic 升级。
 - same-case outcome feedback improvement 不得直接包装成可迁移更新。
 - `beat static prior` 只作为 runtime update guard 使用，不作为 R6 整体研究目标。

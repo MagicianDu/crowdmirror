@@ -24,6 +24,10 @@
   "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
   "customer_sections": [
     "what_changed",
+    "trend_direction",
+    "risk_interval",
+    "risk_distribution",
+    "abnormal_segments",
     "who_is_at_risk",
     "why_risk_moved",
     "what_is_supported_by_evidence",
@@ -31,10 +35,14 @@
     "what_to_measure_next"
   ],
   "display_sources": {
+    "abnormal_segments": "story_package.section_contracts[abnormal_segments]",
     "blocked_claims": "story_package.blocked_claims",
     "evidence_cards": "story_package.evidence_card_ids",
     "next_measurement_plan": "story_package.next_measurement_plan",
-    "scenario": "story_package.section_contracts[scenario]"
+    "risk_distribution": "story_package.section_contracts[risk_distribution]",
+    "risk_interval": "story_package.section_contracts[risk_interval]",
+    "scenario": "story_package.section_contracts[scenario]",
+    "trend_direction": "story_package.section_contracts[trend_direction]"
   },
   "next_measurement_plan": {
     "required_gate_paths": [
@@ -50,17 +58,19 @@
   },
   "report_contract": {
     "customer_visible_claims_require_source_artifact": true,
+    "precise_point_prediction_allowed": false,
     "source_backed_only": true,
     "static_narrative_fallback_allowed": false
   },
-  "run_id": "r6-product-first-current-001",
+  "run_id": "r6-product-value-current-001",
   "schema_version": "r6-product-decision-report-v1",
   "source_refs": [
     "r6-product-story-package-current-001",
     "r6-product-scenario-intake-current-001",
     "r6-product-evidence-cards-current-003",
     "r6-evidence-report-current-014",
-    "r6-gap-closure-report-current-001"
+    "r6-gap-closure-report-current-001",
+    "r6-product-customer-value-report-current-001"
   ],
   "source_registry": [
     {
@@ -94,6 +104,10 @@
     {
       "artifact_id": "r6-product-evidence-cards-current-003",
       "path": "experiments/results/r6_product_evidence_cards/r6-product-evidence-cards-current-003.json"
+    },
+    {
+      "artifact_id": "r6-product-customer-value-report-current-001",
+      "path": "experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json"
     },
     {
       "artifact_id": "r6-product-story-package-current-001",

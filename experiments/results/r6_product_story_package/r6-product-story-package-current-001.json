@@ -1,6 +1,7 @@
 {
   "artifact_id": "r6-product-story-package-current-001",
   "artifact_refs": {
+    "customer_value_report": "r6-product-customer-value-report-current-001",
     "evidence_report": "r6-evidence-report-current-014",
     "gap_closure_report": "r6-gap-closure-report-current-001",
     "product_evidence_cards": "r6-product-evidence-cards-current-003",
@@ -311,7 +312,7 @@
       "r6-gap-closure-report-current-001"
     ]
   },
-  "run_id": "r6-product-first-current-001",
+  "run_id": "r6-product-value-current-001",
   "schema_version": "r6-product-story-package-v1",
   "section_contracts": [
     {
@@ -352,6 +353,46 @@
       "section_id": "interaction_risk_shift",
       "source_artifact_ids": [
         "r6-product-report-current-003"
+      ]
+    },
+    {
+      "card_ids": [],
+      "display_fields": [
+        "display_payload.trend_direction"
+      ],
+      "section_id": "trend_direction",
+      "source_artifact_ids": [
+        "r6-product-customer-value-report-current-001"
+      ]
+    },
+    {
+      "card_ids": [],
+      "display_fields": [
+        "display_payload.risk_interval"
+      ],
+      "section_id": "risk_interval",
+      "source_artifact_ids": [
+        "r6-product-customer-value-report-current-001"
+      ]
+    },
+    {
+      "card_ids": [],
+      "display_fields": [
+        "display_payload.risk_distribution"
+      ],
+      "section_id": "risk_distribution",
+      "source_artifact_ids": [
+        "r6-product-customer-value-report-current-001"
+      ]
+    },
+    {
+      "card_ids": [],
+      "display_fields": [
+        "display_payload.abnormal_segments"
+      ],
+      "section_id": "abnormal_segments",
+      "source_artifact_ids": [
+        "r6-product-customer-value-report-current-001"
       ]
     },
     {
@@ -436,6 +477,10 @@
     "scenario",
     "static_prior_baseline",
     "interaction_risk_shift",
+    "trend_direction",
+    "risk_interval",
+    "risk_distribution",
+    "abnormal_segments",
     "evidence_cards",
     "gap_closure",
     "blocked_claims",
@@ -445,7 +490,8 @@
     "r6-product-scenario-intake-current-001",
     "r6-product-evidence-cards-current-003",
     "r6-evidence-report-current-014",
-    "r6-gap-closure-report-current-001"
+    "r6-gap-closure-report-current-001",
+    "r6-product-customer-value-report-current-001"
   ],
   "source_registry": [
     {
@@ -479,6 +525,10 @@
     {
       "artifact_id": "r6-product-evidence-cards-current-003",
       "path": "experiments/results/r6_product_evidence_cards/r6-product-evidence-cards-current-003.json"
+    },
+    {
+      "artifact_id": "r6-product-customer-value-report-current-001",
+      "path": "experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json"
     }
   ],
   "status": "product_story_package_ready_guarded",
@@ -496,6 +546,10 @@
       "scenario",
       "static_prior_baseline",
       "interaction_risk_shift",
+      "trend_direction",
+      "risk_interval",
+      "risk_distribution",
+      "abnormal_segments",
       "evidence_cards",
       "gap_closure",
       "blocked_claims",

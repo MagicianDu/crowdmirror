@@ -48,11 +48,18 @@ R6_PRODUCT_STORY_PACKAGE_SECTIONS = [
     "scenario",
     "static_prior_baseline",
     "interaction_risk_shift",
+    "trend_direction",
+    "risk_interval",
+    "risk_distribution",
+    "abnormal_segments",
     "evidence_cards",
     "gap_closure",
     "blocked_claims",
     "next_measurement_plan",
 ]
+R6_PRODUCT_CUSTOMER_VALUE_REPORT_ARTIFACT_ID = (
+    "r6-product-customer-value-report-current-001"
+)
 R6_PRODUCT_STORY_DANGEROUS_CLAIM_STATUSES = {
     "accuracy_superiority_established",
     "field_validated",
@@ -123,6 +130,13 @@ R6_PRODUCT_STORY_CANONICAL_SOURCE_REGISTRY = [
         "path": (
             "experiments/results/r6_product_evidence_cards/"
             "r6-product-evidence-cards-current-003.json"
+        ),
+    },
+    {
+        "artifact_id": R6_PRODUCT_CUSTOMER_VALUE_REPORT_ARTIFACT_ID,
+        "path": (
+            "experiments/results/r6_product_customer_value_report/"
+            "r6-product-customer-value-report-current-001.json"
         ),
     },
 ]
@@ -202,6 +216,7 @@ def build_r6_product_story_package(
             "product_evidence_cards": evidence_cards_artifact_id,
             "evidence_report": evidence_report_artifact_id,
             "gap_closure_report": gap_closure_artifact_id,
+            "customer_value_report": R6_PRODUCT_CUSTOMER_VALUE_REPORT_ARTIFACT_ID,
         },
         "section_contracts": section_contracts,
         "evidence_card_ids": evidence_card_ids,
@@ -265,6 +280,7 @@ def build_r6_product_story_package(
                 evidence_cards_artifact_id,
                 evidence_report_artifact_id,
                 gap_closure_artifact_id,
+                R6_PRODUCT_CUSTOMER_VALUE_REPORT_ARTIFACT_ID,
             ],
         ),
         "claim_boundary": R6_CLAIM_BOUNDARY,
@@ -460,6 +476,10 @@ def _section_contracts(
             section_id="interaction_risk_shift",
             card=card_by_id["interaction-risk-shift"],
         ),
+        _customer_value_section("trend_direction"),
+        _customer_value_section("risk_interval"),
+        _customer_value_section("risk_distribution"),
+        _customer_value_section("abnormal_segments"),
         {
             "section_id": "evidence_cards",
             "source_artifact_ids": [evidence_cards_artifact_id],
@@ -513,6 +533,15 @@ def _card_section(*, section_id: str, card: dict[str, Any]) -> dict[str, Any]:
         "source_artifact_ids": card["source_artifact_ids"],
         "card_ids": [card["card_id"]],
         "display_fields": card["display_fields"],
+    }
+
+
+def _customer_value_section(section_id: str) -> dict[str, Any]:
+    return {
+        "section_id": section_id,
+        "source_artifact_ids": [R6_PRODUCT_CUSTOMER_VALUE_REPORT_ARTIFACT_ID],
+        "card_ids": [],
+        "display_fields": [f"display_payload.{section_id}"],
     }
 
 

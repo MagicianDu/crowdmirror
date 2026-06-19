@@ -18,6 +18,10 @@ def test_r6_product_decision_report_exports_customer_readable_guarded_report():
     assert report["status"] == "decision_report_ready_guarded"
     assert report["customer_sections"] == [
         "what_changed",
+        "trend_direction",
+        "risk_interval",
+        "risk_distribution",
+        "abnormal_segments",
         "who_is_at_risk",
         "why_risk_moved",
         "what_is_supported_by_evidence",
@@ -26,9 +30,11 @@ def test_r6_product_decision_report_exports_customer_readable_guarded_report():
     ]
     assert report["report_contract"]["source_backed_only"] is True
     assert report["report_contract"]["static_narrative_fallback_allowed"] is False
+    assert report["report_contract"]["precise_point_prediction_allowed"] is False
     assert "field validation 已完成" in report["blocked_claims"]
     assert "runtime default 可以开启" in report["blocked_claims"]
     assert report["next_measurement_plan"]
+    assert "r6-product-customer-value-report-current-001" in report["source_refs"]
     assert "r6-product-story-package-current-001" in report["source_refs"]
     assert len(report["source_refs"]) > 1
     _assert_report_sources_resolvable(report)
