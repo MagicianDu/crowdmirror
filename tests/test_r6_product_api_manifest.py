@@ -20,18 +20,23 @@ def test_r6_product_api_manifest_exposes_guarded_artifact_contract():
         "source_backed_only": True,
         "static_narrative_fallback_allowed": False,
         "customer_visible_claims_require_source_artifact": True,
+        "customer_facing_ui_demo_ready": True,
         "runtime_default_allowed": False,
         "field_outcome_validated": False,
     }
     assert manifest["readiness_gates"]["product_api_manifest_ready"] is True
+    assert manifest["readiness_gates"]["customer_facing_ui_demo_ready"] is True
     assert manifest["readiness_gates"]["field_outcome_validated"] is False
     assert manifest["readiness_gates"]["runtime_default_allowed"] is False
     assert "needs_field_outcome_validation" in manifest["blocking_gaps"]
     assert "needs_runtime_default_holdout_review" in manifest["blocking_gaps"]
+    assert "needs_customer_facing_ui_integration" not in manifest["blocking_gaps"]
+    assert manifest["display_contract"]["static_frontend_path"] == "/demo/"
 
     endpoint_ids = {endpoint["endpoint_id"] for endpoint in manifest["endpoints"]}
     assert endpoint_ids == {
         "product_readiness",
+        "frontend_demo",
         "scenario_intake",
         "story_package",
         "decision_report",

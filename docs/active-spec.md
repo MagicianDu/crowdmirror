@@ -92,6 +92,7 @@ R6 必须同时满足：
 10. `trend / interval / risk metrics`
 11. `Research -> Product value support matrix`
 12. `Product customer value report`
+13. `Product frontend demo / source-backed customer report UI`
 
 不再把“继续增加 public proxy 数量”作为默认目标；只有当新增数据能触发 acceptance gate，才进入数据接入。
 
@@ -118,6 +119,7 @@ R6 必须同时满足：
 - Product 优先交付顺序高于继续扩展 CCF-A readiness、LCDU、TextGrad 或 prompt/persona 优化路线。
 - Product 报告必须保留 claim boundary，不能展示未验证准确性宣称。
 - Product 报告不得承诺精确预测单点结果；客户可见输出必须优先展示趋势方向、可信数值区间、风险分布、异常群体和机制解释。
+- Product 前端必须从 current artifacts/API manifest 读取数据，缺 artifact 时 fail closed，不允许静态文案兜底。
 - 候选更新必须通过当前阶段 addendum 定义的 evidence level 和 acceptance gate，才能从 diagnostic 升级。
 - same-case outcome feedback improvement 不得直接包装成可迁移更新。
 - `beat static prior` 只作为 runtime update guard 使用，不作为 R6 整体研究目标。

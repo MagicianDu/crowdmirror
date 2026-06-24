@@ -62,6 +62,7 @@ def build_r6_product_customer_value_report(
         run_id=run_id,
         trend_interval_risk_metrics=metrics,
     )
+    frontend_demo_ready = _frontend_demo_ready()
     source_registry = _source_registry(decision, metrics, support)
     report = {
         "schema_version": R6_PRODUCT_CUSTOMER_VALUE_REPORT_SCHEMA_VERSION,
@@ -74,6 +75,7 @@ def build_r6_product_customer_value_report(
             "source_backed_only": True,
             "static_narrative_fallback_allowed": False,
             "precise_point_prediction_allowed": False,
+            "customer_facing_ui_demo_ready": frontend_demo_ready,
             "field_outcome_validated": False,
             "runtime_default_allowed": False,
         },
@@ -99,11 +101,7 @@ def build_r6_product_customer_value_report(
                 "precise point prediction."
             ),
         ],
-        "blocking_gaps": [
-            "needs_customer_facing_ui_integration",
-            "needs_field_outcome_validation",
-            "needs_runtime_default_holdout_review",
-        ],
+        "blocking_gaps": _blocking_gaps(frontend_demo_ready),
         "claim_boundary": R6_CLAIM_BOUNDARY,
     }
     assert_strict_json(report)
@@ -245,6 +243,28 @@ def _support_status(support: dict[str, Any], product_value: str) -> str:
 
 def _unique_strings(values: list[str]) -> list[str]:
     return list(dict.fromkeys(values))
+
+
+def _frontend_demo_ready() -> bool:
+    repo_root = Path(__file__).resolve().parents[1]
+    required_files = [
+        repo_root / "demo" / "index.html",
+        repo_root / "demo" / "app.js",
+        repo_root / "demo" / "styles.css",
+    ]
+    return all(path.is_file() for path in required_files)
+
+
+def _blocking_gaps(frontend_demo_ready: bool) -> list[str]:
+    gaps = [
+        "needs_field_outcome_validation",
+        "needs_runtime_default_holdout_review",
+    ]
+    if frontend_demo_ready:
+        gaps.append("needs_customer_workflow_runtime_integration")
+    else:
+        gaps.insert(0, "needs_customer_facing_ui_integration")
+    return gaps
 
 
 def main() -> int:

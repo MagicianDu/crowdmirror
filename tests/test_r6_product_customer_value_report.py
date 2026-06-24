@@ -17,6 +17,7 @@ def test_r6_product_customer_value_report_contains_trend_interval_risk_sections(
     assert report["status"] == "customer_value_report_ready_guarded"
     assert report["positioning"] == "人群反应趋势与风险区间模拟器"
     assert report["report_contract"]["precise_point_prediction_allowed"] is False
+    assert report["report_contract"]["customer_facing_ui_demo_ready"] is True
     assert report["customer_sections"] == [
         "static_prior_baseline",
         "trend_direction",
@@ -33,6 +34,8 @@ def test_r6_product_customer_value_report_contains_trend_interval_risk_sections(
     assert "abnormal_segments" in report["display_payload"]
     assert "精准预测系统" in report["blocked_claims"]
     assert "r6-research-product-value-support-current-001" in report["source_refs"]
+    assert "needs_customer_facing_ui_integration" not in report["blocking_gaps"]
+    assert "needs_customer_workflow_runtime_integration" in report["blocking_gaps"]
     json.dumps(report, allow_nan=False)
 
 

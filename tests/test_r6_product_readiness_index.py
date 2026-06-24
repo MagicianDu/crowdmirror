@@ -29,6 +29,7 @@ def test_r6_product_readiness_index_prioritizes_product_without_overclaiming():
     assert report["readiness_gates"]["trend_interval_risk_metrics_ready"] is True
     assert report["readiness_gates"]["research_product_value_support_ready"] is True
     assert report["readiness_gates"]["customer_value_report_ready"] is True
+    assert report["readiness_gates"]["customer_facing_ui_demo_ready"] is True
     assert report["readiness_gates"]["static_narrative_fallback_allowed"] is False
     assert report["readiness_gates"]["field_outcome_validated"] is False
     assert report["readiness_gates"]["runtime_default_allowed"] is False
@@ -39,13 +40,15 @@ def test_r6_product_readiness_index_prioritizes_product_without_overclaiming():
         "customer_value_report_contract_ready": True,
         "outcome_review_contract_ready": True,
         "product_api_manifest_contract_ready": True,
+        "customer_frontend_demo_contract_ready": True,
         "contract_ready_is_not_field_validation": True,
     }
     assert "needs_product_scenario_intake" not in report["blocking_gaps"]
     assert "needs_customer_decision_report" not in report["blocking_gaps"]
     assert "needs_outcome_review_contract" not in report["blocking_gaps"]
     assert "needs_product_ui_or_api_contract" not in report["blocking_gaps"]
-    assert "needs_customer_facing_ui_integration" in report["blocking_gaps"]
+    assert "needs_customer_facing_ui_integration" not in report["blocking_gaps"]
+    assert "needs_customer_workflow_runtime_integration" in report["blocking_gaps"]
     assert "needs_field_outcome_validation" in report["blocking_gaps"]
     assert "needs_runtime_default_holdout_review" in report["blocking_gaps"]
     assert "精准预测系统" in report["blocked_claims"]

@@ -89,6 +89,10 @@ def build_r6_product_api_manifest(
         readiness_index=artifacts["readiness_index"],
         outcome_review=artifacts["outcome_review"],
     )
+    _validate_frontend_demo_contract(
+        readiness_index=artifacts["readiness_index"],
+        customer_value_report=artifacts["customer_value_report"],
+    )
 
     artifact_refs = {
         key: non_empty_string(value.get("artifact_id"), field=f"{key}.artifact_id")
@@ -117,11 +121,13 @@ def build_r6_product_api_manifest(
             "source_backed_only": True,
             "static_narrative_fallback_allowed": False,
             "customer_visible_claims_require_source_artifact": True,
+            "customer_facing_ui_demo_ready": True,
             "runtime_default_allowed": False,
             "field_outcome_validated": False,
         },
         "readiness_gates": {
             "product_api_manifest_ready": True,
+            "customer_facing_ui_demo_ready": True,
             "field_outcome_validated": False,
             "runtime_default_allowed": False,
         },
@@ -144,15 +150,17 @@ def build_r6_product_api_manifest(
             "blocked_claims_required": True,
             "source_registry_required": True,
             "precise_point_prediction_allowed": False,
+            "static_frontend_path": "/demo/",
         },
         "blocking_gaps": [
             "needs_field_outcome_validation",
             "needs_runtime_default_holdout_review",
-            "needs_customer_facing_ui_integration",
+            "needs_customer_workflow_runtime_integration",
         ],
         "allowed_claims": [
             "Product API manifest exposes the source-backed R6 artifact chain.",
             "Customer-facing reports can consume guarded artifacts without static narrative fallback.",
+            "The static /demo/ frontend can render the guarded customer value report.",
         ],
         "blocked_claims": _unique_strings(
             [
@@ -325,6 +333,28 @@ def _validate_runtime_boundaries(
         )
 
 
+def _validate_frontend_demo_contract(
+    *,
+    readiness_index: dict[str, Any],
+    customer_value_report: dict[str, Any],
+) -> None:
+    readiness_gates = _require_object(
+        readiness_index.get("readiness_gates"),
+        field="readiness_index.readiness_gates",
+    )
+    if readiness_gates.get("customer_facing_ui_demo_ready") is not True:
+        raise ValueError("readiness_index.customer_facing_ui_demo_ready must be True")
+    customer_contract = _require_object(
+        customer_value_report.get("report_contract"),
+        field="customer_value_report.report_contract",
+    )
+    if customer_contract.get("customer_facing_ui_demo_ready") is not True:
+        raise ValueError(
+            "customer_value_report.report_contract.customer_facing_ui_demo_ready "
+            "must be True"
+        )
+
+
 def _assert_artifact_sources_resolvable(
     *,
     artifact: dict[str, Any],
@@ -376,6 +406,16 @@ def _source_registry(
 def _endpoints(artifact_refs: dict[str, str]) -> list[dict[str, Any]]:
     return [
         _endpoint("product_readiness", "/r6/product/readiness", artifact_refs["readiness_index"]),
+        {
+            "endpoint_id": "frontend_demo",
+            "method": "GET",
+            "path": "/demo/",
+            "source_artifact_ids": [
+                artifact_refs["customer_value_report"],
+                artifact_refs["readiness_index"],
+            ],
+            "response_contract": "static_source_backed_ui",
+        },
         _endpoint("scenario_intake", "/r6/product/scenario-intake", artifact_refs["scenario_intake"]),
         _endpoint("story_package", "/r6/product/story-package", artifact_refs["story_package"]),
         _endpoint("decision_report", "/r6/product/decision-report", artifact_refs["decision_report"]),

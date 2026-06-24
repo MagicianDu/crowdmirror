@@ -1,9 +1,11 @@
 {
   "allowed_claims": [
     "Product API manifest exposes the source-backed R6 artifact chain.",
-    "Customer-facing reports can consume guarded artifacts without static narrative fallback."
+    "Customer-facing reports can consume guarded artifacts without static narrative fallback.",
+    "The static /demo/ frontend can render the guarded customer value report."
   ],
   "api_contract": {
+    "customer_facing_ui_demo_ready": true,
     "customer_visible_claims_require_source_artifact": true,
     "field_outcome_validated": false,
     "runtime_default_allowed": false,
@@ -55,7 +57,7 @@
   "blocking_gaps": [
     "needs_field_outcome_validation",
     "needs_runtime_default_holdout_review",
-    "needs_customer_facing_ui_integration"
+    "needs_customer_workflow_runtime_integration"
   ],
   "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
   "display_contract": {
@@ -73,7 +75,8 @@
       "evidence_and_blocked_claims",
       "outcome_review_plan"
     ],
-    "source_registry_required": true
+    "source_registry_required": true,
+    "static_frontend_path": "/demo/"
   },
   "endpoints": [
     {
@@ -82,6 +85,16 @@
       "path": "/r6/product/readiness",
       "response_contract": "source_artifact_json",
       "source_artifact_ids": [
+        "r6-product-readiness-index-current-001"
+      ]
+    },
+    {
+      "endpoint_id": "frontend_demo",
+      "method": "GET",
+      "path": "/demo/",
+      "response_contract": "static_source_backed_ui",
+      "source_artifact_ids": [
+        "r6-product-customer-value-report-current-001",
         "r6-product-readiness-index-current-001"
       ]
     },
@@ -146,6 +159,7 @@
     }
   ],
   "readiness_gates": {
+    "customer_facing_ui_demo_ready": true,
     "field_outcome_validated": false,
     "product_api_manifest_ready": true,
     "runtime_default_allowed": false

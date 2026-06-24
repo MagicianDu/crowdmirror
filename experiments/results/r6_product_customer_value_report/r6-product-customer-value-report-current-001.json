@@ -29,9 +29,9 @@
     "Research \u5df2\u5b8c\u6574\u652f\u6491 Product \u5168\u90e8\u6838\u5fc3\u4ef7\u503c"
   ],
   "blocking_gaps": [
-    "needs_customer_facing_ui_integration",
     "needs_field_outcome_validation",
-    "needs_runtime_default_holdout_review"
+    "needs_runtime_default_holdout_review",
+    "needs_customer_workflow_runtime_integration"
   ],
   "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
   "customer_sections": [
@@ -206,6 +206,7 @@
   },
   "positioning": "\u4eba\u7fa4\u53cd\u5e94\u8d8b\u52bf\u4e0e\u98ce\u9669\u533a\u95f4\u6a21\u62df\u5668",
   "report_contract": {
+    "customer_facing_ui_demo_ready": true,
     "field_outcome_validated": false,
     "precise_point_prediction_allowed": false,
     "runtime_default_allowed": false,

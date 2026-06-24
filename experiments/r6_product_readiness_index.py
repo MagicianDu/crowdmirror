@@ -34,6 +34,7 @@ def build_r6_product_readiness_index(
             artifact_id=f"{artifact_id}-evidence-report",
             run_id=run_id,
         )
+    frontend_demo_ready = _frontend_demo_ready()
     evidence_artifact_id = evidence_report.get("artifact_id")
     report = {
         "schema_version": R6_PRODUCT_READINESS_INDEX_SCHEMA_VERSION,
@@ -55,6 +56,7 @@ def build_r6_product_readiness_index(
             "trend_interval_risk_metrics_ready": True,
             "research_product_value_support_ready": True,
             "customer_value_report_ready": True,
+            "customer_facing_ui_demo_ready": frontend_demo_ready,
             "static_narrative_fallback_allowed": False,
             "field_outcome_validated": False,
             "runtime_default_allowed": False,
@@ -66,16 +68,14 @@ def build_r6_product_readiness_index(
             "customer_value_report_contract_ready": True,
             "outcome_review_contract_ready": True,
             "product_api_manifest_contract_ready": True,
+            "customer_frontend_demo_contract_ready": frontend_demo_ready,
             "contract_ready_is_not_field_validation": True,
         },
-        "blocking_gaps": [
-            "needs_customer_facing_ui_integration",
-            "needs_field_outcome_validation",
-            "needs_runtime_default_holdout_review",
-        ],
+        "blocking_gaps": _blocking_gaps(frontend_demo_ready),
         "allowed_claims": [
             "R6 can support bounded pre-release risk discussion.",
             "R6 evidence cards are available as customer-facing claim boundaries.",
+            "Source-backed customer-facing demo can render guarded R6 artifacts.",
         ],
         "blocked_claims": [
             "field validation 已完成",
@@ -117,6 +117,28 @@ def _evidence_cards_ready(evidence_report: dict[str, Any]) -> bool:
         and product_evidence_cards_summary.get("static_narrative_fallback_allowed")
         is False
     )
+
+
+def _frontend_demo_ready() -> bool:
+    repo_root = Path(__file__).resolve().parents[1]
+    required_files = [
+        repo_root / "demo" / "index.html",
+        repo_root / "demo" / "app.js",
+        repo_root / "demo" / "styles.css",
+    ]
+    return all(path.is_file() for path in required_files)
+
+
+def _blocking_gaps(frontend_demo_ready: bool) -> list[str]:
+    gaps = [
+        "needs_field_outcome_validation",
+        "needs_runtime_default_holdout_review",
+    ]
+    if frontend_demo_ready:
+        gaps.append("needs_customer_workflow_runtime_integration")
+    else:
+        gaps.insert(0, "needs_customer_facing_ui_integration")
+    return gaps
 
 
 def write_r6_product_readiness_index(output: str | Path, **kwargs: Any) -> Path:
