@@ -15,6 +15,7 @@ const SECTION_LABELS = [
   "风险分布",
   "异常群体",
   "机制解释",
+  "研究支撑",
   "证据边界",
   "阻断声明",
   "数据来源",
@@ -79,6 +80,11 @@ function renderApp({ customerValueReport, valueSupport, readinessIndex, apiManif
   const interval = display.risk_interval || {};
   const distribution = display.risk_distribution || {};
   const abnormal = display.abnormal_segments || [];
+  const researchSupport = display.research_support || valueSupport || {};
+  const supportGapLedger =
+    researchSupport.support_gap_ledger || valueSupport.support_gap_ledger || [];
+  const researchNextTasks =
+    researchSupport.research_next_tasks || valueSupport.research_next_tasks || [];
   const sourceRefs = customerValueReport.source_refs || [];
   const blockedClaims = uniqueItems([
     ...(customerValueReport.blocked_claims || []),
@@ -143,6 +149,14 @@ function renderApp({ customerValueReport, valueSupport, readinessIndex, apiManif
           <h2>机制解释</h2>
         </div>
         ${renderMechanism(display.mechanism_explanation)}
+      </article>
+
+      <article class="panel panel-wide">
+        <div class="panel-heading">
+          <p class="eyebrow">Research Support</p>
+          <h2>研究支撑</h2>
+        </div>
+        ${renderResearchSupport(researchSupport, supportGapLedger, researchNextTasks)}
       </article>
 
       <article class="panel panel-wide">
@@ -307,6 +321,67 @@ function renderMechanism(mechanism) {
   `;
 }
 
+function renderResearchSupport(researchSupport, supportGapLedger, researchNextTasks) {
+  const coverage = researchSupport.support_coverage || {};
+  const summary = researchSupport.product_claim_support_summary || {};
+  return `
+    <div class="research-summary">
+      <div>
+        <span>部分支撑</span>
+        <strong>${escapeHtml(coverage.partial_value_count ?? 0)}</strong>
+      </div>
+      <div>
+        <span>诊断支撑</span>
+        <strong>${escapeHtml(coverage.diagnostic_value_count ?? 0)}</strong>
+      </div>
+      <div>
+        <span>阻断项</span>
+        <strong>${escapeHtml(coverage.blocked_value_count ?? 0)}</strong>
+      </div>
+      <div>
+        <span>完整支撑</span>
+        <strong>${summary.overall_product_core_value_supported ? "是" : "否"}</strong>
+      </div>
+    </div>
+    <div class="ledger-table" role="table" aria-label="Research 支撑缺口">
+      <div class="ledger-head" role="row">
+        <span>Product value</span>
+        <span>当前状态</span>
+        <span>差距</span>
+        <span>下一步</span>
+      </div>
+      ${supportGapLedger.map(renderLedgerRow).join("")}
+    </div>
+    <div class="task-list">
+      ${researchNextTasks.map(renderResearchTask).join("")}
+    </div>
+  `;
+}
+
+function renderLedgerRow(item) {
+  return `
+    <div class="ledger-row" role="row">
+      <strong>${escapeHtml(item.product_value)}</strong>
+      <span class="support-tag ${statusClass(item.current_support_status)}">${escapeHtml(SUPPORT_LABELS[item.current_support_status] || item.current_support_status)}</span>
+      <span>${escapeHtml(formatLedgerGap(item.gap_to_target))}</span>
+      <span>${escapeHtml(item.next_research_task_id)}</span>
+    </div>
+  `;
+}
+
+function renderResearchTask(task) {
+  return `
+    <section class="task-row">
+      <div>
+        <strong>${escapeHtml(task.task_id)}</strong>
+        <span>${escapeHtml((task.unblocks_product_values || []).join(" / "))}</span>
+      </div>
+      <p>${escapeHtml(task.goal)}</p>
+      <small>${escapeHtml(task.acceptance_criteria)}</small>
+    </section>
+  `;
+}
+
 function renderReadiness(gates) {
   const rows = Object.entries(gates).map(([key, value]) => `
     <tr>
@@ -414,6 +489,18 @@ function formatSignedPercent(value) {
   if (number === null) return "未提供";
   const sign = number > 0 ? "+" : "";
   return `${sign}${(number * 100).toFixed(1)}%`;
+}
+
+function formatLedgerGap(value) {
+  if (Number.isFinite(value)) {
+    return value === 0 ? "已达标" : `差 ${formatPercent(value)}`;
+  }
+  if (value && typeof value === "object") {
+    return Object.entries(value)
+      .map(([key, item]) => `${key}: ${Number.isFinite(item) ? formatPercent(item) : item}`)
+      .join(" / ");
+  }
+  return value || "未提供";
 }
 
 function clampPercent(value) {

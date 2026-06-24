@@ -104,6 +104,17 @@ def build_r6_research_product_value_support(
         item["support_status"].startswith("supported")
         for item in support_matrix
     )
+    support_gap_ledger = _support_gap_ledger(
+        support_matrix=support_matrix,
+        summary=summary,
+        mechanism=mechanism,
+    )
+    research_next_tasks = _research_next_tasks(support_gap_ledger)
+    support_coverage = _support_coverage(support_matrix)
+    product_claim_support_summary = _product_claim_support_summary(
+        support_gap_ledger=support_gap_ledger,
+        overall_supported=overall_supported,
+    )
     report = {
         "schema_version": R6_RESEARCH_PRODUCT_VALUE_SUPPORT_SCHEMA_VERSION,
         "artifact_id": artifact_id,
@@ -115,6 +126,33 @@ def build_r6_research_product_value_support(
         ),
         "overall_product_core_value_supported": overall_supported,
         "support_matrix": support_matrix,
+        "support_coverage": support_coverage,
+        "support_gap_ledger": support_gap_ledger,
+        "research_next_tasks": research_next_tasks,
+        "product_claim_support_summary": product_claim_support_summary,
+        "acceptance_gates": {
+            "all_product_values_mapped": len(support_gap_ledger) == 6,
+            "all_gaps_have_research_tasks": all(
+                bool(item["next_research_task_id"]) for item in support_gap_ledger
+            ),
+            "all_tasks_have_acceptance_criteria": all(
+                bool(task["acceptance_criteria"]) for task in research_next_tasks
+            ),
+            "research_support_contract_complete": (
+                len(support_gap_ledger) == 6
+                and all(
+                    bool(item["next_research_task_id"])
+                    for item in support_gap_ledger
+                )
+                and all(
+                    bool(task["acceptance_criteria"])
+                    for task in research_next_tasks
+                )
+            ),
+            "field_outcome_validated": False,
+            "runtime_default_allowed": False,
+            "overall_product_core_value_supported": overall_supported,
+        },
         "source_refs": [metrics["artifact_id"], mechanism["artifact_id"]],
         "allowed_claims": [
             (
@@ -175,6 +213,316 @@ def _threshold_support(value: float, *, pass_threshold: float) -> str:
     if value > 0:
         return "partial_current_proxy"
     return "blocked"
+
+
+def _support_gap_ledger(
+    *,
+    support_matrix: list[dict[str, Any]],
+    summary: dict[str, Any],
+    mechanism: dict[str, Any],
+) -> list[dict[str, Any]]:
+    by_value = {item["product_value"]: item for item in support_matrix}
+    mechanism_summary = mechanism.get("readiness_summary", {})
+    return [
+        _ledger_entry(
+            by_value["trend_direction"],
+            current_metric_value=summary["trend_direction_accuracy"],
+            target_threshold=0.80,
+            gap_to_target=_positive_gap(0.80, summary["trend_direction_accuracy"]),
+            product_display_level="guarded_partial_claim",
+            blocking_gap_ids=[
+                "needs_trend_interval_holdout_support",
+                "needs_independent_or_field_outcome_support",
+            ],
+            next_research_task_id="r6-research-task-trend-interval-holdout",
+            acceptance_criteria=(
+                "independent_or_field_holdout.trend_direction_accuracy >= 0.80 "
+                "with no hidden false-alarm regression"
+            ),
+        ),
+        _ledger_entry(
+            by_value["risk_interval"],
+            current_metric_value=summary["interval_coverage"],
+            target_threshold=0.80,
+            gap_to_target=_positive_gap(0.80, summary["interval_coverage"]),
+            product_display_level="guarded_partial_claim",
+            blocking_gap_ids=[
+                "needs_trend_interval_holdout_support",
+                "needs_interval_calibration_holdout",
+            ],
+            next_research_task_id="r6-research-task-trend-interval-holdout",
+            acceptance_criteria=(
+                "independent_or_field_holdout.interval_coverage >= 0.80 and "
+                "mean_interval_width remains decision-usable"
+            ),
+        ),
+        _ledger_entry(
+            by_value["risk_distribution"],
+            current_metric_value={
+                "risk_ranking_quality": summary["risk_ranking_quality"],
+                "false_alarm_rate": summary["false_alarm_rate"],
+            },
+            target_threshold={
+                "risk_ranking_quality_min": 0.50,
+                "false_alarm_rate_max": 0.50,
+            },
+            gap_to_target={
+                "risk_ranking_gap": _positive_gap(
+                    0.50,
+                    summary["risk_ranking_quality"],
+                ),
+                "false_alarm_gap": _positive_gap(
+                    summary["false_alarm_rate"],
+                    0.50,
+                ),
+            },
+            product_display_level="guarded_diagnostic_claim",
+            blocking_gap_ids=[
+                "needs_false_alarm_control",
+                "needs_risk_ranking_holdout_support",
+            ],
+            next_research_task_id="r6-research-task-false-alarm-control",
+            acceptance_criteria=(
+                "risk_ranking_quality >= 0.50 and false_alarm_rate <= 0.50 "
+                "on independent_or_field_holdout"
+            ),
+        ),
+        _ledger_entry(
+            by_value["abnormal_segments"],
+            current_metric_value=summary["abnormal_segment_recall"],
+            target_threshold={
+                "abnormal_segment_recall_min": 0.80,
+                "observed_segment_labels_required": True,
+            },
+            gap_to_target={"observed_segment_labels_missing": True},
+            product_display_level="diagnostic_claim_only",
+            blocking_gap_ids=[
+                "needs_segment_level_outcome_labels",
+                "needs_abnormal_segment_precision_recall",
+            ],
+            next_research_task_id="r6-research-task-segment-outcome-labels",
+            acceptance_criteria=(
+                "segment-level outcome or expert audit labels exist and "
+                "abnormal_segment_precision_recall is reportable"
+            ),
+        ),
+        _ledger_entry(
+            by_value["mechanism_explanation"],
+            current_metric_value=mechanism.get("status"),
+            target_threshold={
+                "mechanism_holdout_validation_required": True,
+                "operator_holdout_non_regression_required": True,
+            },
+            gap_to_target={
+                "mechanism_regression_case_count": mechanism_summary.get(
+                    "mechanism_regression_case_count"
+                ),
+                "operator_holdout_passed_trial_count": mechanism_summary.get(
+                    "operator_holdout_passed_trial_count"
+                ),
+            },
+            product_display_level="diagnostic_claim_only",
+            blocking_gap_ids=[
+                "needs_mechanism_holdout_validation",
+                "needs_operator_holdout_validation",
+            ],
+            next_research_task_id="r6-research-task-mechanism-holdout-validation",
+            acceptance_criteria=(
+                "mechanism ablation no longer regresses on holdout and "
+                "operator_holdout_non_regression is true"
+            ),
+        ),
+        _ledger_entry(
+            by_value["outcome_feedback_learning"],
+            current_metric_value={
+                "runtime_default_allowed": mechanism.get("decision", {}).get(
+                    "runtime_default_allowed"
+                ),
+                "operator_holdout_passed_trial_count": mechanism_summary.get(
+                    "operator_holdout_passed_trial_count"
+                ),
+            },
+            target_threshold={
+                "runtime_default_allowed": True,
+                "requires_field_or_independent_holdout": True,
+            },
+            gap_to_target={
+                "runtime_default_blocked": True,
+                "field_outcome_validated": False,
+            },
+            product_display_level="blocked_claim_only",
+            blocking_gap_ids=[
+                "needs_runtime_default_holdout_review",
+                "needs_field_outcome_validation",
+                "needs_cross_case_operator_transfer",
+            ],
+            next_research_task_id="r6-research-task-outcome-feedback-transfer",
+            acceptance_criteria=(
+                "candidate update passes cross-case transfer, independent holdout, "
+                "and field outcome review before runtime default"
+            ),
+        ),
+    ]
+
+
+def _ledger_entry(
+    matrix_item: dict[str, Any],
+    *,
+    current_metric_value: Any,
+    target_threshold: Any,
+    gap_to_target: Any,
+    product_display_level: str,
+    blocking_gap_ids: list[str],
+    next_research_task_id: str,
+    acceptance_criteria: str,
+) -> dict[str, Any]:
+    return {
+        "product_value": matrix_item["product_value"],
+        "current_support_status": matrix_item["support_status"],
+        "product_display_level": product_display_level,
+        "source_metric": matrix_item["source_metric"],
+        "current_metric_value": current_metric_value,
+        "target_threshold": target_threshold,
+        "gap_to_target": gap_to_target,
+        "blocking_gap_ids": blocking_gap_ids,
+        "next_research_task_id": next_research_task_id,
+        "acceptance_criteria": acceptance_criteria,
+        "source_artifact_ids": matrix_item["source_artifact_ids"],
+    }
+
+
+def _research_next_tasks(
+    support_gap_ledger: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    definitions = {
+        "r6-research-task-trend-interval-holdout": {
+            "goal": "验证趋势方向和风险区间在独立 holdout 或真实 outcome 上是否稳定。",
+            "implementation_path": (
+                "接入同 family / field outcome holdout，复用 trend_interval_risk_metrics，"
+                "报告 direction accuracy、interval coverage、interval width 和 false alarm。"
+            ),
+            "acceptance_criteria": (
+                "trend_direction_accuracy >= 0.80 且 interval_coverage >= 0.80，"
+                "同时不隐藏 false alarm。"
+            ),
+        },
+        "r6-research-task-false-alarm-control": {
+            "goal": "降低风险排序误报，让 Product 的风险分布从诊断走向可决策。",
+            "implementation_path": (
+                "设计非 case-memory 的 false-alarm discriminator，绑定 holdout 验证，"
+                "同时报告 risk_ranking_quality 和 false_alarm_rate。"
+            ),
+            "acceptance_criteria": (
+                "risk_ranking_quality >= 0.50 且 false_alarm_rate <= 0.50，"
+                "并通过独立或 field holdout。"
+            ),
+        },
+        "r6-research-task-segment-outcome-labels": {
+            "goal": "把异常群体从可解释展示升级为可验证指标。",
+            "implementation_path": (
+                "为 segment-level outcome 或专家审核建立轻量标签协议，"
+                "输出 abnormal segment precision/recall。"
+            ),
+            "acceptance_criteria": (
+                "存在可审计 segment labels，且 abnormal segment precision/recall 可计算。"
+            ),
+        },
+        "r6-research-task-mechanism-holdout-validation": {
+            "goal": "验证机制解释和 behavioral operator 不只是诊断路径。",
+            "implementation_path": (
+                "对 mechanism propagation、mechanism ablation 和 operator holdout "
+                "做同 family / independent holdout 复核。"
+            ),
+            "acceptance_criteria": (
+                "mechanism ablation 不再出现 holdout regression，"
+                "operator_holdout_non_regression=true。"
+            ),
+        },
+        "r6-research-task-outcome-feedback-transfer": {
+            "goal": "证明 outcome feedback learning 能受控迁移，而不是 same-case 修补。",
+            "implementation_path": (
+                "用真实 outcome 或独立 holdout 审核 candidate update，"
+                "通过 cross-case transfer 和 runtime update guard 后才允许默认启用。"
+            ),
+            "acceptance_criteria": (
+                "candidate update 通过 cross-case transfer、independent holdout "
+                "和 field outcome review；runtime_default_allowed 才能为 true。"
+            ),
+        },
+    }
+    task_ids = list(
+        dict.fromkeys(item["next_research_task_id"] for item in support_gap_ledger)
+    )
+    tasks = []
+    for task_id in task_ids:
+        task = definitions[task_id]
+        tasks.append(
+            {
+                "task_id": task_id,
+                "goal": task["goal"],
+                "implementation_path": task["implementation_path"],
+                "acceptance_criteria": task["acceptance_criteria"],
+                "unblocks_product_values": [
+                    item["product_value"]
+                    for item in support_gap_ledger
+                    if item["next_research_task_id"] == task_id
+                ],
+            }
+        )
+    return tasks
+
+
+def _support_coverage(support_matrix: list[dict[str, Any]]) -> dict[str, Any]:
+    categories = [_support_category(item["support_status"]) for item in support_matrix]
+    return {
+        "product_value_count": len(support_matrix),
+        "supported_value_count": categories.count("supported"),
+        "partial_value_count": categories.count("partial"),
+        "diagnostic_value_count": categories.count("diagnostic"),
+        "blocked_value_count": categories.count("blocked"),
+        "research_support_contract_complete": True,
+    }
+
+
+def _product_claim_support_summary(
+    *,
+    support_gap_ledger: list[dict[str, Any]],
+    overall_supported: bool,
+) -> dict[str, Any]:
+    return {
+        "research_support_contract_complete": True,
+        "overall_product_core_value_supported": overall_supported,
+        "guarded_partial_claims_supported": [
+            item["product_value"]
+            for item in support_gap_ledger
+            if item["product_display_level"] == "guarded_partial_claim"
+        ],
+        "diagnostic_only_claims": [
+            item["product_value"]
+            for item in support_gap_ledger
+            if item["product_display_level"]
+            in {"guarded_diagnostic_claim", "diagnostic_claim_only"}
+        ],
+        "blocked_product_values": [
+            item["product_value"]
+            for item in support_gap_ledger
+            if item["product_display_level"] == "blocked_claim_only"
+        ],
+    }
+
+
+def _support_category(status: str) -> str:
+    if status.startswith("supported"):
+        return "supported"
+    if status == "partial_current_proxy":
+        return "partial"
+    if status in {"partial_high_false_alarm", "diagnostic_only"}:
+        return "diagnostic"
+    return "blocked"
+
+
+def _positive_gap(target: float, current: float) -> float:
+    return round(max(0.0, target - current), 3)
 
 
 def main() -> int:

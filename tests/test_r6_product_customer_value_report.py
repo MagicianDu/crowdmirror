@@ -25,6 +25,7 @@ def test_r6_product_customer_value_report_contains_trend_interval_risk_sections(
         "risk_distribution",
         "abnormal_segments",
         "mechanism_explanation",
+        "research_support_gap_ledger",
         "evidence_and_blocked_claims",
         "outcome_review_plan",
     ]
@@ -32,6 +33,11 @@ def test_r6_product_customer_value_report_contains_trend_interval_risk_sections(
     assert "risk_interval" in report["display_payload"]
     assert "risk_distribution" in report["display_payload"]
     assert "abnormal_segments" in report["display_payload"]
+    assert "research_support" in report["display_payload"]
+    assert report["display_payload"]["research_support"][
+        "overall_product_core_value_supported"
+    ] is False
+    assert report["display_payload"]["research_support"]["support_gap_ledger"]
     assert "精准预测系统" in report["blocked_claims"]
     assert "r6-research-product-value-support-current-001" in report["source_refs"]
     assert "needs_customer_facing_ui_integration" not in report["blocking_gaps"]

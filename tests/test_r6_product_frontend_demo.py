@@ -41,6 +41,7 @@ def test_r6_product_frontend_assets_exist_and_bind_current_artifacts():
         "风险分布",
         "异常群体",
         "机制解释",
+        "研究支撑",
         "证据边界",
         "阻断声明",
         "数据来源",
@@ -58,6 +59,8 @@ def test_r6_product_frontend_is_source_backed_and_fail_closed():
     assert "不展示静态兜底结论" in js
     assert "sourceRefs" in js
     assert "blockedClaims" in js
+    assert "supportGapLedger" in js
+    assert "researchNextTasks" in js
 
     assert "精准预测系统" not in html
     assert "系统可以精确预测单点结果" not in html

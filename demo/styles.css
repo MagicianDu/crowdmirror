@@ -425,6 +425,93 @@ textarea {
   line-height: 1.65;
 }
 
+.research-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.research-summary div {
+  display: grid;
+  gap: 6px;
+  min-height: 82px;
+  align-content: center;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.research-summary span,
+.task-row span,
+.task-row small {
+  color: var(--muted);
+}
+
+.research-summary strong {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.ledger-table {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ledger-head,
+.ledger-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.9fr) minmax(150px, 0.7fr) minmax(180px, 1fr) minmax(220px, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 11px 12px;
+}
+
+.ledger-head {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 760;
+  background: var(--surface-soft);
+}
+
+.ledger-row {
+  border-top: 1px solid var(--border);
+}
+
+.ledger-row span:last-child {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.task-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.task-row {
+  padding: 12px 0 0;
+  border-top: 1px solid var(--border);
+}
+
+.task-row div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.task-row p {
+  margin: 8px 0 6px;
+  line-height: 1.55;
+}
+
+.task-row small {
+  display: block;
+  line-height: 1.55;
+}
+
 .table-wrap {
   width: 100%;
   overflow: auto;
@@ -548,6 +635,19 @@ tbody td {
   .segment-grid {
     grid-template-columns: 1fr;
   }
+
+  .research-summary {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
+
+  .ledger-head {
+    display: none;
+  }
+
+  .ledger-row {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
 }
 
 @media (max-width: 560px) {
@@ -557,8 +657,13 @@ tbody td {
 
   .panel-heading,
   .segment-item div,
+  .task-row div,
   .interval-summary {
     display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .research-summary {
     grid-template-columns: 1fr;
   }
 }

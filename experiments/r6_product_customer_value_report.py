@@ -34,6 +34,7 @@ R6_PRODUCT_CUSTOMER_VALUE_SECTIONS = [
     "risk_distribution",
     "abnormal_segments",
     "mechanism_explanation",
+    "research_support_gap_ledger",
     "evidence_and_blocked_claims",
     "outcome_review_plan",
 ]
@@ -160,6 +161,18 @@ def _display_payload(
             "support_status": _support_status(support, "mechanism_explanation"),
             "claim_status": "diagnostic_only",
         },
+        "research_support": {
+            "overall_product_core_value_supported": support[
+                "overall_product_core_value_supported"
+            ],
+            "support_coverage": support.get("support_coverage", {}),
+            "product_claim_support_summary": support.get(
+                "product_claim_support_summary",
+                {},
+            ),
+            "support_gap_ledger": support.get("support_gap_ledger", []),
+            "research_next_tasks": support.get("research_next_tasks", []),
+        },
     }
 
 
@@ -191,6 +204,10 @@ def _section_contracts(
         },
         {
             "section_id": "mechanism_explanation",
+            "source_artifact_ids": [support["artifact_id"]],
+        },
+        {
+            "section_id": "research_support_gap_ledger",
             "source_artifact_ids": [support["artifact_id"]],
         },
         {
