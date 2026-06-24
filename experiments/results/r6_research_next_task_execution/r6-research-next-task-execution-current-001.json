@@ -1,0 +1,211 @@
+{
+  "acceptance_gates": {
+    "all_five_tasks_executed": true,
+    "all_task_results_have_acceptance_decision": true,
+    "all_task_results_have_source_refs": true,
+    "field_outcome_validated": false,
+    "product_core_value_fully_supported": false,
+    "runtime_default_allowed": false
+  },
+  "allowed_claims": [
+    "All five Research next tasks have executable, source-backed task results.",
+    "Some tasks provide guarded or diagnostic evidence; blocked gates remain visible."
+  ],
+  "artifact_id": "r6-research-next-task-execution-current-001",
+  "blocked_claims": [
+    "Research \u5df2\u5b8c\u6574\u652f\u6491 Product \u5168\u90e8\u6838\u5fc3\u4ef7\u503c",
+    "field validation \u5df2\u5b8c\u6210",
+    "runtime default \u53ef\u4ee5\u5f00\u542f",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "execution_summary": {
+    "accepted_for_guarded_reporting_count": 1,
+    "blocked_or_failed_count": 4,
+    "executed_task_count": 5,
+    "product_core_value_fully_supported": false,
+    "task_count": 5
+  },
+  "run_id": "r6-product-value-current-001",
+  "schema_version": "r6-research-next-task-execution-v1",
+  "source_refs": [
+    "r6-trend-interval-risk-metrics-current-001",
+    "r6-research-next-task-execution-current-001-decision-value-metrics",
+    "r6-research-next-task-execution-current-001-interaction-signal-validity",
+    "r6-operator-holdout-validation-current-001",
+    "r6-cross-case-transfer-protocol-current-002"
+  ],
+  "status": "research_next_tasks_executed_with_guarded_results",
+  "task_results": [
+    {
+      "acceptance_decision": "failed_current_public_proxy_gate",
+      "acceptance_gates": {
+        "current_public_proxy_holdout_executed": true,
+        "false_alarm_not_hidden": false,
+        "field_outcome_validated": false,
+        "interval_coverage_passed": false,
+        "trend_direction_accuracy_passed": false
+      },
+      "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+      "execution_status": "executed",
+      "metrics": {
+        "false_alarm_rate": 0.667,
+        "interval_coverage": 0.667,
+        "mean_interval_width": 0.24,
+        "trend_direction_accuracy": 0.667
+      },
+      "product_values": [
+        "trend_direction",
+        "risk_interval"
+      ],
+      "source_artifact_ids": [
+        "r6-trend-interval-risk-metrics-current-001"
+      ],
+      "task_id": "r6-research-task-trend-interval-holdout"
+    },
+    {
+      "acceptance_decision": "blocked_until_holdout_or_field_outcome",
+      "acceptance_gates": {
+        "control_policy_present": true,
+        "current_proxy_control_passed": true,
+        "field_outcome_validated": false,
+        "holdout_validated": false,
+        "runtime_default_allowed": false
+      },
+      "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+      "execution_status": "executed",
+      "metrics": {
+        "baseline_false_alarm_rate": 0.667,
+        "controlled_false_alarm_rate": 0.0,
+        "controlled_risk_ranking_quality": 1.0,
+        "controlled_static_prior_miss_recovery_rate": 1.0,
+        "selected_source_keys": [
+          "htops_cost_pressure"
+        ]
+      },
+      "product_values": [
+        "risk_distribution"
+      ],
+      "source_artifact_ids": [
+        "r6-research-next-task-execution-current-001-decision-value-metrics",
+        "r6-research-next-task-execution-current-001-interaction-signal-validity"
+      ],
+      "task_id": "r6-research-task-false-alarm-control"
+    },
+    {
+      "acceptance_decision": "accepted_for_guarded_reporting",
+      "acceptance_gates": {
+        "field_segment_labels_available": false,
+        "product_claim_upgrade_allowed": false,
+        "segment_label_protocol_present": true,
+        "segment_metrics_computable": true
+      },
+      "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+      "execution_status": "executed",
+      "metrics": {
+        "case_results": [
+          {
+            "audit_label_segment_ids": [
+              "service_dependent_low_trust",
+              "community_watchers"
+            ],
+            "predicted_segment_ids": [
+              "service_dependent_low_trust",
+              "community_watchers",
+              "low_dependency_high_trust"
+            ],
+            "source_key": "htops_cost_pressure",
+            "true_positive_segment_count": 2
+          },
+          {
+            "audit_label_segment_ids": [
+              "rights_dependent_low_trust",
+              "rule_watchers"
+            ],
+            "predicted_segment_ids": [
+              "rights_dependent_low_trust",
+              "rule_watchers",
+              "low_usage_high_trust"
+            ],
+            "source_key": "anes_health_heldout",
+            "true_positive_segment_count": 2
+          },
+          {
+            "audit_label_segment_ids": [
+              "rights_dependent_low_trust",
+              "rule_watchers"
+            ],
+            "predicted_segment_ids": [
+              "rights_dependent_low_trust",
+              "rule_watchers",
+              "low_usage_high_trust"
+            ],
+            "source_key": "anes_climate_heldout",
+            "true_positive_segment_count": 2
+          }
+        ],
+        "label_source_type": "proxy_aligned_audit_fixture_not_field_outcome",
+        "labeled_case_count": 3,
+        "segment_precision": 0.667,
+        "segment_recall": 1.0
+      },
+      "product_values": [
+        "abnormal_segments"
+      ],
+      "source_artifact_ids": [
+        "r6-trend-interval-risk-metrics-current-001"
+      ],
+      "task_id": "r6-research-task-segment-outcome-labels"
+    },
+    {
+      "acceptance_decision": "failed_current_public_proxy_gate",
+      "acceptance_gates": {
+        "field_outcome_validated": false,
+        "mechanism_holdout_validation_present": true,
+        "operator_holdout_non_regression": false,
+        "runtime_default_allowed": false
+      },
+      "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+      "execution_status": "executed",
+      "metrics": {
+        "failed_trial_count": 2,
+        "non_regression_trial_count": 2,
+        "operator_holdout_passed_trial_count": 0,
+        "operator_holdout_trial_count": 4
+      },
+      "product_values": [
+        "mechanism_explanation"
+      ],
+      "source_artifact_ids": [
+        "r6-operator-holdout-validation-current-001"
+      ],
+      "task_id": "r6-research-task-mechanism-holdout-validation"
+    },
+    {
+      "acceptance_decision": "blocked_until_holdout_or_field_outcome",
+      "acceptance_gates": {
+        "beats_prior_interaction_on_holdout": true,
+        "field_outcome_validated": false,
+        "outcome_feedback_transfer_available": true,
+        "runtime_default_allowed": false,
+        "runtime_update_guard_passed": false
+      },
+      "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+      "execution_status": "executed",
+      "metrics": {
+        "beats_prior_interaction_on_holdout": true,
+        "beats_static_prior_on_holdout": false,
+        "global_update_accepted": false,
+        "outcome_feedback_transfer_available": true,
+        "runtime_update_guard_passed": false
+      },
+      "product_values": [
+        "outcome_feedback_learning"
+      ],
+      "source_artifact_ids": [
+        "r6-cross-case-transfer-protocol-current-002"
+      ],
+      "task_id": "r6-research-task-outcome-feedback-transfer"
+    }
+  ]
+}

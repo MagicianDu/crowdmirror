@@ -324,6 +324,7 @@ function renderMechanism(mechanism) {
 function renderResearchSupport(researchSupport, supportGapLedger, researchNextTasks) {
   const coverage = researchSupport.support_coverage || {};
   const summary = researchSupport.product_claim_support_summary || {};
+  const executionSummary = researchSupport.research_next_task_execution_summary || {};
   return `
     <div class="research-summary">
       <div>
@@ -341,6 +342,10 @@ function renderResearchSupport(researchSupport, supportGapLedger, researchNextTa
       <div>
         <span>完整支撑</span>
         <strong>${summary.overall_product_core_value_supported ? "是" : "否"}</strong>
+      </div>
+      <div>
+        <span>任务执行</span>
+        <strong>${escapeHtml(executionSummary.task_count ?? researchNextTasks.length)}</strong>
       </div>
     </div>
     <div class="ledger-table" role="table" aria-label="Research 支撑缺口">

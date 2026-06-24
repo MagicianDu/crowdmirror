@@ -47,11 +47,21 @@ def test_r6_research_product_value_support_has_actionable_gap_ledger():
         "all_product_values_mapped": True,
         "all_gaps_have_research_tasks": True,
         "all_tasks_have_acceptance_criteria": True,
+        "research_next_tasks_executed": True,
         "research_support_contract_complete": True,
         "field_outcome_validated": False,
         "runtime_default_allowed": False,
         "overall_product_core_value_supported": False,
     }
+    assert report["research_next_task_execution_summary"] == {
+        "artifact_id": "r6-research-next-task-execution-current-001",
+        "status": "research_next_tasks_executed_with_guarded_results",
+        "task_count": 5,
+        "accepted_for_guarded_reporting_count": 1,
+        "blocked_or_failed_count": 4,
+        "product_core_value_fully_supported": False,
+    }
+    assert "r6-research-next-task-execution-current-001" in report["source_refs"]
     assert report["support_coverage"] == {
         "product_value_count": 6,
         "supported_value_count": 0,

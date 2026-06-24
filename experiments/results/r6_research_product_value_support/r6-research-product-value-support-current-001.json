@@ -5,6 +5,7 @@
     "all_tasks_have_acceptance_criteria": true,
     "field_outcome_validated": false,
     "overall_product_core_value_supported": false,
+    "research_next_tasks_executed": true,
     "research_support_contract_complete": true,
     "runtime_default_allowed": false
   },
@@ -43,6 +44,14 @@
     ],
     "overall_product_core_value_supported": false,
     "research_support_contract_complete": true
+  },
+  "research_next_task_execution_summary": {
+    "accepted_for_guarded_reporting_count": 1,
+    "artifact_id": "r6-research-next-task-execution-current-001",
+    "blocked_or_failed_count": 4,
+    "product_core_value_fully_supported": false,
+    "status": "research_next_tasks_executed_with_guarded_results",
+    "task_count": 5
   },
   "research_next_tasks": [
     {
@@ -96,7 +105,8 @@
   "schema_version": "r6-research-product-value-support-v1",
   "source_refs": [
     "r6-trend-interval-risk-metrics-current-001",
-    "r6-mechanism-research-readiness-report-current-001"
+    "r6-mechanism-research-readiness-report-current-001",
+    "r6-research-next-task-execution-current-001"
   ],
   "status": "product_value_support_partial",
   "support_coverage": {

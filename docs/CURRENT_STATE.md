@@ -206,6 +206,7 @@
 50. Research/Product 双线补强第一轮已完成并落盘：`r6-trend-interval-risk-metrics-current-001` 显示 `trend_direction_accuracy=0.667`、`interval_coverage=0.667`、`risk_ranking_quality=0.333`、`false_alarm_rate=0.667`，因此 Research 对 Product 核心价值的支撑状态是 `product_value_support_partial`，不是 fully supported。Product 已新增 `r6-product-customer-value-report-current-001` 和 customer value report API endpoint，可展示趋势、区间、风险分布、异常群体和机制解释，但必须保留 guarded/blocked claims，不能声明精准预测、field validation 或 runtime default。
 51. Product 客户可见前端第一版已实现为 `/demo/` source-backed report UI：页面从 `r6-product-customer-value-report-current-001`、`r6-research-product-value-support-current-001`、`r6-product-readiness-index-current-001` 和 `r6-product-api-manifest-current-001` 读取数据，展示趋势方向、风险区间、风险分布、异常群体、机制解释、证据边界、阻断声明和来源。`customer_facing_ui_demo_ready=true` 已写入 readiness/API/customer report artifacts；旧 gap `needs_customer_facing_ui_integration` 已收窄为 `needs_customer_workflow_runtime_integration`，仍保留 `needs_field_outcome_validation` 和 `needs_runtime_default_holdout_review`。
 52. Research -> Product 支撑补齐第一步已实现为可审计 gap ledger：`r6-research-product-value-support-current-001` 现在包含 `support_coverage`、`support_gap_ledger`、`research_next_tasks`、`product_claim_support_summary` 和 `acceptance_gates`。当前结论仍是 `overall_product_core_value_supported=false`，但每个 Product value 已绑定当前指标、目标阈值、差距、阻断原因、下一步任务和验收标准。Customer value report 与 `/demo/` 前端已消费该 ledger，展示“研究支撑”面板。当前可说的是“Research 支撑合同已补齐”，不是“Research 已全面支撑 Product”。
+53. 五个 `research_next_tasks` 已全部执行并落盘为 `r6-research-next-task-execution-current-001`：`all_five_tasks_executed=true`、`task_count=5`、`accepted_for_guarded_reporting_count=1`、`blocked_or_failed_count=4`。具体结论是：trend/interval holdout 在当前 public proxy 上未过阈值；false-alarm control 在 current proxy 上可把误报降到 0 但缺 holdout validation；segment outcome labels 已有 proxy-aligned audit fixture，可计算 precision/recall，但不是 field segment labels；mechanism holdout validation 仍失败；outcome feedback transfer 可改善 prior-interaction error，但未过 runtime update guard。测试通过只证明五项任务链路已执行，不代表 Research 已全面支撑 Product。
 
 ## 可复用资产
 
@@ -244,7 +245,7 @@ R6 开发时必须只 stage 本轮明确修改的文件。
 ## 下一步
 
 1. Product 下一步在 `/demo/` source-backed report UI 基础上推进真实客户工作流：场景输入、群体/先验选择、运行入口、报告导出、outcome review 入口和用户可理解的 failure diagnosis；当前 demo 已关闭“完全没有客户可见 UI”的 gap，但还不是完整 SaaS 工作流。
-2. Research 下一步按 `r6-research-product-value-support-current-001.research_next_tasks` 执行五个任务：trend/interval holdout、false-alarm control、segment outcome labels、mechanism holdout validation、outcome feedback transfer。当前首轮指标显示趋势/区间是 partial current-proxy evidence，风险排序和 false-alarm control 仍是主要 gap。
+2. Research 下一步不再是“执行五个任务”本身，而是针对 `r6-research-next-task-execution-current-001` 中 blocked/failed 的四项继续补证据：trend/interval 独立 holdout、false-alarm holdout validation、mechanism/operator holdout、outcome feedback runtime guard；其中 false-alarm control 是当前最有 Product 杠杆的候选。
 3. 数据侧不再泛泛增加 proxy；新增数据必须服务于 Product decision report、outcome review、operator holdout 或 field outcome 复核。
 4. 方法侧停止继续优化当前 scoring candidate；它保留为 negative baseline 和 diagnostic gate。
 5. Product 侧保留并强化 `interaction_signal_validity_holdout_summary`、false-alarm diagnosis、blocked update reason 和 claim boundary，确保新 Research 方法不会污染 runtime default。

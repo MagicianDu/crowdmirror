@@ -18,6 +18,9 @@ from experiments.r6_contracts import (
 from experiments.r6_mechanism_research_readiness_report import (
     build_r6_mechanism_research_readiness_report,
 )
+from experiments.r6_research_next_task_execution import (
+    build_r6_research_next_task_execution,
+)
 from experiments.r6_trend_interval_risk_metrics import (
     R6_TREND_INTERVAL_RISK_METRICS_SCHEMA_VERSION,
     build_r6_trend_interval_risk_metrics,
@@ -39,6 +42,7 @@ def build_r6_research_product_value_support(
     run_id: str,
     trend_interval_risk_metrics: dict[str, Any] | None = None,
     mechanism_readiness: dict[str, Any] | None = None,
+    next_task_execution: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
@@ -51,6 +55,11 @@ def build_r6_research_product_value_support(
         run_id=run_id,
     )
     _validate_metrics(metrics)
+    task_execution = next_task_execution or build_r6_research_next_task_execution(
+        artifact_id="r6-research-next-task-execution-current-001",
+        run_id=run_id,
+        trend_interval_risk_metrics=metrics,
+    )
     summary = metrics["summary"]
     support_matrix = [
         {
@@ -115,6 +124,7 @@ def build_r6_research_product_value_support(
         support_gap_ledger=support_gap_ledger,
         overall_supported=overall_supported,
     )
+    task_execution_summary = _task_execution_summary(task_execution)
     report = {
         "schema_version": R6_RESEARCH_PRODUCT_VALUE_SUPPORT_SCHEMA_VERSION,
         "artifact_id": artifact_id,
@@ -129,6 +139,7 @@ def build_r6_research_product_value_support(
         "support_coverage": support_coverage,
         "support_gap_ledger": support_gap_ledger,
         "research_next_tasks": research_next_tasks,
+        "research_next_task_execution_summary": task_execution_summary,
         "product_claim_support_summary": product_claim_support_summary,
         "acceptance_gates": {
             "all_product_values_mapped": len(support_gap_ledger) == 6,
@@ -138,6 +149,9 @@ def build_r6_research_product_value_support(
             "all_tasks_have_acceptance_criteria": all(
                 bool(task["acceptance_criteria"]) for task in research_next_tasks
             ),
+            "research_next_tasks_executed": task_execution["acceptance_gates"][
+                "all_five_tasks_executed"
+            ],
             "research_support_contract_complete": (
                 len(support_gap_ledger) == 6
                 and all(
@@ -148,12 +162,17 @@ def build_r6_research_product_value_support(
                     bool(task["acceptance_criteria"])
                     for task in research_next_tasks
                 )
+                and task_execution["acceptance_gates"]["all_five_tasks_executed"]
             ),
             "field_outcome_validated": False,
             "runtime_default_allowed": False,
             "overall_product_core_value_supported": overall_supported,
         },
-        "source_refs": [metrics["artifact_id"], mechanism["artifact_id"]],
+        "source_refs": [
+            metrics["artifact_id"],
+            mechanism["artifact_id"],
+            task_execution["artifact_id"],
+        ],
         "allowed_claims": [
             (
                 "Research evidence can support guarded trend and interval reporting "
@@ -213,6 +232,22 @@ def _threshold_support(value: float, *, pass_threshold: float) -> str:
     if value > 0:
         return "partial_current_proxy"
     return "blocked"
+
+
+def _task_execution_summary(task_execution: dict[str, Any]) -> dict[str, Any]:
+    summary = task_execution["execution_summary"]
+    return {
+        "artifact_id": task_execution["artifact_id"],
+        "status": task_execution["status"],
+        "task_count": summary["task_count"],
+        "accepted_for_guarded_reporting_count": summary[
+            "accepted_for_guarded_reporting_count"
+        ],
+        "blocked_or_failed_count": summary["blocked_or_failed_count"],
+        "product_core_value_fully_supported": summary[
+            "product_core_value_fully_supported"
+        ],
+    }
 
 
 def _support_gap_ledger(

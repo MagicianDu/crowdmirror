@@ -157,6 +157,14 @@
         "overall_product_core_value_supported": false,
         "research_support_contract_complete": true
       },
+      "research_next_task_execution_summary": {
+        "accepted_for_guarded_reporting_count": 1,
+        "artifact_id": "r6-research-next-task-execution-current-001",
+        "blocked_or_failed_count": 4,
+        "product_core_value_fully_supported": false,
+        "status": "research_next_tasks_executed_with_guarded_results",
+        "task_count": 5
+      },
       "research_next_tasks": [
         {
           "acceptance_criteria": "trend_direction_accuracy >= 0.80 \u4e14 interval_coverage >= 0.80\uff0c\u540c\u65f6\u4e0d\u9690\u85cf false alarm\u3002",

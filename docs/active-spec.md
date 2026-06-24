@@ -94,6 +94,7 @@ R6 必须同时满足：
 12. `Product customer value report`
 13. `Product frontend demo / source-backed customer report UI`
 14. `Research -> Product support gap ledger / next research task contract`
+15. `Research next task execution artifact`
 
 不再把“继续增加 public proxy 数量”作为默认目标；只有当新增数据能触发 acceptance gate，才进入数据接入。
 
@@ -122,6 +123,7 @@ R6 必须同时满足：
 - Product 报告不得承诺精确预测单点结果；客户可见输出必须优先展示趋势方向、可信数值区间、风险分布、异常群体和机制解释。
 - Product 前端必须从 current artifacts/API manifest 读取数据，缺 artifact 时 fail closed，不允许静态文案兜底。
 - Research 若不能全面支撑 Product，必须输出每个 Product value 对应的当前证据、差距、下一步 research task 和验收标准；不得只给粗粒度 `partial` 结论。
+- Research next task 被执行后必须落为 source-backed execution artifact，报告 task-level acceptance decision；测试通过只证明任务链路完成，不自动证明 Product core value fully supported。
 - 候选更新必须通过当前阶段 addendum 定义的 evidence level 和 acceptance gate，才能从 diagnostic 升级。
 - same-case outcome feedback improvement 不得直接包装成可迁移更新。
 - `beat static prior` 只作为 runtime update guard 使用，不作为 R6 整体研究目标。

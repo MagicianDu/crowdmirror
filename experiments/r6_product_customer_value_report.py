@@ -170,6 +170,10 @@ def _display_payload(
                 "product_claim_support_summary",
                 {},
             ),
+            "research_next_task_execution_summary": support.get(
+                "research_next_task_execution_summary",
+                {},
+            ),
             "support_gap_ledger": support.get("support_gap_ledger", []),
             "research_next_tasks": support.get("research_next_tasks", []),
         },
