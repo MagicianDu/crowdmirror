@@ -31,6 +31,7 @@ def test_learning_counterfactual_holdout_reports_leave_one_case_evidence():
     assert report["summary"]["holdout_trial_count"] == 3
     assert report["summary"]["non_regression_rate"] >= 0.667
     assert report["summary"]["false_alarm_reduction_rate"] >= 0.5
+    assert report["summary"]["static_prior_miss_recovery_rate"] == 1.0
     assert report["summary"]["supported_holdout_count"] >= 1
     assert report["acceptance_gates"]["leave_one_case_holdout_present"] is True
     assert report["acceptance_gates"]["independent_holdout_passed"] is False
@@ -42,7 +43,34 @@ def test_learning_counterfactual_holdout_reports_leave_one_case_evidence():
         assert trial["heldout_source_key"]
         assert trial["heldout_source_key"] not in trial["train_source_keys"]
         assert trial["learned_mechanism_weights"]
+        assert trial["transfer_diagnostics"]["unseen_mechanism_count"] >= 0
         assert trial["claim_status"] in {"guarded_supported", "diagnostic_blocked"}
+
+
+def test_learning_counterfactual_holdout_applies_unseen_mechanism_floor_without_restoring_false_alarms():
+    report = build_r6_learning_counterfactual_holdout_validation(
+        artifact_id="r6-learning-counterfactual-holdout-test",
+        run_id="r6-learning-counterfactual-run",
+    )
+
+    trials = {
+        trial["heldout_source_key"]: trial
+        for trial in report["holdout_trials"]
+    }
+    htops = trials["htops_cost_pressure"]
+    assert htops["static_prior_missed_high_risk"] is True
+    assert htops["static_prior_miss_recovered"] is True
+    assert htops["learned_operator_flags_new_risk"] is True
+    assert htops["transfer_diagnostics"]["unseen_mechanism_floor_applied"] is True
+    assert htops["transfer_diagnostics"]["unseen_mechanism_count"] >= 3
+    assert "unseen_high_risk_mechanism_transfer_floor" in htops["transfer_diagnostics"][
+        "diagnostic_reasons"
+    ]
+
+    for source_key in ["anes_health_heldout", "anes_climate_heldout"]:
+        assert trials[source_key]["raw_interaction_false_alarm"] is True
+        assert trials[source_key]["learned_operator_false_alarm"] is False
+        assert trials[source_key]["false_alarm_reduced"] is True
 
 
 def test_learning_counterfactual_holdout_cli_writes_artifact(tmp_path):

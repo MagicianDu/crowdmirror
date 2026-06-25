@@ -145,9 +145,9 @@
         "false_alarm_reduction_rate": 1.0,
         "holdout_trial_count": 3,
         "independent_holdout_passed": false,
-        "mean_error_reduction_vs_raw_interaction": 0.004,
+        "mean_error_reduction_vs_raw_interaction": 0.018,
         "non_regression_rate": 0.667,
-        "static_prior_miss_recovery_rate": 0.0,
+        "static_prior_miss_recovery_rate": 1.0,
         "supported_holdout_count": 2
       },
       "summary": {

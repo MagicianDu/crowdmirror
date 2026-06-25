@@ -28,6 +28,7 @@ from experiments.r6_trend_interval_risk_metrics import (
 R6_LEARNING_COUNTERFACTUAL_HOLDOUT_VALIDATION_SCHEMA_VERSION = (
     "r6-learning-counterfactual-holdout-validation-v1"
 )
+UNKNOWN_HIGH_RISK_MECHANISM_TRANSFER_FLOOR = 0.65
 
 
 def build_r6_learning_counterfactual_holdout_validation(
@@ -75,6 +76,9 @@ def build_r6_learning_counterfactual_holdout_validation(
             "protocol_id": "leave_one_case_mechanism_weight_transfer",
             "train_unit": "all current proxy cases except heldout_source_key",
             "heldout_unit": "one current proxy case",
+            "unseen_mechanism_transfer_floor": (
+                UNKNOWN_HIGH_RISK_MECHANISM_TRANSFER_FLOOR
+            ),
             "field_outcome_required_for_runtime_default": True,
         },
         "summary": summary,
@@ -143,7 +147,11 @@ def _leave_one_case_trials(
             case for case in case_results if case["source_key"] != heldout["source_key"]
         ]
         weights = _learn_mechanism_weights(train_cases)
-        learned = _case_result(case=heldout, learned_weights=weights)
+        learned = _case_result(
+            case=heldout,
+            learned_weights=weights,
+            unknown_mechanism_weight=UNKNOWN_HIGH_RISK_MECHANISM_TRANSFER_FLOOR,
+        )
         raw_error = round(
             abs(learned["raw_interaction_prediction"] - learned["observed_reject_proxy"]),
             3,
@@ -182,10 +190,14 @@ def _leave_one_case_trials(
                 "raw_interaction_false_alarm": learned["raw_interaction_false_alarm"],
                 "learned_operator_false_alarm": learned["learned_operator_false_alarm"],
                 "false_alarm_reduced": false_alarm_reduced,
+                "learned_operator_flags_new_risk": learned[
+                    "learned_operator_flags_new_risk"
+                ],
                 "static_prior_missed_high_risk": learned[
                     "static_prior_missed_high_risk"
                 ],
                 "static_prior_miss_recovered": static_miss_recovered,
+                "transfer_diagnostics": learned["transfer_diagnostics"],
                 "claim_status": "guarded_supported"
                 if supported
                 else "diagnostic_blocked",

@@ -70,6 +70,7 @@
           "mechanism_id": "access_anxiety",
           "raw_segment_delta": 0.12,
           "segment_id": "service_dependent_low_trust",
+          "weight_source": "learned",
           "weighted_segment_delta": 0.216
         },
         {
@@ -77,6 +78,7 @@
           "mechanism_id": "community_amplification",
           "raw_segment_delta": 0.12,
           "segment_id": "service_dependent_low_trust",
+          "weight_source": "learned",
           "weighted_segment_delta": 0.216
         },
         {
@@ -84,6 +86,7 @@
           "mechanism_id": "equity_concern",
           "raw_segment_delta": 0.12,
           "segment_id": "service_dependent_low_trust",
+          "weight_source": "learned",
           "weighted_segment_delta": 0.216
         },
         {
@@ -91,6 +94,7 @@
           "mechanism_id": "equity_concern_discussion",
           "raw_segment_delta": 0.06,
           "segment_id": "community_watchers",
+          "weight_source": "learned",
           "weighted_segment_delta": 0.108
         },
         {
@@ -98,6 +102,7 @@
           "mechanism_id": "official_trust_buffer",
           "raw_segment_delta": 0.02,
           "segment_id": "low_dependency_high_trust",
+          "weight_source": "learned",
           "weighted_segment_delta": 0.0
         }
       ],
@@ -117,7 +122,14 @@
       "source_key": "htops_cost_pressure",
       "static_prior_missed_high_risk": true,
       "static_prior_prediction": 0.29,
-      "target_case_id": "generic-public-service-policy-change"
+      "target_case_id": "generic-public-service-policy-change",
+      "transfer_diagnostics": {
+        "diagnostic_reasons": [],
+        "known_mechanism_count": 5,
+        "unknown_mechanism_weight": 0.0,
+        "unseen_mechanism_count": 0,
+        "unseen_mechanism_floor_applied": false
+      }
     },
     {
       "claim_status": "guarded_diagnostic",
@@ -161,6 +173,7 @@
           "mechanism_id": "rights_loss_salience",
           "raw_segment_delta": 0.12,
           "segment_id": "rights_dependent_low_trust",
+          "weight_source": "learned",
           "weighted_segment_delta": 0.017
         },
         {
@@ -168,6 +181,7 @@
           "mechanism_id": "peer_amplification",
           "raw_segment_delta": 0.12,
           "segment_id": "rights_dependent_low_trust",
+          "weight_source": "learned",
           "weighted_segment_delta": 0.017
         },
         {
@@ -175,6 +189,7 @@
           "mechanism_id": "trust_shock",
           "raw_segment_delta": 0.12,
           "segment_id": "rights_dependent_low_trust",
+          "weight_source": "learned",
           "weighted_segment_delta": 0.017
         },
         {
@@ -182,6 +197,7 @@
           "mechanism_id": "procedural_fairness_discussion",
           "raw_segment_delta": 0.06,
           "segment_id": "rule_watchers",
+          "weight_source": "learned",
           "weighted_segment_delta": 0.009
         },
         {
@@ -189,6 +205,7 @@
           "mechanism_id": "official_trust_buffer",
           "raw_segment_delta": 0.02,
           "segment_id": "low_usage_high_trust",
+          "weight_source": "learned",
           "weighted_segment_delta": 0.0
         }
       ],
@@ -208,7 +225,14 @@
       "source_key": "anes_health_heldout",
       "static_prior_missed_high_risk": false,
       "static_prior_prediction": 0.31,
-      "target_case_id": "generic-rights-rule-change"
+      "target_case_id": "generic-rights-rule-change",
+      "transfer_diagnostics": {
+        "diagnostic_reasons": [],
+        "known_mechanism_count": 5,
+        "unknown_mechanism_weight": 0.0,
+        "unseen_mechanism_count": 0,
+        "unseen_mechanism_floor_applied": false
+      }
     },
     {
       "claim_status": "guarded_diagnostic",
@@ -252,6 +276,7 @@
           "mechanism_id": "rights_loss_salience",
           "raw_segment_delta": 0.12,
           "segment_id": "rights_dependent_low_trust",
+          "weight_source": "learned",
           "weighted_segment_delta": 0.017
         },
         {
@@ -259,6 +284,7 @@
           "mechanism_id": "peer_amplification",
           "raw_segment_delta": 0.12,
           "segment_id": "rights_dependent_low_trust",
+          "weight_source": "learned",
           "weighted_segment_delta": 0.017
         },
         {
@@ -266,6 +292,7 @@
           "mechanism_id": "trust_shock",
           "raw_segment_delta": 0.12,
           "segment_id": "rights_dependent_low_trust",
+          "weight_source": "learned",
           "weighted_segment_delta": 0.017
         },
         {
@@ -273,6 +300,7 @@
           "mechanism_id": "procedural_fairness_discussion",
           "raw_segment_delta": 0.06,
           "segment_id": "rule_watchers",
+          "weight_source": "learned",
           "weighted_segment_delta": 0.009
         },
         {
@@ -280,6 +308,7 @@
           "mechanism_id": "official_trust_buffer",
           "raw_segment_delta": 0.02,
           "segment_id": "low_usage_high_trust",
+          "weight_source": "learned",
           "weighted_segment_delta": 0.0
         }
       ],
@@ -299,7 +328,14 @@
       "source_key": "anes_climate_heldout",
       "static_prior_missed_high_risk": false,
       "static_prior_prediction": 0.31,
-      "target_case_id": "generic-rights-rule-change"
+      "target_case_id": "generic-rights-rule-change",
+      "transfer_diagnostics": {
+        "diagnostic_reasons": [],
+        "known_mechanism_count": 5,
+        "unknown_mechanism_weight": 0.0,
+        "unseen_mechanism_count": 0,
+        "unseen_mechanism_floor_applied": false
+      }
     }
   ],
   "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",

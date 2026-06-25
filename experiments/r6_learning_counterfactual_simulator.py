@@ -197,12 +197,18 @@ def _case_result(
     *,
     case: dict[str, Any],
     learned_weights: dict[str, dict[str, Any]],
+    unknown_mechanism_weight: float = 0.0,
 ) -> dict[str, Any]:
     static = float(case["static_prior_prediction"])
     interaction = float(case["interaction_prediction"])
     observed = float(case["observed_reject_proxy"])
     raw_delta = round(interaction - static, 3)
-    weighted_delta = _weighted_delta(case, learned_weights)
+    weighted = _weighted_delta_with_diagnostics(
+        case,
+        learned_weights,
+        unknown_mechanism_weight=unknown_mechanism_weight,
+    )
+    weighted_delta = weighted["weighted_delta"]
     learned_prediction = round(_clip(static + weighted_delta, 0.0, 1.0), 3)
     observed_high_risk = observed >= HIGH_RISK_THRESHOLD
     static_missed_high_risk = (
@@ -238,7 +244,9 @@ def _case_result(
         "learned_mechanism_contributions": _mechanism_contributions(
             case,
             learned_weights,
+            unknown_mechanism_weight=unknown_mechanism_weight,
         ),
+        "transfer_diagnostics": weighted["transfer_diagnostics"],
         "counterfactual_policy_results": policies,
         "claim_status": "guarded_diagnostic",
     }
@@ -248,44 +256,112 @@ def _weighted_delta(
     case: dict[str, Any],
     learned_weights: dict[str, dict[str, Any]],
 ) -> float:
+    return _weighted_delta_with_diagnostics(
+        case,
+        learned_weights,
+        unknown_mechanism_weight=0.0,
+    )["weighted_delta"]
+
+
+def _weighted_delta_with_diagnostics(
+    case: dict[str, Any],
+    learned_weights: dict[str, dict[str, Any]],
+    *,
+    unknown_mechanism_weight: float,
+) -> dict[str, Any]:
     raw_delta = float(case["interaction_prediction"]) - float(case["static_prior_prediction"])
     segment_delta_sum = sum(
         float(segment["delta_reject"]) for segment in case["top_abnormal_segments"]
     )
     if raw_delta <= 0 or segment_delta_sum <= 0:
-        return 0.0
+        return {
+            "weighted_delta": 0.0,
+            "transfer_diagnostics": _transfer_diagnostics(
+                known_count=0,
+                unseen_count=0,
+                floor_applied=False,
+                unknown_mechanism_weight=unknown_mechanism_weight,
+            ),
+        }
     weighted_sum = 0.0
+    known_count = 0
+    unseen_count = 0
+    floor_applied = False
     for segment in case["top_abnormal_segments"]:
-        weights = [
-            learned_weights[mechanism]["learned_weight"]
-            for mechanism in segment["mechanisms"]
-            if mechanism in learned_weights
-        ]
+        weights = []
+        for mechanism in segment["mechanisms"]:
+            if mechanism in learned_weights:
+                weights.append(learned_weights[mechanism]["learned_weight"])
+                known_count += 1
+            elif unknown_mechanism_weight > 0:
+                weights.append(unknown_mechanism_weight)
+                unseen_count += 1
+                floor_applied = True
+            else:
+                unseen_count += 1
         average_weight = sum(weights) / len(weights) if weights else 0.0
         weighted_sum += float(segment["delta_reject"]) * average_weight
-    return round(raw_delta * (weighted_sum / segment_delta_sum), 3)
+    return {
+        "weighted_delta": round(raw_delta * (weighted_sum / segment_delta_sum), 3),
+        "transfer_diagnostics": _transfer_diagnostics(
+            known_count=known_count,
+            unseen_count=unseen_count,
+            floor_applied=floor_applied,
+            unknown_mechanism_weight=unknown_mechanism_weight,
+        ),
+    }
 
 
 def _mechanism_contributions(
     case: dict[str, Any],
     learned_weights: dict[str, dict[str, Any]],
+    *,
+    unknown_mechanism_weight: float = 0.0,
 ) -> list[dict[str, Any]]:
     contributions = []
     for segment in case["top_abnormal_segments"]:
         for mechanism_id in segment["mechanisms"]:
-            if mechanism_id not in learned_weights:
+            if mechanism_id not in learned_weights and unknown_mechanism_weight <= 0:
                 continue
-            weight = learned_weights[mechanism_id]["learned_weight"]
+            weight = (
+                learned_weights[mechanism_id]["learned_weight"]
+                if mechanism_id in learned_weights
+                else unknown_mechanism_weight
+            )
             contributions.append(
                 {
                     "segment_id": segment["segment_id"],
                     "mechanism_id": mechanism_id,
                     "raw_segment_delta": segment["delta_reject"],
                     "learned_weight": weight,
+                    "weight_source": "learned"
+                    if mechanism_id in learned_weights
+                    else "unseen_mechanism_transfer_floor",
                     "weighted_segment_delta": round(segment["delta_reject"] * weight, 3),
                 }
             )
     return contributions
+
+
+def _transfer_diagnostics(
+    *,
+    known_count: int,
+    unseen_count: int,
+    floor_applied: bool,
+    unknown_mechanism_weight: float,
+) -> dict[str, Any]:
+    reasons = []
+    if floor_applied:
+        reasons.append("unseen_high_risk_mechanism_transfer_floor")
+    if unseen_count and not floor_applied:
+        reasons.append("unseen_mechanisms_zero_weighted")
+    return {
+        "known_mechanism_count": known_count,
+        "unseen_mechanism_count": unseen_count,
+        "unknown_mechanism_weight": round(unknown_mechanism_weight, 3),
+        "unseen_mechanism_floor_applied": floor_applied,
+        "diagnostic_reasons": reasons,
+    }
 
 
 def _rank_counterfactual_policies(

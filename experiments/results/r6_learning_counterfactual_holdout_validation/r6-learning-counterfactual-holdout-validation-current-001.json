@@ -6,7 +6,7 @@
     "leave_one_case_holdout_present": true,
     "non_regression_rate_passed": false,
     "runtime_default_allowed": false,
-    "static_prior_miss_recovery_preserved": false
+    "static_prior_miss_recovery_preserved": true
   },
   "allowed_claims": [
     "Learning counterfactual simulator has explicit leave-one-case holdout evidence.",
@@ -89,9 +89,10 @@
           "update_direction": "attenuate"
         }
       ],
-      "learned_operator_absolute_error": 0.18,
+      "learned_operator_absolute_error": 0.139,
       "learned_operator_false_alarm": false,
-      "learned_operator_prediction": 0.29,
+      "learned_operator_flags_new_risk": true,
+      "learned_operator_prediction": 0.331,
       "non_regression_vs_raw_interaction": false,
       "observed_reject_proxy": 0.47,
       "raw_interaction_absolute_error": 0.11,
@@ -100,12 +101,21 @@
       "source_artifact_ids": [
         "r6-learning-counterfactual-holdout-validation-current-001-trend-interval-risk-htops_cost_pressure-ablation"
       ],
-      "static_prior_miss_recovered": false,
+      "static_prior_miss_recovered": true,
       "static_prior_missed_high_risk": true,
       "train_source_keys": [
         "anes_health_heldout",
         "anes_climate_heldout"
-      ]
+      ],
+      "transfer_diagnostics": {
+        "diagnostic_reasons": [
+          "unseen_high_risk_mechanism_transfer_floor"
+        ],
+        "known_mechanism_count": 1,
+        "unknown_mechanism_weight": 0.65,
+        "unseen_mechanism_count": 4,
+        "unseen_mechanism_floor_applied": true
+      }
     },
     {
       "claim_status": "guarded_supported",
@@ -207,6 +217,7 @@
       ],
       "learned_operator_absolute_error": 0.02,
       "learned_operator_false_alarm": false,
+      "learned_operator_flags_new_risk": false,
       "learned_operator_prediction": 0.31,
       "non_regression_vs_raw_interaction": true,
       "observed_reject_proxy": 0.33,
@@ -221,7 +232,14 @@
       "train_source_keys": [
         "htops_cost_pressure",
         "anes_climate_heldout"
-      ]
+      ],
+      "transfer_diagnostics": {
+        "diagnostic_reasons": [],
+        "known_mechanism_count": 5,
+        "unknown_mechanism_weight": 0.65,
+        "unseen_mechanism_count": 0,
+        "unseen_mechanism_floor_applied": false
+      }
     },
     {
       "claim_status": "guarded_supported",
@@ -323,6 +341,7 @@
       ],
       "learned_operator_absolute_error": 0.078,
       "learned_operator_false_alarm": false,
+      "learned_operator_flags_new_risk": false,
       "learned_operator_prediction": 0.328,
       "non_regression_vs_raw_interaction": true,
       "observed_reject_proxy": 0.25,
@@ -337,7 +356,14 @@
       "train_source_keys": [
         "htops_cost_pressure",
         "anes_health_heldout"
-      ]
+      ],
+      "transfer_diagnostics": {
+        "diagnostic_reasons": [],
+        "known_mechanism_count": 5,
+        "unknown_mechanism_weight": 0.65,
+        "unseen_mechanism_count": 0,
+        "unseen_mechanism_floor_applied": false
+      }
     }
   ],
   "run_id": "r6-learning-counterfactual-current",
@@ -354,15 +380,16 @@
     "diagnostic_blocked_count": 1,
     "false_alarm_reduction_rate": 1.0,
     "holdout_trial_count": 3,
-    "mean_error_reduction_vs_raw_interaction": 0.004,
+    "mean_error_reduction_vs_raw_interaction": 0.018,
     "non_regression_rate": 0.667,
-    "static_prior_miss_recovery_rate": 0.0,
+    "static_prior_miss_recovery_rate": 1.0,
     "supported_holdout_count": 2
   },
   "validation_protocol": {
     "field_outcome_required_for_runtime_default": true,
     "heldout_unit": "one current proxy case",
     "protocol_id": "leave_one_case_mechanism_weight_transfer",
-    "train_unit": "all current proxy cases except heldout_source_key"
+    "train_unit": "all current proxy cases except heldout_source_key",
+    "unseen_mechanism_transfer_floor": 0.65
   }
 }

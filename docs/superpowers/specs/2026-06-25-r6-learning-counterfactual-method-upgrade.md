@@ -42,6 +42,17 @@
 4. 对 segment mechanism trace 做加权，形成 learned operator delta。
 5. 对多个 policy alternative 做 attenuation，输出反事实策略排序。
 
+### 迁移失败修复
+
+第一轮 leave-one-case holdout 暴露出一个关键失败边界：如果 heldout case 的高风险机制在训练 case 中完全未出现，机制权重会被置零，导致静态先验漏报恢复信号丢失。
+
+因此当前 MVP 增加一个保守迁移 guard：
+
+- `unseen_mechanism_transfer_floor=0.65`
+- 只在 heldout case 存在 raw interaction risk signal 且机制未见过时启用。
+- 该 floor 只用于保留风险发现信号，不用于宣称准确性提升。
+- 即使 floor 恢复了 static prior miss recovery，只要 non-regression gate 未通过，仍必须保持 `runtime_default_allowed=false`。
+
 ## 当前 MVP Artifact
 
 新增 artifact：
@@ -94,3 +105,4 @@
 3. Product report/API 消费 counterfactual policy ranking。
 4. 与当前 `behavioral_update_operator_v3`、static prior、raw interaction、false-alarm gate 做 ablation。
 5. 明确失败边界：哪些机制权重只是当前 proxy 过拟合，哪些能跨 case 保留。
+6. 验证 unseen mechanism transfer floor 是否能在更多独立 holdout 上同时保持风险发现和 non-regression。
