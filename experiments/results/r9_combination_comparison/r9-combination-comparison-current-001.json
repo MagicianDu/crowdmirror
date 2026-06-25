@@ -1,0 +1,352 @@
+{
+  "acceptance_gates": {
+    "all_r9_combinations_scored": true,
+    "baseline_comparison_present": true,
+    "failed_combinations_recorded": true,
+    "field_outcome_validated": false,
+    "guarded_candidate_present": true,
+    "runtime_default_allowed": false
+  },
+  "allowed_claims": [
+    "R9 combinations are compared against static, R6, R7, and R8 baselines under a current-fixture diagnostic protocol.",
+    "A+B+C may proceed to holdout and synthetic mechanism lab only as a guarded candidate."
+  ],
+  "artifact_id": "r9-combination-comparison-current-001",
+  "blocked_claims": [
+    "R9 validated",
+    "R9 supports Product core method by default",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "runtime default ready",
+    "accuracy superiority",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_boundary": "R9 evidence-constrained interaction world model artifact. It defines source-backed mechanism, retrieval, and constrained-agent rollout routes plus a combination matrix for guarded evaluation only; it is not field validation, not point-prediction evidence, and not runtime default authorization.",
+  "claim_level": "current_fixture_diagnostic_only",
+  "comparison_scope": {
+    "baseline_count": 4,
+    "field_outcome_validated": false,
+    "method_count": 11,
+    "r9_combination_count": 7,
+    "runtime_default_allowed": false
+  },
+  "method_ids": [
+    "static_prior",
+    "r6_learning_counterfactual",
+    "r7_v2_guarded_baseline",
+    "r8_diagnostic_method",
+    "A_only",
+    "B_only",
+    "C_only",
+    "A+B",
+    "A+C",
+    "B+C",
+    "A+B+C"
+  ],
+  "method_metrics": {
+    "A+B": {
+      "decision_value_score": 0.62,
+      "false_alarm_rate": 0.333,
+      "interval_coverage": 1.0,
+      "risk_ranking_quality": 0.5,
+      "static_prior_miss_recovery_rate": 0.667,
+      "trend_direction_accuracy": 0.667
+    },
+    "A+B+C": {
+      "decision_value_score": 0.78,
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 1.0,
+      "risk_ranking_quality": 0.667,
+      "static_prior_miss_recovery_rate": 1.0,
+      "trend_direction_accuracy": 0.667
+    },
+    "A+C": {
+      "decision_value_score": 0.6,
+      "false_alarm_rate": 0.333,
+      "interval_coverage": 0.667,
+      "risk_ranking_quality": 0.5,
+      "static_prior_miss_recovery_rate": 1.0,
+      "trend_direction_accuracy": 0.667
+    },
+    "A_only": {
+      "decision_value_score": 0.5,
+      "false_alarm_rate": 0.333,
+      "interval_coverage": 0.667,
+      "risk_ranking_quality": 0.333,
+      "static_prior_miss_recovery_rate": 0.667,
+      "trend_direction_accuracy": 0.667
+    },
+    "B+C": {
+      "decision_value_score": 0.56,
+      "false_alarm_rate": 0.333,
+      "interval_coverage": 0.667,
+      "risk_ranking_quality": 0.5,
+      "static_prior_miss_recovery_rate": 0.667,
+      "trend_direction_accuracy": 0.667
+    },
+    "B_only": {
+      "decision_value_score": 0.45,
+      "false_alarm_rate": 0.333,
+      "interval_coverage": 0.667,
+      "risk_ranking_quality": 0.333,
+      "static_prior_miss_recovery_rate": 0.333,
+      "trend_direction_accuracy": 0.667
+    },
+    "C_only": {
+      "decision_value_score": 0.4,
+      "false_alarm_rate": 0.667,
+      "interval_coverage": 0.333,
+      "risk_ranking_quality": 0.5,
+      "static_prior_miss_recovery_rate": 1.0,
+      "trend_direction_accuracy": 0.667
+    },
+    "r6_learning_counterfactual": {
+      "decision_value_score": 0.58,
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 0.667,
+      "risk_ranking_quality": 0.333,
+      "static_prior_miss_recovery_rate": 1.0,
+      "trend_direction_accuracy": 0.667
+    },
+    "r7_v2_guarded_baseline": {
+      "decision_value_score": 0.72,
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 1.0,
+      "risk_ranking_quality": 0.333,
+      "static_prior_miss_recovery_rate": 1.0,
+      "trend_direction_accuracy": 0.667
+    },
+    "r8_diagnostic_method": {
+      "decision_value_score": 0.66,
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 1.0,
+      "risk_ranking_quality": 0.5,
+      "static_prior_miss_recovery_rate": 1.0,
+      "trend_direction_accuracy": 0.667
+    },
+    "static_prior": {
+      "decision_value_score": 0.2,
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 0.333,
+      "risk_ranking_quality": 0.333,
+      "static_prior_miss_recovery_rate": 0.0,
+      "trend_direction_accuracy": 0.333
+    }
+  },
+  "metric_direction": {
+    "decision_value_score": "higher_is_better",
+    "false_alarm_rate": "lower_is_better",
+    "interval_coverage": "higher_is_better",
+    "risk_ranking_quality": "higher_is_better",
+    "static_prior_miss_recovery_rate": "higher_is_better",
+    "trend_direction_accuracy": "higher_is_better"
+  },
+  "metric_ids": [
+    "trend_direction_accuracy",
+    "interval_coverage",
+    "risk_ranking_quality",
+    "false_alarm_rate",
+    "static_prior_miss_recovery_rate",
+    "decision_value_score"
+  ],
+  "r9_combination_results": [
+    {
+      "claim_status": "diagnostic_failed_or_partial",
+      "combination_id": "A_only",
+      "failure_or_limit_reasons": [
+        "current_fixture_only_not_holdout_validated",
+        "field_outcome_missing",
+        "does_not_beat_r7_v2_on_required_two_product_metrics"
+      ],
+      "field_outcome_validated": false,
+      "metrics": {
+        "decision_value_score": 0.5,
+        "false_alarm_rate": 0.333,
+        "interval_coverage": 0.667,
+        "risk_ranking_quality": 0.333,
+        "static_prior_miss_recovery_rate": 0.667,
+        "trend_direction_accuracy": 0.667
+      },
+      "runtime_default_allowed": false,
+      "source_refs": [
+        "r9-combination-comparison-current-001-r9-world-model-bundle"
+      ]
+    },
+    {
+      "claim_status": "diagnostic_failed_or_partial",
+      "combination_id": "B_only",
+      "failure_or_limit_reasons": [
+        "current_fixture_only_not_holdout_validated",
+        "field_outcome_missing",
+        "does_not_beat_r7_v2_on_required_two_product_metrics"
+      ],
+      "field_outcome_validated": false,
+      "metrics": {
+        "decision_value_score": 0.45,
+        "false_alarm_rate": 0.333,
+        "interval_coverage": 0.667,
+        "risk_ranking_quality": 0.333,
+        "static_prior_miss_recovery_rate": 0.333,
+        "trend_direction_accuracy": 0.667
+      },
+      "runtime_default_allowed": false,
+      "source_refs": [
+        "r9-combination-comparison-current-001-r9-world-model-bundle"
+      ]
+    },
+    {
+      "claim_status": "diagnostic_failed_or_partial",
+      "combination_id": "C_only",
+      "failure_or_limit_reasons": [
+        "current_fixture_only_not_holdout_validated",
+        "field_outcome_missing",
+        "agent_rollout_increases_false_alarm_under_current_fixture"
+      ],
+      "field_outcome_validated": false,
+      "metrics": {
+        "decision_value_score": 0.4,
+        "false_alarm_rate": 0.667,
+        "interval_coverage": 0.333,
+        "risk_ranking_quality": 0.5,
+        "static_prior_miss_recovery_rate": 1.0,
+        "trend_direction_accuracy": 0.667
+      },
+      "runtime_default_allowed": false,
+      "source_refs": [
+        "r9-combination-comparison-current-001-r9-world-model-bundle"
+      ]
+    },
+    {
+      "claim_status": "diagnostic_failed_or_partial",
+      "combination_id": "A+B",
+      "failure_or_limit_reasons": [
+        "current_fixture_only_not_holdout_validated",
+        "field_outcome_missing",
+        "does_not_beat_r7_v2_on_required_two_product_metrics"
+      ],
+      "field_outcome_validated": false,
+      "metrics": {
+        "decision_value_score": 0.62,
+        "false_alarm_rate": 0.333,
+        "interval_coverage": 1.0,
+        "risk_ranking_quality": 0.5,
+        "static_prior_miss_recovery_rate": 0.667,
+        "trend_direction_accuracy": 0.667
+      },
+      "runtime_default_allowed": false,
+      "source_refs": [
+        "r9-combination-comparison-current-001-r9-world-model-bundle"
+      ]
+    },
+    {
+      "claim_status": "diagnostic_failed_or_partial",
+      "combination_id": "A+C",
+      "failure_or_limit_reasons": [
+        "current_fixture_only_not_holdout_validated",
+        "field_outcome_missing",
+        "does_not_beat_r7_v2_on_required_two_product_metrics"
+      ],
+      "field_outcome_validated": false,
+      "metrics": {
+        "decision_value_score": 0.6,
+        "false_alarm_rate": 0.333,
+        "interval_coverage": 0.667,
+        "risk_ranking_quality": 0.5,
+        "static_prior_miss_recovery_rate": 1.0,
+        "trend_direction_accuracy": 0.667
+      },
+      "runtime_default_allowed": false,
+      "source_refs": [
+        "r9-combination-comparison-current-001-r9-world-model-bundle"
+      ]
+    },
+    {
+      "claim_status": "diagnostic_failed_or_partial",
+      "combination_id": "B+C",
+      "failure_or_limit_reasons": [
+        "current_fixture_only_not_holdout_validated",
+        "field_outcome_missing",
+        "does_not_beat_r7_v2_on_required_two_product_metrics"
+      ],
+      "field_outcome_validated": false,
+      "metrics": {
+        "decision_value_score": 0.56,
+        "false_alarm_rate": 0.333,
+        "interval_coverage": 0.667,
+        "risk_ranking_quality": 0.5,
+        "static_prior_miss_recovery_rate": 0.667,
+        "trend_direction_accuracy": 0.667
+      },
+      "runtime_default_allowed": false,
+      "source_refs": [
+        "r9-combination-comparison-current-001-r9-world-model-bundle"
+      ]
+    },
+    {
+      "claim_status": "guarded_current_fixture_candidate",
+      "combination_id": "A+B+C",
+      "failure_or_limit_reasons": [
+        "current_fixture_only_not_holdout_validated",
+        "field_outcome_missing",
+        "guarded_candidate_must_pass_task4_holdout_and_synthetic_lab"
+      ],
+      "field_outcome_validated": false,
+      "metrics": {
+        "decision_value_score": 0.78,
+        "false_alarm_rate": 0.0,
+        "interval_coverage": 1.0,
+        "risk_ranking_quality": 0.667,
+        "static_prior_miss_recovery_rate": 1.0,
+        "trend_direction_accuracy": 0.667
+      },
+      "runtime_default_allowed": false,
+      "source_refs": [
+        "r9-combination-comparison-current-001-r9-world-model-bundle"
+      ]
+    }
+  ],
+  "r9_success_signal": {
+    "best_combination_id": "A+B+C",
+    "field_outcome_validated": false,
+    "metrics_beating_r7_v2": [
+      "risk_ranking_quality",
+      "decision_value_score"
+    ],
+    "runtime_default_allowed": false,
+    "status": "guarded_current_fixture_candidate"
+  },
+  "run_id": "r9-combination-comparison-current",
+  "schema_version": "r9-combination-comparison-v1",
+  "source_refs": [
+    "r9-combination-comparison-current-001-r8-baseline-comparison",
+    "r9-combination-comparison-current-001-r9-world-model-bundle"
+  ],
+  "status": "r9_combination_comparison_guarded_current_fixture_signal",
+  "stop_loss_recommendation": "continue_to_holdout_and_synthetic_lab_guarded",
+  "winner_by_metric": {
+    "decision_value_score": {
+      "method": "A+B+C",
+      "value": 0.78
+    },
+    "false_alarm_rate": {
+      "method": "static_prior",
+      "value": 0.0
+    },
+    "interval_coverage": {
+      "method": "r7_v2_guarded_baseline",
+      "value": 1.0
+    },
+    "risk_ranking_quality": {
+      "method": "A+B+C",
+      "value": 0.667
+    },
+    "static_prior_miss_recovery_rate": {
+      "method": "r6_learning_counterfactual",
+      "value": 1.0
+    },
+    "trend_direction_accuracy": {
+      "method": "r6_learning_counterfactual",
+      "value": 0.667
+    }
+  }
+}
