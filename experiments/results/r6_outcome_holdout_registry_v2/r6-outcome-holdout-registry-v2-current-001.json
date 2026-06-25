@@ -1,0 +1,127 @@
+{
+  "acceptance_gates": {
+    "all_datasets_have_claim_level": true,
+    "all_metrics_source_backed": true,
+    "at_least_two_domains_present": true,
+    "field_outcome_validated": false,
+    "outcome_holdout_registry_v2_present": true,
+    "runtime_default_allowed": false
+  },
+  "allowed_claims": [
+    "The registry supports proxy-diagnostic holdout accounting across multiple public domains."
+  ],
+  "artifact_id": "r6-outcome-holdout-registry-v2-current-001",
+  "blocked_claims": [
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "Research \u5df2\u5b8c\u6574\u652f\u6491 Product \u5168\u90e8\u6838\u5fc3\u4ef7\u503c"
+  ],
+  "blocking_gaps": [
+    "needs_real_field_outcome_or_customer_pilot",
+    "needs_segment_level_field_labels"
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "datasets": [
+    {
+      "allowed_claim_level": "proxy_diagnostic",
+      "dataset_id": "htops_cost_pressure",
+      "domain": "public_service_cost_pressure",
+      "field_outcome_available": false,
+      "known_limitations": [
+        "not_real_customer_field_outcome",
+        "not_runtime_default_validation",
+        "segment_labels_are_proxy_or_audit_aligned"
+      ],
+      "proxy_outcome_available": true,
+      "scenario_shock_fields": [
+        "cost_increase",
+        "service_reliability_concern"
+      ],
+      "segment_label_fields": [
+        "service_dependent_low_trust",
+        "community_watchers"
+      ],
+      "source_refs": [
+        "r6-outcome-holdout-registry-v2-current-001-base-registry",
+        "htops_cost_pressure"
+      ],
+      "source_type": "public_proxy",
+      "static_prior_fields": [
+        "household_cost_pressure_prior",
+        "service_dependency"
+      ]
+    },
+    {
+      "allowed_claim_level": "proxy_diagnostic",
+      "dataset_id": "anes_health_heldout",
+      "domain": "health_policy_reaction",
+      "field_outcome_available": false,
+      "known_limitations": [
+        "not_real_customer_field_outcome",
+        "not_runtime_default_validation",
+        "segment_labels_are_proxy_or_audit_aligned"
+      ],
+      "proxy_outcome_available": true,
+      "scenario_shock_fields": [
+        "rights_reduction",
+        "trust_shock"
+      ],
+      "segment_label_fields": [
+        "rights_dependent_low_trust",
+        "rule_watchers"
+      ],
+      "source_refs": [
+        "r6-outcome-holdout-registry-v2-current-001-base-registry",
+        "anes_health_heldout"
+      ],
+      "source_type": "public_proxy",
+      "static_prior_fields": [
+        "party_prior",
+        "ideology_prior"
+      ]
+    },
+    {
+      "allowed_claim_level": "proxy_diagnostic",
+      "dataset_id": "anes_climate_heldout",
+      "domain": "climate_policy_reaction",
+      "field_outcome_available": false,
+      "known_limitations": [
+        "not_real_customer_field_outcome",
+        "not_runtime_default_validation",
+        "segment_labels_are_proxy_or_audit_aligned"
+      ],
+      "proxy_outcome_available": true,
+      "scenario_shock_fields": [
+        "rule_change",
+        "policy_salience"
+      ],
+      "segment_label_fields": [
+        "rights_dependent_low_trust",
+        "rule_watchers"
+      ],
+      "source_refs": [
+        "r6-outcome-holdout-registry-v2-current-001-base-registry",
+        "anes_climate_heldout"
+      ],
+      "source_type": "public_proxy",
+      "static_prior_fields": [
+        "party_prior",
+        "ideology_prior"
+      ]
+    }
+  ],
+  "registry_summary": {
+    "blocked_count": 0,
+    "dataset_count": 3,
+    "domain_count": 3,
+    "field_outcome_count": 0,
+    "proxy_diagnostic_count": 3,
+    "validation_count": 0
+  },
+  "run_id": "r6-full-product-support-current-001",
+  "schema_version": "r6-outcome-holdout-registry-v2",
+  "source_refs": [
+    "r6-outcome-holdout-registry-v2-current-001-base-registry"
+  ],
+  "status": "holdout_registry_v2_ready_proxy_diagnostic"
+}

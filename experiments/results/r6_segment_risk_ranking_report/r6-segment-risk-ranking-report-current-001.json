@@ -1,0 +1,196 @@
+{
+  "acceptance_gates": {
+    "all_segments_source_backed": true,
+    "field_segment_labels_available": false,
+    "risk_ranking_quality_passed": true,
+    "runtime_default_allowed": false,
+    "segment_recall_passed": true,
+    "segment_risk_ranking_present": true,
+    "top_k_segment_precision_passed": true
+  },
+  "allowed_claims": [
+    "Product can show guarded segment risk ranking after current-proxy false-alarm control."
+  ],
+  "artifact_id": "r6-segment-risk-ranking-report-current-001",
+  "blocked_claims": [
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "\u5f02\u5e38\u7fa4\u4f53\u5df2\u7ecf\u5b8c\u6210 field validation"
+  ],
+  "case_results": [
+    {
+      "blocked_reason": "",
+      "escalated_to_product_claim": true,
+      "segments": [
+        {
+          "delta_reject": 0.12,
+          "mechanisms": [
+            "access_anxiety",
+            "community_amplification",
+            "equity_concern"
+          ],
+          "proxy_audit_label_positive": true,
+          "risk_reason": "access_anxiety + community_amplification + equity_concern",
+          "segment_id": "service_dependent_low_trust",
+          "segment_type": "static_prior_missed_risk",
+          "source_artifact_ids": [
+            "r6-segment-risk-ranking-report-current-001-trend-interval-risk-htops_cost_pressure-ablation"
+          ],
+          "uncertainty_level": "medium"
+        },
+        {
+          "delta_reject": 0.06,
+          "mechanisms": [
+            "equity_concern_discussion"
+          ],
+          "proxy_audit_label_positive": true,
+          "risk_reason": "equity_concern_discussion",
+          "segment_id": "community_watchers",
+          "segment_type": "interaction_amplified_risk",
+          "source_artifact_ids": [
+            "r6-segment-risk-ranking-report-current-001-trend-interval-risk-htops_cost_pressure-ablation"
+          ],
+          "uncertainty_level": "medium"
+        },
+        {
+          "delta_reject": 0.02,
+          "mechanisms": [
+            "official_trust_buffer"
+          ],
+          "proxy_audit_label_positive": false,
+          "risk_reason": "official_trust_buffer",
+          "segment_id": "low_dependency_high_trust",
+          "segment_type": "interaction_amplified_risk",
+          "source_artifact_ids": [
+            "r6-segment-risk-ranking-report-current-001-trend-interval-risk-htops_cost_pressure-ablation"
+          ],
+          "uncertainty_level": "medium"
+        }
+      ],
+      "source_key": "htops_cost_pressure",
+      "target_case_id": "generic-public-service-policy-change"
+    },
+    {
+      "blocked_reason": "blocked_by_current_proxy_false_alarm_control",
+      "escalated_to_product_claim": false,
+      "segments": [
+        {
+          "delta_reject": 0.12,
+          "mechanisms": [
+            "rights_loss_salience",
+            "peer_amplification",
+            "trust_shock"
+          ],
+          "proxy_audit_label_positive": true,
+          "risk_reason": "rights_loss_salience + peer_amplification + trust_shock",
+          "segment_id": "rights_dependent_low_trust",
+          "segment_type": "false_alarm_candidate",
+          "source_artifact_ids": [
+            "r6-segment-risk-ranking-report-current-001-trend-interval-risk-anes_health_heldout-ablation"
+          ],
+          "uncertainty_level": "diagnostic_only"
+        },
+        {
+          "delta_reject": 0.06,
+          "mechanisms": [
+            "procedural_fairness_discussion"
+          ],
+          "proxy_audit_label_positive": true,
+          "risk_reason": "procedural_fairness_discussion",
+          "segment_id": "rule_watchers",
+          "segment_type": "false_alarm_candidate",
+          "source_artifact_ids": [
+            "r6-segment-risk-ranking-report-current-001-trend-interval-risk-anes_health_heldout-ablation"
+          ],
+          "uncertainty_level": "diagnostic_only"
+        },
+        {
+          "delta_reject": 0.02,
+          "mechanisms": [
+            "official_trust_buffer"
+          ],
+          "proxy_audit_label_positive": false,
+          "risk_reason": "official_trust_buffer",
+          "segment_id": "low_usage_high_trust",
+          "segment_type": "false_alarm_candidate",
+          "source_artifact_ids": [
+            "r6-segment-risk-ranking-report-current-001-trend-interval-risk-anes_health_heldout-ablation"
+          ],
+          "uncertainty_level": "diagnostic_only"
+        }
+      ],
+      "source_key": "anes_health_heldout",
+      "target_case_id": "generic-rights-rule-change"
+    },
+    {
+      "blocked_reason": "blocked_by_current_proxy_false_alarm_control",
+      "escalated_to_product_claim": false,
+      "segments": [
+        {
+          "delta_reject": 0.12,
+          "mechanisms": [
+            "rights_loss_salience",
+            "peer_amplification",
+            "trust_shock"
+          ],
+          "proxy_audit_label_positive": true,
+          "risk_reason": "rights_loss_salience + peer_amplification + trust_shock",
+          "segment_id": "rights_dependent_low_trust",
+          "segment_type": "false_alarm_candidate",
+          "source_artifact_ids": [
+            "r6-segment-risk-ranking-report-current-001-trend-interval-risk-anes_climate_heldout-ablation"
+          ],
+          "uncertainty_level": "diagnostic_only"
+        },
+        {
+          "delta_reject": 0.06,
+          "mechanisms": [
+            "procedural_fairness_discussion"
+          ],
+          "proxy_audit_label_positive": true,
+          "risk_reason": "procedural_fairness_discussion",
+          "segment_id": "rule_watchers",
+          "segment_type": "false_alarm_candidate",
+          "source_artifact_ids": [
+            "r6-segment-risk-ranking-report-current-001-trend-interval-risk-anes_climate_heldout-ablation"
+          ],
+          "uncertainty_level": "diagnostic_only"
+        },
+        {
+          "delta_reject": 0.02,
+          "mechanisms": [
+            "official_trust_buffer"
+          ],
+          "proxy_audit_label_positive": false,
+          "risk_reason": "official_trust_buffer",
+          "segment_id": "low_usage_high_trust",
+          "segment_type": "false_alarm_candidate",
+          "source_artifact_ids": [
+            "r6-segment-risk-ranking-report-current-001-trend-interval-risk-anes_climate_heldout-ablation"
+          ],
+          "uncertainty_level": "diagnostic_only"
+        }
+      ],
+      "source_key": "anes_climate_heldout",
+      "target_case_id": "generic-rights-rule-change"
+    }
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "claim_status": "guarded",
+  "run_id": "r6-full-product-support-current-001",
+  "schema_version": "r6-segment-risk-ranking-report-v1",
+  "source_refs": [
+    "r6-segment-risk-ranking-report-current-001-trend-interval-risk",
+    "r6-false-alarm-control-report-current-001"
+  ],
+  "status": "segment_risk_ranking_supported_guarded_proxy",
+  "summary": {
+    "case_count": 3,
+    "interaction_only_risk_discovery_count": 1,
+    "risk_ranking_quality": 1.0,
+    "segment_precision": 0.667,
+    "segment_recall": 1.0,
+    "static_prior_miss_recovery_rate": 1.0,
+    "top_k_segment_precision": 0.667
+  }
+}

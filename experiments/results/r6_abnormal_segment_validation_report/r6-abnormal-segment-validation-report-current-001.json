@@ -1,0 +1,83 @@
+{
+  "acceptance_gates": {
+    "abnormal_segment_validation_present": true,
+    "field_segment_labels_available": false,
+    "product_claim_upgrade_allowed": false,
+    "segment_metrics_computable": true,
+    "segment_precision_passed": true,
+    "segment_recall_passed": true
+  },
+  "allowed_claims": [
+    "Product can show abnormal segment findings as guarded proxy/audit evidence."
+  ],
+  "artifact_id": "r6-abnormal-segment-validation-report-current-001",
+  "blocked_claims": [
+    "field_outcome_validated=true",
+    "\u5f02\u5e38\u7fa4\u4f53 field labels \u5df2\u5b8c\u6210"
+  ],
+  "case_results": [
+    {
+      "audit_label_segment_ids": [
+        "service_dependent_low_trust",
+        "community_watchers"
+      ],
+      "predicted_segment_ids": [
+        "service_dependent_low_trust",
+        "community_watchers",
+        "low_dependency_high_trust"
+      ],
+      "source_key": "htops_cost_pressure",
+      "true_positive_segment_ids": [
+        "community_watchers",
+        "service_dependent_low_trust"
+      ]
+    },
+    {
+      "audit_label_segment_ids": [
+        "rights_dependent_low_trust",
+        "rule_watchers"
+      ],
+      "predicted_segment_ids": [
+        "rights_dependent_low_trust",
+        "rule_watchers",
+        "low_usage_high_trust"
+      ],
+      "source_key": "anes_health_heldout",
+      "true_positive_segment_ids": [
+        "rights_dependent_low_trust",
+        "rule_watchers"
+      ]
+    },
+    {
+      "audit_label_segment_ids": [
+        "rights_dependent_low_trust",
+        "rule_watchers"
+      ],
+      "predicted_segment_ids": [
+        "rights_dependent_low_trust",
+        "rule_watchers",
+        "low_usage_high_trust"
+      ],
+      "source_key": "anes_climate_heldout",
+      "true_positive_segment_ids": [
+        "rights_dependent_low_trust",
+        "rule_watchers"
+      ]
+    }
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "claim_status": "guarded",
+  "label_source_type": "proxy_aligned_audit_fixture_not_field_outcome",
+  "run_id": "r6-full-product-support-current-001",
+  "schema_version": "r6-abnormal-segment-validation-report-v1",
+  "source_refs": [
+    "r6-segment-risk-ranking-report-current-001"
+  ],
+  "status": "abnormal_segment_validation_guarded_proxy",
+  "summary": {
+    "case_count": 3,
+    "labeled_case_count": 3,
+    "segment_precision": 0.667,
+    "segment_recall": 1.0
+  }
+}

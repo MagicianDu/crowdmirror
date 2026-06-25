@@ -1,0 +1,51 @@
+{
+  "acceptance_gates": {
+    "field_outcome_validated": false,
+    "operator_holdout_non_regression_present": true,
+    "operator_non_regression_rate_passed": true,
+    "runtime_default_allowed": false
+  },
+  "artifact_id": "r6-operator-holdout-non-regression-report-current-001",
+  "blocked_claims": [
+    "runtime_default_allowed=true",
+    "field_outcome_validated=true"
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "holdout_trials": [
+    {
+      "operator_error": 0.11,
+      "passed_non_regression": true,
+      "runtime_default_allowed": false,
+      "source_key": "htops_cost_pressure",
+      "static_prior_error": 0.18
+    },
+    {
+      "operator_error": 0.02,
+      "passed_non_regression": true,
+      "runtime_default_allowed": false,
+      "source_key": "anes_health_heldout",
+      "static_prior_error": 0.02
+    },
+    {
+      "operator_error": 0.06,
+      "passed_non_regression": true,
+      "runtime_default_allowed": false,
+      "source_key": "anes_climate_heldout",
+      "static_prior_error": 0.06
+    }
+  ],
+  "run_id": "r6-full-product-support-current-001",
+  "schema_version": "r6-operator-holdout-non-regression-report-v1",
+  "source_refs": [
+    "r6-behavioral-update-operator-v3-current-001",
+    "r6-mechanism-operator-ablation-report-current-001"
+  ],
+  "status": "operator_holdout_non_regression_proxy_passed_runtime_blocked",
+  "summary": {
+    "case_count": 3,
+    "operator_holdout_pass_rate": 1.0,
+    "operator_non_regression_rate": 1.0,
+    "runtime_default_allowed": false,
+    "static_prior_guard_passed": true
+  }
+}

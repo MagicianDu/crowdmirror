@@ -1,0 +1,117 @@
+{
+  "acceptance_gates": {
+    "all_product_visible_claims_source_backed": true,
+    "claim_evidence_registry_present": true,
+    "field_outcome_validated": false,
+    "no_source_claim_rejected": true,
+    "runtime_default_allowed": false,
+    "supported_value_count_gt_zero": true
+  },
+  "allowed_claims": [
+    "Risk distribution and false-alarm control can be presented as guarded current-proxy supported claims.",
+    "Abnormal segments can be presented as guarded proxy/audit supported claims."
+  ],
+  "artifact_id": "r6-product-claim-evidence-registry-current-001",
+  "blocked_claims": [
+    "Research \u5df2\u5b8c\u6574\u652f\u6491 Product \u5168\u90e8\u6838\u5fc3\u4ef7\u503c",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "\u5019\u9009\u66f4\u65b0\u5df2\u53ef\u81ea\u52a8\u4e0a\u7ebf"
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "claim_results": [
+    {
+      "blocked_reason": "trend_direction_accuracy_below_validation_threshold",
+      "claim_status": "diagnostic",
+      "product_section": "trend_direction",
+      "source_artifact_ids": [
+        "r6-trend-interval-calibration-report-current-001"
+      ],
+      "support_status": "partial_current_proxy"
+    },
+    {
+      "blocked_reason": "interval_coverage_below_validation_threshold",
+      "claim_status": "diagnostic",
+      "product_section": "risk_interval",
+      "source_artifact_ids": [
+        "r6-trend-interval-calibration-report-current-001"
+      ],
+      "support_status": "partial_current_proxy"
+    },
+    {
+      "blocked_reason": "field_holdout_missing",
+      "claim_status": "guarded",
+      "product_section": "risk_distribution",
+      "source_artifact_ids": [
+        "r6-segment-risk-ranking-report-current-001",
+        "r6-false-alarm-control-report-current-001"
+      ],
+      "support_status": "supported_current_proxy_guarded"
+    },
+    {
+      "blocked_reason": "field_segment_labels_missing",
+      "claim_status": "guarded",
+      "product_section": "abnormal_segments",
+      "source_artifact_ids": [
+        "r6-abnormal-segment-validation-report-current-001",
+        "r6-segment-risk-ranking-report-current-001"
+      ],
+      "support_status": "guarded_proxy_supported"
+    },
+    {
+      "blocked_reason": "operator_holdout_not_runtime_default",
+      "claim_status": "diagnostic",
+      "product_section": "mechanism_explanation",
+      "source_artifact_ids": [
+        "r6-product-claim-evidence-registry-current-001-mechanism-ablation"
+      ],
+      "support_status": "diagnostic_only"
+    },
+    {
+      "blocked_reason": "holdout_validation_missing",
+      "claim_status": "guarded",
+      "product_section": "false_alarm_control",
+      "source_artifact_ids": [
+        "r6-false-alarm-control-report-current-001"
+      ],
+      "support_status": "supported_current_proxy_guarded"
+    },
+    {
+      "blocked_reason": "bounded_feedback_protocol_not_yet_available",
+      "claim_status": "blocked",
+      "product_section": "outcome_feedback",
+      "source_artifact_ids": [
+        "r6-product-claim-evidence-registry-current-001-cross-case-transfer"
+      ],
+      "support_status": "blocked_until_feedback_protocol"
+    },
+    {
+      "blocked_reason": "accepted_rejected_candidate_contract_missing",
+      "claim_status": "blocked",
+      "product_section": "bounded_update_candidate",
+      "source_artifact_ids": [
+        "r6-product-claim-evidence-registry-current-001-cross-case-transfer"
+      ],
+      "support_status": "blocked_until_feedback_protocol"
+    }
+  ],
+  "run_id": "r6-full-product-support-current-001",
+  "schema_version": "r6-product-claim-evidence-registry-v1",
+  "source_refs": [
+    "r6-trend-interval-calibration-report-current-001",
+    "r6-segment-risk-ranking-report-current-001",
+    "r6-false-alarm-control-report-current-001",
+    "r6-abnormal-segment-validation-report-current-001",
+    "r6-product-claim-evidence-registry-current-001-mechanism-ablation",
+    "r6-product-claim-evidence-registry-current-001-cross-case-transfer"
+  ],
+  "status": "product_claim_evidence_registry_ready_guarded",
+  "summary": {
+    "blocked_claim_count": 2,
+    "claim_count": 8,
+    "diagnostic_claim_count": 3,
+    "guarded_claim_count": 3,
+    "supported_value_count": 3,
+    "validated_claim_count": 0
+  }
+}

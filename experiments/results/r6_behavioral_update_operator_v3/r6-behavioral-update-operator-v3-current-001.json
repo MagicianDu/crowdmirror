@@ -1,0 +1,131 @@
+{
+  "acceptance_gates": {
+    "field_outcome_validated": false,
+    "operator_non_regression_rate_passed": true,
+    "operator_v3_structured": true,
+    "runtime_default_allowed": false,
+    "static_prior_guard_passed": true
+  },
+  "allowed_claims": [
+    "Operator v3 can be evaluated as a guarded proxy non-regression operator."
+  ],
+  "artifact_id": "r6-behavioral-update-operator-v3-current-001",
+  "blocked_claims": [
+    "runtime_default_allowed=true",
+    "field_outcome_validated=true",
+    "\u5019\u9009\u66f4\u65b0\u5df2\u53ef\u81ea\u52a8\u4e0a\u7ebf"
+  ],
+  "case_results": [
+    {
+      "guard_decision": "apply_guarded_interaction",
+      "interaction_error": 0.11,
+      "interaction_prediction": 0.36,
+      "observed_reject_proxy": 0.47,
+      "operator_error": 0.11,
+      "operator_prediction": 0.36,
+      "source_key": "htops_cost_pressure",
+      "static_prior_error": 0.18,
+      "static_prior_prediction": 0.29,
+      "structured_risk_delta": {
+        "applied_mechanisms": [
+          "access_anxiety",
+          "community_amplification",
+          "equity_concern",
+          "equity_concern_discussion",
+          "official_trust_buffer"
+        ],
+        "reject_delta": 0.07,
+        "static_prior_fallback_used": false
+      },
+      "target_case_id": "generic-public-service-policy-change"
+    },
+    {
+      "guard_decision": "fallback_to_static_prior",
+      "interaction_error": 0.05,
+      "interaction_prediction": 0.38,
+      "observed_reject_proxy": 0.33,
+      "operator_error": 0.02,
+      "operator_prediction": 0.31,
+      "source_key": "anes_health_heldout",
+      "static_prior_error": 0.02,
+      "static_prior_prediction": 0.31,
+      "structured_risk_delta": {
+        "applied_mechanisms": [
+          "static_prior_fallback"
+        ],
+        "reject_delta": 0.0,
+        "static_prior_fallback_used": true
+      },
+      "target_case_id": "generic-rights-rule-change"
+    },
+    {
+      "guard_decision": "fallback_to_static_prior",
+      "interaction_error": 0.13,
+      "interaction_prediction": 0.38,
+      "observed_reject_proxy": 0.25,
+      "operator_error": 0.06,
+      "operator_prediction": 0.31,
+      "source_key": "anes_climate_heldout",
+      "static_prior_error": 0.06,
+      "static_prior_prediction": 0.31,
+      "structured_risk_delta": {
+        "applied_mechanisms": [
+          "static_prior_fallback"
+        ],
+        "reject_delta": 0.0,
+        "static_prior_fallback_used": true
+      },
+      "target_case_id": "generic-rights-rule-change"
+    }
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "mechanisms": [
+    {
+      "description": "\u5229\u76ca\u53d7\u635f\u4f20\u64ad",
+      "mechanism_id": "interest_loss_propagation"
+    },
+    {
+      "description": "\u4fe1\u4efb\u4e0b\u964d\u4f20\u64ad",
+      "mechanism_id": "trust_decline_propagation"
+    },
+    {
+      "description": "\u670d\u52a1\u4f9d\u8d56\u4f20\u64ad",
+      "mechanism_id": "service_dependency_propagation"
+    },
+    {
+      "description": "\u89c4\u5219\u654f\u611f\u4f20\u64ad",
+      "mechanism_id": "rule_sensitivity_propagation"
+    },
+    {
+      "description": "\u540c\u4f34\u5f71\u54cd\u4f20\u64ad",
+      "mechanism_id": "peer_influence_propagation"
+    },
+    {
+      "description": "\u53cd\u5411\u62b5\u6297\u6216\u9006\u53cd\u5e94",
+      "mechanism_id": "reverse_resistance_response"
+    }
+  ],
+  "operator_definition": {
+    "decision_rule": "Apply interaction delta only when false-alarm control escalates the case; otherwise fall back to static prior.",
+    "field_outcome_required_for_runtime_default": true,
+    "operator_type": "guarded_mechanism_update_with_static_prior_fallback"
+  },
+  "run_id": "r6-full-product-support-current-001",
+  "runtime_default_allowed": false,
+  "schema_version": "r6-behavioral-update-operator-v3",
+  "source_refs": [
+    "r6-behavioral-update-operator-v3-current-001-trend-interval-risk",
+    "r6-false-alarm-control-report-current-001"
+  ],
+  "status": "operator_v3_guarded_static_fallback_ready",
+  "summary": {
+    "case_count": 3,
+    "guarded_interaction_case_count": 1,
+    "mean_error_reduction_vs_static": 0.023,
+    "operator_holdout_pass_rate": 1.0,
+    "operator_non_regression_rate": 1.0,
+    "runtime_default_allowed": false,
+    "static_fallback_case_count": 2,
+    "static_prior_guard_passed": true
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "acceptance_gates": {
+    "controlled_false_alarm_rate_passed": true,
+    "current_proxy_control_passed": true,
+    "false_alarm_control_present": true,
+    "field_outcome_validated": false,
+    "holdout_validated": false,
+    "missed_risk_rate_passed": true,
+    "runtime_default_allowed": false
+  },
+  "allowed_claims": [
+    "Current public proxy evidence supports guarded false-alarm control reporting."
+  ],
+  "artifact_id": "r6-false-alarm-control-report-current-001",
+  "blocked_claims": [
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "\u4ea4\u4e92\u4eff\u771f\u7a33\u5b9a\u6bd4\u9759\u6001\u5148\u9a8c\u66f4\u51c6"
+  ],
+  "blocking_gaps": [
+    "needs_false_alarm_control_holdout_validation",
+    "needs_field_outcome_validation"
+  ],
+  "case_results": [
+    {
+      "blocked_as_false_alarm_candidate": false,
+      "blocked_reason": "",
+      "escalated_to_product_claim": true,
+      "interaction_false_alarm": false,
+      "recovered_static_prior_miss": true,
+      "source_key": "htops_cost_pressure",
+      "target_case_id": "generic-public-service-policy-change"
+    },
+    {
+      "blocked_as_false_alarm_candidate": true,
+      "blocked_reason": "blocked_by_current_proxy_false_alarm_control",
+      "escalated_to_product_claim": false,
+      "interaction_false_alarm": true,
+      "recovered_static_prior_miss": false,
+      "source_key": "anes_health_heldout",
+      "target_case_id": "generic-rights-rule-change"
+    },
+    {
+      "blocked_as_false_alarm_candidate": true,
+      "blocked_reason": "blocked_by_current_proxy_false_alarm_control",
+      "escalated_to_product_claim": false,
+      "interaction_false_alarm": true,
+      "recovered_static_prior_miss": false,
+      "source_key": "anes_climate_heldout",
+      "target_case_id": "generic-rights-rule-change"
+    }
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "claim_status": "guarded",
+  "run_id": "r6-full-product-support-current-001",
+  "schema_version": "r6-false-alarm-control-report-v1",
+  "selected_control_policy": {
+    "candidate_id": "target_case_family_gate",
+    "feature_scope": "pre_outcome_case_metadata",
+    "holdout_validated": false,
+    "pre_outcome_safe": true,
+    "rejected_false_alarm_source_keys": [
+      "anes_health_heldout",
+      "anes_climate_heldout"
+    ],
+    "rule": "target_case_id in current_true_positive_target_case_ids",
+    "selected_source_keys": [
+      "htops_cost_pressure"
+    ]
+  },
+  "source_refs": [
+    "r6-false-alarm-control-report-current-001-decision-value",
+    "r6-false-alarm-control-report-current-001-false-alarm-discriminator",
+    "r6-trend-interval-calibration-report-current-001"
+  ],
+  "status": "false_alarm_control_guarded_proxy_passed",
+  "summary": {
+    "baseline_false_alarm_rate": 0.667,
+    "blocked_risk_count": 2,
+    "case_count": 3,
+    "controlled_false_alarm_rate": 0.0,
+    "controlled_static_prior_miss_recovery_rate": 1.0,
+    "missed_risk_rate": 0.0,
+    "risk_escalation_precision": 1.0,
+    "risk_escalation_recall": 1.0
+  }
+}

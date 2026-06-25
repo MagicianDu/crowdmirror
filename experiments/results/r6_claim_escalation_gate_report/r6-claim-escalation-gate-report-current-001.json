@@ -1,0 +1,53 @@
+{
+  "acceptance_gates": {
+    "claim_escalation_gate_present": true,
+    "field_outcome_validated": false,
+    "no_source_claim_rejected": true,
+    "runtime_default_allowed": false
+  },
+  "artifact_id": "r6-claim-escalation-gate-report-current-001",
+  "blocked_claims": [
+    "Research \u5df2\u5b8c\u6574\u652f\u6491 Product \u5168\u90e8\u6838\u5fc3\u4ef7\u503c",
+    "runtime_default_allowed=true"
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "claim_results": [
+    {
+      "blocked_reason": "",
+      "claim_status": "guarded",
+      "claim_text": "Risk distribution can be shown as guarded current-proxy evidence.",
+      "product_section": "risk_distribution",
+      "source_artifact_ids": [
+        "r6-false-alarm-control-report-current-001"
+      ]
+    },
+    {
+      "blocked_reason": "holdout_validation_missing",
+      "claim_status": "diagnostic",
+      "claim_text": "Blocked and diagnostic risks remain visible in Product reporting.",
+      "product_section": "false_alarm_diagnosis",
+      "source_artifact_ids": [
+        "r6-false-alarm-control-report-current-001"
+      ]
+    },
+    {
+      "blocked_reason": "missing_source_and_runtime_guard_failed",
+      "claim_status": "blocked",
+      "claim_text": "Runtime default cannot be enabled without holdout validation.",
+      "product_section": "unsupported_runtime_default",
+      "source_artifact_ids": []
+    }
+  ],
+  "escalation_summary": {
+    "blocked_or_diagnostic_claim_count": 2,
+    "claim_count": 3,
+    "guarded_claim_count": 1,
+    "validated_claim_count": 0
+  },
+  "run_id": "r6-full-product-support-current-001",
+  "schema_version": "r6-claim-escalation-gate-report-v1",
+  "source_refs": [
+    "r6-false-alarm-control-report-current-001"
+  ],
+  "status": "claim_escalation_gate_fail_closed_guarded"
+}

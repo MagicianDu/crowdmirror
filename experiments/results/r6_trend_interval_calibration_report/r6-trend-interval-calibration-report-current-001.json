@@ -1,0 +1,140 @@
+{
+  "acceptance_gates": {
+    "field_outcome_validated": false,
+    "interval_coverage_metric_present": true,
+    "interval_coverage_passed": false,
+    "interval_width_metric_present": true,
+    "interval_width_passed": true,
+    "runtime_default_allowed": false,
+    "trend_direction_metric_present": true,
+    "trend_direction_passed": false,
+    "uncertainty_breakdown_present": true
+  },
+  "allowed_claims": [
+    "Product may display trend and interval outputs with diagnostic-only confidence on current public proxies."
+  ],
+  "allowed_trend_directions": [
+    "risk_convergent",
+    "risk_diffusion",
+    "risk_divergent",
+    "risk_down",
+    "risk_up",
+    "uncertain"
+  ],
+  "artifact_id": "r6-trend-interval-calibration-report-current-001",
+  "blocked_claims": [
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "accuracy_superiority_established=true"
+  ],
+  "blocking_gaps": [
+    "needs_trend_direction_holdout_improvement",
+    "needs_interval_coverage_holdout_improvement"
+  ],
+  "case_results": [
+    {
+      "interaction_prediction": 0.36,
+      "interval_confidence_level": "medium",
+      "observed_reject_proxy": 0.47,
+      "outcome_direction": "risk_up",
+      "risk_interval": {
+        "contains_observed": true,
+        "lower": 0.24,
+        "upper": 0.48,
+        "width": 0.24
+      },
+      "source_artifact_ids": [
+        "r6-trend-interval-calibration-report-current-001-trend-risk-metrics-htops_cost_pressure-ablation"
+      ],
+      "source_key": "htops_cost_pressure",
+      "static_prior_prediction": 0.29,
+      "target_case_id": "generic-public-service-policy-change",
+      "trend_direction": "risk_up",
+      "trend_direction_matches_outcome": true,
+      "uncertainty_source_breakdown": {
+        "interaction_propagation_uncertainty": 0.09,
+        "outcome_proxy_uncertainty": 0.035,
+        "static_prior_uncertainty": 0.115
+      }
+    },
+    {
+      "interaction_prediction": 0.38,
+      "interval_confidence_level": "medium",
+      "observed_reject_proxy": 0.33,
+      "outcome_direction": "uncertain",
+      "risk_interval": {
+        "contains_observed": true,
+        "lower": 0.26,
+        "upper": 0.5,
+        "width": 0.24
+      },
+      "source_artifact_ids": [
+        "r6-trend-interval-calibration-report-current-001-trend-risk-metrics-anes_health_heldout-ablation"
+      ],
+      "source_key": "anes_health_heldout",
+      "static_prior_prediction": 0.31,
+      "target_case_id": "generic-rights-rule-change",
+      "trend_direction": "risk_up",
+      "trend_direction_matches_outcome": true,
+      "uncertainty_source_breakdown": {
+        "interaction_propagation_uncertainty": 0.09,
+        "outcome_proxy_uncertainty": 0.035,
+        "static_prior_uncertainty": 0.115
+      }
+    },
+    {
+      "interaction_prediction": 0.38,
+      "interval_confidence_level": "diagnostic_only",
+      "observed_reject_proxy": 0.25,
+      "outcome_direction": "risk_down",
+      "risk_interval": {
+        "contains_observed": false,
+        "lower": 0.26,
+        "upper": 0.5,
+        "width": 0.24
+      },
+      "source_artifact_ids": [
+        "r6-trend-interval-calibration-report-current-001-trend-risk-metrics-anes_climate_heldout-ablation"
+      ],
+      "source_key": "anes_climate_heldout",
+      "static_prior_prediction": 0.31,
+      "target_case_id": "generic-rights-rule-change",
+      "trend_direction": "risk_up",
+      "trend_direction_matches_outcome": false,
+      "uncertainty_source_breakdown": {
+        "interaction_propagation_uncertainty": 0.09,
+        "outcome_proxy_uncertainty": 0.035,
+        "static_prior_uncertainty": 0.115
+      }
+    }
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "claim_status": "diagnostic",
+  "metric_definition": {
+    "indeterminate_rate": "Share of cases downgraded to uncertain because interaction signal is too weak or contradictory.",
+    "interval_coverage": "Share of cases where observed/proxy reject rate falls inside the calibrated interaction interval.",
+    "interval_efficiency": "Coverage divided by mean interval width; reported only as a diagnostic because current holdout is proxy-only.",
+    "trend_direction_accuracy": "Share of proxy/holdout cases where calibrated interaction trend direction matches observed/proxy direction."
+  },
+  "product_interval_confidence_level": "diagnostic_only",
+  "run_id": "r6-full-product-support-current-001",
+  "schema_version": "r6-trend-interval-calibration-report-v1",
+  "source_refs": [
+    "r6-trend-interval-calibration-report-current-001-trend-risk-metrics"
+  ],
+  "status": "trend_interval_calibration_diagnostic_only",
+  "summary": {
+    "case_count": 3,
+    "indeterminate_rate": 0.0,
+    "interval_coverage": 0.667,
+    "interval_efficiency": 2.779,
+    "mean_interval_width": 0.24,
+    "trend_direction_accuracy": 0.667,
+    "uncertainty_source_breakdown": {
+      "interaction_propagation_uncertainty": 0.09,
+      "outcome_proxy_uncertainty": 0.035,
+      "static_prior_uncertainty": 0.115
+    }
+  }
+}

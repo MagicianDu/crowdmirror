@@ -1,0 +1,71 @@
+{
+  "acceptance_gates": {
+    "field_outcome_validated": false,
+    "mechanism_ablation_explains_risk_change": true,
+    "mechanism_operator_ablation_present": true,
+    "runtime_default_allowed": false
+  },
+  "artifact_id": "r6-mechanism-operator-ablation-report-current-001",
+  "blocked_claims": [
+    "runtime_default_allowed=true",
+    "field_outcome_validated=true"
+  ],
+  "case_results": [
+    {
+      "guard_decision": "apply_guarded_interaction",
+      "mechanism_ablation_delta": 0.06999999999999999,
+      "source_key": "htops_cost_pressure",
+      "structured_risk_delta": {
+        "applied_mechanisms": [
+          "access_anxiety",
+          "community_amplification",
+          "equity_concern",
+          "equity_concern_discussion",
+          "official_trust_buffer"
+        ],
+        "reject_delta": 0.07,
+        "static_prior_fallback_used": false
+      },
+      "target_case_id": "generic-public-service-policy-change"
+    },
+    {
+      "guard_decision": "fallback_to_static_prior",
+      "mechanism_ablation_delta": 0.0,
+      "source_key": "anes_health_heldout",
+      "structured_risk_delta": {
+        "applied_mechanisms": [
+          "static_prior_fallback"
+        ],
+        "reject_delta": 0.0,
+        "static_prior_fallback_used": true
+      },
+      "target_case_id": "generic-rights-rule-change"
+    },
+    {
+      "guard_decision": "fallback_to_static_prior",
+      "mechanism_ablation_delta": 0.0,
+      "source_key": "anes_climate_heldout",
+      "structured_risk_delta": {
+        "applied_mechanisms": [
+          "static_prior_fallback"
+        ],
+        "reject_delta": 0.0,
+        "static_prior_fallback_used": true
+      },
+      "target_case_id": "generic-rights-rule-change"
+    }
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "run_id": "r6-full-product-support-current-001",
+  "schema_version": "r6-mechanism-operator-ablation-report-v1",
+  "source_refs": [
+    "r6-behavioral-update-operator-v3-current-001"
+  ],
+  "status": "mechanism_operator_ablation_guarded_proxy",
+  "summary": {
+    "case_count": 3,
+    "guarded_interaction_case_count": 1,
+    "mechanism_ablation_delta": 0.023,
+    "static_fallback_case_count": 2
+  }
+}
