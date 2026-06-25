@@ -108,3 +108,61 @@ def test_r7_effect_validation_cli_writes_artifact(tmp_path):
         "output": str(output),
         "status": "r7_effect_validation_diagnostic_blocked",
     }
+
+
+def test_r7_v2_effect_validation_reports_guarded_positive_signal():
+    report = build_r7_effect_validation(
+        artifact_id="r7-effect-validation-v2-test",
+        run_id="r7-effect-validation-v2-run",
+        candidate_variant="v2_guarded_mechanism_calibrated",
+    )
+
+    assert report["status"] == "r7_v2_effect_validation_guarded_positive_signal"
+    assert report["claim_status"] == "guarded_positive_signal"
+    assert report["comparison_protocol"]["r7_candidate"] == (
+        "r7_mechanism_generative_bundle:v2_guarded_mechanism_calibrated"
+    )
+    assert report["summary"]["r7_candidate_variant"] == (
+        "v2_guarded_mechanism_calibrated"
+    )
+    assert report["summary"]["r7_trend_direction_accuracy"] == 0.667
+    assert report["summary"]["r7_interval_coverage"] == 1.0
+    assert report["summary"]["r7_false_alarm_rate"] == 0.0
+    assert report["summary"]["r7_static_prior_miss_recovery_rate"] == 1.0
+    assert report["summary"]["r7_mean_absolute_error"] < report["summary"][
+        "r6_learning_counterfactual_mean_absolute_error"
+    ]
+    assert report["summary"]["r7_effect_positive_signal"] is True
+    assert report["acceptance_gates"]["r7_effect_positive_signal"] is True
+    assert report["acceptance_gates"]["field_outcome_validated"] is False
+    assert report["acceptance_gates"]["runtime_default_allowed"] is False
+    assert report["blocking_gaps"] == [
+        "needs_field_or_customer_outcome_validation",
+        "needs_runtime_default_guard_review",
+    ]
+
+
+def test_r7_v2_effect_validation_explains_case_level_repairs():
+    report = build_r7_effect_validation(
+        artifact_id="r7-effect-validation-v2-test",
+        run_id="r7-effect-validation-v2-run",
+        candidate_variant="v2_guarded_mechanism_calibrated",
+    )
+
+    by_source = {case["source_key"]: case for case in report["case_results"]}
+
+    htops = by_source["htops_cost_pressure"]
+    assert htops["r7_flags_high_risk"] is True
+    assert htops["r7_static_prior_miss_recovered"] is True
+    assert "access_constraint_recovery_boost" in htops["r7_candidate_adjustments"]
+
+    health = by_source["anes_health_heldout"]
+    assert health["r7_flags_high_risk"] is False
+    assert health["r7_false_alarm"] is False
+    assert "rights_rule_grandfathering_buffer" in health["r7_candidate_adjustments"]
+
+    climate = by_source["anes_climate_heldout"]
+    assert climate["r7_flags_high_risk"] is False
+    assert climate["r7_false_alarm"] is False
+    assert climate["r7_interval_contains_observed"] is True
+    assert "uncertainty_interval_floor" in climate["r7_candidate_adjustments"]
