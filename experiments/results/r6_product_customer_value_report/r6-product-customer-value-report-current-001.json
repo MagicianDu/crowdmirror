@@ -43,6 +43,7 @@
     "risk_distribution",
     "abnormal_segments",
     "mechanism_explanation",
+    "counterfactual_policy_comparison",
     "research_support_gap_ledger",
     "evidence_and_blocked_claims",
     "outcome_review_plan"
@@ -137,6 +138,80 @@
         "support_status": "guarded_proxy_supported"
       }
     ],
+    "counterfactual_policy_comparison": {
+      "claim_status": "diagnostic",
+      "holdout_summary": {
+        "diagnostic_blocked_count": 1,
+        "false_alarm_reduction_rate": 1.0,
+        "holdout_trial_count": 3,
+        "independent_holdout_passed": false,
+        "mean_error_reduction_vs_raw_interaction": 0.004,
+        "non_regression_rate": 0.667,
+        "static_prior_miss_recovery_rate": 0.0,
+        "supported_holdout_count": 2
+      },
+      "summary": {
+        "case_count": 3,
+        "counterfactual_policy_count": 4,
+        "learned_operator_false_alarm_rate": 0.0,
+        "learned_operator_flagged_case_count": 1,
+        "learned_operator_top_k_hit_rate": 1.0,
+        "mean_error_reduction_vs_raw_interaction": 0.048,
+        "mean_learned_operator_absolute_error": 0.049,
+        "mean_raw_interaction_absolute_error": 0.097,
+        "raw_interaction_false_alarm_rate": 0.667,
+        "raw_interaction_flagged_case_count": 3,
+        "static_prior_miss_recovery_rate": 1.0
+      },
+      "support_status": "guarded_current_proxy_positive_signal",
+      "top_policy_by_case": [
+        {
+          "source_artifact_ids": [
+            "r6-learning-counterfactual-simulator-current-001",
+            "r6-learning-counterfactual-holdout-validation-current-001"
+          ],
+          "source_key": "htops_cost_pressure",
+          "top_policy": {
+            "decision_value_score": 0.67,
+            "mechanism_action": "reduce loss salience and substitution pressure for high-risk segments",
+            "policy_id": "targeted_mitigation",
+            "predicted_reject_proxy": 0.352,
+            "rank": 1,
+            "risk_reduction_vs_no_mitigation": 0.051
+          }
+        },
+        {
+          "source_artifact_ids": [
+            "r6-learning-counterfactual-simulator-current-001",
+            "r6-learning-counterfactual-holdout-validation-current-001"
+          ],
+          "source_key": "anes_health_heldout",
+          "top_policy": {
+            "decision_value_score": 0.685,
+            "mechanism_action": "reduce loss salience and substitution pressure for high-risk segments",
+            "policy_id": "targeted_mitigation",
+            "predicted_reject_proxy": 0.315,
+            "rank": 1,
+            "risk_reduction_vs_no_mitigation": 0.004
+          }
+        },
+        {
+          "source_artifact_ids": [
+            "r6-learning-counterfactual-simulator-current-001",
+            "r6-learning-counterfactual-holdout-validation-current-001"
+          ],
+          "source_key": "anes_climate_heldout",
+          "top_policy": {
+            "decision_value_score": 0.673,
+            "mechanism_action": "reduce loss salience and substitution pressure for high-risk segments",
+            "policy_id": "targeted_mitigation",
+            "predicted_reject_proxy": 0.315,
+            "rank": 1,
+            "risk_reduction_vs_no_mitigation": 0.004
+          }
+        }
+      ]
+    },
     "mechanism_explanation": {
       "claim_status": "diagnostic_only",
       "support_status": "diagnostic_only"
@@ -148,10 +223,10 @@
       "research_next_tasks": [],
       "support_coverage": {
         "blocked_value_count": 2,
-        "diagnostic_value_count": 2,
+        "diagnostic_value_count": 3,
         "guarded_value_count": 4,
-        "product_value_count": 8,
-        "supported_value_count": 4,
+        "product_value_count": 9,
+        "supported_value_count": 5,
         "validated_value_count": 0
       },
       "support_gap_ledger": [
@@ -163,7 +238,7 @@
           "product_display_level": "diagnostic",
           "product_value": "trend_direction",
           "source_artifact_ids": [
-            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-trend-interval-calibration"
+            "r6-product-claim-evidence-registry-current-001-trend-interval-calibration"
           ]
         },
         {
@@ -172,7 +247,7 @@
           "product_display_level": "guarded",
           "product_value": "risk_interval",
           "source_artifact_ids": [
-            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-trend-interval-calibration"
+            "r6-product-claim-evidence-registry-current-001-trend-interval-calibration"
           ]
         },
         {
@@ -183,8 +258,8 @@
           "product_display_level": "guarded",
           "product_value": "risk_distribution",
           "source_artifact_ids": [
-            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-segment-risk-ranking",
-            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-false-alarm-control"
+            "r6-product-claim-evidence-registry-current-001-segment-risk-ranking",
+            "r6-product-claim-evidence-registry-current-001-false-alarm-control"
           ]
         },
         {
@@ -195,8 +270,8 @@
           "product_display_level": "guarded",
           "product_value": "abnormal_segments",
           "source_artifact_ids": [
-            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-abnormal-segment-validation",
-            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-segment-risk-ranking"
+            "r6-product-claim-evidence-registry-current-001-abnormal-segment-validation",
+            "r6-product-claim-evidence-registry-current-001-segment-risk-ranking"
           ]
         },
         {
@@ -207,7 +282,7 @@
           "product_display_level": "diagnostic",
           "product_value": "mechanism_explanation",
           "source_artifact_ids": [
-            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-mechanism-ablation"
+            "r6-product-claim-evidence-registry-current-001-mechanism-ablation"
           ]
         },
         {
@@ -218,7 +293,19 @@
           "product_display_level": "guarded",
           "product_value": "false_alarm_control",
           "source_artifact_ids": [
-            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-false-alarm-control"
+            "r6-product-claim-evidence-registry-current-001-false-alarm-control"
+          ]
+        },
+        {
+          "blocking_gap_ids": [
+            "independent_holdout_not_passed"
+          ],
+          "current_support_status": "guarded_current_proxy_positive_signal",
+          "product_display_level": "diagnostic",
+          "product_value": "counterfactual_policy_comparison",
+          "source_artifact_ids": [
+            "r6-learning-counterfactual-simulator-current-001",
+            "r6-learning-counterfactual-holdout-validation-current-001"
           ]
         },
         {
@@ -229,7 +316,7 @@
           "product_display_level": "blocked",
           "product_value": "outcome_feedback",
           "source_artifact_ids": [
-            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-cross-case-transfer"
+            "r6-product-claim-evidence-registry-current-001-cross-case-transfer"
           ]
         },
         {
@@ -240,7 +327,7 @@
           "product_display_level": "blocked",
           "product_value": "bounded_update_candidate",
           "source_artifact_ids": [
-            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-cross-case-transfer"
+            "r6-product-claim-evidence-registry-current-001-cross-case-transfer"
           ]
         }
       ]
@@ -320,7 +407,7 @@
     "source_backed_only": true,
     "static_narrative_fallback_allowed": false
   },
-  "run_id": "r6-full-product-support-current-001",
+  "run_id": "r6-learning-counterfactual-current",
   "schema_version": "r6-product-customer-value-report-v1",
   "section_contracts": [
     {
@@ -364,6 +451,14 @@
       ]
     },
     {
+      "section_id": "counterfactual_policy_comparison",
+      "source_artifact_ids": [
+        "r6-research-product-value-support-v2-current-001",
+        "r6-learning-counterfactual-simulator-current-001",
+        "r6-learning-counterfactual-holdout-validation-current-001"
+      ]
+    },
+    {
       "section_id": "research_support_gap_ledger",
       "source_artifact_ids": [
         "r6-research-product-value-support-v2-current-001"
@@ -386,7 +481,10 @@
   "source_refs": [
     "r6-product-decision-report-current-001",
     "r6-trend-interval-risk-metrics-current-001",
-    "r6-research-product-value-support-v2-current-001"
+    "r6-research-product-value-support-v2-current-001",
+    "r6-product-claim-evidence-registry-current-001",
+    "r6-learning-counterfactual-simulator-current-001",
+    "r6-learning-counterfactual-holdout-validation-current-001"
   ],
   "source_registry": [
     {
@@ -400,6 +498,18 @@
     {
       "artifact_id": "r6-research-product-value-support-v2-current-001",
       "path": "experiments/results/r6_research_product_value_support_v2/r6-research-product-value-support-v2-current-001.json"
+    },
+    {
+      "artifact_id": "r6-product-claim-evidence-registry-current-001",
+      "path": "experiments/results/r6_product_claim_evidence_registry/r6-product-claim-evidence-registry-current-001.json"
+    },
+    {
+      "artifact_id": "r6-learning-counterfactual-simulator-current-001",
+      "path": "experiments/results/r6_learning_counterfactual_simulator/r6-learning-counterfactual-simulator-current-001.json"
+    },
+    {
+      "artifact_id": "r6-learning-counterfactual-holdout-validation-current-001",
+      "path": "experiments/results/r6_learning_counterfactual_holdout_validation/r6-learning-counterfactual-holdout-validation-current-001.json"
     }
   ],
   "status": "customer_value_report_ready_guarded"

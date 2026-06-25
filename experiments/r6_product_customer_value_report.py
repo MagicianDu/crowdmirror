@@ -17,7 +17,14 @@ from experiments.r6_contracts import (
 )
 from experiments.r6_product_decision_report import build_r6_product_decision_report
 from experiments.r6_product_claim_evidence_registry import (
+    build_r6_product_claim_evidence_registry,
     build_r6_research_product_value_support_v2,
+)
+from experiments.r6_learning_counterfactual_holdout_validation import (
+    build_r6_learning_counterfactual_holdout_validation,
+)
+from experiments.r6_learning_counterfactual_simulator import (
+    build_r6_learning_counterfactual_simulator,
 )
 from experiments.r6_trend_interval_risk_metrics import (
     build_r6_trend_interval_risk_metrics,
@@ -34,6 +41,7 @@ R6_PRODUCT_CUSTOMER_VALUE_SECTIONS = [
     "risk_distribution",
     "abnormal_segments",
     "mechanism_explanation",
+    "counterfactual_policy_comparison",
     "research_support_gap_ledger",
     "evidence_and_blocked_claims",
     "outcome_review_plan",
@@ -47,6 +55,8 @@ def build_r6_product_customer_value_report(
     decision_report: dict[str, Any] | None = None,
     trend_interval_risk_metrics: dict[str, Any] | None = None,
     value_support: dict[str, Any] | None = None,
+    learning_counterfactual_simulator: dict[str, Any] | None = None,
+    learning_counterfactual_holdout_validation: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
@@ -58,12 +68,45 @@ def build_r6_product_customer_value_report(
         artifact_id="r6-trend-interval-risk-metrics-current-001",
         run_id=run_id,
     )
-    support = value_support or build_r6_research_product_value_support_v2(
-        artifact_id="r6-research-product-value-support-v2-current-001",
-        run_id=run_id,
+    counterfactual = (
+        learning_counterfactual_simulator
+        or build_r6_learning_counterfactual_simulator(
+            artifact_id="r6-learning-counterfactual-simulator-current-001",
+            run_id=run_id,
+            trend_interval_risk_metrics=metrics,
+        )
     )
+    counterfactual_holdout = (
+        learning_counterfactual_holdout_validation
+        or build_r6_learning_counterfactual_holdout_validation(
+            artifact_id="r6-learning-counterfactual-holdout-validation-current-001",
+            run_id=run_id,
+            trend_interval_risk_metrics=metrics,
+            learning_counterfactual_simulator=counterfactual,
+        )
+    )
+    if value_support is None:
+        claim_registry = build_r6_product_claim_evidence_registry(
+            artifact_id="r6-product-claim-evidence-registry-current-001",
+            run_id=run_id,
+            learning_counterfactual_simulator=counterfactual,
+            learning_counterfactual_holdout_validation=counterfactual_holdout,
+        )
+        support = build_r6_research_product_value_support_v2(
+            artifact_id="r6-research-product-value-support-v2-current-001",
+            run_id=run_id,
+            claim_evidence_registry=claim_registry,
+        )
+    else:
+        support = value_support
     frontend_demo_ready = _frontend_demo_ready()
-    source_registry = _source_registry(decision, metrics, support)
+    source_registry = _source_registry(
+        decision,
+        metrics,
+        support,
+        counterfactual,
+        counterfactual_holdout,
+    )
     report = {
         "schema_version": R6_PRODUCT_CUSTOMER_VALUE_REPORT_SCHEMA_VERSION,
         "artifact_id": artifact_id,
@@ -79,8 +122,19 @@ def build_r6_product_customer_value_report(
             "field_outcome_validated": False,
             "runtime_default_allowed": False,
         },
-        "display_payload": _display_payload(metrics, support),
-        "section_contracts": _section_contracts(decision, metrics, support),
+        "display_payload": _display_payload(
+            metrics,
+            support,
+            counterfactual,
+            counterfactual_holdout,
+        ),
+        "section_contracts": _section_contracts(
+            decision,
+            metrics,
+            support,
+            counterfactual,
+            counterfactual_holdout,
+        ),
         "source_registry": source_registry,
         "source_refs": [entry["artifact_id"] for entry in source_registry],
         "blocked_claims": _unique_strings(
@@ -115,6 +169,8 @@ def write_r6_product_customer_value_report(output: str | Path, **kwargs: Any) ->
 def _display_payload(
     metrics: dict[str, Any],
     support: dict[str, Any],
+    counterfactual: dict[str, Any],
+    counterfactual_holdout: dict[str, Any],
 ) -> dict[str, Any]:
     cases = metrics["case_results"]
     return {
@@ -160,6 +216,31 @@ def _display_payload(
             "support_status": _support_status(support, "mechanism_explanation"),
             "claim_status": "diagnostic_only",
         },
+        "counterfactual_policy_comparison": {
+            "support_status": _support_status(
+                support,
+                "counterfactual_policy_comparison",
+            ),
+            "claim_status": "diagnostic",
+            "summary": counterfactual["summary"],
+            "holdout_summary": {
+                **counterfactual_holdout["summary"],
+                "independent_holdout_passed": counterfactual_holdout[
+                    "acceptance_gates"
+                ]["independent_holdout_passed"],
+            },
+            "top_policy_by_case": [
+                {
+                    "source_key": case["source_key"],
+                    "top_policy": case["counterfactual_policy_results"][0],
+                    "source_artifact_ids": [
+                        counterfactual["artifact_id"],
+                        counterfactual_holdout["artifact_id"],
+                    ],
+                }
+                for case in counterfactual["case_results"]
+            ],
+        },
         "research_support": {
             "overall_product_core_value_supported": support[
                 "overall_product_core_value_supported"
@@ -186,6 +267,8 @@ def _section_contracts(
     decision: dict[str, Any],
     metrics: dict[str, Any],
     support: dict[str, Any],
+    counterfactual: dict[str, Any],
+    counterfactual_holdout: dict[str, Any],
 ) -> list[dict[str, Any]]:
     return [
         {
@@ -213,6 +296,14 @@ def _section_contracts(
             "source_artifact_ids": [support["artifact_id"]],
         },
         {
+            "section_id": "counterfactual_policy_comparison",
+            "source_artifact_ids": [
+                support["artifact_id"],
+                counterfactual["artifact_id"],
+                counterfactual_holdout["artifact_id"],
+            ],
+        },
+        {
             "section_id": "research_support_gap_ledger",
             "source_artifact_ids": [support["artifact_id"]],
         },
@@ -231,6 +322,8 @@ def _source_registry(
     decision: dict[str, Any],
     metrics: dict[str, Any],
     support: dict[str, Any],
+    counterfactual: dict[str, Any],
+    counterfactual_holdout: dict[str, Any],
 ) -> list[dict[str, str]]:
     support_path = (
         "experiments/results/r6_research_product_value_support_v2/"
@@ -259,6 +352,27 @@ def _source_registry(
         {
             "artifact_id": support["artifact_id"],
             "path": support_path,
+        },
+        {
+            "artifact_id": "r6-product-claim-evidence-registry-current-001",
+            "path": (
+                "experiments/results/r6_product_claim_evidence_registry/"
+                "r6-product-claim-evidence-registry-current-001.json"
+            ),
+        },
+        {
+            "artifact_id": counterfactual["artifact_id"],
+            "path": (
+                "experiments/results/r6_learning_counterfactual_simulator/"
+                "r6-learning-counterfactual-simulator-current-001.json"
+            ),
+        },
+        {
+            "artifact_id": counterfactual_holdout["artifact_id"],
+            "path": (
+                "experiments/results/r6_learning_counterfactual_holdout_validation/"
+                "r6-learning-counterfactual-holdout-validation-current-001.json"
+            ),
         },
     ]
 

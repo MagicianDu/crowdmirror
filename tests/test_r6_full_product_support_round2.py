@@ -82,6 +82,7 @@ def test_wp7_product_claim_evidence_registry_maps_all_product_sections():
         "abnormal_segments",
         "mechanism_explanation",
         "false_alarm_control",
+        "counterfactual_policy_comparison",
         "outcome_feedback",
         "bounded_update_candidate",
     }

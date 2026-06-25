@@ -25,6 +25,7 @@ def test_r6_product_customer_value_report_contains_trend_interval_risk_sections(
         "risk_distribution",
         "abnormal_segments",
         "mechanism_explanation",
+        "counterfactual_policy_comparison",
         "research_support_gap_ledger",
         "evidence_and_blocked_claims",
         "outcome_review_plan",
@@ -33,6 +34,7 @@ def test_r6_product_customer_value_report_contains_trend_interval_risk_sections(
     assert "risk_interval" in report["display_payload"]
     assert "risk_distribution" in report["display_payload"]
     assert "abnormal_segments" in report["display_payload"]
+    assert "counterfactual_policy_comparison" in report["display_payload"]
     assert "research_support" in report["display_payload"]
     assert report["display_payload"]["research_support"][
         "overall_product_core_value_supported"
@@ -43,6 +45,9 @@ def test_r6_product_customer_value_report_contains_trend_interval_risk_sections(
     assert report["display_payload"]["risk_interval"]["support_status"] == (
         "guarded_interval_supported"
     )
+    assert report["display_payload"]["counterfactual_policy_comparison"][
+        "support_status"
+    ] == "guarded_current_proxy_positive_signal"
     assert report["display_payload"]["research_support"]["support_coverage"][
         "supported_value_count"
     ] >= 1

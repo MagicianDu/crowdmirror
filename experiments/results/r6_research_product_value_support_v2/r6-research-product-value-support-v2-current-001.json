@@ -11,7 +11,8 @@
   "allowed_claims": [
     "Risk interval can be presented as a guarded supported interval when coverage and width gates pass.",
     "Risk distribution and false-alarm control can be presented as guarded current-proxy supported claims.",
-    "Abnormal segments can be presented as guarded proxy/audit supported claims."
+    "Abnormal segments can be presented as guarded proxy/audit supported claims.",
+    "Counterfactual policy comparison can be presented as diagnostic current-proxy decision support."
   ],
   "artifact_id": "r6-research-product-value-support-v2-current-001",
   "blocked_claims": [
@@ -30,24 +31,26 @@
   ],
   "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
   "overall_product_core_value_supported": false,
-  "run_id": "r6-full-product-support-current-001",
+  "run_id": "r6-learning-counterfactual-current",
   "schema_version": "r6-research-product-value-support-v2",
   "source_refs": [
     "r6-product-claim-evidence-registry-current-001",
-    "r6-trend-interval-calibration-report-current-001",
-    "r6-segment-risk-ranking-report-current-001",
-    "r6-false-alarm-control-report-current-001",
-    "r6-abnormal-segment-validation-report-current-001",
+    "r6-product-claim-evidence-registry-current-001-trend-interval-calibration",
+    "r6-product-claim-evidence-registry-current-001-segment-risk-ranking",
+    "r6-product-claim-evidence-registry-current-001-false-alarm-control",
+    "r6-product-claim-evidence-registry-current-001-abnormal-segment-validation",
     "r6-product-claim-evidence-registry-current-001-mechanism-ablation",
+    "r6-learning-counterfactual-simulator-current-001",
+    "r6-learning-counterfactual-holdout-validation-current-001",
     "r6-product-claim-evidence-registry-current-001-cross-case-transfer"
   ],
   "status": "product_value_support_v2_partial_supported",
   "support_coverage": {
     "blocked_value_count": 2,
-    "diagnostic_value_count": 2,
+    "diagnostic_value_count": 3,
     "guarded_value_count": 4,
-    "product_value_count": 8,
-    "supported_value_count": 4,
+    "product_value_count": 9,
+    "supported_value_count": 5,
     "validated_value_count": 0
   },
   "support_matrix": [
@@ -56,7 +59,7 @@
       "claim_status": "diagnostic",
       "product_value": "trend_direction",
       "source_artifact_ids": [
-        "r6-trend-interval-calibration-report-current-001"
+        "r6-product-claim-evidence-registry-current-001-trend-interval-calibration"
       ],
       "support_status": "partial_current_proxy"
     },
@@ -65,7 +68,7 @@
       "claim_status": "guarded",
       "product_value": "risk_interval",
       "source_artifact_ids": [
-        "r6-trend-interval-calibration-report-current-001"
+        "r6-product-claim-evidence-registry-current-001-trend-interval-calibration"
       ],
       "support_status": "guarded_interval_supported"
     },
@@ -74,8 +77,8 @@
       "claim_status": "guarded",
       "product_value": "risk_distribution",
       "source_artifact_ids": [
-        "r6-segment-risk-ranking-report-current-001",
-        "r6-false-alarm-control-report-current-001"
+        "r6-product-claim-evidence-registry-current-001-segment-risk-ranking",
+        "r6-product-claim-evidence-registry-current-001-false-alarm-control"
       ],
       "support_status": "supported_current_proxy_guarded"
     },
@@ -84,8 +87,8 @@
       "claim_status": "guarded",
       "product_value": "abnormal_segments",
       "source_artifact_ids": [
-        "r6-abnormal-segment-validation-report-current-001",
-        "r6-segment-risk-ranking-report-current-001"
+        "r6-product-claim-evidence-registry-current-001-abnormal-segment-validation",
+        "r6-product-claim-evidence-registry-current-001-segment-risk-ranking"
       ],
       "support_status": "guarded_proxy_supported"
     },
@@ -103,9 +106,19 @@
       "claim_status": "guarded",
       "product_value": "false_alarm_control",
       "source_artifact_ids": [
-        "r6-false-alarm-control-report-current-001"
+        "r6-product-claim-evidence-registry-current-001-false-alarm-control"
       ],
       "support_status": "supported_current_proxy_guarded"
+    },
+    {
+      "blocked_reason": "independent_holdout_not_passed",
+      "claim_status": "diagnostic",
+      "product_value": "counterfactual_policy_comparison",
+      "source_artifact_ids": [
+        "r6-learning-counterfactual-simulator-current-001",
+        "r6-learning-counterfactual-holdout-validation-current-001"
+      ],
+      "support_status": "guarded_current_proxy_positive_signal"
     },
     {
       "blocked_reason": "bounded_feedback_protocol_not_yet_available",

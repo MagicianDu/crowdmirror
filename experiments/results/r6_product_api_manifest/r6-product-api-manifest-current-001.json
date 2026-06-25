@@ -74,6 +74,7 @@
       "risk_distribution",
       "abnormal_segments",
       "mechanism_explanation",
+      "counterfactual_policy_comparison",
       "research_support_gap_ledger",
       "evidence_and_blocked_claims",
       "outcome_review_plan"
@@ -167,7 +168,7 @@
     "product_api_manifest_ready": true,
     "runtime_default_allowed": false
   },
-  "run_id": "r6-full-product-support-current-001",
+  "run_id": "r6-learning-counterfactual-current",
   "schema_version": "r6-product-api-manifest-v1",
   "source_refs": [
     "r6-product-readiness-index-current-001",
@@ -180,7 +181,10 @@
     "r6-evidence-report-current-014",
     "r6-gap-closure-report-current-001",
     "r6-trend-interval-risk-metrics-current-001",
-    "r6-research-product-value-support-v2-current-001"
+    "r6-research-product-value-support-v2-current-001",
+    "r6-product-claim-evidence-registry-current-001",
+    "r6-learning-counterfactual-simulator-current-001",
+    "r6-learning-counterfactual-holdout-validation-current-001"
   ],
   "source_registry": [
     {
@@ -242,6 +246,18 @@
     {
       "artifact_id": "r6-research-product-value-support-v2-current-001",
       "path": "experiments/results/r6_research_product_value_support_v2/r6-research-product-value-support-v2-current-001.json"
+    },
+    {
+      "artifact_id": "r6-product-claim-evidence-registry-current-001",
+      "path": "experiments/results/r6_product_claim_evidence_registry/r6-product-claim-evidence-registry-current-001.json"
+    },
+    {
+      "artifact_id": "r6-learning-counterfactual-simulator-current-001",
+      "path": "experiments/results/r6_learning_counterfactual_simulator/r6-learning-counterfactual-simulator-current-001.json"
+    },
+    {
+      "artifact_id": "r6-learning-counterfactual-holdout-validation-current-001",
+      "path": "experiments/results/r6_learning_counterfactual_holdout_validation/r6-learning-counterfactual-holdout-validation-current-001.json"
     }
   ],
   "status": "product_api_manifest_ready_guarded"

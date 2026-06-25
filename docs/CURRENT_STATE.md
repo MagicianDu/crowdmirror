@@ -208,6 +208,7 @@
 52. Research -> Product 支撑补齐第一步已实现为可审计 gap ledger：`r6-research-product-value-support-current-001` 现在包含 `support_coverage`、`support_gap_ledger`、`research_next_tasks`、`product_claim_support_summary` 和 `acceptance_gates`。当前结论仍是 `overall_product_core_value_supported=false`，但每个 Product value 已绑定当前指标、目标阈值、差距、阻断原因、下一步任务和验收标准。Customer value report 与 `/demo/` 前端已消费该 ledger，展示“研究支撑”面板。当前可说的是“Research 支撑合同已补齐”，不是“Research 已全面支撑 Product”。
 53. 五个 `research_next_tasks` 已全部执行并落盘为 `r6-research-next-task-execution-current-001`：`all_five_tasks_executed=true`、`task_count=5`、`accepted_for_guarded_reporting_count=1`、`blocked_or_failed_count=4`。具体结论是：trend/interval holdout 在当前 public proxy 上未过阈值；false-alarm control 在 current proxy 上可把误报降到 0 但缺 holdout validation；segment outcome labels 已有 proxy-aligned audit fixture，可计算 precision/recall，但不是 field segment labels；mechanism holdout validation 仍失败；outcome feedback transfer 可改善 prior-interaction error，但未过 runtime update guard。测试通过只证明五项任务链路已执行，不代表 Research 已全面支撑 Product。
 54. 由于 R6 证据链已搭好但方法本身仍偏弱，当前 Research 主线新增 `2026-06-25-r6-learning-counterfactual-method-upgrade.md`：不再继续包装旧 scoring candidate，而是转向“学习型反事实机制仿真器”。新增 `experiments/r6_learning_counterfactual_simulator.py` 用 outcome residual 学习机制层权重，并输出 counterfactual policy ranking；当前 MVP 在 public proxy fixture 上显示 `raw_interaction_false_alarm_rate=0.667` 降到 `learned_operator_false_alarm_rate=0.0`，同时保留 `static_prior_miss_recovery_rate=1.0`。该结果只能作为 current-proxy guarded positive signal，仍不是 field validation、跨域泛化或 runtime default。
+55. 学习型反事实机制仿真器已补充 leave-one-case holdout 和 Product ingestion：`r6-learning-counterfactual-holdout-validation-current-001` 当前是 `learning_counterfactual_holdout_mixed_blocked`，`non_regression_rate=0.667`、`false_alarm_reduction_rate=1.0`、`static_prior_miss_recovery_rate=0.0`、`independent_holdout_passed=false`。这说明训练内 false-alarm 控制信号有价值，但机制权重迁移仍不稳。Product 侧已新增 `counterfactual_policy_comparison` section，并在 customer report / API manifest source registry 中绑定 simulator 与 holdout artifacts；该能力只能以 diagnostic / guarded 方式展示。
 
 ## 可复用资产
 
@@ -251,6 +252,7 @@ R6 开发时必须只 stage 本轮明确修改的文件。
 4. 方法侧停止继续优化当前 scoring candidate；它保留为 negative baseline 和 diagnostic gate。
 5. Product 侧保留并强化 `interaction_signal_validity_holdout_summary`、false-alarm diagnosis、blocked update reason 和 claim boundary，确保新 Research 方法不会污染 runtime default。
 6. Research 方法侧优先推进 learning counterfactual mechanism simulator：下一步要做独立 holdout、operator ablation、Product report/API ingestion 和 bounded outcome feedback update；`behavioral_update_operator_v3` 保留为 guarded static-fallback baseline。
+7. learning counterfactual 已完成第一轮 Product ingestion，下一步优先做机制权重迁移失败归因：为什么 leave-one-case 时静态先验漏报恢复掉到 0，以及如何在不恢复 false alarm 的前提下保留 HTOPS 类静态漏报信号。
 
 ## 验收边界
 

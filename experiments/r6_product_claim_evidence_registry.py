@@ -19,6 +19,12 @@ from experiments.r6_cross_case_transfer_protocol import (
     build_r6_cross_case_transfer_protocol,
 )
 from experiments.r6_false_alarm_control_report import build_r6_false_alarm_control_report
+from experiments.r6_learning_counterfactual_holdout_validation import (
+    build_r6_learning_counterfactual_holdout_validation,
+)
+from experiments.r6_learning_counterfactual_simulator import (
+    build_r6_learning_counterfactual_simulator,
+)
 from experiments.r6_mechanism_ablation_report import build_r6_mechanism_ablation_report
 from experiments.r6_segment_risk_reports import (
     build_r6_abnormal_segment_validation_report,
@@ -47,6 +53,8 @@ def build_r6_product_claim_evidence_registry(
     false_alarm_control_report: dict[str, Any] | None = None,
     mechanism_ablation_report: dict[str, Any] | None = None,
     outcome_feedback_source: dict[str, Any] | None = None,
+    learning_counterfactual_simulator: dict[str, Any] | None = None,
+    learning_counterfactual_holdout_validation: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
@@ -77,6 +85,21 @@ def build_r6_product_claim_evidence_registry(
     feedback = outcome_feedback_source or build_r6_cross_case_transfer_protocol(
         artifact_id=f"{artifact_id}-cross-case-transfer",
         run_id=run_id,
+    )
+    counterfactual = (
+        learning_counterfactual_simulator
+        or build_r6_learning_counterfactual_simulator(
+            artifact_id=f"{artifact_id}-learning-counterfactual-simulator",
+            run_id=run_id,
+        )
+    )
+    counterfactual_holdout = (
+        learning_counterfactual_holdout_validation
+        or build_r6_learning_counterfactual_holdout_validation(
+            artifact_id=f"{artifact_id}-learning-counterfactual-holdout",
+            run_id=run_id,
+            learning_counterfactual_simulator=counterfactual,
+        )
     )
     claims = [
         _claim(
@@ -129,6 +152,16 @@ def build_r6_product_claim_evidence_registry(
             blocked_reason="holdout_validation_missing",
         ),
         _claim(
+            product_section="counterfactual_policy_comparison",
+            claim_status="diagnostic",
+            source_artifact_ids=[
+                counterfactual["artifact_id"],
+                counterfactual_holdout["artifact_id"],
+            ],
+            support_status="guarded_current_proxy_positive_signal",
+            blocked_reason="independent_holdout_not_passed",
+        ),
+        _claim(
             product_section="outcome_feedback",
             claim_status="blocked",
             source_artifact_ids=[feedback["artifact_id"]],
@@ -162,6 +195,11 @@ def build_r6_product_claim_evidence_registry(
                 for claim in claims
             ),
             "supported_value_count_gt_zero": summary["supported_value_count"] > 0,
+            "counterfactual_policy_comparison_source_backed": all(
+                claim["source_artifact_ids"]
+                for claim in claims
+                if claim["product_section"] == "counterfactual_policy_comparison"
+            ),
             "field_outcome_validated": False,
             "runtime_default_allowed": False,
         },
@@ -174,6 +212,7 @@ def build_r6_product_claim_evidence_registry(
             "Risk interval can be presented as a guarded supported interval when coverage and width gates pass.",
             "Risk distribution and false-alarm control can be presented as guarded current-proxy supported claims.",
             "Abnormal segments can be presented as guarded proxy/audit supported claims.",
+            "Counterfactual policy comparison can be presented as diagnostic current-proxy decision support.",
         ],
         "blocked_claims": [
             "Research 已完整支撑 Product 全部核心价值",
@@ -235,6 +274,7 @@ def build_r6_research_product_value_support_v2(
                 "abnormal_segments",
                 "mechanism_explanation",
                 "false_alarm_control",
+                "counterfactual_policy_comparison",
                 "outcome_feedback",
                 "bounded_update_candidate",
             },
@@ -326,6 +366,7 @@ def _summary(claims: list[dict[str, Any]]) -> dict[str, int]:
                 "supported_current_proxy_guarded",
                 "guarded_proxy_supported",
                 "guarded_interval_supported",
+                "guarded_current_proxy_positive_signal",
             }
         ),
     }
@@ -345,6 +386,7 @@ def _support_coverage(support_matrix: list[dict[str, Any]]) -> dict[str, int]:
                 "supported_current_proxy_guarded",
                 "guarded_proxy_supported",
                 "guarded_interval_supported",
+                "guarded_current_proxy_positive_signal",
             }
         ),
         "guarded_value_count": sum(
