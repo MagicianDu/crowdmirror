@@ -59,12 +59,27 @@ def test_r10_hps_policy_reaction_ingestion_reads_puf_zip_and_reports_coverage(tm
         "non_missing_count": 3,
         "unique_value_count": 2,
     }
+    assert artifact["segment_outcome_profiles"]["PRICECONCERN"]["REGION"] == [
+        {
+            "segment_value": "2",
+            "valid_response_count": 1,
+            "weighted_valid_total": 2.0,
+            "risk_proxy_share": 1.0,
+        },
+        {
+            "segment_value": "1",
+            "valid_response_count": 1,
+            "weighted_valid_total": 1.0,
+            "risk_proxy_share": 0.0,
+        },
+    ]
     assert artifact["acceptance_gates"] == {
         "official_public_zip_read": True,
         "puf_csv_detected": True,
         "minimum_rows_present": True,
         "outcome_columns_present": True,
         "segment_columns_present": True,
+        "segment_outcome_profiles_present": True,
         "actual_public_data_ingested": True,
         "field_outcome_validated": False,
         "runtime_default_allowed": False,

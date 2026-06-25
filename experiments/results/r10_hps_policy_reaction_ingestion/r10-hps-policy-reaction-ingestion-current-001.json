@@ -7,7 +7,8 @@
     "outcome_columns_present": true,
     "puf_csv_detected": true,
     "runtime_default_allowed": false,
-    "segment_columns_present": true
+    "segment_columns_present": true,
+    "segment_outcome_profiles_present": true
   },
   "allowed_claims": [
     "R10 L1 ingested and profiled the official HPS/HTOPS March 2026 PUF CSV.",
@@ -308,7 +309,8 @@
       "PRICESTRESS",
       "PRICECONCERN"
     ],
-    "outcome_family": "policy_or_price_reaction_survey_proxy"
+    "outcome_family": "policy_or_price_reaction_survey_proxy",
+    "risk_proxy_rule": "larger numeric response codes are treated as higher guarded price-pressure proxy"
   },
   "outcome_summary": {
     "PRICECHANGE": {
@@ -408,6 +410,1562 @@
       "non_missing_count": 12521,
       "present": true,
       "unique_value_count": 64
+    }
+  },
+  "segment_outcome_profiles": {
+    "PRICECHANGE": {
+      "ESEX": [
+        {
+          "risk_proxy_share": 0.057318,
+          "segment_value": "2",
+          "valid_response_count": 5714,
+          "weighted_valid_total": 129394738.674729
+        },
+        {
+          "risk_proxy_share": 0.051978,
+          "segment_value": "1",
+          "valid_response_count": 6081,
+          "weighted_valid_total": 122131153.53341
+        }
+      ],
+      "METRO_STATUS": [
+        {
+          "risk_proxy_share": 0.089378,
+          "segment_value": "2",
+          "valid_response_count": 169,
+          "weighted_valid_total": 11739999.043016
+        },
+        {
+          "risk_proxy_share": 0.053028,
+          "segment_value": "1",
+          "valid_response_count": 11626,
+          "weighted_valid_total": 239785893.165123
+        }
+      ],
+      "REGION": [
+        {
+          "risk_proxy_share": 0.070604,
+          "segment_value": "3",
+          "valid_response_count": 5074,
+          "weighted_valid_total": 96619340.988897
+        },
+        {
+          "risk_proxy_share": 0.055755,
+          "segment_value": "2",
+          "valid_response_count": 1792,
+          "weighted_valid_total": 51915023.976401
+        },
+        {
+          "risk_proxy_share": 0.046897,
+          "segment_value": "1",
+          "valid_response_count": 2335,
+          "weighted_valid_total": 43270598.73092
+        },
+        {
+          "risk_proxy_share": 0.03381,
+          "segment_value": "4",
+          "valid_response_count": 2594,
+          "weighted_valid_total": 59720928.511922
+        }
+      ],
+      "RHHINCOME": [
+        {
+          "risk_proxy_share": 0.08227,
+          "segment_value": "1",
+          "valid_response_count": 890,
+          "weighted_valid_total": 23537574.789937
+        },
+        {
+          "risk_proxy_share": 0.076542,
+          "segment_value": "5",
+          "valid_response_count": 1365,
+          "weighted_valid_total": 28837629.339823
+        },
+        {
+          "risk_proxy_share": 0.062332,
+          "segment_value": "3",
+          "valid_response_count": 917,
+          "weighted_valid_total": 26394332.828653
+        },
+        {
+          "risk_proxy_share": 0.044199,
+          "segment_value": "7",
+          "valid_response_count": 3514,
+          "weighted_valid_total": 51901397.555346
+        },
+        {
+          "risk_proxy_share": 0.044154,
+          "segment_value": "2",
+          "valid_response_count": 755,
+          "weighted_valid_total": 16857889.759681
+        },
+        {
+          "risk_proxy_share": 0.041625,
+          "segment_value": "6",
+          "valid_response_count": 2083,
+          "weighted_valid_total": 41245103.004122
+        },
+        {
+          "risk_proxy_share": 0.015968,
+          "segment_value": "4",
+          "valid_response_count": 1485,
+          "weighted_valid_total": 42272011.121507
+        }
+      ],
+      "RRACETH": [
+        {
+          "risk_proxy_share": 0.062792,
+          "segment_value": "3",
+          "valid_response_count": 1178,
+          "weighted_valid_total": 28993577.332255
+        },
+        {
+          "risk_proxy_share": 0.056443,
+          "segment_value": "1",
+          "valid_response_count": 7589,
+          "weighted_valid_total": 149314934.866057
+        },
+        {
+          "risk_proxy_share": 0.055316,
+          "segment_value": "4",
+          "valid_response_count": 1138,
+          "weighted_valid_total": 18324088.069846
+        },
+        {
+          "risk_proxy_share": 0.051718,
+          "segment_value": "2",
+          "valid_response_count": 1179,
+          "weighted_valid_total": 35477465.786465
+        },
+        {
+          "risk_proxy_share": 0.034399,
+          "segment_value": "5",
+          "valid_response_count": 711,
+          "weighted_valid_total": 19415826.153516
+        }
+      ],
+      "TAGE": [
+        {
+          "risk_proxy_share": 0.244232,
+          "segment_value": "48",
+          "valid_response_count": 185,
+          "weighted_valid_total": 4761398.100556
+        },
+        {
+          "risk_proxy_share": 0.208057,
+          "segment_value": "41",
+          "valid_response_count": 149,
+          "weighted_valid_total": 5022156.105974
+        },
+        {
+          "risk_proxy_share": 0.173342,
+          "segment_value": "58",
+          "valid_response_count": 212,
+          "weighted_valid_total": 3195852.584314
+        },
+        {
+          "risk_proxy_share": 0.142589,
+          "segment_value": "42",
+          "valid_response_count": 142,
+          "weighted_valid_total": 4263504.131002
+        },
+        {
+          "risk_proxy_share": 0.125328,
+          "segment_value": "26",
+          "valid_response_count": 82,
+          "weighted_valid_total": 2291559.428326
+        },
+        {
+          "risk_proxy_share": 0.124859,
+          "segment_value": "49",
+          "valid_response_count": 199,
+          "weighted_valid_total": 4430133.58995
+        },
+        {
+          "risk_proxy_share": 0.113606,
+          "segment_value": "81",
+          "valid_response_count": 119,
+          "weighted_valid_total": 1109183.132412
+        },
+        {
+          "risk_proxy_share": 0.111161,
+          "segment_value": "88",
+          "valid_response_count": 223,
+          "weighted_valid_total": 3086197.935016
+        },
+        {
+          "risk_proxy_share": 0.094548,
+          "segment_value": "53",
+          "valid_response_count": 187,
+          "weighted_valid_total": 3991704.11774
+        },
+        {
+          "risk_proxy_share": 0.091083,
+          "segment_value": "66",
+          "valid_response_count": 305,
+          "weighted_valid_total": 4690007.945589
+        },
+        {
+          "risk_proxy_share": 0.083515,
+          "segment_value": "84",
+          "valid_response_count": 94,
+          "weighted_valid_total": 1017285.485367
+        },
+        {
+          "risk_proxy_share": 0.083492,
+          "segment_value": "62",
+          "valid_response_count": 255,
+          "weighted_valid_total": 4875877.288494
+        },
+        {
+          "risk_proxy_share": 0.082347,
+          "segment_value": "30",
+          "valid_response_count": 100,
+          "weighted_valid_total": 3469879.131599
+        },
+        {
+          "risk_proxy_share": 0.080572,
+          "segment_value": "45",
+          "valid_response_count": 171,
+          "weighted_valid_total": 3102430.799866
+        },
+        {
+          "risk_proxy_share": 0.080033,
+          "segment_value": "46",
+          "valid_response_count": 160,
+          "weighted_valid_total": 2998660.259377
+        },
+        {
+          "risk_proxy_share": 0.070766,
+          "segment_value": "64",
+          "valid_response_count": 284,
+          "weighted_valid_total": 4537908.476845
+        },
+        {
+          "risk_proxy_share": 0.069492,
+          "segment_value": "28",
+          "valid_response_count": 93,
+          "weighted_valid_total": 4615739.544046
+        },
+        {
+          "risk_proxy_share": 0.069324,
+          "segment_value": "85",
+          "valid_response_count": 72,
+          "weighted_valid_total": 639781.248587
+        },
+        {
+          "risk_proxy_share": 0.066809,
+          "segment_value": "29",
+          "valid_response_count": 90,
+          "weighted_valid_total": 6863496.708903
+        },
+        {
+          "risk_proxy_share": 0.065516,
+          "segment_value": "59",
+          "valid_response_count": 238,
+          "weighted_valid_total": 3846214.923144
+        },
+        {
+          "risk_proxy_share": 0.061713,
+          "segment_value": "65",
+          "valid_response_count": 284,
+          "weighted_valid_total": 3275230.932544
+        },
+        {
+          "risk_proxy_share": 0.060607,
+          "segment_value": "83",
+          "valid_response_count": 106,
+          "weighted_valid_total": 1692501.117113
+        },
+        {
+          "risk_proxy_share": 0.053034,
+          "segment_value": "61",
+          "valid_response_count": 254,
+          "weighted_valid_total": 3712416.31576
+        },
+        {
+          "risk_proxy_share": 0.052337,
+          "segment_value": "33",
+          "valid_response_count": 101,
+          "weighted_valid_total": 3093333.140124
+        },
+        {
+          "risk_proxy_share": 0.051392,
+          "segment_value": "60",
+          "valid_response_count": 254,
+          "weighted_valid_total": 4297788.935392
+        },
+        {
+          "risk_proxy_share": 0.049286,
+          "segment_value": "77",
+          "valid_response_count": 208,
+          "weighted_valid_total": 2133333.475555
+        },
+        {
+          "risk_proxy_share": 0.048225,
+          "segment_value": "70",
+          "valid_response_count": 288,
+          "weighted_valid_total": 4059816.689596
+        },
+        {
+          "risk_proxy_share": 0.046602,
+          "segment_value": "86",
+          "valid_response_count": 57,
+          "weighted_valid_total": 554837.595824
+        },
+        {
+          "risk_proxy_share": 0.043884,
+          "segment_value": "78",
+          "valid_response_count": 192,
+          "weighted_valid_total": 1870277.762784
+        },
+        {
+          "risk_proxy_share": 0.043529,
+          "segment_value": "39",
+          "valid_response_count": 149,
+          "weighted_valid_total": 5386933.206765
+        },
+        {
+          "risk_proxy_share": 0.042405,
+          "segment_value": "75",
+          "valid_response_count": 226,
+          "weighted_valid_total": 2136024.104147
+        },
+        {
+          "risk_proxy_share": 0.042089,
+          "segment_value": "35",
+          "valid_response_count": 128,
+          "weighted_valid_total": 3229533.59545
+        },
+        {
+          "risk_proxy_share": 0.041641,
+          "segment_value": "34",
+          "valid_response_count": 142,
+          "weighted_valid_total": 4289469.328906
+        },
+        {
+          "risk_proxy_share": 0.041039,
+          "segment_value": "47",
+          "valid_response_count": 174,
+          "weighted_valid_total": 3393247.419515
+        },
+        {
+          "risk_proxy_share": 0.040635,
+          "segment_value": "63",
+          "valid_response_count": 277,
+          "weighted_valid_total": 4320066.750414
+        },
+        {
+          "risk_proxy_share": 0.040563,
+          "segment_value": "76",
+          "valid_response_count": 231,
+          "weighted_valid_total": 2353520.079295
+        },
+        {
+          "risk_proxy_share": 0.039847,
+          "segment_value": "71",
+          "valid_response_count": 276,
+          "weighted_valid_total": 3168094.441443
+        },
+        {
+          "risk_proxy_share": 0.039079,
+          "segment_value": "82",
+          "valid_response_count": 130,
+          "weighted_valid_total": 1776419.651995
+        },
+        {
+          "risk_proxy_share": 0.038646,
+          "segment_value": "69",
+          "valid_response_count": 298,
+          "weighted_valid_total": 4060179.525859
+        },
+        {
+          "risk_proxy_share": 0.036958,
+          "segment_value": "57",
+          "valid_response_count": 205,
+          "weighted_valid_total": 3314046.340663
+        },
+        {
+          "risk_proxy_share": 0.036452,
+          "segment_value": "31",
+          "valid_response_count": 108,
+          "weighted_valid_total": 5499388.216087
+        },
+        {
+          "risk_proxy_share": 0.034611,
+          "segment_value": "68",
+          "valid_response_count": 313,
+          "weighted_valid_total": 4043929.942806
+        },
+        {
+          "risk_proxy_share": 0.032668,
+          "segment_value": "44",
+          "valid_response_count": 179,
+          "weighted_valid_total": 3269494.749687
+        },
+        {
+          "risk_proxy_share": 0.031673,
+          "segment_value": "40",
+          "valid_response_count": 150,
+          "weighted_valid_total": 3579423.40585
+        },
+        {
+          "risk_proxy_share": 0.031615,
+          "segment_value": "51",
+          "valid_response_count": 165,
+          "weighted_valid_total": 2757407.033854
+        },
+        {
+          "risk_proxy_share": 0.031096,
+          "segment_value": "38",
+          "valid_response_count": 156,
+          "weighted_valid_total": 3745264.365095
+        },
+        {
+          "risk_proxy_share": 0.030414,
+          "segment_value": "43",
+          "valid_response_count": 156,
+          "weighted_valid_total": 4169448.599855
+        },
+        {
+          "risk_proxy_share": 0.029873,
+          "segment_value": "25",
+          "valid_response_count": 200,
+          "weighted_valid_total": 30761441.106302
+        },
+        {
+          "risk_proxy_share": 0.029039,
+          "segment_value": "87",
+          "valid_response_count": 57,
+          "weighted_valid_total": 741154.220591
+        },
+        {
+          "risk_proxy_share": 0.028937,
+          "segment_value": "73",
+          "valid_response_count": 265,
+          "weighted_valid_total": 3618798.373958
+        },
+        {
+          "risk_proxy_share": 0.027232,
+          "segment_value": "36",
+          "valid_response_count": 145,
+          "weighted_valid_total": 3320141.018524
+        },
+        {
+          "risk_proxy_share": 0.027142,
+          "segment_value": "56",
+          "valid_response_count": 199,
+          "weighted_valid_total": 3360205.153359
+        },
+        {
+          "risk_proxy_share": 0.026201,
+          "segment_value": "54",
+          "valid_response_count": 195,
+          "weighted_valid_total": 3578960.499667
+        },
+        {
+          "risk_proxy_share": 0.019088,
+          "segment_value": "67",
+          "valid_response_count": 295,
+          "weighted_valid_total": 4397295.812546
+        },
+        {
+          "risk_proxy_share": 0.01817,
+          "segment_value": "55",
+          "valid_response_count": 208,
+          "weighted_valid_total": 2989875.235335
+        },
+        {
+          "risk_proxy_share": 0.017915,
+          "segment_value": "79",
+          "valid_response_count": 212,
+          "weighted_valid_total": 2616736.181986
+        },
+        {
+          "risk_proxy_share": 0.017889,
+          "segment_value": "27",
+          "valid_response_count": 81,
+          "weighted_valid_total": 5689770.10003
+        },
+        {
+          "risk_proxy_share": 0.017467,
+          "segment_value": "72",
+          "valid_response_count": 298,
+          "weighted_valid_total": 3270749.785453
+        },
+        {
+          "risk_proxy_share": 0.014392,
+          "segment_value": "80",
+          "valid_response_count": 154,
+          "weighted_valid_total": 2303059.066621
+        },
+        {
+          "risk_proxy_share": 0.013905,
+          "segment_value": "74",
+          "valid_response_count": 259,
+          "weighted_valid_total": 3825047.015321
+        },
+        {
+          "risk_proxy_share": 0.010885,
+          "segment_value": "50",
+          "valid_response_count": 174,
+          "weighted_valid_total": 3353438.838132
+        },
+        {
+          "risk_proxy_share": 0.008588,
+          "segment_value": "32",
+          "valid_response_count": 116,
+          "weighted_valid_total": 4891454.278878
+        },
+        {
+          "risk_proxy_share": 0.008139,
+          "segment_value": "37",
+          "valid_response_count": 159,
+          "weighted_valid_total": 6123332.762431
+        },
+        {
+          "risk_proxy_share": 0.005965,
+          "segment_value": "52",
+          "valid_response_count": 211,
+          "weighted_valid_total": 4694035.099519
+        }
+      ]
+    },
+    "PRICECONCERN": {
+      "ESEX": [
+        {
+          "risk_proxy_share": 0.269524,
+          "segment_value": "1",
+          "valid_response_count": 6063,
+          "weighted_valid_total": 121597915.800982
+        },
+        {
+          "risk_proxy_share": 0.219777,
+          "segment_value": "2",
+          "valid_response_count": 5697,
+          "weighted_valid_total": 128928397.784125
+        }
+      ],
+      "METRO_STATUS": [
+        {
+          "risk_proxy_share": 0.33601,
+          "segment_value": "2",
+          "valid_response_count": 167,
+          "weighted_valid_total": 11633385.576875
+        },
+        {
+          "risk_proxy_share": 0.239438,
+          "segment_value": "1",
+          "valid_response_count": 11593,
+          "weighted_valid_total": 238892928.008232
+        }
+      ],
+      "REGION": [
+        {
+          "risk_proxy_share": 0.32435,
+          "segment_value": "2",
+          "valid_response_count": 1785,
+          "weighted_valid_total": 51740337.129658
+        },
+        {
+          "risk_proxy_share": 0.23611,
+          "segment_value": "1",
+          "valid_response_count": 2333,
+          "weighted_valid_total": 43134232.343914
+        },
+        {
+          "risk_proxy_share": 0.228699,
+          "segment_value": "3",
+          "valid_response_count": 5054,
+          "weighted_valid_total": 96098022.842502
+        },
+        {
+          "risk_proxy_share": 0.204271,
+          "segment_value": "4",
+          "valid_response_count": 2588,
+          "weighted_valid_total": 59553721.269032
+        }
+      ],
+      "RHHINCOME": [
+        {
+          "risk_proxy_share": 0.310482,
+          "segment_value": "7",
+          "valid_response_count": 3512,
+          "weighted_valid_total": 51832665.670977
+        },
+        {
+          "risk_proxy_share": 0.248229,
+          "segment_value": "5",
+          "valid_response_count": 1367,
+          "weighted_valid_total": 28833827.156738
+        },
+        {
+          "risk_proxy_share": 0.237217,
+          "segment_value": "6",
+          "valid_response_count": 2084,
+          "weighted_valid_total": 41216271.681913
+        },
+        {
+          "risk_proxy_share": 0.211427,
+          "segment_value": "4",
+          "valid_response_count": 1482,
+          "weighted_valid_total": 42195948.736103
+        },
+        {
+          "risk_proxy_share": 0.201957,
+          "segment_value": "1",
+          "valid_response_count": 888,
+          "weighted_valid_total": 23448840.304234
+        },
+        {
+          "risk_proxy_share": 0.183034,
+          "segment_value": "2",
+          "valid_response_count": 760,
+          "weighted_valid_total": 16960024.134443
+        },
+        {
+          "risk_proxy_share": 0.173865,
+          "segment_value": "3",
+          "valid_response_count": 917,
+          "weighted_valid_total": 26375429.260486
+        }
+      ],
+      "RRACETH": [
+        {
+          "risk_proxy_share": 0.275709,
+          "segment_value": "1",
+          "valid_response_count": 7563,
+          "weighted_valid_total": 148605503.283296
+        },
+        {
+          "risk_proxy_share": 0.228789,
+          "segment_value": "2",
+          "valid_response_count": 1176,
+          "weighted_valid_total": 35481730.028875
+        },
+        {
+          "risk_proxy_share": 0.191175,
+          "segment_value": "4",
+          "valid_response_count": 1134,
+          "weighted_valid_total": 18207695.585395
+        },
+        {
+          "risk_proxy_share": 0.18254,
+          "segment_value": "3",
+          "valid_response_count": 1174,
+          "weighted_valid_total": 28864759.386113
+        },
+        {
+          "risk_proxy_share": 0.168822,
+          "segment_value": "5",
+          "valid_response_count": 713,
+          "weighted_valid_total": 19366625.301428
+        }
+      ],
+      "TAGE": [
+        {
+          "risk_proxy_share": 0.622432,
+          "segment_value": "84",
+          "valid_response_count": 94,
+          "weighted_valid_total": 1017285.485367
+        },
+        {
+          "risk_proxy_share": 0.503491,
+          "segment_value": "81",
+          "valid_response_count": 118,
+          "weighted_valid_total": 1036957.711993
+        },
+        {
+          "risk_proxy_share": 0.477311,
+          "segment_value": "85",
+          "valid_response_count": 71,
+          "weighted_valid_total": 637488.218561
+        },
+        {
+          "risk_proxy_share": 0.450457,
+          "segment_value": "88",
+          "valid_response_count": 222,
+          "weighted_valid_total": 3078764.460542
+        },
+        {
+          "risk_proxy_share": 0.442771,
+          "segment_value": "86",
+          "valid_response_count": 57,
+          "weighted_valid_total": 554837.595824
+        },
+        {
+          "risk_proxy_share": 0.433302,
+          "segment_value": "77",
+          "valid_response_count": 208,
+          "weighted_valid_total": 2133333.475555
+        },
+        {
+          "risk_proxy_share": 0.426222,
+          "segment_value": "71",
+          "valid_response_count": 276,
+          "weighted_valid_total": 3168953.419402
+        },
+        {
+          "risk_proxy_share": 0.419849,
+          "segment_value": "76",
+          "valid_response_count": 230,
+          "weighted_valid_total": 2332515.966353
+        },
+        {
+          "risk_proxy_share": 0.409463,
+          "segment_value": "66",
+          "valid_response_count": 307,
+          "weighted_valid_total": 4694314.562259
+        },
+        {
+          "risk_proxy_share": 0.393163,
+          "segment_value": "69",
+          "valid_response_count": 297,
+          "weighted_valid_total": 3947725.610257
+        },
+        {
+          "risk_proxy_share": 0.378652,
+          "segment_value": "79",
+          "valid_response_count": 212,
+          "weighted_valid_total": 2587328.563466
+        },
+        {
+          "risk_proxy_share": 0.374143,
+          "segment_value": "87",
+          "valid_response_count": 56,
+          "weighted_valid_total": 667937.841188
+        },
+        {
+          "risk_proxy_share": 0.355209,
+          "segment_value": "68",
+          "valid_response_count": 310,
+          "weighted_valid_total": 3978534.007612
+        },
+        {
+          "risk_proxy_share": 0.331851,
+          "segment_value": "53",
+          "valid_response_count": 186,
+          "weighted_valid_total": 3984279.510305
+        },
+        {
+          "risk_proxy_share": 0.329895,
+          "segment_value": "67",
+          "valid_response_count": 295,
+          "weighted_valid_total": 4398326.610739
+        },
+        {
+          "risk_proxy_share": 0.317117,
+          "segment_value": "28",
+          "valid_response_count": 91,
+          "weighted_valid_total": 4509748.542757
+        },
+        {
+          "risk_proxy_share": 0.313381,
+          "segment_value": "49",
+          "valid_response_count": 197,
+          "weighted_valid_total": 4390744.895005
+        },
+        {
+          "risk_proxy_share": 0.312589,
+          "segment_value": "42",
+          "valid_response_count": 142,
+          "weighted_valid_total": 4247016.565001
+        },
+        {
+          "risk_proxy_share": 0.302374,
+          "segment_value": "57",
+          "valid_response_count": 205,
+          "weighted_valid_total": 3314046.340663
+        },
+        {
+          "risk_proxy_share": 0.299648,
+          "segment_value": "50",
+          "valid_response_count": 173,
+          "weighted_valid_total": 3344332.504228
+        },
+        {
+          "risk_proxy_share": 0.29702,
+          "segment_value": "64",
+          "valid_response_count": 282,
+          "weighted_valid_total": 4532005.301334
+        },
+        {
+          "risk_proxy_share": 0.295953,
+          "segment_value": "58",
+          "valid_response_count": 212,
+          "weighted_valid_total": 3214964.68662
+        },
+        {
+          "risk_proxy_share": 0.292347,
+          "segment_value": "31",
+          "valid_response_count": 108,
+          "weighted_valid_total": 5499388.216087
+        },
+        {
+          "risk_proxy_share": 0.2804,
+          "segment_value": "59",
+          "valid_response_count": 237,
+          "weighted_valid_total": 3814767.695258
+        },
+        {
+          "risk_proxy_share": 0.276936,
+          "segment_value": "73",
+          "valid_response_count": 265,
+          "weighted_valid_total": 3620006.993828
+        },
+        {
+          "risk_proxy_share": 0.274619,
+          "segment_value": "83",
+          "valid_response_count": 108,
+          "weighted_valid_total": 1695656.748298
+        },
+        {
+          "risk_proxy_share": 0.272062,
+          "segment_value": "62",
+          "valid_response_count": 254,
+          "weighted_valid_total": 4801535.026214
+        },
+        {
+          "risk_proxy_share": 0.271651,
+          "segment_value": "60",
+          "valid_response_count": 255,
+          "weighted_valid_total": 4307829.929269
+        },
+        {
+          "risk_proxy_share": 0.267935,
+          "segment_value": "46",
+          "valid_response_count": 158,
+          "weighted_valid_total": 2941400.7929
+        },
+        {
+          "risk_proxy_share": 0.261622,
+          "segment_value": "48",
+          "valid_response_count": 185,
+          "weighted_valid_total": 4761398.100556
+        },
+        {
+          "risk_proxy_share": 0.260996,
+          "segment_value": "74",
+          "valid_response_count": 257,
+          "weighted_valid_total": 3821023.796522
+        },
+        {
+          "risk_proxy_share": 0.260595,
+          "segment_value": "34",
+          "valid_response_count": 140,
+          "weighted_valid_total": 4277652.583961
+        },
+        {
+          "risk_proxy_share": 0.260323,
+          "segment_value": "61",
+          "valid_response_count": 256,
+          "weighted_valid_total": 3762607.449468
+        },
+        {
+          "risk_proxy_share": 0.255916,
+          "segment_value": "63",
+          "valid_response_count": 276,
+          "weighted_valid_total": 4307487.616487
+        },
+        {
+          "risk_proxy_share": 0.255487,
+          "segment_value": "29",
+          "valid_response_count": 90,
+          "weighted_valid_total": 6863496.708903
+        },
+        {
+          "risk_proxy_share": 0.251824,
+          "segment_value": "82",
+          "valid_response_count": 130,
+          "weighted_valid_total": 1776419.651995
+        },
+        {
+          "risk_proxy_share": 0.25075,
+          "segment_value": "45",
+          "valid_response_count": 170,
+          "weighted_valid_total": 3092455.966369
+        },
+        {
+          "risk_proxy_share": 0.248243,
+          "segment_value": "65",
+          "valid_response_count": 280,
+          "weighted_valid_total": 3191165.028027
+        },
+        {
+          "risk_proxy_share": 0.244077,
+          "segment_value": "72",
+          "valid_response_count": 299,
+          "weighted_valid_total": 3299282.148262
+        },
+        {
+          "risk_proxy_share": 0.243378,
+          "segment_value": "78",
+          "valid_response_count": 191,
+          "weighted_valid_total": 1829260.885516
+        },
+        {
+          "risk_proxy_share": 0.241739,
+          "segment_value": "70",
+          "valid_response_count": 287,
+          "weighted_valid_total": 4037879.483604
+        },
+        {
+          "risk_proxy_share": 0.2325,
+          "segment_value": "55",
+          "valid_response_count": 207,
+          "weighted_valid_total": 2989081.278108
+        },
+        {
+          "risk_proxy_share": 0.220424,
+          "segment_value": "75",
+          "valid_response_count": 223,
+          "weighted_valid_total": 2118628.854611
+        },
+        {
+          "risk_proxy_share": 0.215242,
+          "segment_value": "26",
+          "valid_response_count": 82,
+          "weighted_valid_total": 2291559.428326
+        },
+        {
+          "risk_proxy_share": 0.21201,
+          "segment_value": "44",
+          "valid_response_count": 178,
+          "weighted_valid_total": 3214726.592743
+        },
+        {
+          "risk_proxy_share": 0.208307,
+          "segment_value": "38",
+          "valid_response_count": 155,
+          "weighted_valid_total": 3740279.355355
+        },
+        {
+          "risk_proxy_share": 0.206676,
+          "segment_value": "80",
+          "valid_response_count": 155,
+          "weighted_valid_total": 2308730.906803
+        },
+        {
+          "risk_proxy_share": 0.184902,
+          "segment_value": "51",
+          "valid_response_count": 163,
+          "weighted_valid_total": 2737452.305213
+        },
+        {
+          "risk_proxy_share": 0.183994,
+          "segment_value": "36",
+          "valid_response_count": 144,
+          "weighted_valid_total": 3317090.923387
+        },
+        {
+          "risk_proxy_share": 0.183327,
+          "segment_value": "54",
+          "valid_response_count": 195,
+          "weighted_valid_total": 3567653.325009
+        },
+        {
+          "risk_proxy_share": 0.18233,
+          "segment_value": "32",
+          "valid_response_count": 115,
+          "weighted_valid_total": 4860150.303577
+        },
+        {
+          "risk_proxy_share": 0.171952,
+          "segment_value": "39",
+          "valid_response_count": 148,
+          "weighted_valid_total": 5378505.185982
+        },
+        {
+          "risk_proxy_share": 0.16749,
+          "segment_value": "27",
+          "valid_response_count": 80,
+          "weighted_valid_total": 5672222.357019
+        },
+        {
+          "risk_proxy_share": 0.165224,
+          "segment_value": "56",
+          "valid_response_count": 202,
+          "weighted_valid_total": 3386671.942951
+        },
+        {
+          "risk_proxy_share": 0.16115,
+          "segment_value": "37",
+          "valid_response_count": 158,
+          "weighted_valid_total": 6115840.733533
+        },
+        {
+          "risk_proxy_share": 0.161102,
+          "segment_value": "25",
+          "valid_response_count": 199,
+          "weighted_valid_total": 30722339.868959
+        },
+        {
+          "risk_proxy_share": 0.151803,
+          "segment_value": "33",
+          "valid_response_count": 101,
+          "weighted_valid_total": 3093333.140124
+        },
+        {
+          "risk_proxy_share": 0.149903,
+          "segment_value": "30",
+          "valid_response_count": 100,
+          "weighted_valid_total": 3469879.131599
+        },
+        {
+          "risk_proxy_share": 0.142408,
+          "segment_value": "52",
+          "valid_response_count": 210,
+          "weighted_valid_total": 4654368.547179
+        },
+        {
+          "risk_proxy_share": 0.136789,
+          "segment_value": "35",
+          "valid_response_count": 129,
+          "weighted_valid_total": 3242832.337345
+        },
+        {
+          "risk_proxy_share": 0.133749,
+          "segment_value": "47",
+          "valid_response_count": 174,
+          "weighted_valid_total": 3393247.419515
+        },
+        {
+          "risk_proxy_share": 0.117175,
+          "segment_value": "40",
+          "valid_response_count": 150,
+          "weighted_valid_total": 3584612.505494
+        },
+        {
+          "risk_proxy_share": 0.117125,
+          "segment_value": "43",
+          "valid_response_count": 157,
+          "weighted_valid_total": 4176252.053788
+        },
+        {
+          "risk_proxy_share": 0.102371,
+          "segment_value": "41",
+          "valid_response_count": 148,
+          "weighted_valid_total": 5018698.391934
+        }
+      ]
+    },
+    "PRICESTRESS": {
+      "ESEX": [
+        {
+          "risk_proxy_share": 0.493435,
+          "segment_value": "1",
+          "valid_response_count": 5252,
+          "weighted_valid_total": 105477561.806458
+        },
+        {
+          "risk_proxy_share": 0.418883,
+          "segment_value": "2",
+          "valid_response_count": 5114,
+          "weighted_valid_total": 114568710.439465
+        }
+      ],
+      "METRO_STATUS": [
+        {
+          "risk_proxy_share": 0.55329,
+          "segment_value": "2",
+          "valid_response_count": 139,
+          "weighted_valid_total": 9658902.361593
+        },
+        {
+          "risk_proxy_share": 0.450089,
+          "segment_value": "1",
+          "valid_response_count": 10227,
+          "weighted_valid_total": 210387369.884331
+        }
+      ],
+      "REGION": [
+        {
+          "risk_proxy_share": 0.5214,
+          "segment_value": "2",
+          "valid_response_count": 1557,
+          "weighted_valid_total": 44509642.925678
+        },
+        {
+          "risk_proxy_share": 0.447394,
+          "segment_value": "3",
+          "valid_response_count": 4434,
+          "weighted_valid_total": 83900315.4874
+        },
+        {
+          "risk_proxy_share": 0.433761,
+          "segment_value": "1",
+          "valid_response_count": 2055,
+          "weighted_valid_total": 36823411.559863
+        },
+        {
+          "risk_proxy_share": 0.425462,
+          "segment_value": "4",
+          "valid_response_count": 2320,
+          "weighted_valid_total": 54812902.272983
+        }
+      ],
+      "RHHINCOME": [
+        {
+          "risk_proxy_share": 0.601441,
+          "segment_value": "7",
+          "valid_response_count": 3050,
+          "weighted_valid_total": 44982795.367469
+        },
+        {
+          "risk_proxy_share": 0.474671,
+          "segment_value": "6",
+          "valid_response_count": 1812,
+          "weighted_valid_total": 36224154.392512
+        },
+        {
+          "risk_proxy_share": 0.453229,
+          "segment_value": "5",
+          "valid_response_count": 1219,
+          "weighted_valid_total": 24976820.208013
+        },
+        {
+          "risk_proxy_share": 0.447785,
+          "segment_value": "4",
+          "valid_response_count": 1332,
+          "weighted_valid_total": 39469518.718457
+        },
+        {
+          "risk_proxy_share": 0.366571,
+          "segment_value": "3",
+          "valid_response_count": 835,
+          "weighted_valid_total": 23463188.262661
+        },
+        {
+          "risk_proxy_share": 0.344592,
+          "segment_value": "1",
+          "valid_response_count": 785,
+          "weighted_valid_total": 20602312.067171
+        },
+        {
+          "risk_proxy_share": 0.277282,
+          "segment_value": "2",
+          "valid_response_count": 684,
+          "weighted_valid_total": 15134521.079416
+        }
+      ],
+      "RRACETH": [
+        {
+          "risk_proxy_share": 0.515872,
+          "segment_value": "1",
+          "valid_response_count": 6520,
+          "weighted_valid_total": 128177930.772755
+        },
+        {
+          "risk_proxy_share": 0.44958,
+          "segment_value": "4",
+          "valid_response_count": 1026,
+          "weighted_valid_total": 16038321.705057
+        },
+        {
+          "risk_proxy_share": 0.36337,
+          "segment_value": "3",
+          "valid_response_count": 1101,
+          "weighted_valid_total": 26034925.238178
+        },
+        {
+          "risk_proxy_share": 0.355705,
+          "segment_value": "2",
+          "valid_response_count": 1084,
+          "weighted_valid_total": 32092917.129058
+        },
+        {
+          "risk_proxy_share": 0.329187,
+          "segment_value": "5",
+          "valid_response_count": 635,
+          "weighted_valid_total": 17702177.400875
+        }
+      ],
+      "TAGE": [
+        {
+          "risk_proxy_share": 0.824841,
+          "segment_value": "86",
+          "valid_response_count": 44,
+          "weighted_valid_total": 435578.520686
+        },
+        {
+          "risk_proxy_share": 0.785274,
+          "segment_value": "87",
+          "valid_response_count": 51,
+          "weighted_valid_total": 637807.987802
+        },
+        {
+          "risk_proxy_share": 0.763693,
+          "segment_value": "81",
+          "valid_response_count": 104,
+          "weighted_valid_total": 842872.944308
+        },
+        {
+          "risk_proxy_share": 0.730453,
+          "segment_value": "77",
+          "valid_response_count": 183,
+          "weighted_valid_total": 1876847.609206
+        },
+        {
+          "risk_proxy_share": 0.660097,
+          "segment_value": "67",
+          "valid_response_count": 263,
+          "weighted_valid_total": 4069626.447779
+        },
+        {
+          "risk_proxy_share": 0.65493,
+          "segment_value": "82",
+          "valid_response_count": 115,
+          "weighted_valid_total": 1633310.126788
+        },
+        {
+          "risk_proxy_share": 0.632704,
+          "segment_value": "71",
+          "valid_response_count": 237,
+          "weighted_valid_total": 2817651.126879
+        },
+        {
+          "risk_proxy_share": 0.623832,
+          "segment_value": "76",
+          "valid_response_count": 215,
+          "weighted_valid_total": 2075501.133487
+        },
+        {
+          "risk_proxy_share": 0.614109,
+          "segment_value": "74",
+          "valid_response_count": 232,
+          "weighted_valid_total": 3554974.52505
+        },
+        {
+          "risk_proxy_share": 0.60178,
+          "segment_value": "68",
+          "valid_response_count": 280,
+          "weighted_valid_total": 3724098.811684
+        },
+        {
+          "risk_proxy_share": 0.598435,
+          "segment_value": "85",
+          "valid_response_count": 61,
+          "weighted_valid_total": 568057.364656
+        },
+        {
+          "risk_proxy_share": 0.59374,
+          "segment_value": "55",
+          "valid_response_count": 189,
+          "weighted_valid_total": 2804980.248141
+        },
+        {
+          "risk_proxy_share": 0.590232,
+          "segment_value": "69",
+          "valid_response_count": 249,
+          "weighted_valid_total": 3446810.69015
+        },
+        {
+          "risk_proxy_share": 0.581009,
+          "segment_value": "66",
+          "valid_response_count": 264,
+          "weighted_valid_total": 3589683.733386
+        },
+        {
+          "risk_proxy_share": 0.57537,
+          "segment_value": "79",
+          "valid_response_count": 194,
+          "weighted_valid_total": 2179913.3841
+        },
+        {
+          "risk_proxy_share": 0.566932,
+          "segment_value": "78",
+          "valid_response_count": 165,
+          "weighted_valid_total": 1666931.465881
+        },
+        {
+          "risk_proxy_share": 0.566391,
+          "segment_value": "75",
+          "valid_response_count": 197,
+          "weighted_valid_total": 1932915.386391
+        },
+        {
+          "risk_proxy_share": 0.562667,
+          "segment_value": "70",
+          "valid_response_count": 262,
+          "weighted_valid_total": 3697887.482792
+        },
+        {
+          "risk_proxy_share": 0.557966,
+          "segment_value": "84",
+          "valid_response_count": 82,
+          "weighted_valid_total": 853665.617505
+        },
+        {
+          "risk_proxy_share": 0.553452,
+          "segment_value": "64",
+          "valid_response_count": 241,
+          "weighted_valid_total": 3905479.657178
+        },
+        {
+          "risk_proxy_share": 0.549237,
+          "segment_value": "88",
+          "valid_response_count": 187,
+          "weighted_valid_total": 2634779.463953
+        },
+        {
+          "risk_proxy_share": 0.547411,
+          "segment_value": "39",
+          "valid_response_count": 129,
+          "weighted_valid_total": 4349497.000534
+        },
+        {
+          "risk_proxy_share": 0.542813,
+          "segment_value": "73",
+          "valid_response_count": 230,
+          "weighted_valid_total": 3208289.697089
+        },
+        {
+          "risk_proxy_share": 0.535526,
+          "segment_value": "28",
+          "valid_response_count": 77,
+          "weighted_valid_total": 3617662.202353
+        },
+        {
+          "risk_proxy_share": 0.521483,
+          "segment_value": "30",
+          "valid_response_count": 86,
+          "weighted_valid_total": 3040561.932077
+        },
+        {
+          "risk_proxy_share": 0.517916,
+          "segment_value": "72",
+          "valid_response_count": 275,
+          "weighted_valid_total": 2977987.764545
+        },
+        {
+          "risk_proxy_share": 0.515487,
+          "segment_value": "60",
+          "valid_response_count": 220,
+          "weighted_valid_total": 3850418.391081
+        },
+        {
+          "risk_proxy_share": 0.511203,
+          "segment_value": "42",
+          "valid_response_count": 124,
+          "weighted_valid_total": 3532570.482073
+        },
+        {
+          "risk_proxy_share": 0.50943,
+          "segment_value": "63",
+          "valid_response_count": 243,
+          "weighted_valid_total": 3725922.0988
+        },
+        {
+          "risk_proxy_share": 0.49362,
+          "segment_value": "61",
+          "valid_response_count": 218,
+          "weighted_valid_total": 3100549.912192
+        },
+        {
+          "risk_proxy_share": 0.492714,
+          "segment_value": "65",
+          "valid_response_count": 249,
+          "weighted_valid_total": 2976137.577629
+        },
+        {
+          "risk_proxy_share": 0.490454,
+          "segment_value": "46",
+          "valid_response_count": 146,
+          "weighted_valid_total": 2411904.939946
+        },
+        {
+          "risk_proxy_share": 0.477716,
+          "segment_value": "48",
+          "valid_response_count": 166,
+          "weighted_valid_total": 3539165.185843
+        },
+        {
+          "risk_proxy_share": 0.470653,
+          "segment_value": "45",
+          "valid_response_count": 157,
+          "weighted_valid_total": 2790454.3473
+        },
+        {
+          "risk_proxy_share": 0.469137,
+          "segment_value": "38",
+          "valid_response_count": 144,
+          "weighted_valid_total": 3389727.605441
+        },
+        {
+          "risk_proxy_share": 0.468746,
+          "segment_value": "83",
+          "valid_response_count": 94,
+          "weighted_valid_total": 1439301.810512
+        },
+        {
+          "risk_proxy_share": 0.465875,
+          "segment_value": "53",
+          "valid_response_count": 161,
+          "weighted_valid_total": 3400083.861791
+        },
+        {
+          "risk_proxy_share": 0.461955,
+          "segment_value": "58",
+          "valid_response_count": 181,
+          "weighted_valid_total": 2483430.648942
+        },
+        {
+          "risk_proxy_share": 0.449683,
+          "segment_value": "54",
+          "valid_response_count": 169,
+          "weighted_valid_total": 3175600.976584
+        },
+        {
+          "risk_proxy_share": 0.44966,
+          "segment_value": "50",
+          "valid_response_count": 154,
+          "weighted_valid_total": 2990749.726437
+        },
+        {
+          "risk_proxy_share": 0.440832,
+          "segment_value": "47",
+          "valid_response_count": 152,
+          "weighted_valid_total": 2980642.841008
+        },
+        {
+          "risk_proxy_share": 0.440326,
+          "segment_value": "57",
+          "valid_response_count": 180,
+          "weighted_valid_total": 2739473.469463
+        },
+        {
+          "risk_proxy_share": 0.430291,
+          "segment_value": "80",
+          "valid_response_count": 140,
+          "weighted_valid_total": 2084288.918466
+        },
+        {
+          "risk_proxy_share": 0.421616,
+          "segment_value": "32",
+          "valid_response_count": 107,
+          "weighted_valid_total": 4716288.728528
+        },
+        {
+          "risk_proxy_share": 0.414511,
+          "segment_value": "49",
+          "valid_response_count": 174,
+          "weighted_valid_total": 3740865.805333
+        },
+        {
+          "risk_proxy_share": 0.412606,
+          "segment_value": "62",
+          "valid_response_count": 214,
+          "weighted_valid_total": 4102451.736123
+        },
+        {
+          "risk_proxy_share": 0.410486,
+          "segment_value": "52",
+          "valid_response_count": 191,
+          "weighted_valid_total": 4386671.161288
+        },
+        {
+          "risk_proxy_share": 0.409792,
+          "segment_value": "59",
+          "valid_response_count": 202,
+          "weighted_valid_total": 3270265.108725
+        },
+        {
+          "risk_proxy_share": 0.408472,
+          "segment_value": "35",
+          "valid_response_count": 114,
+          "weighted_valid_total": 2849540.074187
+        },
+        {
+          "risk_proxy_share": 0.407759,
+          "segment_value": "26",
+          "valid_response_count": 71,
+          "weighted_valid_total": 1881932.108389
+        },
+        {
+          "risk_proxy_share": 0.392262,
+          "segment_value": "51",
+          "valid_response_count": 140,
+          "weighted_valid_total": 2481062.871632
+        },
+        {
+          "risk_proxy_share": 0.389276,
+          "segment_value": "36",
+          "valid_response_count": 128,
+          "weighted_valid_total": 2958268.519474
+        },
+        {
+          "risk_proxy_share": 0.386214,
+          "segment_value": "34",
+          "valid_response_count": 127,
+          "weighted_valid_total": 4037927.169999
+        },
+        {
+          "risk_proxy_share": 0.383113,
+          "segment_value": "29",
+          "valid_response_count": 80,
+          "weighted_valid_total": 6171311.168371
+        },
+        {
+          "risk_proxy_share": 0.376434,
+          "segment_value": "25",
+          "valid_response_count": 175,
+          "weighted_valid_total": 28474748.74713
+        },
+        {
+          "risk_proxy_share": 0.371372,
+          "segment_value": "56",
+          "valid_response_count": 184,
+          "weighted_valid_total": 3023971.870267
+        },
+        {
+          "risk_proxy_share": 0.367374,
+          "segment_value": "44",
+          "valid_response_count": 156,
+          "weighted_valid_total": 2940567.090082
+        },
+        {
+          "risk_proxy_share": 0.3586,
+          "segment_value": "43",
+          "valid_response_count": 140,
+          "weighted_valid_total": 3840536.51202
+        },
+        {
+          "risk_proxy_share": 0.327627,
+          "segment_value": "37",
+          "valid_response_count": 145,
+          "weighted_valid_total": 5230539.610298
+        },
+        {
+          "risk_proxy_share": 0.272746,
+          "segment_value": "33",
+          "valid_response_count": 94,
+          "weighted_valid_total": 2899201.04013
+        },
+        {
+          "risk_proxy_share": 0.261973,
+          "segment_value": "27",
+          "valid_response_count": 66,
+          "weighted_valid_total": 4784970.767148
+        },
+        {
+          "risk_proxy_share": 0.259501,
+          "segment_value": "31",
+          "valid_response_count": 90,
+          "weighted_valid_total": 4787103.309685
+        },
+        {
+          "risk_proxy_share": 0.214213,
+          "segment_value": "41",
+          "valid_response_count": 127,
+          "weighted_valid_total": 3805157.635071
+        },
+        {
+          "risk_proxy_share": 0.208239,
+          "segment_value": "40",
+          "valid_response_count": 131,
+          "weighted_valid_total": 2909096.094136
+        }
+      ]
     }
   },
   "source_dataset": {

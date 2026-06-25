@@ -85,10 +85,12 @@ def build_r10_hps_policy_reaction_ingestion(
                 "PRICESTRESS": "reported stress from price changes",
                 "PRICECONCERN": "reported concern about price changes",
             },
+            "risk_proxy_rule": "larger numeric response codes are treated as higher guarded price-pressure proxy",
             "missing_values": sorted(R10_HPS_MISSING_VALUES),
         },
         "outcome_summary": profile["outcome_summary"],
         "segment_coverage": profile["segment_coverage"],
+        "segment_outcome_profiles": profile["segment_outcome_profiles"],
         "route_input_mapping": {
             "route_a_evidence_constrained_mechanism_operator": {
                 "mechanism_priors": [
@@ -122,6 +124,7 @@ def build_r10_hps_policy_reaction_ingestion(
             "segment_columns_present": all(
                 column in profile["data_profile"]["columns"] for column in R10_HPS_SEGMENT_COLUMNS
             ),
+            "segment_outcome_profiles_present": bool(profile["segment_outcome_profiles"]),
             "actual_public_data_ingested": True,
             "field_outcome_validated": False,
             "runtime_default_allowed": False,
@@ -169,6 +172,14 @@ def _profile_hps_zip(input_zip: Path) -> dict[str, Any]:
             outcome_weighted_counts = {column: Counter() for column in R10_HPS_OUTCOME_COLUMNS}
             segment_values = {column: set() for column in R10_HPS_SEGMENT_COLUMNS}
             segment_non_missing = Counter()
+            segment_outcome_counts: dict[str, dict[str, dict[str, Counter]]] = {
+                outcome: {segment: {} for segment in R10_HPS_SEGMENT_COLUMNS}
+                for outcome in R10_HPS_OUTCOME_COLUMNS
+            }
+            segment_outcome_weights: dict[str, dict[str, dict[str, Counter]]] = {
+                outcome: {segment: {} for segment in R10_HPS_SEGMENT_COLUMNS}
+                for outcome in R10_HPS_OUTCOME_COLUMNS
+            }
             row_count = 0
             for row in reader:
                 row_count += 1
@@ -185,6 +196,20 @@ def _profile_hps_zip(input_zip: Path) -> dict[str, Any]:
                         continue
                     segment_non_missing[column] += 1
                     segment_values[column].add(value)
+                for outcome in R10_HPS_OUTCOME_COLUMNS:
+                    outcome_value = _normalized_value(row.get(outcome))
+                    if outcome_value is None:
+                        continue
+                    for segment in R10_HPS_SEGMENT_COLUMNS:
+                        segment_value = _normalized_value(row.get(segment))
+                        if segment_value is None:
+                            continue
+                        segment_outcome_counts[outcome][segment].setdefault(
+                            segment_value, Counter()
+                        )[outcome_value] += 1
+                        segment_outcome_weights[outcome][segment].setdefault(
+                            segment_value, Counter()
+                        )[outcome_value] += weight
     return {
         "data_inventory": {
             "input_zip_path": str(input_zip),
@@ -227,6 +252,14 @@ def _profile_hps_zip(input_zip: Path) -> dict[str, Any]:
             }
             for column in R10_HPS_SEGMENT_COLUMNS
         },
+        "segment_outcome_profiles": _segment_outcome_profiles(
+            segment_outcome_counts=segment_outcome_counts,
+            segment_outcome_weights=segment_outcome_weights,
+            outcome_risk_codes={
+                outcome: _risk_proxy_codes(outcome_weighted_counts[outcome])
+                for outcome in R10_HPS_OUTCOME_COLUMNS
+            },
+        ),
     }
 
 
@@ -274,6 +307,60 @@ def _outcome_summary(*, counts: Counter, weighted_counts: Counter) -> dict[str, 
         "weighted_valid_total": weighted_valid_total,
         "response_distribution": distribution,
     }
+
+
+def _segment_outcome_profiles(
+    *,
+    segment_outcome_counts: dict[str, dict[str, dict[str, Counter]]],
+    segment_outcome_weights: dict[str, dict[str, dict[str, Counter]]],
+    outcome_risk_codes: dict[str, set[str]],
+) -> dict[str, dict[str, list[dict[str, Any]]]]:
+    profiles: dict[str, dict[str, list[dict[str, Any]]]] = {}
+    for outcome, segments in segment_outcome_counts.items():
+        profiles[outcome] = {}
+        for segment, segment_values in segments.items():
+            rows = []
+            for segment_value, counts in segment_values.items():
+                weights = segment_outcome_weights[outcome][segment][segment_value]
+                weighted_total = sum(weights.values())
+                if weighted_total <= 0:
+                    risk_proxy_share = 0.0
+                else:
+                    risk_codes = outcome_risk_codes[outcome]
+                    risk_weight = sum(weights[code] for code in risk_codes)
+                    risk_proxy_share = round(risk_weight / weighted_total, 6)
+                rows.append(
+                    {
+                        "segment_value": segment_value,
+                        "valid_response_count": int(sum(counts.values())),
+                        "weighted_valid_total": round(weighted_total, 6),
+                        "risk_proxy_share": risk_proxy_share,
+                    }
+                )
+            profiles[outcome][segment] = sorted(
+                rows,
+                key=lambda item: (
+                    -item["risk_proxy_share"],
+                    -item["weighted_valid_total"],
+                    item["segment_value"],
+                ),
+            )
+    return profiles
+
+
+def _risk_proxy_codes(weighted_counts: Counter) -> set[str]:
+    numeric_codes = []
+    for value in weighted_counts:
+        try:
+            numeric_codes.append((float(value), value))
+        except ValueError:
+            continue
+    if not numeric_codes:
+        return set(weighted_counts)
+    numeric_codes.sort()
+    median_index = len(numeric_codes) // 2
+    threshold = numeric_codes[median_index][0]
+    return {code for numeric, code in numeric_codes if numeric >= threshold}
 
 
 def main() -> int:
