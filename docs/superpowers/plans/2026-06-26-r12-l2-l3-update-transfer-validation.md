@@ -17,7 +17,7 @@
 - Create: `experiments/r12_outcome_supervised_update.py`
 - Create: `experiments/results/r12_outcome_supervised_update/r12-outcome-supervised-update-current-001.json`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 Test required behavior:
 
@@ -38,7 +38,7 @@ Command:
 
 Expected RED: `ModuleNotFoundError: No module named 'experiments.r12_outcome_supervised_update'`.
 
-- [ ] **Step 2: Implement minimal builder**
+- [x] **Step 2: Implement minimal builder**
 
 Implementation requirements:
 
@@ -69,7 +69,7 @@ Implementation requirements:
   - `--r12-causal-interaction-operator-path`
   - `--output`
 
-- [ ] **Step 3: Verify GREEN and generate current artifact**
+- [x] **Step 3: Verify GREEN and generate current artifact**
 
 Commands:
 
@@ -88,7 +88,7 @@ Expected:
 - tests pass
 - stdout status is `r12_outcome_supervised_update_ready_guarded`
 
-- [ ] **Step 4: Commit L2**
+- [x] **Step 4: Commit L2**
 
 ```bash
 git add tests/test_r12_outcome_supervised_update.py experiments/r12_outcome_supervised_update.py experiments/results/r12_outcome_supervised_update/r12-outcome-supervised-update-current-001.json -f
@@ -102,7 +102,7 @@ git commit -m "feat: add R12 outcome supervised update"
 - Create: `experiments/r12_transfer_validation.py`
 - Create: `experiments/results/r12_transfer_validation/r12-transfer-validation-current-001.json`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 Test required behavior:
 
@@ -126,7 +126,7 @@ Command:
 
 Expected RED: `ModuleNotFoundError: No module named 'experiments.r12_transfer_validation'`.
 
-- [ ] **Step 2: Implement minimal builder**
+- [x] **Step 2: Implement minimal builder**
 
 Implementation requirements:
 
@@ -164,7 +164,7 @@ Implementation requirements:
   - `--r12-outcome-supervised-update-path`
   - `--output`
 
-- [ ] **Step 3: Verify GREEN and generate current artifact**
+- [x] **Step 3: Verify GREEN and generate current artifact**
 
 Commands:
 
@@ -184,7 +184,7 @@ Expected:
 - tests pass
 - stdout status is `r12_transfer_validation_positive_guarded`
 
-- [ ] **Step 4: Commit L3**
+- [x] **Step 4: Commit L3**
 
 ```bash
 git add tests/test_r12_transfer_validation.py experiments/r12_transfer_validation.py experiments/results/r12_transfer_validation/r12-transfer-validation-current-001.json -f
@@ -199,7 +199,7 @@ git commit -m "feat: add R12 transfer validation"
 - Modify: `docs/superpowers/specs/2026-06-26-r12-outcome-supervised-causal-interaction-operator-spec.md`
 - Modify: `docs/superpowers/plans/2026-06-26-r12-l2-l3-update-transfer-validation.md`
 
-- [ ] **Step 1: Update docs**
+- [x] **Step 1: Update docs**
 
 Record:
 
@@ -208,8 +208,10 @@ Record:
 - This is still not field/customer validation.
 - `runtime_default_allowed=false` remains.
 - Product L4 is not implemented yet.
+- 实际 L3 结果：validation MAE `0.009743 -> 0.009312`，holdout MAE `0.005104 -> 0.004248`，`update_transfer_gain=0.001287`，`interval_coverage_delta=0.0`，`false_alarm_rate_delta=0.0`。
+- 当前结论只能表述为 `r12_transfer_validation_positive_guarded`，不是 field/customer validation 或 Product core method ready。
 
-- [ ] **Step 2: Run verification**
+- [x] **Step 2: Run verification**
 
 ```bash
 .venv/bin/python -m pytest tests/test_r12_outcome_supervised_update.py tests/test_r12_transfer_validation.py -q
@@ -223,7 +225,7 @@ Expected:
 - full tests pass
 - diff check passes
 
-- [ ] **Step 3: Commit docs**
+- [x] **Step 3: Commit docs**
 
 ```bash
 git add docs/CURRENT_STATE.md docs/active-spec.md docs/superpowers/specs/2026-06-26-r12-outcome-supervised-causal-interaction-operator-spec.md docs/superpowers/plans/2026-06-26-r12-l2-l3-update-transfer-validation.md
@@ -240,4 +242,3 @@ git commit -m "docs: record R12 L2 L3 status"
 - [x] Product L4 explicitly left for next plan.
 - [x] current artifacts and `git add -f` covered.
 - [x] tests follow RED/GREEN order.
-

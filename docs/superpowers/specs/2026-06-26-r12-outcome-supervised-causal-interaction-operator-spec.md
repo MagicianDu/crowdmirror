@@ -410,21 +410,53 @@ R12 可以使用 LLM，但 LLM 不作为主预测器。
 
 目标：只用 train split residual 生成结构化更新。
 
+当前实现：
+
+- `experiments/r12_outcome_supervised_update.py`
+- `tests/test_r12_outcome_supervised_update.py`
+- `experiments/results/r12_outcome_supervised_update/r12-outcome-supervised-update-current-001.json`
+
+当前状态为 `r12_outcome_supervised_update_ready_guarded`。该 artifact 只使用 train split 的 `hps_REGION_2` 与 `hps_METRO_STATUS_2` outcome residual，训练残差均值为 `0.041323`，生成一个 accepted shadow-only `mechanism_weight` 候选：`price_pressure` 从 `0.52` 调整到 `0.55`。同时它保留三类非升级分支：train segment sensitivity 为 `diagnostic_only`，缺少直接传播证据的 interaction edge update 为 `rejected`，interval uncertainty 为 `diagnostic_only`。
+
 验收：
 
-- 至少生成 mechanism 或 segment 的 accepted shadow-only update。
-- rejected / diagnostic_only 分支真实存在。
-- update 不写入 runtime default。
+- 至少生成 mechanism 或 segment 的 accepted shadow-only update：已满足。
+- rejected / diagnostic_only 分支真实存在：已满足。
+- update 不写入 runtime default：已满足，`runtime_default_allowed=false`。
+- validation / holdout outcome 不参与训练：已满足，`outcome_leakage_blocked=true`。
 
 ### R12 L3：Transfer validation
 
 目标：用 validation / holdout split 验证更新是否可迁移。
 
+当前实现：
+
+- `experiments/r12_transfer_validation.py`
+- `tests/test_r12_transfer_validation.py`
+- `experiments/results/r12_transfer_validation/r12-transfer-validation-current-001.json`
+
+当前状态为 `r12_transfer_validation_positive_guarded`。在 current HPS public-use proxy split 上，L2 的 `price_pressure=0.55` 更新得到以下 before / after 结果：
+
+- train MAE：`0.041323 -> 0.035285`，但 train metrics 不用于 transfer decision。
+- validation MAE：`0.009743 -> 0.009312`，`mean_absolute_error_delta=-0.000431`。
+- holdout MAE：`0.005104 -> 0.004248`，`mean_absolute_error_delta=-0.000856`。
+- `update_transfer_gain=0.001287`。
+- `interval_coverage_delta=0.0`。
+- `false_alarm_rate_delta=0.0`。
+
+解释边界：
+
+- 这是 R12 当前最小正向信号，说明 outcome-supervised 结构化更新没有停留在 same-case 修补。
+- 这是 public proxy split，不是客户 field outcome。
+- 样本仍很小，不能宣称 Product core method fully supported。
+- `runtime_default_allowed=false` 必须继续保持。
+
 验收：
 
-- 报告 before / after metrics。
-- 报告 same-case 和 holdout 的差别。
-- 明确 positive transfer、negative transfer 或 blocked same-case only。
+- 报告 before / after metrics：已满足。
+- 报告 same-case 和 holdout 的差别：已满足。
+- 明确 positive transfer、negative transfer 或 blocked same-case only：当前为 `r12_update_transfer_positive_guarded`。
+- 明确 train metrics 不作为 transfer proof：已满足。
 
 ### R12 L4：Product support gate
 
@@ -439,11 +471,11 @@ R12 可以使用 LLM，但 LLM 不作为主预测器。
 
 ## 当前推荐推进顺序
 
-1. 先做 R12 L0/L1，建立 case registry 和 operator contract。
-2. 再做 R12 L2，用 train residual 生成可审计更新。
-3. 然后做 R12 L3，判断是否存在真正 transfer gain。
-4. 只有 L3 有正向信号，才接入 Product L4。
-5. 如果 L3 blocked，应立刻复盘是否缺真实 outcome、case 数不足或方法假设失败。
+1. R12 L0/L1 已完成：case registry 和 operator contract 已建立。
+2. R12 L2 已完成：train residual 已生成可审计结构化更新。
+3. R12 L3 已完成：当前 HPS public-use proxy split 上存在 guarded positive transfer signal。
+4. 下一步进入 Product L4：只以 guarded evidence card / API manifest source refs / blocked claims 的方式接入 Product，不允许覆盖主决策或开启 runtime default。
+5. 并行推进 R12 L3+：扩大 case family、补齐 risk ranking / static prior miss recovery / abnormal segment recall 的 transfer 指标，并寻找更接近业务 field outcome 的复核数据。
 
 ## 成功信号
 
@@ -457,4 +489,8 @@ R12 的最小成功信号不是“指标全赢”，而是：
 
 ## 当前判断
 
-R12 是 Research 下一阶段更值得探索的方向，因为它直接针对 R11 的核心短板：R11 能记录反馈，但没有证明反馈能形成可迁移学习。R12 的关键不是再加一个报告，而是把 feedback learning 从 ledger 推进到 train / holdout split 下的可迁移交互算子验证。
+R12 目前拿到了比 R11 更强的最低正向信号：R11 只能证明 feedback ledger 可审计，R12 L3 已证明一个 train-only 结构化 mechanism update 能在 validation / holdout 上产生小幅正向迁移，且没有牺牲区间覆盖和 false alarm。
+
+但这个结果仍不足以说 Research 已全面支撑 Product。当前最准确的表述是：
+
+> R12 在 HPS public-use proxy split 上形成了 guarded positive transfer signal，值得进入 Product guarded evidence card 和更大范围 holdout 扩展；但它尚不是 field-validated、customer-validated 或 runtime-default-ready 的 Product core method。
