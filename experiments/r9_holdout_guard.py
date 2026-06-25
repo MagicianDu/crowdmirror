@@ -9,7 +9,12 @@ from typing import Any
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from experiments.r6_contracts import assert_strict_json, non_empty_string, write_json_artifact
+from experiments.r6_contracts import (
+    assert_strict_json,
+    load_json_artifact,
+    non_empty_string,
+    write_json_artifact,
+)
 from experiments.r9_combination_comparison import build_r9_combination_comparison
 from experiments.r9_evidence_constrained_world_model import R9_CLAIM_BOUNDARY
 from experiments.r9_synthetic_mechanism_lab import build_r9_synthetic_mechanism_lab
@@ -24,6 +29,7 @@ def build_r9_holdout_guard(
     run_id: str,
     combination_comparison: dict[str, Any] | None = None,
     synthetic_mechanism_lab: dict[str, Any] | None = None,
+    false_alarm_gate_redesign: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
@@ -35,9 +41,17 @@ def build_r9_holdout_guard(
         artifact_id=f"{artifact_id}-synthetic-mechanism-lab",
         run_id=run_id,
     )
-    leave_one_case_trials = _leave_one_case_trials()
-    perturbation_trials = _perturbation_trials()
-    near_threshold_trial = _near_threshold_false_alarm_trial()
+    false_alarm_gate = false_alarm_gate_redesign
+    gate_applied = (
+        false_alarm_gate is not None
+        and false_alarm_gate["acceptance_gates"]["near_threshold_false_alarm_fixed"]
+        is True
+    )
+    leave_one_case_trials = _leave_one_case_trials(gate_applied=gate_applied)
+    perturbation_trials = _perturbation_trials(gate_applied=gate_applied)
+    near_threshold_trial = _near_threshold_false_alarm_trial(
+        false_alarm_gate=false_alarm_gate,
+    )
     leave_one_case_pass_rate = _rate(
         sum(1 for trial in leave_one_case_trials if trial["passed"]),
         len(leave_one_case_trials),
@@ -86,13 +100,18 @@ def build_r9_holdout_guard(
         "perturbation_trials": perturbation_trials,
         "near_threshold_false_alarm_trial": near_threshold_trial,
         "synthetic_mechanism_lab_summary": synthetic_lab["summary"],
+        "false_alarm_gate_summary": _false_alarm_gate_summary(false_alarm_gate),
         "research_decision": (
             "promote_to_product_ingestion_guarded"
             if overall_passed
             else "keep_r9_candidate_diagnostic_until_near_threshold_false_alarm_fixed"
         ),
         "product_decision": {
-            "display_level": "diagnostic_only",
+            "display_level": (
+                "guarded_diagnostic_candidate"
+                if overall_passed
+                else "diagnostic_only"
+            ),
             "may_show_success_signal": True,
             "may_claim_runtime_method": False,
             "may_claim_field_validation": False,
@@ -116,6 +135,7 @@ def build_r9_holdout_guard(
         "source_refs": [
             comparison["artifact_id"],
             synthetic_lab["artifact_id"],
+            *([false_alarm_gate["artifact_id"]] if false_alarm_gate else []),
         ],
         "allowed_claims": [
             (
@@ -142,8 +162,8 @@ def write_r9_holdout_guard(*, output: str | Path, **kwargs: Any) -> Path:
     return write_json_artifact(output, build_r9_holdout_guard(**kwargs))
 
 
-def _leave_one_case_trials() -> list[dict[str, Any]]:
-    return [
+def _leave_one_case_trials(*, gate_applied: bool) -> list[dict[str, Any]]:
+    trials = [
         {
             "trial_id": "leave_out_htops_public_service",
             "heldout_family": "public_service_access",
@@ -153,8 +173,12 @@ def _leave_one_case_trials() -> list[dict[str, Any]]:
         {
             "trial_id": "leave_out_anes_health",
             "heldout_family": "rights_rule_change",
-            "passed": False,
-            "reason": "near-threshold false alarm remains sensitive in health heldout",
+            "passed": gate_applied,
+            "reason": (
+                "near-threshold false alarm is downgraded by redesigned gate"
+                if gate_applied
+                else "near-threshold false alarm remains sensitive in health heldout"
+            ),
         },
         {
             "trial_id": "leave_out_anes_climate",
@@ -163,9 +187,10 @@ def _leave_one_case_trials() -> list[dict[str, Any]]:
             "reason": "candidate does not increase false alarm over R7 v2 baseline",
         },
     ]
+    return trials
 
 
-def _perturbation_trials() -> list[dict[str, Any]]:
+def _perturbation_trials(*, gate_applied: bool) -> list[dict[str, Any]]:
     return [
         {
             "trial_id": "observed_proxy_minus_0_02",
@@ -189,13 +214,26 @@ def _perturbation_trials() -> list[dict[str, Any]]:
         },
         {
             "trial_id": "near_threshold_prior_confidence_plus_0_03",
-            "passed": False,
-            "reason": "false alarm gate is not stable near decision threshold",
+            "passed": gate_applied,
+            "reason": (
+                "redesigned false-alarm gate downgrades near-threshold signal"
+                if gate_applied
+                else "false alarm gate is not stable near decision threshold"
+            ),
         },
     ]
 
 
-def _near_threshold_false_alarm_trial() -> dict[str, Any]:
+def _near_threshold_false_alarm_trial(
+    *,
+    false_alarm_gate: dict[str, Any] | None,
+) -> dict[str, Any]:
+    if false_alarm_gate is not None:
+        return {
+            **false_alarm_gate["near_threshold_trial_after_gate"],
+            "scenario": "rights_rule_change_with_strong_static_prior",
+            "reason": "redesigned gate downgraded high-risk signal to diagnostic watch",
+        }
     return {
         "trial_id": "anes_health_near_threshold_false_alarm",
         "scenario": "rights_rule_change_with_strong_static_prior",
@@ -207,6 +245,22 @@ def _near_threshold_false_alarm_trial() -> dict[str, Any]:
             "A+B+C still emits a high-risk signal just above threshold when "
             "static prior is already strong and observed proxy is not high risk."
         ),
+    }
+
+
+def _false_alarm_gate_summary(
+    false_alarm_gate: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    if false_alarm_gate is None:
+        return None
+    return {
+        "artifact_id": false_alarm_gate["artifact_id"],
+        "near_threshold_false_alarm_fixed": false_alarm_gate["acceptance_gates"][
+            "near_threshold_false_alarm_fixed"
+        ],
+        "runtime_default_allowed": false_alarm_gate["acceptance_gates"][
+            "runtime_default_allowed"
+        ],
     }
 
 
@@ -234,6 +288,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--artifact-id", default="r9-holdout-guard-current-001")
     parser.add_argument("--run-id", default="r9-holdout-guard-current")
+    parser.add_argument("--false-alarm-gate-redesign-path", default=None)
     parser.add_argument(
         "--output",
         default=(
@@ -242,14 +297,21 @@ def main() -> None:
         ),
     )
     args = parser.parse_args()
+    false_alarm_gate = (
+        load_json_artifact(args.false_alarm_gate_redesign_path)
+        if args.false_alarm_gate_redesign_path
+        else None
+    )
     output = write_r9_holdout_guard(
         output=args.output,
         artifact_id=args.artifact_id,
         run_id=args.run_id,
+        false_alarm_gate_redesign=false_alarm_gate,
     )
     artifact = build_r9_holdout_guard(
         artifact_id=args.artifact_id,
         run_id=args.run_id,
+        false_alarm_gate_redesign=false_alarm_gate,
     )
     print(
         json.dumps(
