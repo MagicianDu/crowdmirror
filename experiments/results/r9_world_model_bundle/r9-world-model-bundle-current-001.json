@@ -1,0 +1,664 @@
+{
+  "acceptance_gates": {
+    "artifact_contracts_present": true,
+    "combination_matrix_present": true,
+    "field_outcome_validated": false,
+    "product_guard_consumable": true,
+    "route_artifacts_present": true,
+    "runtime_default_allowed": false,
+    "source_refs_present": true
+  },
+  "allowed_claims": [
+    "R9 L0 artifact contract is ready for guarded method exploration.",
+    "R9 routes and combinations can be evaluated against existing baselines."
+  ],
+  "artifact_id": "r9-world-model-bundle-current-001",
+  "artifacts": {
+    "r9_combination_matrix": {
+      "artifact_id": "r9-world-model-bundle-current-001-combination-matrix",
+      "baseline_ids": [
+        "static_prior",
+        "r6_learning_counterfactual",
+        "r7_v2_guarded_baseline",
+        "r8_diagnostic_method"
+      ],
+      "claim_boundary": "R9 evidence-constrained interaction world model artifact. It defines source-backed mechanism, retrieval, and constrained-agent rollout routes plus a combination matrix for guarded evaluation only; it is not field validation, not point-prediction evidence, and not runtime default authorization.",
+      "combinations": [
+        {
+          "claim_status": "not_evaluated_l0_contract_only",
+          "combination_id": "A_only",
+          "field_outcome_validated": false,
+          "metrics": {
+            "decision_value_score": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "false_alarm_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "interval_coverage": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "risk_ranking_quality": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "static_prior_miss_recovery_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "trend_direction_accuracy": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            }
+          },
+          "metrics_schema": [
+            "trend_direction_accuracy",
+            "interval_coverage",
+            "risk_ranking_quality",
+            "false_alarm_rate",
+            "static_prior_miss_recovery_rate",
+            "decision_value_score"
+          ],
+          "route_ids": [
+            "route_a_evidence_constrained_mechanism_operator"
+          ],
+          "runtime_default_allowed": false,
+          "source_refs": [
+            "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
+            "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
+            "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
+          ]
+        },
+        {
+          "claim_status": "not_evaluated_l0_contract_only",
+          "combination_id": "B_only",
+          "field_outcome_validated": false,
+          "metrics": {
+            "decision_value_score": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "false_alarm_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "interval_coverage": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "risk_ranking_quality": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "static_prior_miss_recovery_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "trend_direction_accuracy": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            }
+          },
+          "metrics_schema": [
+            "trend_direction_accuracy",
+            "interval_coverage",
+            "risk_ranking_quality",
+            "false_alarm_rate",
+            "static_prior_miss_recovery_rate",
+            "decision_value_score"
+          ],
+          "route_ids": [
+            "route_b_semantic_precedent_retrieval"
+          ],
+          "runtime_default_allowed": false,
+          "source_refs": [
+            "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
+            "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
+            "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
+          ]
+        },
+        {
+          "claim_status": "not_evaluated_l0_contract_only",
+          "combination_id": "C_only",
+          "field_outcome_validated": false,
+          "metrics": {
+            "decision_value_score": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "false_alarm_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "interval_coverage": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "risk_ranking_quality": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "static_prior_miss_recovery_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "trend_direction_accuracy": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            }
+          },
+          "metrics_schema": [
+            "trend_direction_accuracy",
+            "interval_coverage",
+            "risk_ranking_quality",
+            "false_alarm_rate",
+            "static_prior_miss_recovery_rate",
+            "decision_value_score"
+          ],
+          "route_ids": [
+            "route_c_constrained_multi_agent_rollout"
+          ],
+          "runtime_default_allowed": false,
+          "source_refs": [
+            "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
+            "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
+            "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
+          ]
+        },
+        {
+          "claim_status": "not_evaluated_l0_contract_only",
+          "combination_id": "A+B",
+          "field_outcome_validated": false,
+          "metrics": {
+            "decision_value_score": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "false_alarm_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "interval_coverage": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "risk_ranking_quality": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "static_prior_miss_recovery_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "trend_direction_accuracy": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            }
+          },
+          "metrics_schema": [
+            "trend_direction_accuracy",
+            "interval_coverage",
+            "risk_ranking_quality",
+            "false_alarm_rate",
+            "static_prior_miss_recovery_rate",
+            "decision_value_score"
+          ],
+          "route_ids": [
+            "route_a_evidence_constrained_mechanism_operator",
+            "route_b_semantic_precedent_retrieval"
+          ],
+          "runtime_default_allowed": false,
+          "source_refs": [
+            "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
+            "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
+            "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
+          ]
+        },
+        {
+          "claim_status": "not_evaluated_l0_contract_only",
+          "combination_id": "A+C",
+          "field_outcome_validated": false,
+          "metrics": {
+            "decision_value_score": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "false_alarm_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "interval_coverage": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "risk_ranking_quality": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "static_prior_miss_recovery_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "trend_direction_accuracy": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            }
+          },
+          "metrics_schema": [
+            "trend_direction_accuracy",
+            "interval_coverage",
+            "risk_ranking_quality",
+            "false_alarm_rate",
+            "static_prior_miss_recovery_rate",
+            "decision_value_score"
+          ],
+          "route_ids": [
+            "route_a_evidence_constrained_mechanism_operator",
+            "route_c_constrained_multi_agent_rollout"
+          ],
+          "runtime_default_allowed": false,
+          "source_refs": [
+            "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
+            "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
+            "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
+          ]
+        },
+        {
+          "claim_status": "not_evaluated_l0_contract_only",
+          "combination_id": "B+C",
+          "field_outcome_validated": false,
+          "metrics": {
+            "decision_value_score": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "false_alarm_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "interval_coverage": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "risk_ranking_quality": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "static_prior_miss_recovery_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "trend_direction_accuracy": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            }
+          },
+          "metrics_schema": [
+            "trend_direction_accuracy",
+            "interval_coverage",
+            "risk_ranking_quality",
+            "false_alarm_rate",
+            "static_prior_miss_recovery_rate",
+            "decision_value_score"
+          ],
+          "route_ids": [
+            "route_b_semantic_precedent_retrieval",
+            "route_c_constrained_multi_agent_rollout"
+          ],
+          "runtime_default_allowed": false,
+          "source_refs": [
+            "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
+            "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
+            "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
+          ]
+        },
+        {
+          "claim_status": "not_evaluated_l0_contract_only",
+          "combination_id": "A+B+C",
+          "field_outcome_validated": false,
+          "metrics": {
+            "decision_value_score": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "false_alarm_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "interval_coverage": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "risk_ranking_quality": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "static_prior_miss_recovery_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "trend_direction_accuracy": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            }
+          },
+          "metrics_schema": [
+            "trend_direction_accuracy",
+            "interval_coverage",
+            "risk_ranking_quality",
+            "false_alarm_rate",
+            "static_prior_miss_recovery_rate",
+            "decision_value_score"
+          ],
+          "route_ids": [
+            "route_a_evidence_constrained_mechanism_operator",
+            "route_b_semantic_precedent_retrieval",
+            "route_c_constrained_multi_agent_rollout"
+          ],
+          "runtime_default_allowed": false,
+          "source_refs": [
+            "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
+            "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
+            "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
+          ]
+        }
+      ],
+      "metrics_schema": [
+        "trend_direction_accuracy",
+        "interval_coverage",
+        "risk_ranking_quality",
+        "false_alarm_rate",
+        "static_prior_miss_recovery_rate",
+        "decision_value_score"
+      ],
+      "run_id": "r9-world-model-bundle-current",
+      "schema_version": "r9-combination-matrix-v1",
+      "source_refs": [
+        "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
+        "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
+        "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
+      ],
+      "status": "r9_combination_matrix_contract_ready",
+      "stop_loss_policy": {
+        "downgrade_to": "diagnostic_method_experiment",
+        "trigger": "no combination beats r7_v2_guarded_baseline under guard metrics"
+      }
+    },
+    "r9_product_support_gate": {
+      "allowed_claims": [
+        "R9 artifact contract defines evidence-constrained routes and combination matrix.",
+        "R9 can be evaluated against R6/R7/R8 baselines before Product escalation."
+      ],
+      "artifact_id": "r9-world-model-bundle-current-001-product-support-gate",
+      "blocked_claims": [
+        "R9 validated",
+        "R9 supports Product core method by default",
+        "runtime default ready",
+        "field_outcome_validated=true",
+        "runtime_default_allowed=true",
+        "accuracy superiority"
+      ],
+      "claim_boundary": "R9 evidence-constrained interaction world model artifact. It defines source-backed mechanism, retrieval, and constrained-agent rollout routes plus a combination matrix for guarded evaluation only; it is not field validation, not point-prediction evidence, and not runtime default authorization.",
+      "combination_count": 7,
+      "field_outcome_validated": false,
+      "product_support_status": "contract_ready_not_method_validated",
+      "route_count": 3,
+      "run_id": "r9-world-model-bundle-current",
+      "runtime_default_allowed": false,
+      "schema_version": "r9-product-support-gate-v1",
+      "source_backed_only": true,
+      "source_refs": [
+        "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
+        "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
+        "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json",
+        "r9-world-model-bundle-current-001-route-outputs",
+        "r9-world-model-bundle-current-001-combination-matrix"
+      ],
+      "status": "r9_product_support_gate_ready_guarded"
+    },
+    "r9_route_outputs": {
+      "artifact_id": "r9-world-model-bundle-current-001-route-outputs",
+      "claim_boundary": "R9 evidence-constrained interaction world model artifact. It defines source-backed mechanism, retrieval, and constrained-agent rollout routes plus a combination matrix for guarded evaluation only; it is not field validation, not point-prediction evidence, and not runtime default authorization.",
+      "metrics_schema": [
+        "trend_direction_accuracy",
+        "interval_coverage",
+        "risk_ranking_quality",
+        "false_alarm_rate",
+        "static_prior_miss_recovery_rate",
+        "decision_value_score"
+      ],
+      "routes": {
+        "route_a_evidence_constrained_mechanism_operator": {
+          "blocked_claims": [
+            "route validated",
+            "field_outcome_validated=true",
+            "runtime_default_allowed=true"
+          ],
+          "claim_boundary": "R9 evidence-constrained interaction world model artifact. It defines source-backed mechanism, retrieval, and constrained-agent rollout routes plus a combination matrix for guarded evaluation only; it is not field validation, not point-prediction evidence, and not runtime default authorization.",
+          "metrics": {
+            "decision_value_score": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "false_alarm_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "interval_coverage": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "risk_ranking_quality": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "static_prior_miss_recovery_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "trend_direction_accuracy": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            }
+          },
+          "required_next_evidence": [
+            "route-specific runnable implementation",
+            "baseline comparison",
+            "holdout or perturbation guard"
+          ],
+          "route_contract": {
+            "field_outcome_validated": false,
+            "llm_direct_prediction_allowed": false,
+            "runtime_default_allowed": false,
+            "source_backed_only": true
+          },
+          "route_goal": "learn mechanism activation, propagation edges, and bounded updates",
+          "route_id": "route_a_evidence_constrained_mechanism_operator",
+          "route_name": "\u8bc1\u636e\u7ea6\u675f\u673a\u5236\u7b97\u5b50",
+          "source_refs": [
+            "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
+            "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
+            "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
+          ]
+        },
+        "route_b_semantic_precedent_retrieval": {
+          "blocked_claims": [
+            "route validated",
+            "field_outcome_validated=true",
+            "runtime_default_allowed=true"
+          ],
+          "claim_boundary": "R9 evidence-constrained interaction world model artifact. It defines source-backed mechanism, retrieval, and constrained-agent rollout routes plus a combination matrix for guarded evaluation only; it is not field validation, not point-prediction evidence, and not runtime default authorization.",
+          "metrics": {
+            "decision_value_score": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "false_alarm_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "interval_coverage": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "risk_ranking_quality": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "static_prior_miss_recovery_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "trend_direction_accuracy": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            }
+          },
+          "required_next_evidence": [
+            "route-specific runnable implementation",
+            "baseline comparison",
+            "holdout or perturbation guard"
+          ],
+          "route_contract": {
+            "field_outcome_validated": false,
+            "llm_direct_prediction_allowed": false,
+            "runtime_default_allowed": false,
+            "source_backed_only": true
+          },
+          "route_goal": "retrieve source-backed precedent cases to constrain mechanisms",
+          "route_id": "route_b_semantic_precedent_retrieval",
+          "route_name": "\u8bed\u4e49\u6848\u4f8b\u68c0\u7d22\u4e0e\u5148\u4f8b\u7ea6\u675f",
+          "source_refs": [
+            "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
+            "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
+            "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
+          ]
+        },
+        "route_c_constrained_multi_agent_rollout": {
+          "blocked_claims": [
+            "route validated",
+            "field_outcome_validated=true",
+            "runtime_default_allowed=true"
+          ],
+          "claim_boundary": "R9 evidence-constrained interaction world model artifact. It defines source-backed mechanism, retrieval, and constrained-agent rollout routes plus a combination matrix for guarded evaluation only; it is not field validation, not point-prediction evidence, and not runtime default authorization.",
+          "metrics": {
+            "decision_value_score": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "false_alarm_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "interval_coverage": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "risk_ranking_quality": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "static_prior_miss_recovery_rate": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            },
+            "trend_direction_accuracy": {
+              "status": "not_computed_l0_contract_only",
+              "value": null
+            }
+          },
+          "required_next_evidence": [
+            "route-specific runnable implementation",
+            "baseline comparison",
+            "holdout or perturbation guard"
+          ],
+          "route_contract": {
+            "field_outcome_validated": false,
+            "llm_direct_prediction_allowed": false,
+            "runtime_default_allowed": false,
+            "source_backed_only": true
+          },
+          "route_goal": "generate structured interaction traces and anomaly candidates",
+          "route_id": "route_c_constrained_multi_agent_rollout",
+          "route_name": "\u53d7\u7ea6\u675f\u591a\u4e3b\u4f53\u4ea4\u4e92 rollout",
+          "source_refs": [
+            "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
+            "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
+            "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
+          ]
+        }
+      },
+      "run_id": "r9-world-model-bundle-current",
+      "schema_version": "r9-route-outputs-v1",
+      "source_refs": [
+        "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
+        "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
+        "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
+      ],
+      "status": "r9_route_outputs_contract_ready"
+    },
+    "r9_world_model_manifest": {
+      "artifact_id": "r9-world-model-bundle-current-001-world-model-manifest",
+      "baseline_ids": [
+        "static_prior",
+        "r6_learning_counterfactual",
+        "r7_v2_guarded_baseline",
+        "r8_diagnostic_method"
+      ],
+      "claim_boundary": "R9 evidence-constrained interaction world model artifact. It defines source-backed mechanism, retrieval, and constrained-agent rollout routes plus a combination matrix for guarded evaluation only; it is not field validation, not point-prediction evidence, and not runtime default authorization.",
+      "combination_ids": [
+        "A_only",
+        "B_only",
+        "C_only",
+        "A+B",
+        "A+C",
+        "B+C",
+        "A+B+C"
+      ],
+      "method_contract": {
+        "external_evidence_required_for_escalation": true,
+        "field_outcome_validated": false,
+        "interaction_rollout_is_hypothesis_generator": true,
+        "product_guard_required": true,
+        "runtime_default_allowed": false,
+        "static_prior_is_foundation": true
+      },
+      "method_name": "\u8bc1\u636e\u7ea6\u675f\u4ea4\u4e92\u4e16\u754c\u6a21\u578b",
+      "route_ids": [
+        "route_a_evidence_constrained_mechanism_operator",
+        "route_b_semantic_precedent_retrieval",
+        "route_c_constrained_multi_agent_rollout"
+      ],
+      "run_id": "r9-world-model-bundle-current",
+      "schema_version": "r9-world-model-manifest-v1",
+      "source_refs": [
+        "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
+        "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
+        "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
+      ],
+      "status": "r9_world_model_manifest_ready"
+    }
+  },
+  "blocked_claims": [
+    "R9 validated",
+    "R9 supports Product core method by default",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "runtime default ready",
+    "accuracy superiority",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_boundary": "R9 evidence-constrained interaction world model artifact. It defines source-backed mechanism, retrieval, and constrained-agent rollout routes plus a combination matrix for guarded evaluation only; it is not field validation, not point-prediction evidence, and not runtime default authorization.",
+  "product_positioning": "\u4eba\u7fa4\u53cd\u5e94\u8d8b\u52bf\u4e0e\u98ce\u9669\u533a\u95f4\u6a21\u62df\u5668",
+  "run_id": "r9-world-model-bundle-current",
+  "schema_version": "r9-world-model-bundle-v1",
+  "source_refs": [
+    "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
+    "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
+    "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
+  ],
+  "status": "r9_artifact_contract_ready_guarded"
+}

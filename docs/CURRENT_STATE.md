@@ -220,6 +220,7 @@
 64. R8 stop-loss 复盘 artifact 已落地为 `r8-stop-loss-diagnosis-current-001`，并接入 Product customer value report 的 `r8_method_support`。复盘结论是 `research_decision=keep_r8_as_diagnostic_asset`，根因包括 `not_beating_fixed_rule_baseline`、`insufficient_metric_dominance`、`l1_l2_gate_blocked`、`field_customer_outcome_missing` 和 `runtime_default_guard_blocked`。这说明 R8 当前主要价值是 failure diagnosis / outcome replay / 方法审计，不是 Product core 方法。下一步必须在三条路线中做明确选择：更强可迁移机制学习算子、真实 field/customer outcome 接入，或 Product failure diagnosis 工作流强化。
 65. R8 Product failure diagnosis package 已落地为 `r8-product-failure-diagnosis-package-current-001`，并接入 Product customer value report 与 API manifest。该 package 将 R8 stop-loss/root causes 转成客户可见 failure cards、evidence requests 和 outcome replay workflow。它的边界是 `diagnostic_only=true`、`field_outcome_validated=false`、`runtime_default_allowed=false`，用于防止 Product 误用弱 Research 方法；它不改变 R8 未能支撑 Product core 方法的结论。当前判断更明确：Research 方法层仍不够强，R9 必须转向方法创新，而不是继续包装 R8。
 66. R9 中文 spec 已新增为 `docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md`。R9 主线定义为“证据约束交互世界模型”，目标是把外部证据、机制学习、多主体交互 rollout 和 outcome replay 融成一个可验证算法空间。R9 不再押注单一路线，而是并行比较 `A_only`、`B_only`、`C_only`、`A+B`、`A+C`、`B+C`、`A+B+C` 七种组合，并用 trend / interval / risk ranking / false alarm / static prior miss recovery / decision value / holdout guard 统一验收。当前该 spec 只定义下一阶段方法探索，不声明 R9 已经支撑 Product core method。
+67. R9 Task 1 artifact contract 已实现为 `experiments/r9_evidence_constrained_world_model.py`，并落盘 `r9-world-model-bundle-current-001`。该 bundle 包含 `r9_world_model_manifest`、`r9_route_outputs`、`r9_combination_matrix` 和 `r9_product_support_gate` 四类 artifact；三条路线 A/B/C 和七种组合均有统一指标结构、可计算字段、source refs 和 Product guard。当前状态是 `r9_artifact_contract_ready_guarded`，所有 route/combination 指标仍是 `not_computed_l0_contract_only`，`field_outcome_validated=false`、`runtime_default_allowed=false`。这一步只证明 R9 探索框架可审计，不证明方法效果。
 
 ## 可复用资产
 
@@ -258,7 +259,7 @@ R7 开发或 R6 guard 维护时必须只 stage 本轮明确修改的文件。
 ## 下一步
 
 1. Product 下一步在 `/demo/` source-backed report UI 基础上推进真实客户工作流：场景输入、群体/先验选择、运行入口、报告导出、outcome review 入口和用户可理解的 failure diagnosis；当前 demo 已关闭“完全没有客户可见 UI”的 gap，但还不是完整 SaaS 工作流。
-2. Research 已完成 R8 第一阶段 artifact contract、可学习机制算子 MVP、baseline comparison、robustness/holdout gate、stop-loss diagnosis、Product failure diagnosis package 和 Product ingestion。下一步按 R9 spec 进入方法创新：路线 A 是证据约束机制算子，路线 B 是语义案例检索与先例约束，路线 C 是受约束多主体交互 rollout。第一阶段必须先实现 artifact contract、三路线最小输出、七组合矩阵、holdout/perturbation/synthetic mechanism lab 和 Product ingestion；任何组合未通过 guard 时只能降级为 diagnostic/failure diagnosis。
+2. Research 已完成 R8 第一阶段 artifact contract、可学习机制算子 MVP、baseline comparison、robustness/holdout gate、stop-loss diagnosis、Product failure diagnosis package 和 Product ingestion，并完成 R9 Task 1 artifact contract。下一步按 R9 spec 进入 Task 2：实现路线 A 的证据约束机制算子、路线 B 的语义案例检索 fixture、路线 C 的受约束多主体 rollout fixture。Task 2 必须让每条路线独立输出 trend/interval/risk/segment/mechanism 和失败原因；任何路线未通过 guard 时只能降级为 diagnostic/failure diagnosis。
 3. 数据侧不再泛泛增加 proxy；新增数据必须服务于 Product decision report、outcome review、operator holdout 或 field outcome 复核。
 4. 方法侧停止继续优化当前 scoring candidate；它保留为 negative baseline 和 diagnostic gate。
 5. Product 侧保留并强化 `interaction_signal_validity_holdout_summary`、false-alarm diagnosis、blocked update reason 和 claim boundary，确保 R7 新方法不会污染 runtime default。
