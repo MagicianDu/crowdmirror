@@ -213,6 +213,7 @@
 57. 学习型反事实机制仿真器已补充 local proxy robustness validation：`r6-counterfactual-robustness-validation-current-001` 当前是 `counterfactual_robustness_diagnostic_blocked`。在 9 个 observed/proxy outcome 小幅扰动场景中，8 个通过，`robustness_pass_rate=0.889`；失败场景是 `anes_health_heldout:+0.03`，此时 near-threshold false alarm 同时暴露 `non_regression_rate=0.667`、`false_alarm_reduction_rate=0.5`。这说明 current-proxy leave-one-case gate 虽已通过，但近阈值 false alarm 校准仍不稳，不能宣称 robustness 通过。
 58. 由于 R6 已经暴露“证据链完整但方法强度不足”的边界，当前 Research 主线新增 `2026-06-25-r7-mechanism-generative-risk-simulation-spec.md`。R7 不继续把 near-threshold calibration patch、floor 调参或 post-hoc scoring 当作主方法，而是转向机制状态、交互传播、分布式 rollout、风险区间、异常群体、策略沙盘和 outcome feedback learning。R6 保留为 Product guard、diagnostic baseline 和 failure replay harness；R7 才是下一阶段 Research 主方法候选。当前还没有 R7 runtime 代码，下一步必须先实现 R7 artifact contract 和最小机制生成式仿真链路。
 59. R7 contract-first MVP 已实现为 `experiments/r7_mechanism_generative_simulation.py`，并落盘 `r7-mechanism-generative-bundle-current-001`。该 bundle 同时包含 `r7_mechanism_state_manifest`、`r7_interaction_graph_manifest`、`r7_rollout_distribution`、`r7_risk_interval_report`、`r7_segment_anomaly_report`、`r7_counterfactual_policy_sandbox`、`r7_outcome_feedback_update_candidate` 和 `r7_product_support_report` 八个 artifact。当前结果显示 `rollout_count=50`、`no_interaction_median=0.3432`、`interaction_median=0.3657`、风险区间 `p10=0.3625 / median=0.3657 / p90=0.3682`，top policy `targeted_compensation` 将 median 降到 `0.3317`。这证明 R7 已从 R6 的后处理校准推进到可回放的机制状态 + 交互图 + rollout distribution + 策略沙盘链路，但仍只是 `r7_contract_first_mvp_ready_guarded`：`field_outcome_validated=false`、`runtime_default_allowed=false`，尚未证明真实效果优于 R6 或 fully support Product。
+60. R7 effect validation 已实现为 `experiments/r7_effect_validation.py`，并落盘 `r7-effect-validation-current-001`。它用同一组 current R6 public proxy case 对比 static prior、R6 raw interaction、R6 learning counterfactual 和 R7 mechanism-generative rollout。当前结论是 `r7_effect_validation_diagnostic_blocked`：R7 的 `trend_direction_accuracy=0.667` 与 R6 raw 持平，但 `interval_coverage=0.0`、`false_alarm_rate=1.0`、`static_prior_miss_recovery_rate=0.0`、`mean_absolute_error=0.1056`，均未达到 Product 支撑要求，且弱于 R6 learning counterfactual 的 `mean_absolute_error=0.049`。具体失败边界是：HTOPS 高风险 case 中 R7 未恢复静态先验漏报；ANES health / climate 上 R7 都触发高风险，其中 health / climate 都是 false alarm；R7 区间过窄，三个 case 均未覆盖 observed/proxy outcome。因此 R7 目前只证明“机制生成式链路可审计”，尚未证明“机制生成式方法效果更强”。
 
 ## 可复用资产
 
@@ -251,14 +252,14 @@ R7 开发或 R6 guard 维护时必须只 stage 本轮明确修改的文件。
 ## 下一步
 
 1. Product 下一步在 `/demo/` source-backed report UI 基础上推进真实客户工作流：场景输入、群体/先验选择、运行入口、报告导出、outcome review 入口和用户可理解的 failure diagnosis；当前 demo 已关闭“完全没有客户可见 UI”的 gap，但还不是完整 SaaS 工作流。
-2. Research 已完成 R7 contract-first 最小链路；下一步不再停留在 schema，通过 `r7` artifacts 做效果验证：与 R6 raw interaction / learning counterfactual / static prior 对比 trend direction、interval coverage、risk ranking、false alarm、strategy decision value。
+2. Research 已完成 R7 contract-first 最小链路和第一轮效果验证；下一步必须围绕失败边界做方法改进，而不是继续扩 artifact：校准不确定性区间、重新平衡机制敏感度、降低 rights-rule false alarm、恢复 HTOPS 类静态漏报高风险信号。
 3. 数据侧不再泛泛增加 proxy；新增数据必须服务于 Product decision report、outcome review、operator holdout 或 field outcome 复核。
 4. 方法侧停止继续优化当前 scoring candidate；它保留为 negative baseline 和 diagnostic gate。
 5. Product 侧保留并强化 `interaction_signal_validity_holdout_summary`、false-alarm diagnosis、blocked update reason 和 claim boundary，确保 R7 新方法不会污染 runtime default。
 6. Research 方法侧不再优先推进 R6 learning counterfactual 的 patch 化增强；`behavioral_update_operator_v3` 和 learning counterfactual simulator 保留为 guarded static-fallback / diagnostic baseline。
 7. learning counterfactual 已完成第一轮迁移失败归因和保守修复：unseen high-risk mechanism floor 能在不恢复 ANES false alarm 的前提下保留 HTOPS 类静态漏报信号，risk-preserving calibration 能把 HTOPS holdout 拉回 raw-interaction 非回归边界。但这一正向信号依赖当前 proxy 和 calibration 组合，不足以作为 Product 核心方法。
 8. calibration ablation 已把组件贡献拆开；后续不能把 `floor_plus_non_regression_calibration` 包装成通用学习算法。它只能作为 R7 的 baseline、guard 或 failure replay case。
-9. local robustness 已暴露 near-threshold false alarm 缺口；R7 已先完成机制状态、交互图、分布式 rollout、风险区间、异常群体和策略沙盘 artifact contract，后续要验证这些机制生成式信号是否能减少 R6 的 false alarm 与局部 patch 依赖。
+9. local robustness 已暴露 near-threshold false alarm 缺口；R7 effect validation 进一步确认当前机制生成式信号尚未减少 R6 的 false alarm 与局部 patch 依赖。下一轮必须先提升效果，再考虑进入 Product core claim。
 
 ## 验收边界
 
