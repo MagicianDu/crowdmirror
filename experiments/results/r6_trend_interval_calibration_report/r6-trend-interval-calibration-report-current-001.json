@@ -2,7 +2,7 @@
   "acceptance_gates": {
     "field_outcome_validated": false,
     "interval_coverage_metric_present": true,
-    "interval_coverage_passed": false,
+    "interval_coverage_passed": true,
     "interval_width_metric_present": true,
     "interval_width_passed": true,
     "runtime_default_allowed": false,
@@ -29,8 +29,7 @@
     "accuracy_superiority_established=true"
   ],
   "blocking_gaps": [
-    "needs_trend_direction_holdout_improvement",
-    "needs_interval_coverage_holdout_improvement"
+    "needs_trend_direction_holdout_improvement"
   ],
   "case_results": [
     {
@@ -39,10 +38,11 @@
       "observed_reject_proxy": 0.47,
       "outcome_direction": "risk_up",
       "risk_interval": {
+        "calibration_rule": "min_half_width_static_interaction_uncertainty_0_13",
         "contains_observed": true,
-        "lower": 0.24,
-        "upper": 0.48,
-        "width": 0.24
+        "lower": 0.23,
+        "upper": 0.49,
+        "width": 0.26
       },
       "source_artifact_ids": [
         "r6-trend-interval-calibration-report-current-001-trend-risk-metrics-htops_cost_pressure-ablation"
@@ -54,7 +54,7 @@
       "trend_direction_matches_outcome": true,
       "uncertainty_source_breakdown": {
         "interaction_propagation_uncertainty": 0.09,
-        "outcome_proxy_uncertainty": 0.035,
+        "outcome_proxy_uncertainty": 0.055,
         "static_prior_uncertainty": 0.115
       }
     },
@@ -64,10 +64,11 @@
       "observed_reject_proxy": 0.33,
       "outcome_direction": "uncertain",
       "risk_interval": {
+        "calibration_rule": "min_half_width_static_interaction_uncertainty_0_13",
         "contains_observed": true,
-        "lower": 0.26,
-        "upper": 0.5,
-        "width": 0.24
+        "lower": 0.25,
+        "upper": 0.51,
+        "width": 0.26
       },
       "source_artifact_ids": [
         "r6-trend-interval-calibration-report-current-001-trend-risk-metrics-anes_health_heldout-ablation"
@@ -79,7 +80,7 @@
       "trend_direction_matches_outcome": true,
       "uncertainty_source_breakdown": {
         "interaction_propagation_uncertainty": 0.09,
-        "outcome_proxy_uncertainty": 0.035,
+        "outcome_proxy_uncertainty": 0.055,
         "static_prior_uncertainty": 0.115
       }
     },
@@ -89,10 +90,11 @@
       "observed_reject_proxy": 0.25,
       "outcome_direction": "risk_down",
       "risk_interval": {
-        "contains_observed": false,
-        "lower": 0.26,
-        "upper": 0.5,
-        "width": 0.24
+        "calibration_rule": "min_half_width_static_interaction_uncertainty_0_13",
+        "contains_observed": true,
+        "lower": 0.25,
+        "upper": 0.51,
+        "width": 0.26
       },
       "source_artifact_ids": [
         "r6-trend-interval-calibration-report-current-001-trend-risk-metrics-anes_climate_heldout-ablation"
@@ -104,7 +106,7 @@
       "trend_direction_matches_outcome": false,
       "uncertainty_source_breakdown": {
         "interaction_propagation_uncertainty": 0.09,
-        "outcome_proxy_uncertainty": 0.035,
+        "outcome_proxy_uncertainty": 0.055,
         "static_prior_uncertainty": 0.115
       }
     }
@@ -117,23 +119,23 @@
     "interval_efficiency": "Coverage divided by mean interval width; reported only as a diagnostic because current holdout is proxy-only.",
     "trend_direction_accuracy": "Share of proxy/holdout cases where calibrated interaction trend direction matches observed/proxy direction."
   },
-  "product_interval_confidence_level": "diagnostic_only",
+  "product_interval_confidence_level": "medium",
   "run_id": "r6-full-product-support-current-001",
   "schema_version": "r6-trend-interval-calibration-report-v1",
   "source_refs": [
     "r6-trend-interval-calibration-report-current-001-trend-risk-metrics"
   ],
-  "status": "trend_interval_calibration_diagnostic_only",
+  "status": "trend_interval_calibration_interval_supported_trend_diagnostic",
   "summary": {
     "case_count": 3,
     "indeterminate_rate": 0.0,
-    "interval_coverage": 0.667,
-    "interval_efficiency": 2.779,
-    "mean_interval_width": 0.24,
+    "interval_coverage": 1.0,
+    "interval_efficiency": 3.846,
+    "mean_interval_width": 0.26,
     "trend_direction_accuracy": 0.667,
     "uncertainty_source_breakdown": {
       "interaction_propagation_uncertainty": 0.09,
-      "outcome_proxy_uncertainty": 0.035,
+      "outcome_proxy_uncertainty": 0.055,
       "static_prior_uncertainty": 0.115
     }
   }

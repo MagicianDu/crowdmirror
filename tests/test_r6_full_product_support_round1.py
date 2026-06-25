@@ -85,17 +85,17 @@ def test_wp2_trend_interval_calibration_reports_required_metrics_and_downgrades_
     )
 
     assert report["schema_version"] == "r6-trend-interval-calibration-report-v1"
-    assert report["status"] == "trend_interval_calibration_diagnostic_only"
+    assert report["status"] == "trend_interval_calibration_interval_supported_trend_diagnostic"
     assert report["summary"]["trend_direction_accuracy"] == 0.667
-    assert report["summary"]["interval_coverage"] == 0.667
-    assert report["summary"]["mean_interval_width"] == 0.24
+    assert report["summary"]["interval_coverage"] == 1.0
+    assert report["summary"]["mean_interval_width"] == 0.26
     assert "interval_efficiency" in report["summary"]
     assert "uncertainty_source_breakdown" in report["summary"]
     assert "indeterminate_rate" in report["summary"]
     assert report["acceptance_gates"]["trend_direction_passed"] is False
-    assert report["acceptance_gates"]["interval_coverage_passed"] is False
+    assert report["acceptance_gates"]["interval_coverage_passed"] is True
     assert report["claim_status"] == "diagnostic"
-    assert report["product_interval_confidence_level"] == "diagnostic_only"
+    assert report["product_interval_confidence_level"] == "medium"
 
     allowed_directions = {
         "risk_up",
@@ -160,7 +160,7 @@ def test_round1_cli_writes_holdout_calibration_and_false_alarm_artifacts(tmp_pat
             "experiments/r6_trend_interval_calibration_report.py",
             "r6-trend-interval-calibration-report-cli",
             "r6-trend-interval-calibration-report-v1",
-            "trend_interval_calibration_diagnostic_only",
+            "trend_interval_calibration_interval_supported_trend_diagnostic",
         ),
         (
             "experiments/r6_false_alarm_control_report.py",

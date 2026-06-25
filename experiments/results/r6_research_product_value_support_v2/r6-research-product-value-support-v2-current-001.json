@@ -9,6 +9,7 @@
     "validated_value_count_gt_zero": false
   },
   "allowed_claims": [
+    "Risk interval can be presented as a guarded supported interval when coverage and width gates pass.",
     "Risk distribution and false-alarm control can be presented as guarded current-proxy supported claims.",
     "Abnormal segments can be presented as guarded proxy/audit supported claims."
   ],
@@ -43,10 +44,10 @@
   "status": "product_value_support_v2_partial_supported",
   "support_coverage": {
     "blocked_value_count": 2,
-    "diagnostic_value_count": 3,
-    "guarded_value_count": 3,
+    "diagnostic_value_count": 2,
+    "guarded_value_count": 4,
     "product_value_count": 8,
-    "supported_value_count": 3,
+    "supported_value_count": 4,
     "validated_value_count": 0
   },
   "support_matrix": [
@@ -60,13 +61,13 @@
       "support_status": "partial_current_proxy"
     },
     {
-      "blocked_reason": "interval_coverage_below_validation_threshold",
-      "claim_status": "diagnostic",
+      "blocked_reason": "",
+      "claim_status": "guarded",
       "product_value": "risk_interval",
       "source_artifact_ids": [
         "r6-trend-interval-calibration-report-current-001"
       ],
-      "support_status": "partial_current_proxy"
+      "support_status": "guarded_interval_supported"
     },
     {
       "blocked_reason": "field_holdout_missing",

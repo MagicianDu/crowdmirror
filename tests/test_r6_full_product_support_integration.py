@@ -30,6 +30,9 @@ def test_full_product_support_v2_flows_into_customer_report_with_guarded_claims(
     assert report["display_payload"]["risk_distribution"]["support_status"] == (
         "supported_current_proxy_guarded"
     )
+    assert report["display_payload"]["risk_interval"]["support_status"] == (
+        "guarded_interval_supported"
+    )
     assert report["display_payload"]["abnormal_segments"][0]["support_status"] == (
         "guarded_proxy_supported"
     )

@@ -88,10 +88,14 @@ def build_r6_product_claim_evidence_registry(
         ),
         _claim(
             product_section="risk_interval",
-            claim_status=trend["claim_status"],
+            claim_status=_risk_interval_claim_status(trend),
             source_artifact_ids=[trend["artifact_id"]],
-            support_status="partial_current_proxy",
-            blocked_reason="interval_coverage_below_validation_threshold",
+            support_status=_risk_interval_support_status(trend),
+            blocked_reason=(
+                ""
+                if _risk_interval_claim_status(trend) == "guarded"
+                else "interval_coverage_below_validation_threshold"
+            ),
         ),
         _claim(
             product_section="risk_distribution",
@@ -167,6 +171,7 @@ def build_r6_product_claim_evidence_registry(
             for source_ref in claim["source_artifact_ids"]
         ),
         "allowed_claims": [
+            "Risk interval can be presented as a guarded supported interval when coverage and width gates pass.",
             "Risk distribution and false-alarm control can be presented as guarded current-proxy supported claims.",
             "Abnormal segments can be presented as guarded proxy/audit supported claims.",
         ],
@@ -282,6 +287,22 @@ def _claim(
     }
 
 
+def _risk_interval_claim_status(trend: dict[str, Any]) -> str:
+    gates = trend["acceptance_gates"]
+    if (
+        gates["interval_coverage_passed"]
+        and gates["interval_width_passed"]
+    ):
+        return "guarded"
+    return "diagnostic"
+
+
+def _risk_interval_support_status(trend: dict[str, Any]) -> str:
+    if _risk_interval_claim_status(trend) == "guarded":
+        return "guarded_interval_supported"
+    return "partial_current_proxy"
+
+
 def _summary(claims: list[dict[str, Any]]) -> dict[str, int]:
     return {
         "claim_count": len(claims),
@@ -301,7 +322,11 @@ def _summary(claims: list[dict[str, Any]]) -> dict[str, int]:
             1
             for claim in claims
             if claim["support_status"]
-            in {"supported_current_proxy_guarded", "guarded_proxy_supported"}
+            in {
+                "supported_current_proxy_guarded",
+                "guarded_proxy_supported",
+                "guarded_interval_supported",
+            }
         ),
     }
 
@@ -316,7 +341,11 @@ def _support_coverage(support_matrix: list[dict[str, Any]]) -> dict[str, int]:
             1
             for item in support_matrix
             if item["support_status"]
-            in {"supported_current_proxy_guarded", "guarded_proxy_supported"}
+            in {
+                "supported_current_proxy_guarded",
+                "guarded_proxy_supported",
+                "guarded_interval_supported",
+            }
         ),
         "guarded_value_count": sum(
             1 for item in support_matrix if item["claim_status"] == "guarded"

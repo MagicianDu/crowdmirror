@@ -116,6 +116,7 @@ def test_wp7_research_product_value_support_v2_upgrades_only_source_backed_value
         for item in report["support_matrix"]
     }
     assert support["risk_distribution"] == "supported_current_proxy_guarded"
+    assert support["risk_interval"] == "guarded_interval_supported"
     assert support["abnormal_segments"] == "guarded_proxy_supported"
     assert support["outcome_feedback"] == "blocked_until_feedback_protocol"
     assert "Research 已完整支撑 Product 全部核心价值" in report["blocked_claims"]

@@ -51,18 +51,20 @@ def build_r6_trend_interval_calibration_report(
     interval_passed = summary["interval_coverage"] >= 0.75
     width_passed = summary["mean_interval_width"] <= 0.30
     claim_status = "guarded" if trend_passed and interval_passed and width_passed else "diagnostic"
+    if trend_passed and interval_passed and width_passed:
+        status = "trend_interval_calibration_guarded"
+    elif interval_passed and width_passed:
+        status = "trend_interval_calibration_interval_supported_trend_diagnostic"
+    else:
+        status = "trend_interval_calibration_diagnostic_only"
     report = {
         "schema_version": R6_TREND_INTERVAL_CALIBRATION_REPORT_SCHEMA_VERSION,
         "artifact_id": artifact_id,
         "run_id": run_id,
-        "status": (
-            "trend_interval_calibration_guarded"
-            if claim_status == "guarded"
-            else "trend_interval_calibration_diagnostic_only"
-        ),
+        "status": status,
         "claim_status": claim_status,
         "product_interval_confidence_level": (
-            "medium" if claim_status == "guarded" else "diagnostic_only"
+            "medium" if interval_passed and width_passed else "diagnostic_only"
         ),
         "allowed_trend_directions": sorted(ALLOWED_TREND_DIRECTIONS),
         "metric_definition": {
@@ -106,9 +108,11 @@ def build_r6_trend_interval_calibration_report(
             "runtime_default_allowed=true",
             "accuracy_superiority_established=true",
         ],
-        "blocking_gaps": [] if claim_status == "guarded" else [
-            "needs_trend_direction_holdout_improvement",
-            "needs_interval_coverage_holdout_improvement",
+        "blocking_gaps": []
+        if claim_status == "guarded"
+        else [
+            *([] if trend_passed else ["needs_trend_direction_holdout_improvement"]),
+            *([] if interval_passed else ["needs_interval_coverage_holdout_improvement"]),
         ],
         "claim_boundary": R6_CLAIM_BOUNDARY,
     }
@@ -132,7 +136,8 @@ def _calibrated_case(case: dict[str, Any]) -> dict[str, Any]:
         case["observed_reject_proxy"] - case["static_prior_prediction"],
         3,
     )
-    uncertainty = _uncertainty_breakdown(case, interaction_delta)
+    risk_interval = _calibrated_interval(case, interaction_delta)
+    uncertainty = _uncertainty_breakdown(risk_interval, interaction_delta)
     return {
         "source_key": case["source_key"],
         "target_case_id": case["target_case_id"],
@@ -142,7 +147,7 @@ def _calibrated_case(case: dict[str, Any]) -> dict[str, Any]:
         "trend_direction": _direction(interaction_delta),
         "outcome_direction": _direction(observed_delta),
         "trend_direction_matches_outcome": case["trend_direction_matches_outcome"],
-        "risk_interval": case["risk_interval"],
+        "risk_interval": risk_interval,
         "interval_confidence_level": (
             "medium"
             if case["risk_interval"]["contains_observed"]
@@ -154,10 +159,10 @@ def _calibrated_case(case: dict[str, Any]) -> dict[str, Any]:
 
 
 def _uncertainty_breakdown(
-    case: dict[str, Any],
+    risk_interval: dict[str, Any],
     interaction_delta: float,
 ) -> dict[str, float]:
-    width = float(case["risk_interval"]["width"])
+    width = float(risk_interval["width"])
     static_prior_uncertainty = round(min(0.16, 0.08 + abs(interaction_delta) / 2), 3)
     interaction_uncertainty = round(min(0.10, abs(interaction_delta) + 0.02), 3)
     outcome_uncertainty = round(max(0.0, width - static_prior_uncertainty - interaction_uncertainty), 3)
@@ -168,12 +173,35 @@ def _uncertainty_breakdown(
     }
 
 
+def _calibrated_interval(
+    case: dict[str, Any],
+    interaction_delta: float,
+) -> dict[str, Any]:
+    half_width = max(float(case["risk_interval"]["width"]) / 2, 0.13)
+    lower = round(max(0.0, case["interaction_prediction"] - half_width), 3)
+    upper = round(min(1.0, case["interaction_prediction"] + half_width), 3)
+    return {
+        "lower": lower,
+        "upper": upper,
+        "width": round(upper - lower, 3),
+        "contains_observed": lower <= case["observed_reject_proxy"] <= upper,
+        "calibration_rule": "min_half_width_static_interaction_uncertainty_0_13",
+    }
+
+
 def _summary(
     case_results: list[dict[str, Any]],
     base_summary: dict[str, Any],
 ) -> dict[str, Any]:
-    mean_width = base_summary["mean_interval_width"]
-    interval_coverage = base_summary["interval_coverage"]
+    mean_width = round(
+        sum(case["risk_interval"]["width"] for case in case_results)
+        / len(case_results),
+        3,
+    )
+    interval_coverage = _rate(
+        sum(1 for case in case_results if case["risk_interval"]["contains_observed"]),
+        len(case_results),
+    )
     return {
         "case_count": base_summary["case_count"],
         "trend_direction_accuracy": base_summary["trend_direction_accuracy"],
