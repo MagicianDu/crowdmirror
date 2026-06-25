@@ -1,0 +1,110 @@
+{
+  "acceptance_gates": {
+    "customer_visible_evidence_card_allowed": true,
+    "field_outcome_validated": false,
+    "primary_claims_guarded_baseline_only": true,
+    "product_core_method_ready": false,
+    "r12_can_override_primary_decision": false,
+    "r12_transfer_positive_guarded": true,
+    "runtime_default_allowed": false,
+    "secondary_evidence_card_only": true
+  },
+  "allowed_claims": [
+    "Product can display R12 as a source-backed guarded transfer evidence card.",
+    "R12 transfer evidence is secondary and requires customer or field outcome review before any runtime-default update."
+  ],
+  "artifact_id": "r12-product-support-gate-current-001",
+  "blocked_claims": [
+    "R12 validated",
+    "R12 supports Product core method by default",
+    "R12 can override guarded baseline primary decision",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "runtime default ready",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_boundary": "R12 Product support gate artifact. It allows Product to display a source-backed R12 transfer-validation evidence card as secondary evidence, while preserving guarded baseline primary decisions. It is not Product core method validation, not field validation, and not runtime default authorization.",
+  "claim_level": "product_secondary_evidence_only",
+  "customer_visible_primary_decision": {
+    "primary_decision_source": "guarded_baseline_customer_value_report",
+    "r12_can_override_primary_decision": false,
+    "r12_output_role": "secondary_transfer_evidence_card_only",
+    "runtime_default_allowed": false
+  },
+  "outcome_review_handoff": {
+    "handoff_id": "r12_transfer_evidence_outcome_review",
+    "prompt_or_persona_manual_patch_allowed": false,
+    "requires_customer_or_field_outcome": true,
+    "runtime_default_allowed": false,
+    "target_artifact_id": "r6-product-outcome-review-current-001",
+    "update_candidate_scope": [
+      "mechanism_weight",
+      "segment_sensitivity",
+      "interaction_edge_weight",
+      "uncertainty_parameter"
+    ]
+  },
+  "product_support_contract": {
+    "customer_visible_evidence_card_allowed": true,
+    "customer_visible_primary_claims_use_guarded_baseline": true,
+    "field_outcome_validated": false,
+    "r12_can_override_primary_decision": false,
+    "runtime_default_allowed": false,
+    "secondary_evidence_card_only": true,
+    "source_backed_only": true
+  },
+  "run_id": "r12-l4-current",
+  "schema_version": "r12-product-support-gate-v1",
+  "source_refs": [
+    "r12-transfer-validation-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-transfer-validation-current-001",
+      "path": "experiments/results/r12_transfer_validation/r12-transfer-validation-current-001.json"
+    }
+  ],
+  "status": "r12_product_support_gate_ready_guarded",
+  "transfer_evidence_card": {
+    "allowed_display_claims": [
+      "R12 has a guarded public-proxy transfer signal that can be shown as secondary evidence.",
+      "R12 evidence remains runtime-off and requires field or customer outcome review before any default update."
+    ],
+    "blocked_display_claims": [
+      "R12 primary decision",
+      "R12 field validated",
+      "R12 runtime default",
+      "R12 precise point prediction",
+      "R12 Product core method ready"
+    ],
+    "card_id": "r12_transfer_validation_evidence_card",
+    "claim_status": "guarded_transfer_positive_secondary_evidence",
+    "display_allowed": true,
+    "evidence_summary": {
+      "accepted_update": {
+        "recommended_value": 0.55,
+        "runtime_default_allowed": false,
+        "target": "price_pressure",
+        "update_id": "r12-mechanism-weight-price-pressure-accepted-001",
+        "update_type": "mechanism_weight"
+      },
+      "claim_level": "guarded_public_proxy_transfer_signal",
+      "field_outcome_validated": false,
+      "runtime_default_allowed": false,
+      "train_metrics_used_for_transfer_decision": false,
+      "transfer_decision": "r12_update_transfer_positive_guarded"
+    },
+    "metrics": {
+      "false_alarm_rate_delta": 0.0,
+      "holdout_mean_absolute_error_delta": -0.000856,
+      "interval_coverage_delta": 0.0,
+      "update_transfer_gain": 0.001287,
+      "validation_mean_absolute_error_delta": -0.000431
+    },
+    "primary_decision_allowed": false,
+    "source_artifact_ids": [
+      "r12-transfer-validation-current-001"
+    ],
+    "title": "R12 guarded transfer validation evidence"
+  }
+}

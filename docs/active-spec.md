@@ -203,12 +203,13 @@ R11 L3 已把 shadow trial 的 outcome review handoff 转成可计算的 bounded
 
 R12 不再把 R11 L3 的 bounded update ledger 继续包装成方法突破，而是把下一阶段 Research 目标改为 outcome-supervised causal interaction operator：用 train split outcome residual 监督机制权重、群体敏感度、传播边权和区间不确定性更新，再用 validation / holdout split 验证更新是否可迁移。R12 的关键指标是 `update_transfer_gain`，并继续要求 `interval_coverage_delta >= 0`、`false_alarm_rate_delta <= 0`、`runtime_default_allowed=false`。如果只产生 same-case improvement，必须判定为 `r12_update_transfer_blocked_same_case_only`。
 
-当前 R12 L0-L3 已完成：
+当前 R12 L0-L4 已完成：
 
 1. `r12_outcome_case_registry`
 2. `r12_causal_interaction_operator`
 3. `r12_outcome_supervised_update`
 4. `r12_transfer_validation`
+5. `r12_product_support_gate`
 
 R12 L0 已把 R11 HPS public-use proxy holdout 的 6 个 cases 固定拆分为 train / validation / holdout，并输出 `r12-outcome-case-registry-current-001`。L0 的核心 guard 是 `outcome_leakage_blocked=true`：validation / holdout outcome 不允许进入训练。
 
@@ -216,7 +217,9 @@ R12 L1 已定义 causal interaction operator contract，并输出 `r12-causal-in
 
 R12 L2 已输出 `r12-outcome-supervised-update-current-001`：只使用 train split outcome residual，生成 accepted shadow-only `price_pressure` mechanism update，同时保留 segment diagnostic、edge rejected 和 uncertainty diagnostic 分支。它证明 R12 更新对象已从 prompt/persona 转为结构化参数，但不允许 runtime default。
 
-R12 L3 已输出 `r12-transfer-validation-current-001`：当前 HPS public-use proxy split 上 validation MAE 从 `0.009743` 降至 `0.009312`，holdout MAE 从 `0.005104` 降至 `0.004248`，`update_transfer_gain=0.001287`，且 `interval_coverage_delta=0.0`、`false_alarm_rate_delta=0.0`。当前状态为 `r12_transfer_validation_positive_guarded`，说明 R12 有最小可迁移正向信号；但这仍不是 field/customer outcome validation，也不允许 `runtime_default_allowed=true`。下一步才是 Product L4 guarded evidence card / API manifest 接入。
+R12 L3 已输出 `r12-transfer-validation-current-001`：当前 HPS public-use proxy split 上 validation MAE 从 `0.009743` 降至 `0.009312`，holdout MAE 从 `0.005104` 降至 `0.004248`，`update_transfer_gain=0.001287`，且 `interval_coverage_delta=0.0`、`false_alarm_rate_delta=0.0`。当前状态为 `r12_transfer_validation_positive_guarded`，说明 R12 有最小可迁移正向信号；但这仍不是 field/customer outcome validation，也不允许 `runtime_default_allowed=true`。
+
+R12 L4 已输出 `r12-product-support-gate-current-001`，并接入 `r6-product-customer-value-report-current-001`、`r6-product-api-manifest-current-001` 和 `/demo/`。Product 现在可以展示 `r12_transfer_evidence` section、`/r6/product/r12-transfer-evidence` endpoint 和“R12 迁移验证”面板。但 R12 输出角色被固定为 `secondary_transfer_evidence_card_only`，`r12_can_override_primary_decision=false`，主决策仍来自 guarded baseline。
 
 ## 降权历史材料
 

@@ -66,6 +66,7 @@ def build_r6_product_customer_value_report(
     r9_false_alarm_gate_redesign: dict[str, Any] | None = None,
     r9_holdout_guard: dict[str, Any] | None = None,
     r11_product_shadow_trial: dict[str, Any] | None = None,
+    r12_product_support_gate: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
@@ -123,6 +124,7 @@ def build_r6_product_customer_value_report(
         r9_false_alarm_gate_redesign,
         r9_holdout_guard,
         r11_product_shadow_trial,
+        r12_product_support_gate,
     )
     customer_sections = list(R6_PRODUCT_CUSTOMER_VALUE_SECTIONS)
     if r8_robustness_holdout_gate is not None:
@@ -131,6 +133,8 @@ def build_r6_product_customer_value_report(
         customer_sections.insert(-2, "r9_method_support")
     if r11_product_shadow_trial is not None:
         customer_sections.insert(-2, "r11_shadow_trial")
+    if r12_product_support_gate is not None:
+        customer_sections.insert(-2, "r12_transfer_evidence")
     report = {
         "schema_version": R6_PRODUCT_CUSTOMER_VALUE_REPORT_SCHEMA_VERSION,
         "artifact_id": artifact_id,
@@ -159,6 +163,7 @@ def build_r6_product_customer_value_report(
             r9_false_alarm_gate_redesign,
             r9_holdout_guard,
             r11_product_shadow_trial,
+            r12_product_support_gate,
         ),
         "section_contracts": _section_contracts(
             decision,
@@ -174,6 +179,7 @@ def build_r6_product_customer_value_report(
             r9_false_alarm_gate_redesign,
             r9_holdout_guard,
             r11_product_shadow_trial,
+            r12_product_support_gate,
         ),
         "source_registry": source_registry,
         "source_refs": [entry["artifact_id"] for entry in source_registry],
@@ -192,6 +198,7 @@ def build_r6_product_customer_value_report(
                 *(r9_false_alarm_gate_redesign or {}).get("blocked_claims", []),
                 *(r9_holdout_guard or {}).get("blocked_claims", []),
                 *(r11_product_shadow_trial or {}).get("blocked_claims", []),
+                *(r12_product_support_gate or {}).get("blocked_claims", []),
                 "精准预测系统",
                 "系统可以精确预测单点结果",
             ]
@@ -230,6 +237,7 @@ def _display_payload(
     r9_false_alarm_gate_redesign: dict[str, Any] | None = None,
     r9_holdout_guard: dict[str, Any] | None = None,
     r11_product_shadow_trial: dict[str, Any] | None = None,
+    r12_product_support_gate: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     cases = metrics["case_results"]
     payload = {
@@ -456,6 +464,32 @@ def _display_payload(
             "blocked_claims": r11_product_shadow_trial["blocked_claims"],
             "source_artifact_ids": [r11_product_shadow_trial["artifact_id"]],
         }
+    if r12_product_support_gate is not None:
+        evidence_card = r12_product_support_gate["transfer_evidence_card"]
+        primary = r12_product_support_gate["customer_visible_primary_decision"]
+        payload["r12_transfer_evidence"] = {
+            "support_status": evidence_card["claim_status"],
+            "gate_status": r12_product_support_gate["status"],
+            "claim_level": r12_product_support_gate["claim_level"],
+            "metrics": evidence_card["metrics"],
+            "evidence_summary": evidence_card["evidence_summary"],
+            "primary_decision_source": primary["primary_decision_source"],
+            "r12_output_role": primary["r12_output_role"],
+            "r12_can_override_primary_decision": primary[
+                "r12_can_override_primary_decision"
+            ],
+            "field_outcome_validated": r12_product_support_gate["acceptance_gates"][
+                "field_outcome_validated"
+            ],
+            "runtime_default_allowed": r12_product_support_gate["acceptance_gates"][
+                "runtime_default_allowed"
+            ],
+            "outcome_review_handoff": r12_product_support_gate[
+                "outcome_review_handoff"
+            ],
+            "blocked_claims": r12_product_support_gate["blocked_claims"],
+            "source_artifact_ids": [r12_product_support_gate["artifact_id"]],
+        }
     return payload
 
 
@@ -473,6 +507,7 @@ def _section_contracts(
     r9_false_alarm_gate_redesign: dict[str, Any] | None = None,
     r9_holdout_guard: dict[str, Any] | None = None,
     r11_product_shadow_trial: dict[str, Any] | None = None,
+    r12_product_support_gate: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     contracts = [
         {
@@ -596,6 +631,16 @@ def _section_contracts(
                 "blocked_claims": r11_product_shadow_trial["blocked_claims"],
             },
         )
+    if r12_product_support_gate is not None:
+        contracts.insert(
+            -2,
+            {
+                "section_id": "r12_transfer_evidence",
+                "claim_status": "secondary_evidence_only",
+                "source_artifact_ids": [r12_product_support_gate["artifact_id"]],
+                "blocked_claims": r12_product_support_gate["blocked_claims"],
+            },
+        )
     return contracts
 
 
@@ -613,6 +658,7 @@ def _source_registry(
     r9_false_alarm_gate_redesign: dict[str, Any] | None = None,
     r9_holdout_guard: dict[str, Any] | None = None,
     r11_product_shadow_trial: dict[str, Any] | None = None,
+    r12_product_support_gate: dict[str, Any] | None = None,
 ) -> list[dict[str, str]]:
     support_path = (
         "experiments/results/r6_research_product_value_support_v2/"
@@ -745,6 +791,17 @@ def _source_registry(
             }
         )
         registry.extend(r11_product_shadow_trial.get("source_registry", []))
+    if r12_product_support_gate is not None:
+        registry.append(
+            {
+                "artifact_id": r12_product_support_gate["artifact_id"],
+                "path": (
+                    "experiments/results/r12_product_support_gate/"
+                    "r12-product-support-gate-current-001.json"
+                ),
+            }
+        )
+        registry.extend(r12_product_support_gate.get("source_registry", []))
     return registry
 
 
@@ -809,6 +866,7 @@ def main() -> int:
     parser.add_argument("--r9-false-alarm-gate-redesign-path", default=None)
     parser.add_argument("--r9-holdout-guard-path", default=None)
     parser.add_argument("--r11-product-shadow-trial-path", default=None)
+    parser.add_argument("--r12-product-support-gate-path", default=None)
     args = parser.parse_args()
     r8_gate = (
         load_json_artifact(args.r8_robustness_holdout_gate_path)
@@ -850,6 +908,11 @@ def main() -> int:
         if args.r11_product_shadow_trial_path
         else None
     )
+    r12_support_gate = (
+        load_json_artifact(args.r12_product_support_gate_path)
+        if args.r12_product_support_gate_path
+        else None
+    )
 
     output_path = write_r6_product_customer_value_report(
         args.output,
@@ -863,6 +926,7 @@ def main() -> int:
         r9_false_alarm_gate_redesign=r9_false_alarm_gate,
         r9_holdout_guard=r9_holdout_guard,
         r11_product_shadow_trial=r11_shadow_trial,
+        r12_product_support_gate=r12_support_gate,
     )
     report = json.loads(Path(output_path).read_text())
     print(

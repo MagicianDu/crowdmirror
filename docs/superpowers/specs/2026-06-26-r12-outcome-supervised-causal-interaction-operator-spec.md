@@ -462,20 +462,45 @@ R12 可以使用 LLM，但 LLM 不作为主预测器。
 
 目标：把 R12 的结论接入 Product evidence，但不污染主决策。
 
+当前实现：
+
+- `experiments/r12_product_support_gate.py`
+- `tests/test_r12_product_support_gate.py`
+- `tests/test_r12_product_integration.py`
+- `experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json`
+- `experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json`
+- `experiments/results/r6_product_api_manifest/r6-product-api-manifest-current-001.json`
+- `demo/app.js`
+
+当前状态为 `r12_product_support_gate_ready_guarded`。Product L4 将 R12 L3 的 transfer validation 包装成 `r12_transfer_validation_evidence_card`，并接入三个 Product surface：
+
+- customer value report 新增 `r12_transfer_evidence` section。
+- API manifest 新增 `/r6/product/r12-transfer-evidence` endpoint。
+- `/demo/` 新增“R12 迁移验证”面板，展示 `update_transfer_gain`、validation / holdout MAE delta、区间覆盖变化和误报变化。
+
+边界：
+
+- R12 evidence 只能作为 `secondary_transfer_evidence_card_only`。
+- `r12_can_override_primary_decision=false`。
+- `field_outcome_validated=false`。
+- `runtime_default_allowed=false`。
+- blocked claims 包含 `R12 supports Product core method by default`、`R12 can override guarded baseline primary decision` 和“精准预测系统”。
+
 验收：
 
-- Product report 能展示 R12 transfer validation card。
-- API manifest 能暴露 R12 source refs。
-- blocked claims 完整。
-- `runtime_default_allowed=false`。
+- Product report 能展示 R12 transfer validation card：已满足。
+- API manifest 能暴露 R12 source refs：已满足。
+- `/demo/` 能展示 R12 迁移验证面板：已满足。
+- blocked claims 完整：已满足。
+- `runtime_default_allowed=false`：已满足。
 
 ## 当前推荐推进顺序
 
 1. R12 L0/L1 已完成：case registry 和 operator contract 已建立。
 2. R12 L2 已完成：train residual 已生成可审计结构化更新。
 3. R12 L3 已完成：当前 HPS public-use proxy split 上存在 guarded positive transfer signal。
-4. 下一步进入 Product L4：只以 guarded evidence card / API manifest source refs / blocked claims 的方式接入 Product，不允许覆盖主决策或开启 runtime default。
-5. 并行推进 R12 L3+：扩大 case family、补齐 risk ranking / static prior miss recovery / abnormal segment recall 的 transfer 指标，并寻找更接近业务 field outcome 的复核数据。
+4. R12 L4 已完成：只以 guarded evidence card / API manifest source refs / blocked claims 的方式接入 Product，不覆盖主决策，不开启 runtime default。
+5. 下一步推进 R12 L3+ / L5：扩大 case family、补齐 risk ranking / static prior miss recovery / abnormal segment recall 的 transfer 指标，并寻找更接近业务 field outcome 的复核数据。
 
 ## 成功信号
 

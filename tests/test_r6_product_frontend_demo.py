@@ -42,6 +42,7 @@ def test_r6_product_frontend_assets_exist_and_bind_current_artifacts():
         "异常群体",
         "机制解释",
         "研究支撑",
+        "R12 迁移验证",
         "证据边界",
         "阻断声明",
         "数据来源",
@@ -61,6 +62,10 @@ def test_r6_product_frontend_is_source_backed_and_fail_closed():
     assert "blockedClaims" in js
     assert "supportGapLedger" in js
     assert "researchNextTasks" in js
+    assert "r12_transfer_evidence" in js
+    assert "update_transfer_gain" in js
+    assert "secondary_transfer_evidence_card_only" in js
+    assert "/r6/product/r12-transfer-evidence" in js
 
     assert "精准预测系统" not in html
     assert "系统可以精确预测单点结果" not in html

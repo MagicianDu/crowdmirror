@@ -43,6 +43,10 @@ R6_PRODUCT_API_MANIFEST_DEFAULT_PATHS = {
         "experiments/results/r11_product_shadow_trial/"
         "r11-product-shadow-trial-current-001.json"
     ),
+    "r12_product_support_gate": (
+        "experiments/results/r12_product_support_gate/"
+        "r12-product-support-gate-current-001.json"
+    ),
     "r9_diagnostic_workflow": (
         "experiments/results/r6_product_r9_diagnostic_workflow/"
         "r6-product-r9-diagnostic-workflow-current-001.json"
@@ -74,6 +78,10 @@ R6_PRODUCT_API_REQUIRED_ARTIFACTS = {
         "r11-product-shadow-trial-v1",
         "r11_product_shadow_trial_ready_guarded",
     ),
+    "r12_product_support_gate": (
+        "r12-product-support-gate-v1",
+        "r12_product_support_gate_ready_guarded",
+    ),
     "r9_diagnostic_workflow": (
         "r6-product-r9-diagnostic-workflow-v1",
         "product_r9_diagnostic_workflow_ready_guarded",
@@ -102,6 +110,7 @@ def build_r6_product_api_manifest(
     _validate_decision_report(artifacts["decision_report"])
     _validate_customer_value_report(artifacts["customer_value_report"])
     _validate_r11_product_shadow_trial(artifacts["r11_product_shadow_trial"])
+    _validate_r12_product_support_gate(artifacts["r12_product_support_gate"])
     _validate_r9_diagnostic_workflow(artifacts["r9_diagnostic_workflow"])
     _validate_runtime_boundaries(
         readiness_index=artifacts["readiness_index"],
@@ -123,6 +132,7 @@ def build_r6_product_api_manifest(
         decision_report=artifacts["decision_report"],
         customer_value_report=artifacts["customer_value_report"],
         r11_product_shadow_trial=artifacts["r11_product_shadow_trial"],
+        r12_product_support_gate=artifacts["r12_product_support_gate"],
         r9_diagnostic_workflow=artifacts["r9_diagnostic_workflow"],
     )
     _assert_registry_paths_match_artifacts(source_registry)
@@ -160,6 +170,7 @@ def build_r6_product_api_manifest(
                 *artifacts["decision_report"].get("source_refs", []),
                 *artifacts["customer_value_report"].get("source_refs", []),
                 *artifacts["r11_product_shadow_trial"].get("source_refs", []),
+                *artifacts["r12_product_support_gate"].get("source_refs", []),
                 *artifacts["r9_diagnostic_workflow"].get("source_refs", []),
             ]
         ),
@@ -191,6 +202,7 @@ def build_r6_product_api_manifest(
                 *artifacts["decision_report"].get("blocked_claims", []),
                 *artifacts["customer_value_report"].get("blocked_claims", []),
                 *artifacts["r11_product_shadow_trial"].get("blocked_claims", []),
+                *artifacts["r12_product_support_gate"].get("blocked_claims", []),
                 *artifacts["r9_diagnostic_workflow"].get("blocked_claims", []),
                 "field validation 已完成",
                 "runtime default 可以开启",
@@ -400,6 +412,78 @@ def _validate_r11_product_shadow_trial(r11_product_shadow_trial: dict[str, Any])
     )
 
 
+def _validate_r12_product_support_gate(r12_product_support_gate: dict[str, Any]) -> None:
+    contract = _require_object(
+        r12_product_support_gate.get("product_support_contract"),
+        field="r12_product_support_gate.product_support_contract",
+    )
+    if contract.get("source_backed_only") is not True:
+        raise ValueError(
+            "r12_product_support_gate.product_support_contract."
+            "source_backed_only must be True"
+        )
+    if contract.get("secondary_evidence_card_only") is not True:
+        raise ValueError(
+            "r12_product_support_gate.product_support_contract."
+            "secondary_evidence_card_only must be True"
+        )
+    if contract.get("customer_visible_primary_claims_use_guarded_baseline") is not True:
+        raise ValueError(
+            "r12_product_support_gate.product_support_contract."
+            "customer_visible_primary_claims_use_guarded_baseline must be True"
+        )
+    if contract.get("r12_can_override_primary_decision") is not False:
+        raise ValueError(
+            "r12_product_support_gate.product_support_contract."
+            "r12_can_override_primary_decision must be False"
+        )
+    if contract.get("field_outcome_validated") is not False:
+        raise ValueError(
+            "r12_product_support_gate.product_support_contract."
+            "field_outcome_validated must be False"
+        )
+    if contract.get("runtime_default_allowed") is not False:
+        raise ValueError(
+            "r12_product_support_gate.product_support_contract."
+            "runtime_default_allowed must be False"
+        )
+    handoff = _require_object(
+        r12_product_support_gate.get("outcome_review_handoff"),
+        field="r12_product_support_gate.outcome_review_handoff",
+    )
+    if handoff.get("requires_customer_or_field_outcome") is not True:
+        raise ValueError(
+            "r12_product_support_gate.outcome_review_handoff."
+            "requires_customer_or_field_outcome must be True"
+        )
+    if handoff.get("runtime_default_allowed") is not False:
+        raise ValueError(
+            "r12_product_support_gate.outcome_review_handoff."
+            "runtime_default_allowed must be False"
+        )
+    _assert_artifact_sources_resolvable(
+        artifact=r12_product_support_gate,
+        artifact_label="r12_product_support_gate",
+        direct_refs={
+            r12_product_support_gate["artifact_id"],
+            "r6-product-outcome-review-current-001",
+        },
+        source_fields=[
+            ("source_refs", r12_product_support_gate.get("source_refs")),
+            (
+                "transfer_evidence_card.source_artifact_ids",
+                r12_product_support_gate["transfer_evidence_card"].get(
+                    "source_artifact_ids"
+                ),
+            ),
+            (
+                "outcome_review_handoff.target_artifact_id",
+                [handoff.get("target_artifact_id")],
+            ),
+        ],
+    )
+
+
 def _validate_r9_diagnostic_workflow(
     r9_diagnostic_workflow: dict[str, Any],
 ) -> None:
@@ -546,6 +630,7 @@ def _source_registry(
     decision_report: dict[str, Any],
     customer_value_report: dict[str, Any],
     r11_product_shadow_trial: dict[str, Any],
+    r12_product_support_gate: dict[str, Any],
     r9_diagnostic_workflow: dict[str, Any],
 ) -> list[dict[str, str]]:
     entries = [
@@ -559,6 +644,7 @@ def _source_registry(
     entries.extend(decision_report["source_registry"])
     entries.extend(customer_value_report["source_registry"])
     entries.extend(r11_product_shadow_trial["source_registry"])
+    entries.extend(r12_product_support_gate["source_registry"])
     entries.extend(r9_diagnostic_workflow["source_registry"])
     return _dedupe_registry(entries)
 
@@ -588,6 +674,11 @@ def _endpoints(artifact_refs: dict[str, str]) -> list[dict[str, Any]]:
             "r11_shadow_trial",
             "/r6/product/r11-shadow-trial",
             artifact_refs["r11_product_shadow_trial"],
+        ),
+        _endpoint(
+            "r12_transfer_evidence",
+            "/r6/product/r12-transfer-evidence",
+            artifact_refs["r12_product_support_gate"],
         ),
         _endpoint(
             "r9_diagnostic_workflow",

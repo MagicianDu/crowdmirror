@@ -38,7 +38,10 @@
     "field validation completed",
     "R11 validated",
     "R11 supports Product core method by default",
-    "R11 can override guarded baseline primary decision"
+    "R11 can override guarded baseline primary decision",
+    "R12 validated",
+    "R12 supports Product core method by default",
+    "R12 can override guarded baseline primary decision"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -58,6 +61,7 @@
     "r8_method_support",
     "r9_method_support",
     "r11_shadow_trial",
+    "r12_transfer_evidence",
     "evidence_and_blocked_claims",
     "outcome_review_plan"
   ],
@@ -278,6 +282,62 @@
       ],
       "support_status": "shadow_only_guarded_positive",
       "trial_status": "r11_product_shadow_trial_ready_guarded"
+    },
+    "r12_transfer_evidence": {
+      "blocked_claims": [
+        "R12 validated",
+        "R12 supports Product core method by default",
+        "R12 can override guarded baseline primary decision",
+        "field_outcome_validated=true",
+        "runtime_default_allowed=true",
+        "runtime default ready",
+        "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+      ],
+      "claim_level": "product_secondary_evidence_only",
+      "evidence_summary": {
+        "accepted_update": {
+          "recommended_value": 0.55,
+          "runtime_default_allowed": false,
+          "target": "price_pressure",
+          "update_id": "r12-mechanism-weight-price-pressure-accepted-001",
+          "update_type": "mechanism_weight"
+        },
+        "claim_level": "guarded_public_proxy_transfer_signal",
+        "field_outcome_validated": false,
+        "runtime_default_allowed": false,
+        "train_metrics_used_for_transfer_decision": false,
+        "transfer_decision": "r12_update_transfer_positive_guarded"
+      },
+      "field_outcome_validated": false,
+      "gate_status": "r12_product_support_gate_ready_guarded",
+      "metrics": {
+        "false_alarm_rate_delta": 0.0,
+        "holdout_mean_absolute_error_delta": -0.000856,
+        "interval_coverage_delta": 0.0,
+        "update_transfer_gain": 0.001287,
+        "validation_mean_absolute_error_delta": -0.000431
+      },
+      "outcome_review_handoff": {
+        "handoff_id": "r12_transfer_evidence_outcome_review",
+        "prompt_or_persona_manual_patch_allowed": false,
+        "requires_customer_or_field_outcome": true,
+        "runtime_default_allowed": false,
+        "target_artifact_id": "r6-product-outcome-review-current-001",
+        "update_candidate_scope": [
+          "mechanism_weight",
+          "segment_sensitivity",
+          "interaction_edge_weight",
+          "uncertainty_parameter"
+        ]
+      },
+      "primary_decision_source": "guarded_baseline_customer_value_report",
+      "r12_can_override_primary_decision": false,
+      "r12_output_role": "secondary_transfer_evidence_card_only",
+      "runtime_default_allowed": false,
+      "source_artifact_ids": [
+        "r12-product-support-gate-current-001"
+      ],
+      "support_status": "guarded_transfer_positive_secondary_evidence"
     },
     "r8_method_support": {
       "diagnosis_status": "r8_stop_loss_diagnosis_ready",
@@ -663,7 +723,7 @@
     "source_backed_only": true,
     "static_narrative_fallback_allowed": false
   },
-  "run_id": "r11-l2-product-current",
+  "run_id": "r12-product-l4-current",
   "schema_version": "r6-product-customer-value-report-v1",
   "section_contracts": [
     {
@@ -774,6 +834,22 @@
       ]
     },
     {
+      "blocked_claims": [
+        "R12 validated",
+        "R12 supports Product core method by default",
+        "R12 can override guarded baseline primary decision",
+        "field_outcome_validated=true",
+        "runtime_default_allowed=true",
+        "runtime default ready",
+        "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+      ],
+      "claim_status": "secondary_evidence_only",
+      "section_id": "r12_transfer_evidence",
+      "source_artifact_ids": [
+        "r12-product-support-gate-current-001"
+      ]
+    },
+    {
       "section_id": "evidence_and_blocked_claims",
       "source_artifact_ids": [
         "r6-product-decision-report-current-001",
@@ -802,7 +878,9 @@
     "r9-false-alarm-gate-redesign-current-001",
     "r9-holdout-guard-current-001",
     "r11-product-shadow-trial-current-001",
-    "r11-external-holdout-validation-current-001"
+    "r11-external-holdout-validation-current-001",
+    "r12-product-support-gate-current-001",
+    "r12-transfer-validation-current-001"
   ],
   "source_registry": [
     {
@@ -864,6 +942,14 @@
     {
       "artifact_id": "r11-external-holdout-validation-current-001",
       "path": "experiments/results/r11_external_holdout_validation/r11-external-holdout-validation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-product-support-gate-current-001",
+      "path": "experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json"
+    },
+    {
+      "artifact_id": "r12-transfer-validation-current-001",
+      "path": "experiments/results/r12_transfer_validation/r12-transfer-validation-current-001.json"
     }
   ],
   "status": "customer_value_report_ready_guarded"

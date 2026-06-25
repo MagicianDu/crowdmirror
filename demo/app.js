@@ -16,6 +16,7 @@ const SECTION_LABELS = [
   "异常群体",
   "机制解释",
   "研究支撑",
+  "R12 迁移验证",
   "证据边界",
   "阻断声明",
   "数据来源",
@@ -36,6 +37,8 @@ const SUPPORT_LABELS = {
   partial_high_false_alarm: "部分支持但误报高",
   diagnostic_only: "仅诊断",
   blocked_until_holdout_or_field_outcome: "等待 holdout 或真实 outcome",
+  guarded_transfer_positive_secondary_evidence: "迁移信号有护栏",
+  product_secondary_evidence_only: "仅次级证据",
 };
 
 const app = document.getElementById("app");
@@ -85,6 +88,7 @@ function renderApp({ customerValueReport, valueSupport, readinessIndex, apiManif
     researchSupport.support_gap_ledger || valueSupport.support_gap_ledger || [];
   const researchNextTasks =
     researchSupport.research_next_tasks || valueSupport.research_next_tasks || [];
+  const r12TransferEvidence = display.r12_transfer_evidence || null;
   const sourceRefs = customerValueReport.source_refs || [];
   const blockedClaims = uniqueItems([
     ...(customerValueReport.blocked_claims || []),
@@ -159,6 +163,8 @@ function renderApp({ customerValueReport, valueSupport, readinessIndex, apiManif
         ${renderResearchSupport(researchSupport, supportGapLedger, researchNextTasks)}
       </article>
 
+      ${renderR12TransferEvidence(r12TransferEvidence)}
+
       <article class="panel panel-wide">
         <div class="panel-heading">
           <p class="eyebrow">Evidence Boundary</p>
@@ -183,6 +189,64 @@ function renderApp({ customerValueReport, valueSupport, readinessIndex, apiManif
         ${renderSources(sourceRefs, customerValueReport.source_registry || [], apiManifest.endpoints || [])}
       </article>
     </section>
+  `;
+}
+
+function renderR12TransferEvidence(evidence) {
+  if (!evidence) return "";
+  const metrics = evidence.metrics || {};
+  const summary = evidence.evidence_summary || {};
+  const update = summary.accepted_update || {};
+  return `
+    <article class="panel panel-wide">
+      <div class="panel-heading">
+        <p class="eyebrow">R12 Transfer</p>
+        <h2>R12 迁移验证</h2>
+      </div>
+      <div class="research-summary">
+        <div>
+          <span>update_transfer_gain</span>
+          <strong>${formatSignedNumber(metrics.update_transfer_gain)}</strong>
+        </div>
+        <div>
+          <span>validation MAE</span>
+          <strong>${formatSignedNumber(metrics.validation_mean_absolute_error_delta)}</strong>
+        </div>
+        <div>
+          <span>holdout MAE</span>
+          <strong>${formatSignedNumber(metrics.holdout_mean_absolute_error_delta)}</strong>
+        </div>
+        <div>
+          <span>区间退化</span>
+          <strong>${formatSignedNumber(metrics.interval_coverage_delta)}</strong>
+        </div>
+        <div>
+          <span>误报变化</span>
+          <strong>${formatSignedNumber(metrics.false_alarm_rate_delta)}</strong>
+        </div>
+      </div>
+      <div class="mechanism-box">
+        <dl>
+          <div>
+            <dt>声明状态</dt>
+            <dd>${escapeHtml(SUPPORT_LABELS[evidence.support_status] || evidence.support_status)}</dd>
+          </div>
+          <div>
+            <dt>证据角色</dt>
+            <dd>${escapeHtml(evidence.r12_output_role || "secondary_transfer_evidence_card_only")}</dd>
+          </div>
+          <div>
+            <dt>更新对象</dt>
+            <dd>${escapeHtml(update.target || "未提供")} ${escapeHtml(update.recommended_value ?? "")}</dd>
+          </div>
+          <div>
+            <dt>运行默认</dt>
+            <dd>${evidence.runtime_default_allowed ? "允许" : "不允许"}</dd>
+          </div>
+        </dl>
+        <p>R12 当前只能作为次级迁移证据展示，主决策仍来自 guarded baseline，真实客户 outcome 回流前不进入 runtime default。</p>
+      </div>
+    </article>
   `;
 }
 
@@ -424,6 +488,7 @@ function renderSources(sourceRefs, registry, endpoints) {
   const endpointRows = endpoints
     .filter((endpoint) =>
       ["frontend_demo", "customer_value_report", "product_readiness"].includes(endpoint.endpoint_id)
+      || endpoint.path === "/r6/product/r12-transfer-evidence"
     )
     .map((endpoint) => `
       <tr>
@@ -506,6 +571,13 @@ function formatLedgerGap(value) {
       .join(" / ");
   }
   return value || "未提供";
+}
+
+function formatSignedNumber(value) {
+  const number = toNumber(value);
+  if (number === null) return "未提供";
+  const sign = number > 0 ? "+" : "";
+  return `${sign}${number.toFixed(6)}`;
 }
 
 function clampPercent(value) {
