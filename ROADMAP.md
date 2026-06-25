@@ -1,14 +1,14 @@
 # Research Roadmap
 
-> **历史路线图。当前主线已切换到 R6。**
+> **历史路线图。当前主线已切换到 R7。**
 >
 > 后续开发以 `docs/active-spec.md`、`docs/CURRENT_STATE.md` 和
-> `docs/superpowers/specs/2026-06-05-r6-outcome-feedback-prior-anchored-interaction-simulation-spec.md`
+> `docs/superpowers/specs/2026-06-25-r7-mechanism-generative-risk-simulation-spec.md`
 > 为准。本文下方内容仅作为早期研究背景，不再作为当前实现依据。
 
-当前 R6 目标：
+当前 R7 目标：
 
-> 构建结果反馈约束的先验锚定交互仿真框架，用于发布前反应评估和发布后反馈学习。
+> 构建机制生成式交互风险仿真框架，用于发布前趋势区间、风险排序、异常群体和策略沙盘评估，并在发布后进行 outcome feedback learning。
 
 ## Historical Roadmap
 

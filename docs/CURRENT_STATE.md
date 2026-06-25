@@ -211,6 +211,7 @@
 55. 学习型反事实机制仿真器已补充 leave-one-case holdout 和 Product ingestion：`r6-learning-counterfactual-holdout-validation-current-001` 当前是 `learning_counterfactual_holdout_passed_guarded`。第一版 holdout 暴露的问题是 HTOPS heldout 的高风险机制在 ANES 训练集中完全未见，导致 unseen mechanisms 被置零，`static_prior_miss_recovery_rate=0.0`。随后加入 `unseen_mechanism_transfer_floor=0.65` 恢复风险发现，再加入 `risk_preserving_calibration_target=raw_interaction_prediction` 作为非回归护栏；当前结果为 `non_regression_rate=1.0`、`false_alarm_reduction_rate=1.0`、`static_prior_miss_recovery_rate=1.0`、`independent_holdout_passed=true`。这说明 current proxy leave-one-case 层面已同时保留风险发现、降低 false alarm、满足相对 raw interaction 的 non-regression；但它仍不是 field/customer outcome validation，因此 `runtime_default_allowed=false`。Product 侧已新增 `counterfactual_policy_comparison` section，并在 customer report / API manifest source registry 中绑定 simulator 与 holdout artifacts；该能力只能以 guarded / diagnostic 方式展示。
 56. 学习型反事实机制仿真器已补充 calibration ablation / stress grid：`r6-counterfactual-calibration-ablation-current-001` 显示 `learned_weights_only` 只能降低 false alarm，但 `static_prior_miss_recovery_rate=0.0`；`unseen_floor_only` 能恢复 `static_prior_miss_recovery_rate=1.0`，但 `non_regression_rate=0.667`；只有 `floor_plus_non_regression_calibration` 同时达到 `non_regression_rate=1.0`、`false_alarm_reduction_rate=1.0`、`static_prior_miss_recovery_rate=1.0`。stress grid 中 8 个配置只有 2 个通过 current-proxy holdout gate，且都需要 risk-preserving calibration。因此当前正向结论应归因于“unseen mechanism floor + non-regression calibration”的受约束组合，而不是 learned mechanism weights 单独成立。
 57. 学习型反事实机制仿真器已补充 local proxy robustness validation：`r6-counterfactual-robustness-validation-current-001` 当前是 `counterfactual_robustness_diagnostic_blocked`。在 9 个 observed/proxy outcome 小幅扰动场景中，8 个通过，`robustness_pass_rate=0.889`；失败场景是 `anes_health_heldout:+0.03`，此时 near-threshold false alarm 同时暴露 `non_regression_rate=0.667`、`false_alarm_reduction_rate=0.5`。这说明 current-proxy leave-one-case gate 虽已通过，但近阈值 false alarm 校准仍不稳，不能宣称 robustness 通过。
+58. 由于 R6 已经暴露“证据链完整但方法强度不足”的边界，当前 Research 主线新增 `2026-06-25-r7-mechanism-generative-risk-simulation-spec.md`。R7 不继续把 near-threshold calibration patch、floor 调参或 post-hoc scoring 当作主方法，而是转向机制状态、交互传播、分布式 rollout、风险区间、异常群体、策略沙盘和 outcome feedback learning。R6 保留为 Product guard、diagnostic baseline 和 failure replay harness；R7 才是下一阶段 Research 主方法候选。当前还没有 R7 runtime 代码，下一步必须先实现 R7 artifact contract 和最小机制生成式仿真链路。
 
 ## 可复用资产
 
@@ -239,24 +240,24 @@
 当前仍需注意三类风险：
 
 1. 旧 README、ROADMAP、paper 草案仍可能把开发目标拉回 persona / TextGrad / LCDU。
-2. `experiments/results` 被 `.gitignore` 的 `results/` 规则忽略，新 R6 证据 JSON 需要显式 `git add -f`。
+2. `experiments/results` 被 `.gitignore` 的 `results/` 规则忽略，新 R6/R7 证据 JSON 需要显式 `git add -f`。
 3. 当前 3 个 case 仍是 fixture-level evidence，不是真实跨域验证。
 4. 旧 CCF-A readiness 文档只能作为边界和历史评估，不再作为默认目标；后续优先做 Product 可用性、证据链、报告和 outcome review。
 5. 旧文档中如果出现“精准预测”“accuracy superiority”或“点预测 beat 静态先验”叙事，必须按当前 active spec 降权为 blocked claim 或 runtime update guard。
 
-R6 开发时必须只 stage 本轮明确修改的文件。
+R7 开发或 R6 guard 维护时必须只 stage 本轮明确修改的文件。
 
 ## 下一步
 
 1. Product 下一步在 `/demo/` source-backed report UI 基础上推进真实客户工作流：场景输入、群体/先验选择、运行入口、报告导出、outcome review 入口和用户可理解的 failure diagnosis；当前 demo 已关闭“完全没有客户可见 UI”的 gap，但还不是完整 SaaS 工作流。
-2. Research 下一步不再是“执行五个任务”本身，而是针对 `r6-research-next-task-execution-current-001` 中 blocked/failed 的四项继续补证据：trend/interval 独立 holdout、false-alarm holdout validation、mechanism/operator holdout、outcome feedback runtime guard；其中 false-alarm control 是当前最有 Product 杠杆的候选。
+2. Research 下一步不再继续围绕 `r6-research-next-task-execution-current-001` 的 blocked/failed 项做 patch，而是按 R7 spec 先实现机制状态、交互图、分布式 rollout、风险区间、异常群体、策略沙盘和 Product support report 的 contract-first 最小链路。
 3. 数据侧不再泛泛增加 proxy；新增数据必须服务于 Product decision report、outcome review、operator holdout 或 field outcome 复核。
 4. 方法侧停止继续优化当前 scoring candidate；它保留为 negative baseline 和 diagnostic gate。
-5. Product 侧保留并强化 `interaction_signal_validity_holdout_summary`、false-alarm diagnosis、blocked update reason 和 claim boundary，确保新 Research 方法不会污染 runtime default。
-6. Research 方法侧优先推进 learning counterfactual mechanism simulator：下一步要做独立 holdout、operator ablation、Product report/API ingestion 和 bounded outcome feedback update；`behavioral_update_operator_v3` 保留为 guarded static-fallback baseline。
-7. learning counterfactual 已完成第一轮迁移失败归因和保守修复：unseen high-risk mechanism floor 能在不恢复 ANES false alarm 的前提下保留 HTOPS 类静态漏报信号，risk-preserving calibration 能把 HTOPS holdout 拉回 raw-interaction 非回归边界。下一步优先验证这个校准不是当前三例 proxy 过拟合：需要新增 independent field/customer outcome 或更严格的跨数据源 holdout。
-8. calibration ablation 已把组件贡献拆开；下一步不应继续只调 floor，而应补更严格 holdout 或真实 outcome，验证该组合是否能在新的 source family / customer pilot 上保持 `non_regression + false_alarm_reduction + static_miss_recovery` 三项同时成立。
-9. local robustness 已暴露 near-threshold false alarm 缺口；下一步如果继续方法侧，应优先设计 threshold-aware false-alarm calibration，而不是继续扩大当前 guarded claim。
+5. Product 侧保留并强化 `interaction_signal_validity_holdout_summary`、false-alarm diagnosis、blocked update reason 和 claim boundary，确保 R7 新方法不会污染 runtime default。
+6. Research 方法侧不再优先推进 R6 learning counterfactual 的 patch 化增强；`behavioral_update_operator_v3` 和 learning counterfactual simulator 保留为 guarded static-fallback / diagnostic baseline。
+7. learning counterfactual 已完成第一轮迁移失败归因和保守修复：unseen high-risk mechanism floor 能在不恢复 ANES false alarm 的前提下保留 HTOPS 类静态漏报信号，risk-preserving calibration 能把 HTOPS holdout 拉回 raw-interaction 非回归边界。但这一正向信号依赖当前 proxy 和 calibration 组合，不足以作为 Product 核心方法。
+8. calibration ablation 已把组件贡献拆开；后续不能把 `floor_plus_non_regression_calibration` 包装成通用学习算法。它只能作为 R7 的 baseline、guard 或 failure replay case。
+9. local robustness 已暴露 near-threshold false alarm 缺口；下一步不再优先做 threshold-aware patch，而是按 R7 spec 先实现机制状态、交互图、分布式 rollout、风险区间、异常群体和策略沙盘 artifact contract。
 
 ## 验收边界
 

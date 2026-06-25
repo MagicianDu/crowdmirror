@@ -11,11 +11,12 @@
 - `docs/superpowers/specs/2026-06-16-r6-product-first-solid-value-spec.md`
 - `docs/superpowers/specs/2026-06-19-r6-trend-interval-risk-positioning.md`
 - `docs/superpowers/specs/2026-06-25-r6-learning-counterfactual-method-upgrade.md`
+- `docs/superpowers/specs/2026-06-25-r7-mechanism-generative-risk-simulation-spec.md`
 
 工作名：
 
-- 中文：R6 结果反馈约束的先验锚定交互仿真框架
-- English: Outcome-Feedback Prior-Anchored Interaction Simulation
+- 中文：R7 机制生成式交互风险仿真
+- English: Mechanism-Generative Interaction Risk Simulation
 
 其中：
 
@@ -26,6 +27,7 @@
 - `2026-06-16-r6-product-first-solid-value-spec.md` 定义当前降级后的真实目标：不再默认冲 CCF-A 主贡献，而是把 Research 变成有理论和学术价值的产品可信度支撑，把 Product 作为主交付目标。
 - `2026-06-19-r6-trend-interval-risk-positioning.md` 定义最新目标修正：产品定位为“人群反应趋势与风险区间模拟器”，Research 不再以点预测 beat 静态先验为唯一目标，而是验证趋势判断、区间校准、风险排序、异常群体识别和决策价值。
 - `2026-06-25-r6-learning-counterfactual-method-upgrade.md` 定义当前方法升级方向：用 outcome residual 学习机制层权重，并把交互仿真推进为可比较的反事实策略沙盘。
+- `2026-06-25-r7-mechanism-generative-risk-simulation-spec.md` 定义新的 Research 主方法：停止把 R6 局部校准 patch 当作核心方法，转向机制状态、交互传播、分布式 rollout、策略沙盘和 outcome feedback learning。
 
 后续实现若与历史 R2-R5、旧 prompt/persona 优化、单一 proxy 扩张路线冲突，以当前阶段 addendum 为准。
 
@@ -54,7 +56,7 @@ Product 对外定位是：
 
 ## 当前方法边界
 
-R6 必须同时满足：
+R6/R7 必须同时满足：
 
 1. 强先验作为无交互基础状态和 no-interaction control。
 2. 交互仿真用于发现静态先验无法覆盖的风险偏移。
@@ -70,7 +72,7 @@ R6 必须同时满足：
 
 ## 当前实现范围
 
-第一阶段只推进 R6 foundation：
+已完成并作为 R7 基础保留的 R6 foundation：
 
 1. `r6_prior_manifest`
 2. `r6_scenario_manifest`
@@ -80,7 +82,7 @@ R6 必须同时满足：
 6. `r6_learning_report`
 7. `r6_update_registry`
 
-当前阶段已从 foundation artifact 扩展到方法验收层；在当前 scoring candidate holdout failed 后，Research 主线升级为机制驱动交互学习，Product 保留诊断护栏。只推进：
+R6 随后已扩展到方法验收层，并形成以下 guard / baseline / Product evidence 资产。这些资产继续保留，但不再作为 Research 主方法继续 patch：
 
 1. `cross-case transfer protocol artifact`
 2. `in-condition holdout 搜索标准`
@@ -99,6 +101,17 @@ R6 必须同时满足：
 15. `Research next task execution artifact`
 16. `Learning counterfactual mechanism simulator / policy comparison artifact`
 
+当前 R7 第一阶段只推进：
+
+1. `r7_mechanism_state_manifest`
+2. `r7_interaction_graph_manifest`
+3. `r7_rollout_distribution`
+4. `r7_risk_interval_report`
+5. `r7_segment_anomaly_report`
+6. `r7_counterfactual_policy_sandbox`
+7. `r7_outcome_feedback_update_candidate`
+8. `r7_product_support_report`
+
 不再把“继续增加 public proxy 数量”作为默认目标；只有当新增数据能触发 acceptance gate，才进入数据接入。
 
 ## 降权历史材料
@@ -114,10 +127,10 @@ R6 必须同时满足：
 
 ## 继续开发闸门
 
-继续开发 R6 前必须满足：
+继续开发 R7 或修改 R6 guard 前必须满足：
 
-- 新代码和测试文件使用 `r6_` 前缀。
-- 测试优先运行 `tests/test_r6_*.py`。
+- R7 主方法新代码和测试文件使用 `r7_` 前缀；仅在维护 R6 guard / baseline 时继续使用 `r6_` 前缀。
+- R7 主方法测试优先运行 `tests/test_r7_*.py`；维护 R6 guard 时补充运行相关 `tests/test_r6_*.py`。
 - 不运行或修改旧路线测试来证明 R6 成立，除非明确是在复用基础设施。
 - 新增 Product 能力必须先定义 artifact/API contract 和验收测试，不能只做 demo 文案。
 - Product 界面或报告不得出现无来源的静态叙事 fallback；所有客户可见结论必须来自可审计 artifact。
@@ -131,10 +144,11 @@ R6 必须同时满足：
 - same-case outcome feedback improvement 不得直接包装成可迁移更新。
 - `beat static prior` 只作为 runtime update guard 使用，不作为 R6 整体研究目标。
 - `decision-value metric` 已实现不等于 R6 通过；必须同时报告 hit rate、false alarm、regret reduction 和 holdout validation。
-- `interaction_delta_threshold` 调参不足以解释当前 false alarm；若 threshold sweep 显示真风险和误报共享相同 delta，下一步必须做非阈值 discriminator 或寻找 in-condition holdout。
+- `interaction_delta_threshold` 调参不足以解释当前 false alarm；该历史结论已进入 R6 diagnostic baseline，R7 不再以阈值调参作为主方法。
 - `false-alarm discriminator` 已实现不等于 R6 通过；当前 case/source family 候选只算 diagnostic-only，不能作为核心规则。
 - `Interaction Signal Validity Score` 是当前非阈值主 gate；它必须显式排除 source/family 标签，并通过独立 holdout 或 field outcome 复核后才能从 diagnostic 升级。
 - `Interaction Signal Validity holdout validation` 已实现不等于 R6 通过；当前结论是 `source_supported_count=1`、`eligible_independent_holdout_count=2`、`passed_holdout_count=0`、`contradicted_holdout_count=2`，因此正向信号仍停留在 diagnostic。
-- 当前 scoring candidate 不再作为 Research 主贡献继续优化；下一步必须转向机制传播 trace、结构化 behavioral update operator 和 outcome-feedback learning。
-- 当前 behavioral update operator v3 只能作为 guarded static-fallback baseline；下一步方法主线转向 learning counterfactual mechanism simulator，用 outcome residual 学习机制权重，并输出反事实策略排序。
+- 当前 scoring candidate 不再作为 Research 主贡献继续优化；R7 必须转向机制状态、交互传播 trace、分布式 rollout 和 outcome-feedback learning。
+- 当前 behavioral update operator v3 只能作为 guarded static-fallback baseline；R6 learning counterfactual mechanism simulator 保留为 guarded diagnostic baseline，不再通过 near-threshold calibration patch 扩大 claim。
+- 当前 Research 主方法转向 R7 机制生成式交互风险仿真：先做机制状态、交互图、分布式 rollout、风险区间、异常群体和策略沙盘的 artifact contract，再进入效果验证。
 - Product 的 failure diagnosis、false-alarm gate、claim boundary、evidence cards 是新方法外层 guard，不能因为 Research 换方法而降级或移除。
