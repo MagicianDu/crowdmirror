@@ -51,8 +51,10 @@
     "field_outcome_validated",
     "runtime_default_allowed",
     "accuracy_superiority_established",
-    "\u7cfb\u7edf\u53ef\u4ee5\u7cbe\u786e\u9884\u6d4b\u5355\u70b9\u7ed3\u679c",
-    "Research \u5df2\u5b8c\u6574\u652f\u6491 Product \u5168\u90e8\u6838\u5fc3\u4ef7\u503c"
+    "Research \u5df2\u5b8c\u6574\u652f\u6491 Product \u5168\u90e8\u6838\u5fc3\u4ef7\u503c",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "\u7cfb\u7edf\u53ef\u4ee5\u7cbe\u786e\u9884\u6d4b\u5355\u70b9\u7ed3\u679c"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -165,7 +167,7 @@
     "product_api_manifest_ready": true,
     "runtime_default_allowed": false
   },
-  "run_id": "r6-product-value-current-001",
+  "run_id": "r6-full-product-support-current-001",
   "schema_version": "r6-product-api-manifest-v1",
   "source_refs": [
     "r6-product-readiness-index-current-001",
@@ -178,7 +180,7 @@
     "r6-evidence-report-current-014",
     "r6-gap-closure-report-current-001",
     "r6-trend-interval-risk-metrics-current-001",
-    "r6-research-product-value-support-current-001"
+    "r6-research-product-value-support-v2-current-001"
   ],
   "source_registry": [
     {
@@ -238,8 +240,8 @@
       "path": "experiments/results/r6_trend_interval_risk_metrics/r6-trend-interval-risk-metrics-current-001.json"
     },
     {
-      "artifact_id": "r6-research-product-value-support-current-001",
-      "path": "experiments/results/r6_research_product_value_support/r6-research-product-value-support-current-001.json"
+      "artifact_id": "r6-research-product-value-support-v2-current-001",
+      "path": "experiments/results/r6_research_product_value_support_v2/r6-research-product-value-support-v2-current-001.json"
     }
   ],
   "status": "product_api_manifest_ready_guarded"

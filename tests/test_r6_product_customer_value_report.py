@@ -39,7 +39,13 @@ def test_r6_product_customer_value_report_contains_trend_interval_risk_sections(
     ] is False
     assert report["display_payload"]["research_support"]["support_gap_ledger"]
     assert "精准预测系统" in report["blocked_claims"]
-    assert "r6-research-product-value-support-current-001" in report["source_refs"]
+    assert "r6-research-product-value-support-v2-current-001" in report["source_refs"]
+    assert report["display_payload"]["risk_interval"]["support_status"] == (
+        "guarded_interval_supported"
+    )
+    assert report["display_payload"]["research_support"]["support_coverage"][
+        "supported_value_count"
+    ] >= 1
     assert "needs_customer_facing_ui_integration" not in report["blocking_gaps"]
     assert "needs_customer_workflow_runtime_integration" in report["blocking_gaps"]
     json.dumps(report, allow_nan=False)

@@ -24,9 +24,11 @@
     "field_outcome_validated",
     "runtime_default_allowed",
     "accuracy_superiority_established",
+    "Research \u5df2\u5b8c\u6574\u652f\u6491 Product \u5168\u90e8\u6838\u5fc3\u4ef7\u503c",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
     "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf",
-    "\u7cfb\u7edf\u53ef\u4ee5\u7cbe\u786e\u9884\u6d4b\u5355\u70b9\u7ed3\u679c",
-    "Research \u5df2\u5b8c\u6574\u652f\u6491 Product \u5168\u90e8\u6838\u5fc3\u4ef7\u503c"
+    "\u7cfb\u7edf\u53ef\u4ee5\u7cbe\u786e\u9884\u6d4b\u5355\u70b9\u7ed3\u679c"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -74,7 +76,7 @@
           }
         ],
         "source_key": "htops_cost_pressure",
-        "support_status": "diagnostic_only"
+        "support_status": "guarded_proxy_supported"
       },
       {
         "segments": [
@@ -103,7 +105,7 @@
           }
         ],
         "source_key": "anes_health_heldout",
-        "support_status": "diagnostic_only"
+        "support_status": "guarded_proxy_supported"
       },
       {
         "segments": [
@@ -132,7 +134,7 @@
           }
         ],
         "source_key": "anes_climate_heldout",
-        "support_status": "diagnostic_only"
+        "support_status": "guarded_proxy_supported"
       }
     ],
     "mechanism_explanation": {
@@ -141,231 +143,112 @@
     },
     "research_support": {
       "overall_product_core_value_supported": false,
-      "product_claim_support_summary": {
-        "blocked_product_values": [
-          "outcome_feedback_learning"
-        ],
-        "diagnostic_only_claims": [
-          "risk_distribution",
-          "abnormal_segments",
-          "mechanism_explanation"
-        ],
-        "guarded_partial_claims_supported": [
-          "trend_direction",
-          "risk_interval"
-        ],
-        "overall_product_core_value_supported": false,
-        "research_support_contract_complete": true
-      },
-      "research_next_task_execution_summary": {
-        "accepted_for_guarded_reporting_count": 1,
-        "artifact_id": "r6-research-next-task-execution-current-001",
-        "blocked_or_failed_count": 4,
-        "product_core_value_fully_supported": false,
-        "status": "research_next_tasks_executed_with_guarded_results",
-        "task_count": 5
-      },
-      "research_next_tasks": [
-        {
-          "acceptance_criteria": "trend_direction_accuracy >= 0.80 \u4e14 interval_coverage >= 0.80\uff0c\u540c\u65f6\u4e0d\u9690\u85cf false alarm\u3002",
-          "goal": "\u9a8c\u8bc1\u8d8b\u52bf\u65b9\u5411\u548c\u98ce\u9669\u533a\u95f4\u5728\u72ec\u7acb holdout \u6216\u771f\u5b9e outcome \u4e0a\u662f\u5426\u7a33\u5b9a\u3002",
-          "implementation_path": "\u63a5\u5165\u540c family / field outcome holdout\uff0c\u590d\u7528 trend_interval_risk_metrics\uff0c\u62a5\u544a direction accuracy\u3001interval coverage\u3001interval width \u548c false alarm\u3002",
-          "task_id": "r6-research-task-trend-interval-holdout",
-          "unblocks_product_values": [
-            "trend_direction",
-            "risk_interval"
-          ]
-        },
-        {
-          "acceptance_criteria": "risk_ranking_quality >= 0.50 \u4e14 false_alarm_rate <= 0.50\uff0c\u5e76\u901a\u8fc7\u72ec\u7acb\u6216 field holdout\u3002",
-          "goal": "\u964d\u4f4e\u98ce\u9669\u6392\u5e8f\u8bef\u62a5\uff0c\u8ba9 Product \u7684\u98ce\u9669\u5206\u5e03\u4ece\u8bca\u65ad\u8d70\u5411\u53ef\u51b3\u7b56\u3002",
-          "implementation_path": "\u8bbe\u8ba1\u975e case-memory \u7684 false-alarm discriminator\uff0c\u7ed1\u5b9a holdout \u9a8c\u8bc1\uff0c\u540c\u65f6\u62a5\u544a risk_ranking_quality \u548c false_alarm_rate\u3002",
-          "task_id": "r6-research-task-false-alarm-control",
-          "unblocks_product_values": [
-            "risk_distribution"
-          ]
-        },
-        {
-          "acceptance_criteria": "\u5b58\u5728\u53ef\u5ba1\u8ba1 segment labels\uff0c\u4e14 abnormal segment precision/recall \u53ef\u8ba1\u7b97\u3002",
-          "goal": "\u628a\u5f02\u5e38\u7fa4\u4f53\u4ece\u53ef\u89e3\u91ca\u5c55\u793a\u5347\u7ea7\u4e3a\u53ef\u9a8c\u8bc1\u6307\u6807\u3002",
-          "implementation_path": "\u4e3a segment-level outcome \u6216\u4e13\u5bb6\u5ba1\u6838\u5efa\u7acb\u8f7b\u91cf\u6807\u7b7e\u534f\u8bae\uff0c\u8f93\u51fa abnormal segment precision/recall\u3002",
-          "task_id": "r6-research-task-segment-outcome-labels",
-          "unblocks_product_values": [
-            "abnormal_segments"
-          ]
-        },
-        {
-          "acceptance_criteria": "mechanism ablation \u4e0d\u518d\u51fa\u73b0 holdout regression\uff0coperator_holdout_non_regression=true\u3002",
-          "goal": "\u9a8c\u8bc1\u673a\u5236\u89e3\u91ca\u548c behavioral operator \u4e0d\u53ea\u662f\u8bca\u65ad\u8def\u5f84\u3002",
-          "implementation_path": "\u5bf9 mechanism propagation\u3001mechanism ablation \u548c operator holdout \u505a\u540c family / independent holdout \u590d\u6838\u3002",
-          "task_id": "r6-research-task-mechanism-holdout-validation",
-          "unblocks_product_values": [
-            "mechanism_explanation"
-          ]
-        },
-        {
-          "acceptance_criteria": "candidate update \u901a\u8fc7 cross-case transfer\u3001independent holdout \u548c field outcome review\uff1bruntime_default_allowed \u624d\u80fd\u4e3a true\u3002",
-          "goal": "\u8bc1\u660e outcome feedback learning \u80fd\u53d7\u63a7\u8fc1\u79fb\uff0c\u800c\u4e0d\u662f same-case \u4fee\u8865\u3002",
-          "implementation_path": "\u7528\u771f\u5b9e outcome \u6216\u72ec\u7acb holdout \u5ba1\u6838 candidate update\uff0c\u901a\u8fc7 cross-case transfer \u548c runtime update guard \u540e\u624d\u5141\u8bb8\u9ed8\u8ba4\u542f\u7528\u3002",
-          "task_id": "r6-research-task-outcome-feedback-transfer",
-          "unblocks_product_values": [
-            "outcome_feedback_learning"
-          ]
-        }
-      ],
+      "product_claim_support_summary": {},
+      "research_next_task_execution_summary": {},
+      "research_next_tasks": [],
       "support_coverage": {
-        "blocked_value_count": 1,
-        "diagnostic_value_count": 3,
-        "partial_value_count": 2,
-        "product_value_count": 6,
-        "research_support_contract_complete": true,
-        "supported_value_count": 0
+        "blocked_value_count": 2,
+        "diagnostic_value_count": 2,
+        "guarded_value_count": 4,
+        "product_value_count": 8,
+        "supported_value_count": 4,
+        "validated_value_count": 0
       },
       "support_gap_ledger": [
         {
-          "acceptance_criteria": "independent_or_field_holdout.trend_direction_accuracy >= 0.80 with no hidden false-alarm regression",
           "blocking_gap_ids": [
-            "needs_trend_interval_holdout_support",
-            "needs_independent_or_field_outcome_support"
+            "trend_direction_accuracy_below_validation_threshold"
           ],
-          "current_metric_value": 0.667,
           "current_support_status": "partial_current_proxy",
-          "gap_to_target": 0.133,
-          "next_research_task_id": "r6-research-task-trend-interval-holdout",
-          "product_display_level": "guarded_partial_claim",
+          "product_display_level": "diagnostic",
           "product_value": "trend_direction",
           "source_artifact_ids": [
-            "r6-trend-interval-risk-metrics-current-001"
-          ],
-          "source_metric": "trend_direction_accuracy",
-          "target_threshold": 0.8
+            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-trend-interval-calibration"
+          ]
         },
         {
-          "acceptance_criteria": "independent_or_field_holdout.interval_coverage >= 0.80 and mean_interval_width remains decision-usable",
-          "blocking_gap_ids": [
-            "needs_trend_interval_holdout_support",
-            "needs_interval_calibration_holdout"
-          ],
-          "current_metric_value": 0.667,
-          "current_support_status": "partial_current_proxy",
-          "gap_to_target": 0.133,
-          "next_research_task_id": "r6-research-task-trend-interval-holdout",
-          "product_display_level": "guarded_partial_claim",
+          "blocking_gap_ids": [],
+          "current_support_status": "guarded_interval_supported",
+          "product_display_level": "guarded",
           "product_value": "risk_interval",
           "source_artifact_ids": [
-            "r6-trend-interval-risk-metrics-current-001"
-          ],
-          "source_metric": "interval_coverage",
-          "target_threshold": 0.8
+            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-trend-interval-calibration"
+          ]
         },
         {
-          "acceptance_criteria": "risk_ranking_quality >= 0.50 and false_alarm_rate <= 0.50 on independent_or_field_holdout",
           "blocking_gap_ids": [
-            "needs_false_alarm_control",
-            "needs_risk_ranking_holdout_support"
+            "field_holdout_missing"
           ],
-          "current_metric_value": {
-            "false_alarm_rate": 0.667,
-            "risk_ranking_quality": 0.333
-          },
-          "current_support_status": "partial_high_false_alarm",
-          "gap_to_target": {
-            "false_alarm_gap": 0.167,
-            "risk_ranking_gap": 0.167
-          },
-          "next_research_task_id": "r6-research-task-false-alarm-control",
-          "product_display_level": "guarded_diagnostic_claim",
+          "current_support_status": "supported_current_proxy_guarded",
+          "product_display_level": "guarded",
           "product_value": "risk_distribution",
           "source_artifact_ids": [
-            "r6-trend-interval-risk-metrics-current-001"
-          ],
-          "source_metric": "risk_ranking_quality",
-          "target_threshold": {
-            "false_alarm_rate_max": 0.5,
-            "risk_ranking_quality_min": 0.5
-          }
+            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-segment-risk-ranking",
+            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-false-alarm-control"
+          ]
         },
         {
-          "acceptance_criteria": "segment-level outcome or expert audit labels exist and abnormal_segment_precision_recall is reportable",
           "blocking_gap_ids": [
-            "needs_segment_level_outcome_labels",
-            "needs_abnormal_segment_precision_recall"
+            "field_segment_labels_missing"
           ],
-          "current_metric_value": 1.0,
-          "current_support_status": "diagnostic_only",
-          "gap_to_target": {
-            "observed_segment_labels_missing": true
-          },
-          "next_research_task_id": "r6-research-task-segment-outcome-labels",
-          "product_display_level": "diagnostic_claim_only",
+          "current_support_status": "guarded_proxy_supported",
+          "product_display_level": "guarded",
           "product_value": "abnormal_segments",
           "source_artifact_ids": [
-            "r6-trend-interval-risk-metrics-current-001"
-          ],
-          "source_metric": "abnormal_segment_recall",
-          "target_threshold": {
-            "abnormal_segment_recall_min": 0.8,
-            "observed_segment_labels_required": true
-          }
+            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-abnormal-segment-validation",
+            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-segment-risk-ranking"
+          ]
         },
         {
-          "acceptance_criteria": "mechanism ablation no longer regresses on holdout and operator_holdout_non_regression is true",
           "blocking_gap_ids": [
-            "needs_mechanism_holdout_validation",
-            "needs_operator_holdout_validation"
+            "operator_holdout_not_runtime_default"
           ],
-          "current_metric_value": "mechanism_research_diagnostic_only",
           "current_support_status": "diagnostic_only",
-          "gap_to_target": {
-            "mechanism_regression_case_count": 2,
-            "operator_holdout_passed_trial_count": 0
-          },
-          "next_research_task_id": "r6-research-task-mechanism-holdout-validation",
-          "product_display_level": "diagnostic_claim_only",
+          "product_display_level": "diagnostic",
           "product_value": "mechanism_explanation",
           "source_artifact_ids": [
-            "r6-mechanism-research-readiness-report-current-001"
-          ],
-          "source_metric": "mechanism_research_status",
-          "target_threshold": {
-            "mechanism_holdout_validation_required": true,
-            "operator_holdout_non_regression_required": true
-          }
+            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-mechanism-ablation"
+          ]
         },
         {
-          "acceptance_criteria": "candidate update passes cross-case transfer, independent holdout, and field outcome review before runtime default",
           "blocking_gap_ids": [
-            "needs_runtime_default_holdout_review",
-            "needs_field_outcome_validation",
-            "needs_cross_case_operator_transfer"
+            "holdout_validation_missing"
           ],
-          "current_metric_value": {
-            "operator_holdout_passed_trial_count": 0,
-            "runtime_default_allowed": false
-          },
-          "current_support_status": "blocked_until_holdout_or_field_outcome",
-          "gap_to_target": {
-            "field_outcome_validated": false,
-            "runtime_default_blocked": true
-          },
-          "next_research_task_id": "r6-research-task-outcome-feedback-transfer",
-          "product_display_level": "blocked_claim_only",
-          "product_value": "outcome_feedback_learning",
+          "current_support_status": "supported_current_proxy_guarded",
+          "product_display_level": "guarded",
+          "product_value": "false_alarm_control",
           "source_artifact_ids": [
-            "r6-mechanism-research-readiness-report-current-001"
+            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-false-alarm-control"
+          ]
+        },
+        {
+          "blocking_gap_ids": [
+            "bounded_feedback_protocol_not_yet_available"
           ],
-          "source_metric": "runtime_default_allowed",
-          "target_threshold": {
-            "requires_field_or_independent_holdout": true,
-            "runtime_default_allowed": true
-          }
+          "current_support_status": "blocked_until_feedback_protocol",
+          "product_display_level": "blocked",
+          "product_value": "outcome_feedback",
+          "source_artifact_ids": [
+            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-cross-case-transfer"
+          ]
+        },
+        {
+          "blocking_gap_ids": [
+            "accepted_rejected_candidate_contract_missing"
+          ],
+          "current_support_status": "blocked_until_feedback_protocol",
+          "product_display_level": "blocked",
+          "product_value": "bounded_update_candidate",
+          "source_artifact_ids": [
+            "r6-research-product-value-support-v2-current-001-claim-evidence-registry-cross-case-transfer"
+          ]
         }
       ]
     },
     "risk_distribution": {
       "false_alarm_rate": 0.667,
       "risk_ranking_quality": 0.333,
-      "support_status": "partial_high_false_alarm"
+      "support_status": "supported_current_proxy_guarded"
     },
     "risk_interval": {
       "cases": [
@@ -401,7 +284,7 @@
         }
       ],
       "summary_metric": 0.667,
-      "support_status": "partial_current_proxy"
+      "support_status": "guarded_interval_supported"
     },
     "trend_direction": {
       "cases": [
@@ -437,7 +320,7 @@
     "source_backed_only": true,
     "static_narrative_fallback_allowed": false
   },
-  "run_id": "r6-product-value-current-001",
+  "run_id": "r6-full-product-support-current-001",
   "schema_version": "r6-product-customer-value-report-v1",
   "section_contracts": [
     {
@@ -450,47 +333,47 @@
       "section_id": "trend_direction",
       "source_artifact_ids": [
         "r6-trend-interval-risk-metrics-current-001",
-        "r6-research-product-value-support-current-001"
+        "r6-research-product-value-support-v2-current-001"
       ]
     },
     {
       "section_id": "risk_interval",
       "source_artifact_ids": [
         "r6-trend-interval-risk-metrics-current-001",
-        "r6-research-product-value-support-current-001"
+        "r6-research-product-value-support-v2-current-001"
       ]
     },
     {
       "section_id": "risk_distribution",
       "source_artifact_ids": [
         "r6-trend-interval-risk-metrics-current-001",
-        "r6-research-product-value-support-current-001"
+        "r6-research-product-value-support-v2-current-001"
       ]
     },
     {
       "section_id": "abnormal_segments",
       "source_artifact_ids": [
         "r6-trend-interval-risk-metrics-current-001",
-        "r6-research-product-value-support-current-001"
+        "r6-research-product-value-support-v2-current-001"
       ]
     },
     {
       "section_id": "mechanism_explanation",
       "source_artifact_ids": [
-        "r6-research-product-value-support-current-001"
+        "r6-research-product-value-support-v2-current-001"
       ]
     },
     {
       "section_id": "research_support_gap_ledger",
       "source_artifact_ids": [
-        "r6-research-product-value-support-current-001"
+        "r6-research-product-value-support-v2-current-001"
       ]
     },
     {
       "section_id": "evidence_and_blocked_claims",
       "source_artifact_ids": [
         "r6-product-decision-report-current-001",
-        "r6-research-product-value-support-current-001"
+        "r6-research-product-value-support-v2-current-001"
       ]
     },
     {
@@ -503,7 +386,7 @@
   "source_refs": [
     "r6-product-decision-report-current-001",
     "r6-trend-interval-risk-metrics-current-001",
-    "r6-research-product-value-support-current-001"
+    "r6-research-product-value-support-v2-current-001"
   ],
   "source_registry": [
     {
@@ -515,8 +398,8 @@
       "path": "experiments/results/r6_trend_interval_risk_metrics/r6-trend-interval-risk-metrics-current-001.json"
     },
     {
-      "artifact_id": "r6-research-product-value-support-current-001",
-      "path": "experiments/results/r6_research_product_value_support/r6-research-product-value-support-current-001.json"
+      "artifact_id": "r6-research-product-value-support-v2-current-001",
+      "path": "experiments/results/r6_research_product_value_support_v2/r6-research-product-value-support-v2-current-001.json"
     }
   ],
   "status": "customer_value_report_ready_guarded"

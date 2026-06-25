@@ -16,8 +16,8 @@ from experiments.r6_contracts import (
     write_json_artifact,
 )
 from experiments.r6_product_decision_report import build_r6_product_decision_report
-from experiments.r6_research_product_value_support import (
-    build_r6_research_product_value_support,
+from experiments.r6_product_claim_evidence_registry import (
+    build_r6_research_product_value_support_v2,
 )
 from experiments.r6_trend_interval_risk_metrics import (
     build_r6_trend_interval_risk_metrics,
@@ -58,10 +58,9 @@ def build_r6_product_customer_value_report(
         artifact_id="r6-trend-interval-risk-metrics-current-001",
         run_id=run_id,
     )
-    support = value_support or build_r6_research_product_value_support(
-        artifact_id="r6-research-product-value-support-current-001",
+    support = value_support or build_r6_research_product_value_support_v2(
+        artifact_id="r6-research-product-value-support-v2-current-001",
         run_id=run_id,
-        trend_interval_risk_metrics=metrics,
     )
     frontend_demo_ready = _frontend_demo_ready()
     source_registry = _source_registry(decision, metrics, support)
@@ -174,7 +173,10 @@ def _display_payload(
                 "research_next_task_execution_summary",
                 {},
             ),
-            "support_gap_ledger": support.get("support_gap_ledger", []),
+            "support_gap_ledger": support.get(
+                "support_gap_ledger",
+                _support_gap_ledger_from_matrix(support),
+            ),
             "research_next_tasks": support.get("research_next_tasks", []),
         },
     }
@@ -230,6 +232,15 @@ def _source_registry(
     metrics: dict[str, Any],
     support: dict[str, Any],
 ) -> list[dict[str, str]]:
+    support_path = (
+        "experiments/results/r6_research_product_value_support_v2/"
+        "r6-research-product-value-support-v2-current-001.json"
+        if support.get("schema_version") == "r6-research-product-value-support-v2"
+        else (
+            "experiments/results/r6_research_product_value_support/"
+            "r6-research-product-value-support-current-001.json"
+        )
+    )
     return [
         {
             "artifact_id": decision["artifact_id"],
@@ -247,10 +258,7 @@ def _source_registry(
         },
         {
             "artifact_id": support["artifact_id"],
-            "path": (
-                "experiments/results/r6_research_product_value_support/"
-                "r6-research-product-value-support-current-001.json"
-            ),
+            "path": support_path,
         },
     ]
 
@@ -260,6 +268,21 @@ def _support_status(support: dict[str, Any], product_value: str) -> str:
         if item["product_value"] == product_value:
             return item["support_status"]
     raise ValueError(f"missing support_matrix item: {product_value}")
+
+
+def _support_gap_ledger_from_matrix(support: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        {
+            "product_value": item["product_value"],
+            "current_support_status": item["support_status"],
+            "product_display_level": item["claim_status"],
+            "blocking_gap_ids": [item["blocked_reason"]]
+            if item.get("blocked_reason")
+            else [],
+            "source_artifact_ids": item["source_artifact_ids"],
+        }
+        for item in support.get("support_matrix", [])
+    ]
 
 
 def _unique_strings(values: list[str]) -> list[str]:
