@@ -58,7 +58,10 @@
     "runtime default ready",
     "R8 validated",
     "accuracy superiority",
-    "R8 supports Product core method by default"
+    "R8 supports Product core method by default",
+    "R9 validated",
+    "R9 supports Product core method by default",
+    "field validation completed"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -81,6 +84,7 @@
       "counterfactual_policy_comparison",
       "research_support_gap_ledger",
       "r8_method_support",
+      "r9_method_support",
       "evidence_and_blocked_claims",
       "outcome_review_plan"
     ],
@@ -192,7 +196,11 @@
     "r6-learning-counterfactual-holdout-validation-current-001",
     "r8-robustness-holdout-gate-current-001",
     "r8-stop-loss-diagnosis-current-001",
-    "r8-product-failure-diagnosis-package-current-001"
+    "r8-product-failure-diagnosis-package-current-001",
+    "r9-combination-comparison-current-001",
+    "r9-synthetic-mechanism-lab-current-001",
+    "r9-false-alarm-gate-redesign-current-001",
+    "r9-holdout-guard-current-001"
   ],
   "source_registry": [
     {
@@ -278,6 +286,22 @@
     {
       "artifact_id": "r8-product-failure-diagnosis-package-current-001",
       "path": "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
+    },
+    {
+      "artifact_id": "r9-combination-comparison-current-001",
+      "path": "experiments/results/r9_combination_comparison/r9-combination-comparison-current-001.json"
+    },
+    {
+      "artifact_id": "r9-synthetic-mechanism-lab-current-001",
+      "path": "experiments/results/r9_synthetic_mechanism_lab/r9-synthetic-mechanism-lab-current-001.json"
+    },
+    {
+      "artifact_id": "r9-false-alarm-gate-redesign-current-001",
+      "path": "experiments/results/r9_false_alarm_gate_redesign/r9-false-alarm-gate-redesign-current-001.json"
+    },
+    {
+      "artifact_id": "r9-holdout-guard-current-001",
+      "path": "experiments/results/r9_holdout_guard/r9-holdout-guard-current-001.json"
     }
   ],
   "status": "product_api_manifest_ready_guarded"

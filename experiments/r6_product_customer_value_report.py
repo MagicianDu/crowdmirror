@@ -61,6 +61,10 @@ def build_r6_product_customer_value_report(
     r8_robustness_holdout_gate: dict[str, Any] | None = None,
     r8_stop_loss_diagnosis: dict[str, Any] | None = None,
     r8_product_failure_diagnosis_package: dict[str, Any] | None = None,
+    r9_combination_comparison: dict[str, Any] | None = None,
+    r9_synthetic_mechanism_lab: dict[str, Any] | None = None,
+    r9_false_alarm_gate_redesign: dict[str, Any] | None = None,
+    r9_holdout_guard: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
@@ -113,10 +117,16 @@ def build_r6_product_customer_value_report(
         r8_robustness_holdout_gate,
         r8_stop_loss_diagnosis,
         r8_product_failure_diagnosis_package,
+        r9_combination_comparison,
+        r9_synthetic_mechanism_lab,
+        r9_false_alarm_gate_redesign,
+        r9_holdout_guard,
     )
     customer_sections = list(R6_PRODUCT_CUSTOMER_VALUE_SECTIONS)
     if r8_robustness_holdout_gate is not None:
         customer_sections.insert(-2, "r8_method_support")
+    if r9_holdout_guard is not None:
+        customer_sections.insert(-2, "r9_method_support")
     report = {
         "schema_version": R6_PRODUCT_CUSTOMER_VALUE_REPORT_SCHEMA_VERSION,
         "artifact_id": artifact_id,
@@ -140,6 +150,10 @@ def build_r6_product_customer_value_report(
             r8_robustness_holdout_gate,
             r8_stop_loss_diagnosis,
             r8_product_failure_diagnosis_package,
+            r9_combination_comparison,
+            r9_synthetic_mechanism_lab,
+            r9_false_alarm_gate_redesign,
+            r9_holdout_guard,
         ),
         "section_contracts": _section_contracts(
             decision,
@@ -150,6 +164,10 @@ def build_r6_product_customer_value_report(
             r8_robustness_holdout_gate,
             r8_stop_loss_diagnosis,
             r8_product_failure_diagnosis_package,
+            r9_combination_comparison,
+            r9_synthetic_mechanism_lab,
+            r9_false_alarm_gate_redesign,
+            r9_holdout_guard,
         ),
         "source_registry": source_registry,
         "source_refs": [entry["artifact_id"] for entry in source_registry],
@@ -163,6 +181,10 @@ def build_r6_product_customer_value_report(
                     "blocked_claims",
                     [],
                 ),
+                *(r9_combination_comparison or {}).get("blocked_claims", []),
+                *(r9_synthetic_mechanism_lab or {}).get("blocked_claims", []),
+                *(r9_false_alarm_gate_redesign or {}).get("blocked_claims", []),
+                *(r9_holdout_guard or {}).get("blocked_claims", []),
                 "精准预测系统",
                 "系统可以精确预测单点结果",
             ]
@@ -196,6 +218,10 @@ def _display_payload(
     r8_robustness_holdout_gate: dict[str, Any] | None = None,
     r8_stop_loss_diagnosis: dict[str, Any] | None = None,
     r8_product_failure_diagnosis_package: dict[str, Any] | None = None,
+    r9_combination_comparison: dict[str, Any] | None = None,
+    r9_synthetic_mechanism_lab: dict[str, Any] | None = None,
+    r9_false_alarm_gate_redesign: dict[str, Any] | None = None,
+    r9_holdout_guard: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     cases = metrics["case_results"]
     payload = {
@@ -341,6 +367,61 @@ def _display_payload(
                     ),
                 }
             )
+    if r9_holdout_guard is not None:
+        source_artifact_ids = []
+        for artifact in [
+            r9_combination_comparison,
+            r9_synthetic_mechanism_lab,
+            r9_false_alarm_gate_redesign,
+            r9_holdout_guard,
+        ]:
+            if artifact is not None:
+                source_artifact_ids.append(artifact["artifact_id"])
+        comparison_signal = (
+            r9_combination_comparison.get("r9_success_signal", {})
+            if r9_combination_comparison is not None
+            else {}
+        )
+        payload["r9_method_support"] = {
+            "support_status": "guarded_diagnostic_candidate",
+            "best_combination_id": comparison_signal.get("best_combination_id"),
+            "metrics_beating_r7_v2": comparison_signal.get(
+                "metrics_beating_r7_v2",
+                [],
+            ),
+            "combination_comparison_status": (
+                r9_combination_comparison["status"]
+                if r9_combination_comparison is not None
+                else None
+            ),
+            "holdout_guard_status": r9_holdout_guard["status"],
+            "false_alarm_gate_status": (
+                r9_false_alarm_gate_redesign["status"]
+                if r9_false_alarm_gate_redesign is not None
+                else None
+            ),
+            "synthetic_mechanism_recovery_passed": (
+                r9_synthetic_mechanism_lab["summary"][
+                    "synthetic_mechanism_recovery_passed"
+                ]
+                if r9_synthetic_mechanism_lab is not None
+                else None
+            ),
+            "holdout_summary": r9_holdout_guard["summary"],
+            "false_alarm_gate_summary": r9_holdout_guard.get(
+                "false_alarm_gate_summary"
+            ),
+            "research_decision": r9_holdout_guard["research_decision"],
+            "product_decision": r9_holdout_guard["product_decision"],
+            "field_outcome_validated": r9_holdout_guard["acceptance_gates"][
+                "field_outcome_validated"
+            ],
+            "runtime_default_allowed": r9_holdout_guard["acceptance_gates"][
+                "runtime_default_allowed"
+            ],
+            "blocked_claims": r9_holdout_guard["blocked_claims"],
+            "source_artifact_ids": source_artifact_ids,
+        }
     return payload
 
 
@@ -353,6 +434,10 @@ def _section_contracts(
     r8_robustness_holdout_gate: dict[str, Any] | None = None,
     r8_stop_loss_diagnosis: dict[str, Any] | None = None,
     r8_product_failure_diagnosis_package: dict[str, Any] | None = None,
+    r9_combination_comparison: dict[str, Any] | None = None,
+    r9_synthetic_mechanism_lab: dict[str, Any] | None = None,
+    r9_false_alarm_gate_redesign: dict[str, Any] | None = None,
+    r9_holdout_guard: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     contracts = [
         {
@@ -430,6 +515,42 @@ def _section_contracts(
                 ),
             },
         )
+    if r9_holdout_guard is not None:
+        source_artifact_ids = [
+            artifact["artifact_id"]
+            for artifact in [
+                r9_combination_comparison,
+                r9_synthetic_mechanism_lab,
+                r9_false_alarm_gate_redesign,
+                r9_holdout_guard,
+            ]
+            if artifact is not None
+        ]
+        contracts.insert(
+            -2,
+            {
+                "section_id": "r9_method_support",
+                "claim_status": "guarded_diagnostic",
+                "source_artifact_ids": source_artifact_ids,
+                "blocked_claims": _unique_strings(
+                    [
+                        *(r9_combination_comparison or {}).get(
+                            "blocked_claims",
+                            [],
+                        ),
+                        *(r9_synthetic_mechanism_lab or {}).get(
+                            "blocked_claims",
+                            [],
+                        ),
+                        *(r9_false_alarm_gate_redesign or {}).get(
+                            "blocked_claims",
+                            [],
+                        ),
+                        *r9_holdout_guard["blocked_claims"],
+                    ]
+                ),
+            },
+        )
     return contracts
 
 
@@ -442,6 +563,10 @@ def _source_registry(
     r8_robustness_holdout_gate: dict[str, Any] | None = None,
     r8_stop_loss_diagnosis: dict[str, Any] | None = None,
     r8_product_failure_diagnosis_package: dict[str, Any] | None = None,
+    r9_combination_comparison: dict[str, Any] | None = None,
+    r9_synthetic_mechanism_lab: dict[str, Any] | None = None,
+    r9_false_alarm_gate_redesign: dict[str, Any] | None = None,
+    r9_holdout_guard: dict[str, Any] | None = None,
 ) -> list[dict[str, str]]:
     support_path = (
         "experiments/results/r6_research_product_value_support_v2/"
@@ -523,6 +648,46 @@ def _source_registry(
                 ),
             }
         )
+    if r9_combination_comparison is not None:
+        registry.append(
+            {
+                "artifact_id": r9_combination_comparison["artifact_id"],
+                "path": (
+                    "experiments/results/r9_combination_comparison/"
+                    "r9-combination-comparison-current-001.json"
+                ),
+            }
+        )
+    if r9_synthetic_mechanism_lab is not None:
+        registry.append(
+            {
+                "artifact_id": r9_synthetic_mechanism_lab["artifact_id"],
+                "path": (
+                    "experiments/results/r9_synthetic_mechanism_lab/"
+                    "r9-synthetic-mechanism-lab-current-001.json"
+                ),
+            }
+        )
+    if r9_false_alarm_gate_redesign is not None:
+        registry.append(
+            {
+                "artifact_id": r9_false_alarm_gate_redesign["artifact_id"],
+                "path": (
+                    "experiments/results/r9_false_alarm_gate_redesign/"
+                    "r9-false-alarm-gate-redesign-current-001.json"
+                ),
+            }
+        )
+    if r9_holdout_guard is not None:
+        registry.append(
+            {
+                "artifact_id": r9_holdout_guard["artifact_id"],
+                "path": (
+                    "experiments/results/r9_holdout_guard/"
+                    "r9-holdout-guard-current-001.json"
+                ),
+            }
+        )
     return registry
 
 
@@ -582,6 +747,10 @@ def main() -> int:
     parser.add_argument("--r8-robustness-holdout-gate-path", default=None)
     parser.add_argument("--r8-stop-loss-diagnosis-path", default=None)
     parser.add_argument("--r8-product-failure-diagnosis-package-path", default=None)
+    parser.add_argument("--r9-combination-comparison-path", default=None)
+    parser.add_argument("--r9-synthetic-mechanism-lab-path", default=None)
+    parser.add_argument("--r9-false-alarm-gate-redesign-path", default=None)
+    parser.add_argument("--r9-holdout-guard-path", default=None)
     args = parser.parse_args()
     r8_gate = (
         load_json_artifact(args.r8_robustness_holdout_gate_path)
@@ -598,6 +767,26 @@ def main() -> int:
         if args.r8_product_failure_diagnosis_package_path
         else None
     )
+    r9_comparison = (
+        load_json_artifact(args.r9_combination_comparison_path)
+        if args.r9_combination_comparison_path
+        else None
+    )
+    r9_synthetic_lab = (
+        load_json_artifact(args.r9_synthetic_mechanism_lab_path)
+        if args.r9_synthetic_mechanism_lab_path
+        else None
+    )
+    r9_false_alarm_gate = (
+        load_json_artifact(args.r9_false_alarm_gate_redesign_path)
+        if args.r9_false_alarm_gate_redesign_path
+        else None
+    )
+    r9_holdout_guard = (
+        load_json_artifact(args.r9_holdout_guard_path)
+        if args.r9_holdout_guard_path
+        else None
+    )
 
     output_path = write_r6_product_customer_value_report(
         args.output,
@@ -606,6 +795,10 @@ def main() -> int:
         r8_robustness_holdout_gate=r8_gate,
         r8_stop_loss_diagnosis=r8_diagnosis,
         r8_product_failure_diagnosis_package=r8_failure_package,
+        r9_combination_comparison=r9_comparison,
+        r9_synthetic_mechanism_lab=r9_synthetic_lab,
+        r9_false_alarm_gate_redesign=r9_false_alarm_gate,
+        r9_holdout_guard=r9_holdout_guard,
     )
     report = json.loads(Path(output_path).read_text())
     print(

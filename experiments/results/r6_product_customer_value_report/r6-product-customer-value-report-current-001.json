@@ -32,7 +32,10 @@
     "runtime default ready",
     "R8 validated",
     "accuracy superiority",
-    "R8 supports Product core method by default"
+    "R8 supports Product core method by default",
+    "R9 validated",
+    "R9 supports Product core method by default",
+    "field validation completed"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -50,6 +53,7 @@
     "counterfactual_policy_comparison",
     "research_support_gap_ledger",
     "r8_method_support",
+    "r9_method_support",
     "evidence_and_blocked_claims",
     "outcome_review_plan"
   ],
@@ -366,6 +370,54 @@
       "status": "r8_robustness_diagnostic_or_stop_loss",
       "stop_loss_recommendation": "keep_r8_as_diagnostic_asset"
     },
+    "r9_method_support": {
+      "best_combination_id": "A+B+C",
+      "blocked_claims": [
+        "R9 validated",
+        "R9 supports Product core method by default",
+        "field_outcome_validated=true",
+        "runtime_default_allowed=true",
+        "runtime default ready",
+        "accuracy superiority",
+        "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+      ],
+      "combination_comparison_status": "r9_combination_comparison_guarded_current_fixture_signal",
+      "false_alarm_gate_status": "r9_false_alarm_gate_redesign_ready_guarded",
+      "false_alarm_gate_summary": {
+        "artifact_id": "r9-false-alarm-gate-redesign-current-001",
+        "near_threshold_false_alarm_fixed": true,
+        "runtime_default_allowed": false
+      },
+      "field_outcome_validated": false,
+      "holdout_guard_status": "r9_holdout_guard_passed_guarded",
+      "holdout_summary": {
+        "leave_one_case_pass_rate": 1.0,
+        "near_threshold_false_alarm_passed": true,
+        "overall_holdout_guard_passed": true,
+        "perturbation_pass_rate": 1.0,
+        "synthetic_mechanism_recovery_passed": true
+      },
+      "metrics_beating_r7_v2": [
+        "risk_ranking_quality",
+        "decision_value_score"
+      ],
+      "product_decision": {
+        "display_level": "guarded_diagnostic_candidate",
+        "may_claim_field_validation": false,
+        "may_claim_runtime_method": false,
+        "may_show_success_signal": true
+      },
+      "research_decision": "promote_to_product_ingestion_guarded",
+      "runtime_default_allowed": false,
+      "source_artifact_ids": [
+        "r9-combination-comparison-current-001",
+        "r9-synthetic-mechanism-lab-current-001",
+        "r9-false-alarm-gate-redesign-current-001",
+        "r9-holdout-guard-current-001"
+      ],
+      "support_status": "guarded_diagnostic_candidate",
+      "synthetic_mechanism_recovery_passed": true
+    },
     "research_support": {
       "overall_product_core_value_supported": false,
       "product_claim_support_summary": {},
@@ -632,6 +684,26 @@
       ]
     },
     {
+      "blocked_claims": [
+        "R9 validated",
+        "R9 supports Product core method by default",
+        "field_outcome_validated=true",
+        "runtime_default_allowed=true",
+        "runtime default ready",
+        "accuracy superiority",
+        "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf",
+        "field validation completed"
+      ],
+      "claim_status": "guarded_diagnostic",
+      "section_id": "r9_method_support",
+      "source_artifact_ids": [
+        "r9-combination-comparison-current-001",
+        "r9-synthetic-mechanism-lab-current-001",
+        "r9-false-alarm-gate-redesign-current-001",
+        "r9-holdout-guard-current-001"
+      ]
+    },
+    {
       "section_id": "evidence_and_blocked_claims",
       "source_artifact_ids": [
         "r6-product-decision-report-current-001",
@@ -654,7 +726,11 @@
     "r6-learning-counterfactual-holdout-validation-current-001",
     "r8-robustness-holdout-gate-current-001",
     "r8-stop-loss-diagnosis-current-001",
-    "r8-product-failure-diagnosis-package-current-001"
+    "r8-product-failure-diagnosis-package-current-001",
+    "r9-combination-comparison-current-001",
+    "r9-synthetic-mechanism-lab-current-001",
+    "r9-false-alarm-gate-redesign-current-001",
+    "r9-holdout-guard-current-001"
   ],
   "source_registry": [
     {
@@ -692,6 +768,22 @@
     {
       "artifact_id": "r8-product-failure-diagnosis-package-current-001",
       "path": "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
+    },
+    {
+      "artifact_id": "r9-combination-comparison-current-001",
+      "path": "experiments/results/r9_combination_comparison/r9-combination-comparison-current-001.json"
+    },
+    {
+      "artifact_id": "r9-synthetic-mechanism-lab-current-001",
+      "path": "experiments/results/r9_synthetic_mechanism_lab/r9-synthetic-mechanism-lab-current-001.json"
+    },
+    {
+      "artifact_id": "r9-false-alarm-gate-redesign-current-001",
+      "path": "experiments/results/r9_false_alarm_gate_redesign/r9-false-alarm-gate-redesign-current-001.json"
+    },
+    {
+      "artifact_id": "r9-holdout-guard-current-001",
+      "path": "experiments/results/r9_holdout_guard/r9-holdout-guard-current-001.json"
     }
   ],
   "status": "customer_value_report_ready_guarded"

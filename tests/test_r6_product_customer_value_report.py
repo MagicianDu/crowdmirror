@@ -10,6 +10,12 @@ from experiments.r8_stop_loss_diagnosis import build_r8_stop_loss_diagnosis
 from experiments.r8_product_failure_diagnosis_package import (
     build_r8_product_failure_diagnosis_package,
 )
+from experiments.r9_combination_comparison import build_r9_combination_comparison
+from experiments.r9_false_alarm_gate_redesign import (
+    build_r9_false_alarm_gate_redesign,
+)
+from experiments.r9_holdout_guard import build_r9_holdout_guard
+from experiments.r9_synthetic_mechanism_lab import build_r9_synthetic_mechanism_lab
 
 
 def test_r6_product_customer_value_report_contains_trend_interval_risk_sections():
@@ -100,6 +106,46 @@ def test_r6_product_customer_value_report_cli_writes_artifact(tmp_path):
     assert artifact["schema_version"] == "r6-product-customer-value-report-v1"
     assert json.loads(completed.stdout) == {
         "artifact_id": "r6-product-customer-value-report-cli",
+        "output": str(output),
+        "status": "customer_value_report_ready_guarded",
+    }
+
+
+def test_r6_product_customer_value_report_cli_can_ingest_r9_paths(tmp_path):
+    output = tmp_path / "r6-product-customer-value-report-r9.json"
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "experiments/r6_product_customer_value_report.py",
+            "--artifact-id",
+            "r6-product-customer-value-report-r9-cli",
+            "--run-id",
+            "r9-product-ingestion-run",
+            "--output",
+            str(output),
+            "--r9-combination-comparison-path",
+            "experiments/results/r9_combination_comparison/r9-combination-comparison-current-001.json",
+            "--r9-synthetic-mechanism-lab-path",
+            "experiments/results/r9_synthetic_mechanism_lab/r9-synthetic-mechanism-lab-current-001.json",
+            "--r9-false-alarm-gate-redesign-path",
+            "experiments/results/r9_false_alarm_gate_redesign/r9-false-alarm-gate-redesign-current-001.json",
+            "--r9-holdout-guard-path",
+            "experiments/results/r9_holdout_guard/r9-holdout-guard-current-001.json",
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    artifact = json.loads(output.read_text())
+    assert "r9_method_support" in artifact["display_payload"]
+    assert artifact["display_payload"]["r9_method_support"][
+        "holdout_guard_status"
+    ] == "r9_holdout_guard_passed_guarded"
+    assert json.loads(completed.stdout) == {
+        "artifact_id": "r6-product-customer-value-report-r9-cli",
         "output": str(output),
         "status": "customer_value_report_ready_guarded",
     }
@@ -203,3 +249,63 @@ def test_product_customer_value_report_can_show_r8_failure_diagnosis_package():
         if item["section_id"] == "r8_method_support"
     )
     assert failure_package["artifact_id"] in section["source_artifact_ids"]
+
+
+def test_product_customer_value_report_can_show_r9_guarded_diagnostic_support():
+    comparison = build_r9_combination_comparison(
+        artifact_id="r9-combination-comparison-test",
+        run_id="r9-product-ingestion-run",
+    )
+    synthetic_lab = build_r9_synthetic_mechanism_lab(
+        artifact_id="r9-synthetic-mechanism-lab-test",
+        run_id="r9-product-ingestion-run",
+    )
+    false_alarm_gate = build_r9_false_alarm_gate_redesign(
+        artifact_id="r9-false-alarm-gate-redesign-test",
+        run_id="r9-product-ingestion-run",
+    )
+    holdout_guard = build_r9_holdout_guard(
+        artifact_id="r9-holdout-guard-test",
+        run_id="r9-product-ingestion-run",
+        combination_comparison=comparison,
+        synthetic_mechanism_lab=synthetic_lab,
+        false_alarm_gate_redesign=false_alarm_gate,
+    )
+
+    report = build_r6_product_customer_value_report(
+        artifact_id="r6-product-customer-value-report-r9-test",
+        run_id="r9-product-ingestion-run",
+        r9_combination_comparison=comparison,
+        r9_synthetic_mechanism_lab=synthetic_lab,
+        r9_false_alarm_gate_redesign=false_alarm_gate,
+        r9_holdout_guard=holdout_guard,
+    )
+
+    assert "r9_method_support" in report["customer_sections"]
+    r9_support = report["display_payload"]["r9_method_support"]
+    assert r9_support["support_status"] == "guarded_diagnostic_candidate"
+    assert r9_support["best_combination_id"] == "A+B+C"
+    assert r9_support["metrics_beating_r7_v2"] == [
+        "risk_ranking_quality",
+        "decision_value_score",
+    ]
+    assert r9_support["holdout_guard_status"] == "r9_holdout_guard_passed_guarded"
+    assert r9_support["false_alarm_gate_status"] == (
+        "r9_false_alarm_gate_redesign_ready_guarded"
+    )
+    assert r9_support["synthetic_mechanism_recovery_passed"] is True
+    assert r9_support["field_outcome_validated"] is False
+    assert r9_support["runtime_default_allowed"] is False
+    assert r9_support["blocked_claims"]
+    for artifact in [comparison, synthetic_lab, false_alarm_gate, holdout_guard]:
+        assert artifact["artifact_id"] in r9_support["source_artifact_ids"]
+        assert artifact["artifact_id"] in report["source_refs"]
+    section = next(
+        item
+        for item in report["section_contracts"]
+        if item["section_id"] == "r9_method_support"
+    )
+    assert section["claim_status"] == "guarded_diagnostic"
+    assert holdout_guard["artifact_id"] in section["source_artifact_ids"]
+    assert "R9 validated" in report["blocked_claims"]
+    assert "runtime default ready" in report["blocked_claims"]
