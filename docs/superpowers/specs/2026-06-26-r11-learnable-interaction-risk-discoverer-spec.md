@@ -218,6 +218,34 @@ Product customer value report 已新增 `r11_shadow_trial` section，API manifes
 - 更新候选必须区分 accepted / rejected / diagnostic_only。
 - 未通过 guard 时不得进入 runtime default。
 
+当前状态：第一版已完成为 bounded update artifact。
+
+当前 L3 已实现为：
+
+- `experiments/r11_outcome_feedback_update.py`
+- `experiments/results/r11_outcome_feedback_update/r11-outcome-feedback-update-current-001.json`
+- `tests/test_r11_outcome_feedback_update.py`
+
+L3 current artifact 使用 `public_proxy_replay`，不是客户 field outcome。它证明的是 R11 shadow trial 的 outcome feedback 更新机制已经可计算、可审计、可阻断 runtime default，而不是证明 R11 已经 field validated。
+
+当前 L3 current result：
+
+- `status=r11_outcome_feedback_update_ready_guarded`
+- `feedback_source_level=public_proxy_replay`
+- `primary_error_mode=segment_specific_under_reaction`
+- `mechanism_weight_update_needed=true`
+- `segment_sensitivity_update_needed=true`
+- `propagation_edge_update_supported=false`
+- `interval_uncertainty_update_needed=false`
+- 更新候选状态覆盖 `accepted`、`rejected`、`diagnostic_only`
+- `accepted_shadow_only_count=1`
+- `diagnostic_only_count=2`
+- `rejected_count=1`
+- `prompt_or_persona_manual_patch_allowed=false`
+- `runtime_default_allowed=false`
+
+当前唯一 accepted 候选是 `segment_sensitivity` 的 shadow-only replay update，不允许进入 runtime default。`mechanism_weight` 与 `interval_uncertainty` 仍是 diagnostic-only，`propagation_edge` 因缺少直接交互传播证据被 rejected。
+
 ### R11 L4：止损判定
 
 目标：如果 R11 在外部 holdout 或 shadow trial 中无法稳定产生增益，应及时止损。
