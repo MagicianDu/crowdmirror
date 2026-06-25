@@ -1,0 +1,420 @@
+{
+  "acceptance_gates": {
+    "actual_public_data_ingested": true,
+    "field_outcome_validated": false,
+    "minimum_rows_present": true,
+    "official_public_zip_read": true,
+    "outcome_columns_present": true,
+    "puf_csv_detected": true,
+    "runtime_default_allowed": false,
+    "segment_columns_present": true
+  },
+  "allowed_claims": [
+    "R10 L1 ingested and profiled the official HPS/HTOPS March 2026 PUF CSV.",
+    "The artifact can provide guarded survey outcome proxy inputs for R10 routes."
+  ],
+  "artifact_id": "r10-hps-policy-reaction-ingestion-current-001",
+  "blocked_claims": [
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "runtime default ready",
+    "R10 validated",
+    "R10 supports Product core method by default",
+    "HPS survey proxy equals customer field outcome",
+    "accuracy superiority",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_boundary": "R10 HPS policy reaction ingestion artifact. It proves a source-backed public-use microdata slice was read and profiled for guarded method development only; it is not field validation, not method superiority, and not runtime default authorization.",
+  "data_inventory": {
+    "data_dictionary_members": [
+      "HTOPS_HPS_2603_PUF_DATA_DICTIONARY_CSV.xlsx"
+    ],
+    "input_zip_path": "/tmp/r10_hps/HTOPS_HPS_2603_CSV.zip",
+    "puf_csv_member": "HTOPS_HPS_2603_PUF.csv",
+    "replicate_weight_members": [
+      "HTOPS_HPS_2603_REPWGT_PUF.csv"
+    ],
+    "zip_member_count": 3,
+    "zip_members": [
+      "HTOPS_HPS_2603_PUF.csv",
+      "HTOPS_HPS_2603_PUF_DATA_DICTIONARY_CSV.xlsx",
+      "HTOPS_HPS_2603_REPWGT_PUF.csv"
+    ]
+  },
+  "data_profile": {
+    "column_count": 219,
+    "columns": [
+      "SCRAMID",
+      "PWEIGHT",
+      "HWEIGHT",
+      "REGION",
+      "METRO",
+      "METRO_STATUS",
+      "THHLD_NUMPER",
+      "THHLD_NUMKID",
+      "THHLD_NUMADULT",
+      "TBIRTH_YEAR",
+      "TAGE",
+      "ESEX",
+      "SEX_ORNT",
+      "RRACETH",
+      "MS",
+      "REDUC",
+      "AF_NO",
+      "AF_ACTDUTY_SELF",
+      "AF_RESNG_SELF",
+      "AF_ACTDUTY_SP",
+      "AF_RESNG_SP",
+      "AFEVER_NO",
+      "AFEVER_ACTDUTY_SELF",
+      "AFEVER_RESNG_SELF",
+      "AFEVER_ACTDUTY_SP",
+      "AFEVER_RESNG_SP",
+      "LANG_OTHER_HOME",
+      "RLANG_HOME",
+      "ENGLISH_PROF",
+      "SATISFACTION",
+      "KIDS_LT1Y",
+      "KIDS_1_4Y",
+      "KIDS_5_11Y",
+      "KIDS_12_17Y",
+      "ENRPUBCHK",
+      "ENRPRVCHK",
+      "ENRHMSCHK",
+      "ENROLLNONE",
+      "TENROLLPUB",
+      "TENROLLPRV",
+      "TENROLLHMSCH",
+      "CHILDCARE",
+      "RCHILDCARE_RSLT1",
+      "RCHILDCARE_RSLT2",
+      "RCHILDCARE_RSLT3",
+      "RCHILDCARE_RSLT4",
+      "RCHILDCARE_RSLT5",
+      "RCHILDCARE_RSLT6",
+      "RCHILDCARE_RSLT7",
+      "RCHILDCARE_RSLT8",
+      "RCHILDCARE_RSLT9",
+      "FORMULA_AGE",
+      "BABY_FED",
+      "RFORMULA_DIFFICULT",
+      "WORKLOSS",
+      "ANYWORK",
+      "CLASS_WORKER",
+      "REASON_NOWORK",
+      "TWDAYS",
+      "AI_OCC",
+      "AIWRK_ADMIN",
+      "AIWRK_CODE",
+      "AIWRK_CUSTSUPP",
+      "AIWRK_DATAVIS",
+      "AIWRK_GENIDEA",
+      "AIWRK_INTERP",
+      "AIWRK_LOG",
+      "AIWRK_MED",
+      "AIWRK_SEARCH",
+      "AIWRK_TUTOR",
+      "AIWRK_COMM",
+      "AIWRK_FREQ",
+      "AIWRK_HOURS",
+      "SEEING",
+      "HEARING",
+      "MOBILITY",
+      "REMEMBERING",
+      "SELFCARE",
+      "UNDERSTAND",
+      "ANXIOUS",
+      "WORRY",
+      "INTEREST",
+      "DOWN",
+      "MHLTH_NEED",
+      "MHLTH_GET",
+      "RMHLTH_SATISFIED",
+      "MHLTH_DIFFICULT",
+      "HLTHINS_EMP",
+      "HLTHINS_MEDICARE",
+      "HLTHINS_MEDICAID",
+      "HLTHINS_PURCH",
+      "HLTHINS_VA",
+      "HLTHINS_TRICARE",
+      "HLTHINS_IHS",
+      "HLTHINS_OTH",
+      "HLTHINS_NO",
+      "SOC_LONELY",
+      "SOC_SUPPORT",
+      "SOC_TOGETHER",
+      "SOC_TALK",
+      "SOC_RELSERVICES",
+      "SOC_CLUBS",
+      "VOL_ANY",
+      "VOL_FREQ",
+      "HELP_NEIGHBORS",
+      "VAC_COVID",
+      "VAC_FLU",
+      "VAC_RSV",
+      "NARCAN_CARRY",
+      "RNARCAN_EVERUSE",
+      "RNARCAN_USEPAST30",
+      "MEDSHORT_PRESC",
+      "MEDSHORT_OTC",
+      "MEDSHORT_SUPPLIES",
+      "MEDSHORT_OTH",
+      "MEDSHORT_NONE",
+      "MEDRES_ALT",
+      "MEDRES_SPEND",
+      "MEDRES_REDUCE",
+      "MEDRES_PROC",
+      "MEDRES_HELP",
+      "MEDRES_NEG",
+      "MEDRES_NEGHLTH",
+      "MEDRES_DK",
+      "MEDRES_OTH",
+      "FD_SUFF",
+      "FD_CHILD",
+      "FDRSN_AFFORD",
+      "FDRSN_GETSTORE",
+      "FDRSN_SAFETY",
+      "FDRSN_NONE",
+      "FD_FREE",
+      "FDBEN_SNAP",
+      "FDBEN_WIC",
+      "FDBEN_NSLPRED",
+      "FDBEN_NONE",
+      "FDSCHL_EXPNSDIF",
+      "EXPENSE_DIFFICULT",
+      "PRICECHANGE",
+      "PRICESTRESS",
+      "PRICECONCERN",
+      "TENURE",
+      "RENTCUR",
+      "MORTCUR",
+      "TMONTHSBEHIND",
+      "EVICT",
+      "RFORECLOSE",
+      "LIVEARRANGEPLAN",
+      "EH",
+      "EH_SHELTER",
+      "EH_STREET",
+      "EH_COUCH",
+      "EH_OTHER",
+      "EH_DK",
+      "EHWHO_SELF",
+      "EHWHO_SPOUSE",
+      "EHWHO_ADULTCHILD",
+      "EHWHO_CHILDU18",
+      "EHWHO_PARENT",
+      "EHWHO_SIBLING",
+      "EHWHO_OTHERFAM",
+      "EHWHO_NONRELATIVE",
+      "ENERGY",
+      "HSE_TEMP",
+      "ENERGY_BILL",
+      "TP_WALK",
+      "TP_BIKE",
+      "TP_MOTORCYCLE",
+      "TP_VEHOWN",
+      "TP_VEHBOR",
+      "TP_VEHRENT",
+      "TP_TAXI",
+      "TP_BUS",
+      "TP_RAIL",
+      "TP_FERRY",
+      "TP_PARA",
+      "TP_OTH",
+      "TPACCESS",
+      "TPNEED_NOTAVAIL",
+      "TPNEED_MORETIME",
+      "TPNEED_UNPRED",
+      "TPNEED_AFFORD",
+      "TPNEED_UNSAFE",
+      "TPNEED_DISAB",
+      "TPNEED_NONE",
+      "LIVE_ENTERTAINMENT",
+      "ARTEXHIBIT",
+      "MOVIES",
+      "CREATEART",
+      "PARTINARTS",
+      "VOTE_PRES2024",
+      "VOTE_CON2022",
+      "VOTE_PRES2020",
+      "VOTE_CON2018",
+      "REG_PRES2024",
+      "REG_CON2022",
+      "REG_PRES2020",
+      "REG_CON2018",
+      "ATTENDMEETING",
+      "PUBOFFICAL",
+      "TRUST_FEDSTAT",
+      "TRUST_MILITARY",
+      "TRUST_POLICE",
+      "TRUST_SUPREME",
+      "TRUST_PRESIDENCY",
+      "TRUST_SCHOOLS",
+      "TRUST_CRIMJUST",
+      "TRUST_CONGRESS",
+      "TRUST_CENSUS",
+      "TRUST_STATISTICAL",
+      "FEDSTAT_NEED",
+      "RHHINCOME",
+      "A_THHLD_NUMPER",
+      "A_THHLD_NUMKID",
+      "A_TAGE",
+      "A_TBIRTH_YEAR",
+      "A_ESEX",
+      "A_RRACETH",
+      "A_REDUC"
+    ],
+    "outcome_columns_present": [
+      "PRICECHANGE",
+      "PRICESTRESS",
+      "PRICECONCERN"
+    ],
+    "row_count": 12521,
+    "segment_columns_present": [
+      "REGION",
+      "METRO_STATUS",
+      "RHHINCOME",
+      "RRACETH",
+      "TAGE",
+      "ESEX"
+    ],
+    "weight_columns_present": [
+      "PWEIGHT",
+      "HWEIGHT"
+    ]
+  },
+  "ingestion_contract": {
+    "actual_public_data_ingested": true,
+    "customer_visible": false,
+    "field_outcome_validated": false,
+    "runtime_default_allowed": false,
+    "source_backed_only": true
+  },
+  "outcome_label_contract": {
+    "interpretation": {
+      "PRICECHANGE": "reported price change exposure or perception",
+      "PRICECONCERN": "reported concern about price changes",
+      "PRICESTRESS": "reported stress from price changes"
+    },
+    "missing_values": [
+      "",
+      "-66",
+      "-77",
+      "-88",
+      "-99"
+    ],
+    "outcome_columns": [
+      "PRICECHANGE",
+      "PRICESTRESS",
+      "PRICECONCERN"
+    ],
+    "outcome_family": "policy_or_price_reaction_survey_proxy"
+  },
+  "outcome_summary": {
+    "PRICECHANGE": {
+      "response_distribution": {
+        "1": 0.879098,
+        "2": 0.066177,
+        "3": 0.011716,
+        "4": 0.043009
+      },
+      "valid_response_count": 11795,
+      "weighted_valid_total": 251525892.208139
+    },
+    "PRICECONCERN": {
+      "response_distribution": {
+        "1": 0.502532,
+        "2": 0.253545,
+        "3": 0.164165,
+        "4": 0.079758
+      },
+      "valid_response_count": 11760,
+      "weighted_valid_total": 250526313.585107
+    },
+    "PRICESTRESS": {
+      "response_distribution": {
+        "1": 0.256069,
+        "2": 0.289312,
+        "3": 0.332958,
+        "4": 0.121661
+      },
+      "valid_response_count": 10366,
+      "weighted_valid_total": 220046272.245924
+    }
+  },
+  "route_input_mapping": {
+    "route_a_evidence_constrained_mechanism_operator": {
+      "mechanism_priors": [
+        "economic_stress",
+        "price_sensitivity",
+        "policy_salience"
+      ],
+      "outcome_signal_columns": [
+        "PRICECHANGE",
+        "PRICESTRESS",
+        "PRICECONCERN"
+      ]
+    },
+    "route_b_semantic_precedent_retrieval": {
+      "scenario_family": "policy_reaction_survey",
+      "semantic_tags": [
+        "price_pressure",
+        "household_survey",
+        "public_use_microdata"
+      ],
+      "source_url": "https://www2.census.gov/programs-surveys/demo/datasets/hhp/2026/topical/HTOPS_HPS_2603_CSV.zip"
+    },
+    "route_c_constrained_multi_agent_rollout": {
+      "affected_segments": [
+        "REGION",
+        "METRO_STATUS",
+        "RHHINCOME",
+        "RRACETH",
+        "TAGE",
+        "ESEX"
+      ],
+      "risk_observation_window": "March 13, 2026 - March 30, 2026"
+    }
+  },
+  "run_id": "r10-hps-policy-reaction-ingestion-current",
+  "schema_version": "r10-hps-policy-reaction-ingestion-v1",
+  "segment_coverage": {
+    "ESEX": {
+      "non_missing_count": 12521,
+      "present": true,
+      "unique_value_count": 2
+    },
+    "METRO_STATUS": {
+      "non_missing_count": 12521,
+      "present": true,
+      "unique_value_count": 2
+    },
+    "REGION": {
+      "non_missing_count": 12521,
+      "present": true,
+      "unique_value_count": 4
+    },
+    "RHHINCOME": {
+      "non_missing_count": 11047,
+      "present": true,
+      "unique_value_count": 7
+    },
+    "RRACETH": {
+      "non_missing_count": 12521,
+      "present": true,
+      "unique_value_count": 5
+    },
+    "TAGE": {
+      "non_missing_count": 12521,
+      "present": true,
+      "unique_value_count": 64
+    }
+  },
+  "source_dataset": {
+    "release_window": "March 13, 2026 - March 30, 2026",
+    "source_name": "HTOPS Household Pulse March 2026 PUF CSV",
+    "source_owner": "U.S. Census Bureau",
+    "source_url": "https://www2.census.gov/programs-surveys/demo/datasets/hhp/2026/topical/HTOPS_HPS_2603_CSV.zip"
+  },
+  "status": "r10_hps_policy_reaction_ingestion_ready_guarded"
+}
