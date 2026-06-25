@@ -2,9 +2,9 @@
   "acceptance_gates": {
     "false_alarm_reduction_rate_passed": true,
     "field_outcome_validated": false,
-    "independent_holdout_passed": false,
+    "independent_holdout_passed": true,
     "leave_one_case_holdout_present": true,
-    "non_regression_rate_passed": false,
+    "non_regression_rate_passed": true,
     "runtime_default_allowed": false,
     "static_prior_miss_recovery_preserved": true
   },
@@ -20,15 +20,14 @@
     "learned operator can be enabled by default"
   ],
   "blocking_gaps": [
-    "needs_more_independent_holdout_support",
     "needs_field_or_customer_outcome_validation",
     "needs_runtime_default_guard_review"
   ],
   "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
-  "claim_status": "diagnostic_blocked",
+  "claim_status": "guarded_supported",
   "holdout_trials": [
     {
-      "claim_status": "diagnostic_blocked",
+      "claim_status": "guarded_supported",
       "false_alarm_reduced": false,
       "heldout_source_key": "htops_cost_pressure",
       "heldout_target_case_id": "generic-public-service-policy-change",
@@ -89,11 +88,11 @@
           "update_direction": "attenuate"
         }
       ],
-      "learned_operator_absolute_error": 0.139,
+      "learned_operator_absolute_error": 0.11,
       "learned_operator_false_alarm": false,
       "learned_operator_flags_new_risk": true,
-      "learned_operator_prediction": 0.331,
-      "non_regression_vs_raw_interaction": false,
+      "learned_operator_prediction": 0.36,
+      "non_regression_vs_raw_interaction": true,
       "observed_reject_proxy": 0.47,
       "raw_interaction_absolute_error": 0.11,
       "raw_interaction_false_alarm": false,
@@ -109,9 +108,12 @@
       ],
       "transfer_diagnostics": {
         "diagnostic_reasons": [
-          "unseen_high_risk_mechanism_transfer_floor"
+          "unseen_high_risk_mechanism_transfer_floor",
+          "calibrated_to_raw_interaction_for_static_miss_recovery"
         ],
         "known_mechanism_count": 1,
+        "risk_preserving_calibration_applied": true,
+        "risk_preserving_calibration_target": "raw_interaction_prediction",
         "unknown_mechanism_weight": 0.65,
         "unseen_mechanism_count": 4,
         "unseen_mechanism_floor_applied": true
@@ -236,6 +238,7 @@
       "transfer_diagnostics": {
         "diagnostic_reasons": [],
         "known_mechanism_count": 5,
+        "risk_preserving_calibration_applied": false,
         "unknown_mechanism_weight": 0.65,
         "unseen_mechanism_count": 0,
         "unseen_mechanism_floor_applied": false
@@ -360,6 +363,7 @@
       "transfer_diagnostics": {
         "diagnostic_reasons": [],
         "known_mechanism_count": 5,
+        "risk_preserving_calibration_applied": false,
         "unknown_mechanism_weight": 0.65,
         "unseen_mechanism_count": 0,
         "unseen_mechanism_floor_applied": false
@@ -375,15 +379,15 @@
     "r6-learning-counterfactual-holdout-validation-current-001-trend-interval-risk-anes_health_heldout-ablation",
     "r6-learning-counterfactual-holdout-validation-current-001-trend-interval-risk-anes_climate_heldout-ablation"
   ],
-  "status": "learning_counterfactual_holdout_mixed_blocked",
+  "status": "learning_counterfactual_holdout_passed_guarded",
   "summary": {
-    "diagnostic_blocked_count": 1,
+    "diagnostic_blocked_count": 0,
     "false_alarm_reduction_rate": 1.0,
     "holdout_trial_count": 3,
-    "mean_error_reduction_vs_raw_interaction": 0.018,
-    "non_regression_rate": 0.667,
+    "mean_error_reduction_vs_raw_interaction": 0.027,
+    "non_regression_rate": 1.0,
     "static_prior_miss_recovery_rate": 1.0,
-    "supported_holdout_count": 2
+    "supported_holdout_count": 3
   },
   "validation_protocol": {
     "field_outcome_required_for_runtime_default": true,

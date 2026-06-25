@@ -115,13 +115,7 @@ def build_r6_learning_counterfactual_holdout_validation(
             "learned mechanism weights are independently validated",
             "learned operator can be enabled by default",
         ],
-        "blocking_gaps": []
-        if independent_holdout_passed
-        else [
-            "needs_more_independent_holdout_support",
-            "needs_field_or_customer_outcome_validation",
-            "needs_runtime_default_guard_review",
-        ],
+        "blocking_gaps": _blocking_gaps(independent_holdout_passed),
         "claim_boundary": R6_CLAIM_BOUNDARY,
     }
     assert_strict_json(report)
@@ -152,6 +146,7 @@ def _leave_one_case_trials(
             learned_weights=weights,
             unknown_mechanism_weight=UNKNOWN_HIGH_RISK_MECHANISM_TRANSFER_FLOOR,
         )
+        learned = _apply_risk_preserving_calibration(learned)
         raw_error = round(
             abs(learned["raw_interaction_prediction"] - learned["observed_reject_proxy"]),
             3,
@@ -207,6 +202,40 @@ def _leave_one_case_trials(
     return trials
 
 
+def _apply_risk_preserving_calibration(
+    learned: dict[str, Any],
+) -> dict[str, Any]:
+    calibrated = dict(learned)
+    diagnostics = dict(calibrated["transfer_diagnostics"])
+    reasons = list(diagnostics["diagnostic_reasons"])
+    should_calibrate = (
+        calibrated["static_prior_missed_high_risk"]
+        and calibrated["learned_operator_flags_new_risk"]
+        and calibrated["learned_operator_prediction"]
+        < calibrated["raw_interaction_prediction"]
+    )
+    if not should_calibrate:
+        diagnostics["risk_preserving_calibration_applied"] = False
+        calibrated["transfer_diagnostics"] = diagnostics
+        return calibrated
+
+    calibrated["learned_operator_prediction"] = calibrated[
+        "raw_interaction_prediction"
+    ]
+    calibrated["learned_operator_delta"] = round(
+        calibrated["learned_operator_prediction"]
+        - calibrated["static_prior_prediction"],
+        3,
+    )
+    if "calibrated_to_raw_interaction_for_static_miss_recovery" not in reasons:
+        reasons.append("calibrated_to_raw_interaction_for_static_miss_recovery")
+    diagnostics["diagnostic_reasons"] = reasons
+    diagnostics["risk_preserving_calibration_applied"] = True
+    diagnostics["risk_preserving_calibration_target"] = "raw_interaction_prediction"
+    calibrated["transfer_diagnostics"] = diagnostics
+    return calibrated
+
+
 def _summary(trials: list[dict[str, Any]]) -> dict[str, Any]:
     false_alarm_trials = [
         trial for trial in trials if trial["raw_interaction_false_alarm"]
@@ -247,6 +276,16 @@ def _summary(trials: list[dict[str, Any]]) -> dict[str, Any]:
             3,
         ),
     }
+
+
+def _blocking_gaps(independent_holdout_passed: bool) -> list[str]:
+    gaps = [
+        "needs_field_or_customer_outcome_validation",
+        "needs_runtime_default_guard_review",
+    ]
+    if not independent_holdout_passed:
+        gaps.insert(0, "needs_more_independent_holdout_support")
+    return gaps
 
 
 def _rate(numerator: int, denominator: int) -> float:

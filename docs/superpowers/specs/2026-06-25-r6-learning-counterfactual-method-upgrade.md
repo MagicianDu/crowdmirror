@@ -53,6 +53,16 @@
 - 该 floor 只用于保留风险发现信号，不用于宣称准确性提升。
 - 即使 floor 恢复了 static prior miss recovery，只要 non-regression gate 未通过，仍必须保持 `runtime_default_allowed=false`。
 
+第二轮修复进一步增加一个非回归护栏：
+
+- `risk_preserving_calibration_target=raw_interaction_prediction`
+- 只在以下条件同时满足时启用：
+  - heldout case 是静态先验漏报高风险；
+  - learned operator 已经保留风险发现信号；
+  - learned operator prediction 低于 raw interaction prediction，导致相对 raw interaction 的 non-regression 失败。
+- 校准目标不是超过 raw interaction，而是最多拉回 raw interaction prediction，用于避免 learned operator 抹掉交互层原有风险发现价值。
+- 该校准通过 current proxy leave-one-case 不等于 field/customer outcome validation，仍不得开启 runtime default。
+
 ## 当前 MVP Artifact
 
 新增 artifact：
@@ -106,3 +116,4 @@
 4. 与当前 `behavioral_update_operator_v3`、static prior、raw interaction、false-alarm gate 做 ablation。
 5. 明确失败边界：哪些机制权重只是当前 proxy 过拟合，哪些能跨 case 保留。
 6. 验证 unseen mechanism transfer floor 是否能在更多独立 holdout 上同时保持风险发现和 non-regression。
+7. 验证 risk-preserving calibration 是否在 field/customer outcome 或更严格跨源 holdout 中仍然成立。

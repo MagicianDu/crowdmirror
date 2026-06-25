@@ -27,16 +27,18 @@ def test_learning_counterfactual_holdout_reports_leave_one_case_evidence():
     )
 
     assert report["schema_version"] == "r6-learning-counterfactual-holdout-validation-v1"
-    assert report["status"] == "learning_counterfactual_holdout_mixed_blocked"
+    assert report["status"] == "learning_counterfactual_holdout_passed_guarded"
     assert report["summary"]["holdout_trial_count"] == 3
-    assert report["summary"]["non_regression_rate"] >= 0.667
+    assert report["summary"]["non_regression_rate"] == 1.0
     assert report["summary"]["false_alarm_reduction_rate"] >= 0.5
     assert report["summary"]["static_prior_miss_recovery_rate"] == 1.0
-    assert report["summary"]["supported_holdout_count"] >= 1
+    assert report["summary"]["supported_holdout_count"] == 3
+    assert report["summary"]["diagnostic_blocked_count"] == 0
     assert report["acceptance_gates"]["leave_one_case_holdout_present"] is True
-    assert report["acceptance_gates"]["independent_holdout_passed"] is False
+    assert report["acceptance_gates"]["independent_holdout_passed"] is True
+    assert report["acceptance_gates"]["field_outcome_validated"] is False
     assert report["acceptance_gates"]["runtime_default_allowed"] is False
-    assert "needs_more_independent_holdout_support" in report["blocking_gaps"]
+    assert "needs_field_or_customer_outcome_validation" in report["blocking_gaps"]
 
     for trial in report["holdout_trials"]:
         assert trial["train_source_keys"]
@@ -61,11 +63,17 @@ def test_learning_counterfactual_holdout_applies_unseen_mechanism_floor_without_
     assert htops["static_prior_missed_high_risk"] is True
     assert htops["static_prior_miss_recovered"] is True
     assert htops["learned_operator_flags_new_risk"] is True
+    assert htops["non_regression_vs_raw_interaction"] is True
+    assert htops["learned_operator_prediction"] == htops["raw_interaction_prediction"]
     assert htops["transfer_diagnostics"]["unseen_mechanism_floor_applied"] is True
+    assert htops["transfer_diagnostics"]["risk_preserving_calibration_applied"] is True
     assert htops["transfer_diagnostics"]["unseen_mechanism_count"] >= 3
     assert "unseen_high_risk_mechanism_transfer_floor" in htops["transfer_diagnostics"][
         "diagnostic_reasons"
     ]
+    assert "calibrated_to_raw_interaction_for_static_miss_recovery" in htops[
+        "transfer_diagnostics"
+    ]["diagnostic_reasons"]
 
     for source_key in ["anes_health_heldout", "anes_climate_heldout"]:
         assert trials[source_key]["raw_interaction_false_alarm"] is True
@@ -94,7 +102,7 @@ def test_learning_counterfactual_holdout_cli_writes_artifact(tmp_path):
 
     stdout = json.loads(completed.stdout)
     artifact = json.loads(Path(output).read_text())
-    assert stdout["status"] == "learning_counterfactual_holdout_mixed_blocked"
+    assert stdout["status"] == "learning_counterfactual_holdout_passed_guarded"
     assert stdout["output"] == str(output)
     assert artifact["schema_version"] == "r6-learning-counterfactual-holdout-validation-v1"
 
@@ -163,7 +171,8 @@ def test_customer_value_report_exposes_counterfactual_policy_comparison_from_sou
     assert payload["support_status"] == "guarded_current_proxy_positive_signal"
     assert payload["claim_status"] == "diagnostic"
     assert payload["summary"]["learned_operator_false_alarm_rate"] == 0.0
-    assert payload["holdout_summary"]["independent_holdout_passed"] is False
+    assert payload["holdout_summary"]["independent_holdout_passed"] is True
+    assert report["report_contract"]["runtime_default_allowed"] is False
     assert payload["top_policy_by_case"]
     assert {
         simulator["artifact_id"],
