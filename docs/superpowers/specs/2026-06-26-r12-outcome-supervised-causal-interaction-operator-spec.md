@@ -372,6 +372,14 @@ R12 可以使用 LLM，但 LLM 不作为主预测器。
 
 目标：把 HPS proxy cases 和 R11 artifacts 转成 outcome-supervised learning case registry。
 
+当前实现：
+
+- `experiments/r12_outcome_case_registry.py`
+- `tests/test_r12_outcome_case_registry.py`
+- `experiments/results/r12_outcome_case_registry/r12-outcome-case-registry-current-001.json`
+
+当前状态为 `r12_outcome_case_registry_ready_guarded`。该 artifact 使用固定 HPS segment split：train 为 `hps_REGION_2` 与 `hps_METRO_STATUS_2`，validation 为 `hps_REGION_1` 与 `hps_METRO_STATUS_1`，holdout 为 `hps_REGION_3` 与 `hps_REGION_4`。它只证明 outcome-supervised learning material 已准备好，不证明 update transfer gain。
+
 验收：
 
 - split 明确。
@@ -382,6 +390,14 @@ R12 可以使用 LLM，但 LLM 不作为主预测器。
 ### R12 L1：Causal interaction operator contract
 
 目标：定义可学习参数和 prior shrinkage 规则。
+
+当前实现：
+
+- `experiments/r12_causal_interaction_operator.py`
+- `tests/test_r12_causal_interaction_operator.py`
+- `experiments/results/r12_causal_interaction_operator/r12-causal-interaction-operator-current-001.json`
+
+当前状态为 `r12_causal_interaction_operator_ready_guarded`。该 artifact 定义 mechanism weights、segment sensitivities、interaction edge weights、uncertainty parameters、prior shrinkage rules 和 update bounds，并阻断 prompt/persona manual patch、field validation claim 和 runtime default。它不执行 outcome-supervised update。
 
 验收：
 
@@ -442,4 +458,3 @@ R12 的最小成功信号不是“指标全赢”，而是：
 ## 当前判断
 
 R12 是 Research 下一阶段更值得探索的方向，因为它直接针对 R11 的核心短板：R11 能记录反馈，但没有证明反馈能形成可迁移学习。R12 的关键不是再加一个报告，而是把 feedback learning 从 ledger 推进到 train / holdout split 下的可迁移交互算子验证。
-

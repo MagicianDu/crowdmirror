@@ -57,7 +57,7 @@ R12 L1 不计算 update。它只定义参数状态与 guard：
 - Create: `experiments/r12_outcome_case_registry.py`
 - Create: `experiments/results/r12_outcome_case_registry/r12-outcome-case-registry-current-001.json`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/test_r12_outcome_case_registry.py`:
 
@@ -203,7 +203,7 @@ def _load_current_r11_external_holdout():
     )
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run:
 
@@ -213,7 +213,7 @@ Run:
 
 Expected: FAIL with `ModuleNotFoundError: No module named 'experiments.r12_outcome_case_registry'`.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 Create `experiments/r12_outcome_case_registry.py` with these public functions and behavior:
 
@@ -460,7 +460,7 @@ if __name__ == "__main__":
     raise SystemExit(main())
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run:
 
@@ -470,7 +470,7 @@ Run:
 
 Expected: PASS with `3 passed`.
 
-- [ ] **Step 5: Generate current L0 artifact**
+- [x] **Step 5: Generate current L0 artifact**
 
 Run:
 
@@ -488,7 +488,7 @@ Expected stdout:
 {"artifact_id": "r12-outcome-case-registry-current-001", "output": "experiments/results/r12_outcome_case_registry/r12-outcome-case-registry-current-001.json", "status": "r12_outcome_case_registry_ready_guarded"}
 ```
 
-- [ ] **Step 6: Commit L0**
+- [x] **Step 6: Commit L0**
 
 Run:
 
@@ -504,7 +504,7 @@ git commit -m "feat: add R12 outcome case registry"
 - Create: `experiments/r12_causal_interaction_operator.py`
 - Create: `experiments/results/r12_causal_interaction_operator/r12-causal-interaction-operator-current-001.json`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/test_r12_causal_interaction_operator.py`:
 
@@ -668,7 +668,7 @@ def _load_current_r11_feedback_update():
     )
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run:
 
@@ -678,7 +678,7 @@ Run:
 
 Expected: FAIL with `ModuleNotFoundError: No module named 'experiments.r12_causal_interaction_operator'`.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 Create `experiments/r12_causal_interaction_operator.py` with these public functions and behavior:
 
@@ -995,7 +995,7 @@ if __name__ == "__main__":
     raise SystemExit(main())
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run:
 
@@ -1005,7 +1005,7 @@ Run:
 
 Expected: PASS with `3 passed`.
 
-- [ ] **Step 5: Generate current L1 artifact**
+- [x] **Step 5: Generate current L1 artifact**
 
 Run:
 
@@ -1024,7 +1024,7 @@ Expected stdout:
 {"artifact_id": "r12-causal-interaction-operator-current-001", "output": "experiments/results/r12_causal_interaction_operator/r12-causal-interaction-operator-current-001.json", "status": "r12_causal_interaction_operator_ready_guarded"}
 ```
 
-- [ ] **Step 6: Commit L1**
+- [x] **Step 6: Commit L1**
 
 Run:
 
@@ -1040,7 +1040,7 @@ git commit -m "feat: add R12 causal interaction operator"
 - Modify: `docs/active-spec.md`
 - Modify: `docs/superpowers/specs/2026-06-26-r12-outcome-supervised-causal-interaction-operator-spec.md`
 
-- [ ] **Step 1: Update docs**
+- [x] **Step 1: Update docs**
 
 Add current-state entries with these facts:
 
@@ -1050,7 +1050,7 @@ R12 L0 case registry 已实现为 `experiments/r12_outcome_case_registry.py`、`
 R12 L1 causal interaction operator 已实现为 `experiments/r12_causal_interaction_operator.py`、`tests/test_r12_causal_interaction_operator.py` 和 `r12-causal-interaction-operator-current-001`。它定义 mechanism weights、segment sensitivities、interaction edge weights、uncertainty parameters、prior shrinkage rules 和 update bounds，但不执行 outcome-supervised update。下一步必须进入 R12 L2，并且只有 validation / holdout transfer gain 成立后才能进入 Product support gate。
 ```
 
-- [ ] **Step 2: Run targeted tests**
+- [x] **Step 2: Run targeted tests**
 
 Run:
 
@@ -1060,7 +1060,7 @@ Run:
 
 Expected: PASS with `6 passed`.
 
-- [ ] **Step 3: Run full verification**
+- [x] **Step 3: Run full verification**
 
 Run:
 
@@ -1074,7 +1074,7 @@ Expected:
 - pytest exits 0.
 - `git diff --check` exits 0.
 
-- [ ] **Step 4: Commit docs**
+- [x] **Step 4: Commit docs**
 
 Run:
 
