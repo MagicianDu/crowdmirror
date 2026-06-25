@@ -68,6 +68,7 @@
 新增 artifact：
 
 - `r6_learning_counterfactual_simulator`
+- `r6_counterfactual_calibration_ablation`
 
 必须包含：
 
@@ -80,6 +81,14 @@
 - `allowed_claims`
 - `blocked_claims`
 - `claim_boundary`
+
+`r6_counterfactual_calibration_ablation` 必须区分：
+
+- `learned_weights_only`
+- `unseen_floor_only`
+- `floor_plus_non_regression_calibration`
+
+该 artifact 的用途是防止误归因：如果完整组合通过 current proxy holdout，不能直接说 learned mechanism weights 单独成立，必须报告 floor 和 calibration 各自贡献。
 
 ## MVP 验收标准
 
@@ -117,3 +126,4 @@
 5. 明确失败边界：哪些机制权重只是当前 proxy 过拟合，哪些能跨 case 保留。
 6. 验证 unseen mechanism transfer floor 是否能在更多独立 holdout 上同时保持风险发现和 non-regression。
 7. 验证 risk-preserving calibration 是否在 field/customer outcome 或更严格跨源 holdout 中仍然成立。
+8. 用 ablation / stress grid 报告组件贡献，避免把 current-proxy 正向信号包装成未经验证的通用学习算法。
