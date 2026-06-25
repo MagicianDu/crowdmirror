@@ -69,6 +69,7 @@
 
 - `r6_learning_counterfactual_simulator`
 - `r6_counterfactual_calibration_ablation`
+- `r6_counterfactual_robustness_validation`
 
 必须包含：
 
@@ -89,6 +90,12 @@
 - `floor_plus_non_regression_calibration`
 
 该 artifact 的用途是防止误归因：如果完整组合通过 current proxy holdout，不能直接说 learned mechanism weights 单独成立，必须报告 floor 和 calibration 各自贡献。
+
+`r6_counterfactual_robustness_validation` 必须报告 observed/proxy outcome 小幅扰动下的稳定性：
+
+- perturbation deltas 当前为 `[-0.03, 0.00, +0.03]`。
+- 如果任一扰动导致 `non_regression + false_alarm_reduction + static_miss_recovery` 不能同时成立，artifact 必须降级为 diagnostic blocked。
+- 当前已知失败边界是 near-threshold false alarm：`anes_health_heldout:+0.03`。
 
 ## MVP 验收标准
 
@@ -127,3 +134,4 @@
 6. 验证 unseen mechanism transfer floor 是否能在更多独立 holdout 上同时保持风险发现和 non-regression。
 7. 验证 risk-preserving calibration 是否在 field/customer outcome 或更严格跨源 holdout 中仍然成立。
 8. 用 ablation / stress grid 报告组件贡献，避免把 current-proxy 正向信号包装成未经验证的通用学习算法。
+9. 对 near-threshold false alarm 做单独校准验证；在 robustness 通过前，不得扩大 Product claim。
