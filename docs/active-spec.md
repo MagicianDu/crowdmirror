@@ -12,11 +12,13 @@
 - `docs/superpowers/specs/2026-06-19-r6-trend-interval-risk-positioning.md`
 - `docs/superpowers/specs/2026-06-25-r6-learning-counterfactual-method-upgrade.md`
 - `docs/superpowers/specs/2026-06-25-r7-mechanism-generative-risk-simulation-spec.md`
+- `docs/superpowers/specs/2026-06-26-r8-learnable-mechanism-interaction-simulation-spec.md`
+- `docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md`
 
 工作名：
 
-- 中文：R7 机制生成式交互风险仿真
-- English: Mechanism-Generative Interaction Risk Simulation
+- 中文：R9 证据约束交互世界模型
+- English: Evidence-Constrained Interaction World Model
 
 其中：
 
@@ -28,8 +30,10 @@
 - `2026-06-19-r6-trend-interval-risk-positioning.md` 定义最新目标修正：产品定位为“人群反应趋势与风险区间模拟器”，Research 不再以点预测 beat 静态先验为唯一目标，而是验证趋势判断、区间校准、风险排序、异常群体识别和决策价值。
 - `2026-06-25-r6-learning-counterfactual-method-upgrade.md` 定义当前方法升级方向：用 outcome residual 学习机制层权重，并把交互仿真推进为可比较的反事实策略沙盘。
 - `2026-06-25-r7-mechanism-generative-risk-simulation-spec.md` 定义新的 Research 主方法：停止把 R6 局部校准 patch 当作核心方法，转向机制状态、交互传播、分布式 rollout、策略沙盘和 outcome feedback learning。
+- `2026-06-26-r8-learnable-mechanism-interaction-simulation-spec.md` 定义可学习机制因果图、交互传播算子和 outcome feedback 更新候选，并把 R7 v2 降为固定规则 baseline。
+- `2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md` 定义当前 Research 方法探索框架：外部证据、机制学习、多主体交互 rollout、结果反馈校准和 Product guard 的组合比较。
 
-后续实现若与历史 R2-R5、旧 prompt/persona 优化、单一 proxy 扩张路线冲突，以当前阶段 addendum 为准。
+后续实现若与历史 R2-R8、旧 prompt/persona 优化、单一 proxy 扩张路线冲突，以 R9 当前阶段 addendum 和 `docs/CURRENT_STATE.md` 为准。
 
 ## 当前目标
 
@@ -101,7 +105,7 @@ R6 随后已扩展到方法验收层，并形成以下 guard / baseline / Produc
 15. `Research next task execution artifact`
 16. `Learning counterfactual mechanism simulator / policy comparison artifact`
 
-当前 R7 第一阶段只推进：
+当前 R7 第一阶段已完成并保留为 R9 baseline：
 
 1. `r7_mechanism_state_manifest`
 2. `r7_interaction_graph_manifest`
@@ -113,6 +117,21 @@ R6 随后已扩展到方法验收层，并形成以下 guard / baseline / Produc
 8. `r7_product_support_report`
 
 不再把“继续增加 public proxy 数量”作为默认目标；只有当新增数据能触发 acceptance gate，才进入数据接入。
+
+当前 R9 已完成：
+
+1. `r9_world_model_manifest`
+2. `r9_route_outputs`
+3. `r9_combination_matrix`
+4. `r9_product_support_gate`
+5. `r9_combination_comparison`
+6. `r9_synthetic_mechanism_lab`
+7. `r9_false_alarm_gate_redesign`
+8. `r9_holdout_guard`
+9. `r9_method_support` Product ingestion
+10. `r6_product_r9_diagnostic_workflow`
+
+R9 当前结论是 guarded diagnostic candidate：`A+B+C` 有 current fixture 与 synthetic lab 正向信号，但 `field_outcome_validated=false`、`runtime_default_allowed=false`，不能声明 Product core method 已成立。
 
 ## 降权历史材料
 
@@ -150,5 +169,5 @@ R6 随后已扩展到方法验收层，并形成以下 guard / baseline / Produc
 - `Interaction Signal Validity holdout validation` 已实现不等于 R6 通过；当前结论是 `source_supported_count=1`、`eligible_independent_holdout_count=2`、`passed_holdout_count=0`、`contradicted_holdout_count=2`，因此正向信号仍停留在 diagnostic。
 - 当前 scoring candidate 不再作为 Research 主贡献继续优化；R7 必须转向机制状态、交互传播 trace、分布式 rollout 和 outcome-feedback learning。
 - 当前 behavioral update operator v3 只能作为 guarded static-fallback baseline；R6 learning counterfactual mechanism simulator 保留为 guarded diagnostic baseline，不再通过 near-threshold calibration patch 扩大 claim。
-- 当前 Research 主方法转向 R7 机制生成式交互风险仿真：先做机制状态、交互图、分布式 rollout、风险区间、异常群体和策略沙盘的 artifact contract，再进入效果验证。
+- 当前 Research 主方法已转向 R9 证据约束交互世界模型：R7/R8 保留为 baseline 和 failure diagnosis 资产；R9 的下一步必须证明外部证据、交互传播学习和 outcome-feedback validation 能产生比 guarded diagnostic 更硬的跨案例信号。
 - Product 的 failure diagnosis、false-alarm gate、claim boundary、evidence cards 是新方法外层 guard，不能因为 Research 换方法而降级或移除。

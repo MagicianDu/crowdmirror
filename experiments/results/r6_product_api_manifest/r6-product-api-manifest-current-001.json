@@ -17,6 +17,7 @@
     "customer_value_report": "experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json",
     "decision_report": "experiments/results/r6_product_decision_report/r6-product-decision-report-current-001.json",
     "outcome_review": "experiments/results/r6_product_outcome_review/r6-product-outcome-review-current-001.json",
+    "r9_diagnostic_workflow": "experiments/results/r6_product_r9_diagnostic_workflow/r6-product-r9-diagnostic-workflow-current-001.json",
     "readiness_index": "experiments/results/r6_product_readiness_index/r6-product-readiness-index-current-001.json",
     "scenario_intake": "experiments/results/r6_product_scenario_intake/r6-product-scenario-intake-current-001.json",
     "story_package": "experiments/results/r6_product_story_package/r6-product-story-package-current-001.json"
@@ -25,6 +26,7 @@
     "customer_value_report": "r6-product-customer-value-report-current-001",
     "decision_report": "r6-product-decision-report-current-001",
     "outcome_review": "r6-product-outcome-review-current-001",
+    "r9_diagnostic_workflow": "r6-product-r9-diagnostic-workflow-current-001",
     "readiness_index": "r6-product-readiness-index-current-001",
     "scenario_intake": "r6-product-scenario-intake-current-001",
     "story_package": "r6-product-story-package-current-001"
@@ -148,6 +150,15 @@
       ]
     },
     {
+      "endpoint_id": "r9_diagnostic_workflow",
+      "method": "GET",
+      "path": "/r6/product/r9-diagnostic-workflow",
+      "response_contract": "source_artifact_json",
+      "source_artifact_ids": [
+        "r6-product-r9-diagnostic-workflow-current-001"
+      ]
+    },
+    {
       "endpoint_id": "outcome_review",
       "method": "GET",
       "path": "/r6/product/outcome-review",
@@ -167,6 +178,7 @@
         "r6-product-story-package-current-001",
         "r6-product-decision-report-current-001",
         "r6-product-customer-value-report-current-001",
+        "r6-product-r9-diagnostic-workflow-current-001",
         "r6-product-outcome-review-current-001"
       ]
     }
@@ -185,6 +197,7 @@
     "r6-product-story-package-current-001",
     "r6-product-decision-report-current-001",
     "r6-product-customer-value-report-current-001",
+    "r6-product-r9-diagnostic-workflow-current-001",
     "r6-product-outcome-review-current-001",
     "r6-product-evidence-cards-current-003",
     "r6-evidence-report-current-014",
@@ -222,6 +235,10 @@
     {
       "artifact_id": "r6-product-customer-value-report-current-001",
       "path": "experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json"
+    },
+    {
+      "artifact_id": "r6-product-r9-diagnostic-workflow-current-001",
+      "path": "experiments/results/r6_product_r9_diagnostic_workflow/r6-product-r9-diagnostic-workflow-current-001.json"
     },
     {
       "artifact_id": "r6-product-outcome-review-current-001",

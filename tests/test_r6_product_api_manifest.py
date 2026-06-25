@@ -41,6 +41,7 @@ def test_r6_product_api_manifest_exposes_guarded_artifact_contract():
         "story_package",
         "decision_report",
         "customer_value_report",
+        "r9_diagnostic_workflow",
         "outcome_review",
         "source_registry",
     }
@@ -50,6 +51,7 @@ def test_r6_product_api_manifest_exposes_guarded_artifact_contract():
         "story_package": "r6-product-story-package-current-001",
         "decision_report": "r6-product-decision-report-current-001",
         "customer_value_report": "r6-product-customer-value-report-current-001",
+        "r9_diagnostic_workflow": "r6-product-r9-diagnostic-workflow-current-001",
         "outcome_review": "r6-product-outcome-review-current-001",
     }
     assert "r6-product-customer-value-report-current-001" in manifest["source_refs"]
@@ -82,6 +84,21 @@ def test_r6_product_api_manifest_rejects_static_story_fallback(tmp_path):
     with pytest.raises(ValueError, match="story_package.ui_contract"):
         build_r6_product_api_manifest(
             artifact_id="r6-product-api-manifest-static-fallback",
+            run_id="r6-product-api-run",
+            artifact_paths=fixtures,
+        )
+
+
+def test_r6_product_api_manifest_rejects_runtime_default_r9_workflow(tmp_path):
+    fixtures = _copy_current_product_artifacts(tmp_path)
+    workflow_path = fixtures["r9_diagnostic_workflow"]
+    workflow = json.loads(workflow_path.read_text())
+    workflow["workflow_contract"]["runtime_default_allowed"] = True
+    workflow_path.write_text(json.dumps(workflow, allow_nan=False))
+
+    with pytest.raises(ValueError, match="r9_diagnostic_workflow.workflow_contract"):
+        build_r6_product_api_manifest(
+            artifact_id="r6-product-api-manifest-r9-runtime-default",
             run_id="r6-product-api-run",
             artifact_paths=fixtures,
         )
@@ -169,6 +186,10 @@ def _copy_current_product_artifacts(tmp_path):
         "customer_value_report": (
             "experiments/results/r6_product_customer_value_report/"
             "r6-product-customer-value-report-current-001.json"
+        ),
+        "r9_diagnostic_workflow": (
+            "experiments/results/r6_product_r9_diagnostic_workflow/"
+            "r6-product-r9-diagnostic-workflow-current-001.json"
         ),
         "outcome_review": (
             "experiments/results/r6_product_outcome_review/"
