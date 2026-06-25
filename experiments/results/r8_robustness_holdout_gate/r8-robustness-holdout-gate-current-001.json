@@ -13,6 +13,7 @@
   "blocked_claims": [
     "field_outcome_validated=true",
     "runtime_default_allowed=true",
+    "runtime default ready",
     "R8 validated"
   ],
   "claim_boundary": "R8 learnable mechanism artifact. It supports guarded mechanism-causal interaction simulation, interval/risk diagnosis, attribution, and bounded operator update candidates only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",

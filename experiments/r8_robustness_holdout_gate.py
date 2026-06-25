@@ -107,6 +107,7 @@ def build_r8_robustness_holdout_gate(
         "blocked_claims": [
             "field_outcome_validated=true",
             "runtime_default_allowed=true",
+            "runtime default ready",
             "R8 validated",
         ],
         "claim_boundary": R8_CLAIM_BOUNDARY,

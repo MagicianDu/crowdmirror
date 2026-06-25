@@ -5,6 +5,7 @@ import sys
 from experiments.r6_product_customer_value_report import (
     build_r6_product_customer_value_report,
 )
+from experiments.r8_robustness_holdout_gate import build_r8_robustness_holdout_gate
 
 
 def test_r6_product_customer_value_report_contains_trend_interval_risk_sections():
@@ -98,3 +99,28 @@ def test_r6_product_customer_value_report_cli_writes_artifact(tmp_path):
         "output": str(output),
         "status": "customer_value_report_ready_guarded",
     }
+
+
+def test_product_customer_value_report_can_ingest_r8_support_gate():
+    r8_gate = build_r8_robustness_holdout_gate(
+        artifact_id="r8-robustness-holdout-gate-test",
+        run_id="r8-product-ingestion-run",
+    )
+    report = build_r6_product_customer_value_report(
+        artifact_id="r6-product-customer-value-report-r8-test",
+        run_id="r8-product-ingestion-run",
+        r8_robustness_holdout_gate=r8_gate,
+    )
+
+    assert "r8_method_support" in report["customer_sections"]
+    assert "r8_method_support" in report["display_payload"]
+    assert report["display_payload"]["r8_method_support"]["status"] == r8_gate["status"]
+    assert report["display_payload"]["r8_method_support"][
+        "runtime_default_allowed"
+    ] is False
+    assert report["display_payload"]["r8_method_support"][
+        "field_outcome_validated"
+    ] is False
+    assert r8_gate["artifact_id"] in report["source_refs"]
+    assert "R8 validated" in report["blocked_claims"]
+    assert "runtime default ready" in report["blocked_claims"]

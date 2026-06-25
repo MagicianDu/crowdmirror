@@ -54,7 +54,9 @@
     "Research \u5df2\u5b8c\u6574\u652f\u6491 Product \u5168\u90e8\u6838\u5fc3\u4ef7\u503c",
     "field_outcome_validated=true",
     "runtime_default_allowed=true",
-    "\u7cfb\u7edf\u53ef\u4ee5\u7cbe\u786e\u9884\u6d4b\u5355\u70b9\u7ed3\u679c"
+    "\u7cfb\u7edf\u53ef\u4ee5\u7cbe\u786e\u9884\u6d4b\u5355\u70b9\u7ed3\u679c",
+    "runtime default ready",
+    "R8 validated"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -76,6 +78,7 @@
       "mechanism_explanation",
       "counterfactual_policy_comparison",
       "research_support_gap_ledger",
+      "r8_method_support",
       "evidence_and_blocked_claims",
       "outcome_review_plan"
     ],
@@ -168,7 +171,7 @@
     "product_api_manifest_ready": true,
     "runtime_default_allowed": false
   },
-  "run_id": "r6-learning-counterfactual-current",
+  "run_id": "r6-product-api-current",
   "schema_version": "r6-product-api-manifest-v1",
   "source_refs": [
     "r6-product-readiness-index-current-001",
@@ -184,7 +187,8 @@
     "r6-research-product-value-support-v2-current-001",
     "r6-product-claim-evidence-registry-current-001",
     "r6-learning-counterfactual-simulator-current-001",
-    "r6-learning-counterfactual-holdout-validation-current-001"
+    "r6-learning-counterfactual-holdout-validation-current-001",
+    "r8-robustness-holdout-gate-current-001"
   ],
   "source_registry": [
     {
@@ -258,6 +262,10 @@
     {
       "artifact_id": "r6-learning-counterfactual-holdout-validation-current-001",
       "path": "experiments/results/r6_learning_counterfactual_holdout_validation/r6-learning-counterfactual-holdout-validation-current-001.json"
+    },
+    {
+      "artifact_id": "r8-robustness-holdout-gate-current-001",
+      "path": "experiments/results/r8_robustness_holdout_gate/r8-robustness-holdout-gate-current-001.json"
     }
   ],
   "status": "product_api_manifest_ready_guarded"
