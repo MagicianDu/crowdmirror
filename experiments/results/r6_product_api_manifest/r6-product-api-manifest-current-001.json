@@ -56,7 +56,8 @@
     "runtime_default_allowed=true",
     "\u7cfb\u7edf\u53ef\u4ee5\u7cbe\u786e\u9884\u6d4b\u5355\u70b9\u7ed3\u679c",
     "runtime default ready",
-    "R8 validated"
+    "R8 validated",
+    "accuracy superiority"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -188,7 +189,8 @@
     "r6-product-claim-evidence-registry-current-001",
     "r6-learning-counterfactual-simulator-current-001",
     "r6-learning-counterfactual-holdout-validation-current-001",
-    "r8-robustness-holdout-gate-current-001"
+    "r8-robustness-holdout-gate-current-001",
+    "r8-stop-loss-diagnosis-current-001"
   ],
   "source_registry": [
     {
@@ -266,6 +268,10 @@
     {
       "artifact_id": "r8-robustness-holdout-gate-current-001",
       "path": "experiments/results/r8_robustness_holdout_gate/r8-robustness-holdout-gate-current-001.json"
+    },
+    {
+      "artifact_id": "r8-stop-loss-diagnosis-current-001",
+      "path": "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json"
     }
   ],
   "status": "product_api_manifest_ready_guarded"

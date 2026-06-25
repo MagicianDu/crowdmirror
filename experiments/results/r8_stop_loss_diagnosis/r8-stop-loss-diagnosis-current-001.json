@@ -1,0 +1,90 @@
+{
+  "acceptance_gates": {
+    "field_outcome_validated": false,
+    "product_diagnostic_ingestion_allowed": true,
+    "runtime_default_allowed": false,
+    "stop_loss_diagnosis_present": true
+  },
+  "allowed_claims": [
+    "R8 stop-loss diagnosis can explain why R8 is diagnostic-only.",
+    "Product may display R8 as failure diagnosis and outcome replay evidence."
+  ],
+  "artifact_id": "r8-stop-loss-diagnosis-current-001",
+  "blocked_claims": [
+    "R8 validated",
+    "runtime default ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "accuracy superiority"
+  ],
+  "claim_boundary": "R8 learnable mechanism artifact. It supports guarded mechanism-causal interaction simulation, interval/risk diagnosis, attribution, and bounded operator update candidates only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+  "diagnosis": [
+    {
+      "cause_id": "not_beating_fixed_rule_baseline",
+      "evidence": "R8 wins only risk_ranking_quality; R7 v2 or R6/static baselines still win trend, interval, false alarm, and static-miss recovery metrics.",
+      "implication": "R8 cannot be claimed as a stronger Product core method."
+    },
+    {
+      "cause_id": "l1_l2_gate_blocked",
+      "evidence": "L1=diagnostic_blocked, L2=diagnostic_blocked.",
+      "implication": "Robustness evidence can be shown as diagnostic guard output, not as runtime authorization."
+    },
+    {
+      "cause_id": "field_customer_outcome_missing",
+      "evidence": "field_outcome_validated=false in all R8 gates.",
+      "implication": "Product can use R8 for failure diagnosis and outcome replay, but not field-validated claims."
+    }
+  ],
+  "evidence_summary": {
+    "baseline_status": "r8_baseline_comparison_diagnostic_or_stop_loss",
+    "baseline_stop_loss_recommendation": "keep_r8_as_diagnostic_asset",
+    "l1_status": "diagnostic_blocked",
+    "l2_status": "diagnostic_blocked",
+    "leave_one_non_regression_rate": 1.0,
+    "perturbation_pass_rate": 1.0,
+    "r8_metric_win_count": 1,
+    "r8_winning_metrics": [
+      "risk_ranking_quality"
+    ],
+    "robustness_status": "r8_robustness_diagnostic_or_stop_loss",
+    "robustness_stop_loss_recommendation": "keep_r8_as_diagnostic_asset",
+    "total_compared_metrics": 5
+  },
+  "product_decision": {
+    "customer_visible_use": "failure_diagnosis_and_outcome_replay",
+    "display_level": "diagnostic_only",
+    "product_core_method_claim_allowed": false
+  },
+  "recommended_next_tracks": [
+    {
+      "entry_condition": "new operator must beat R7 v2 on more than one metric and pass L1 gate",
+      "goal": "replace fixed current-proxy heuristics with a stronger transferable mechanism learner",
+      "track_id": "research_stronger_learnable_operator"
+    },
+    {
+      "entry_condition": "at least one field/customer outcome has aligned scenario, segment, and mechanism trace",
+      "goal": "collect or ingest real outcome evidence that can validate trend, interval, ranking, and false-alarm control",
+      "track_id": "field_or_customer_outcome"
+    },
+    {
+      "entry_condition": "all blocked claims remain source-backed and runtime-default false",
+      "goal": "turn blocked R8 evidence into customer-facing risk boundary, replay, and learning workflow",
+      "track_id": "product_failure_diagnosis_hardening"
+    }
+  ],
+  "research_decision": "keep_r8_as_diagnostic_asset",
+  "root_causes": [
+    "not_beating_fixed_rule_baseline",
+    "insufficient_metric_dominance",
+    "l1_l2_gate_blocked",
+    "field_customer_outcome_missing",
+    "runtime_default_guard_blocked"
+  ],
+  "run_id": "r8-stop-loss-diagnosis-current",
+  "schema_version": "r8-stop-loss-diagnosis-v1",
+  "source_refs": [
+    "r8-stop-loss-diagnosis-current-001-baseline-comparison",
+    "r8-stop-loss-diagnosis-current-001-robustness-holdout-gate"
+  ],
+  "status": "r8_stop_loss_diagnosis_ready"
+}

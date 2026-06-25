@@ -6,6 +6,7 @@ from experiments.r6_product_customer_value_report import (
     build_r6_product_customer_value_report,
 )
 from experiments.r8_robustness_holdout_gate import build_r8_robustness_holdout_gate
+from experiments.r8_stop_loss_diagnosis import build_r8_stop_loss_diagnosis
 
 
 def test_r6_product_customer_value_report_contains_trend_interval_risk_sections():
@@ -124,3 +125,36 @@ def test_product_customer_value_report_can_ingest_r8_support_gate():
     assert r8_gate["artifact_id"] in report["source_refs"]
     assert "R8 validated" in report["blocked_claims"]
     assert "runtime default ready" in report["blocked_claims"]
+
+
+def test_product_customer_value_report_can_show_r8_stop_loss_diagnosis():
+    r8_gate = build_r8_robustness_holdout_gate(
+        artifact_id="r8-robustness-holdout-gate-test",
+        run_id="r8-product-ingestion-run",
+    )
+    diagnosis = build_r8_stop_loss_diagnosis(
+        artifact_id="r8-stop-loss-diagnosis-test",
+        run_id="r8-product-ingestion-run",
+        robustness_holdout_gate=r8_gate,
+    )
+    report = build_r6_product_customer_value_report(
+        artifact_id="r6-product-customer-value-report-r8-diagnosis-test",
+        run_id="r8-product-ingestion-run",
+        r8_robustness_holdout_gate=r8_gate,
+        r8_stop_loss_diagnosis=diagnosis,
+    )
+
+    r8_support = report["display_payload"]["r8_method_support"]
+    assert r8_support["diagnosis_status"] == "r8_stop_loss_diagnosis_ready"
+    assert r8_support["root_causes"] == diagnosis["root_causes"]
+    assert r8_support["recommended_next_tracks"] == diagnosis[
+        "recommended_next_tracks"
+    ]
+    assert diagnosis["artifact_id"] in r8_support["source_artifact_ids"]
+    assert diagnosis["artifact_id"] in report["source_refs"]
+    section = next(
+        item
+        for item in report["section_contracts"]
+        if item["section_id"] == "r8_method_support"
+    )
+    assert diagnosis["artifact_id"] in section["source_artifact_ids"]

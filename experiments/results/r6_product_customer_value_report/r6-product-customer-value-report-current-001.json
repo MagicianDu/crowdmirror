@@ -30,7 +30,8 @@
     "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf",
     "\u7cfb\u7edf\u53ef\u4ee5\u7cbe\u786e\u9884\u6d4b\u5355\u70b9\u7ed3\u679c",
     "runtime default ready",
-    "R8 validated"
+    "R8 validated",
+    "accuracy superiority"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -220,12 +221,39 @@
       "support_status": "diagnostic_only"
     },
     "r8_method_support": {
+      "diagnosis_status": "r8_stop_loss_diagnosis_ready",
       "field_outcome_validated": false,
       "l1_status": "diagnostic_blocked",
       "l2_status": "diagnostic_blocked",
+      "recommended_next_tracks": [
+        {
+          "entry_condition": "new operator must beat R7 v2 on more than one metric and pass L1 gate",
+          "goal": "replace fixed current-proxy heuristics with a stronger transferable mechanism learner",
+          "track_id": "research_stronger_learnable_operator"
+        },
+        {
+          "entry_condition": "at least one field/customer outcome has aligned scenario, segment, and mechanism trace",
+          "goal": "collect or ingest real outcome evidence that can validate trend, interval, ranking, and false-alarm control",
+          "track_id": "field_or_customer_outcome"
+        },
+        {
+          "entry_condition": "all blocked claims remain source-backed and runtime-default false",
+          "goal": "turn blocked R8 evidence into customer-facing risk boundary, replay, and learning workflow",
+          "track_id": "product_failure_diagnosis_hardening"
+        }
+      ],
+      "research_decision": "keep_r8_as_diagnostic_asset",
+      "root_causes": [
+        "not_beating_fixed_rule_baseline",
+        "insufficient_metric_dominance",
+        "l1_l2_gate_blocked",
+        "field_customer_outcome_missing",
+        "runtime_default_guard_blocked"
+      ],
       "runtime_default_allowed": false,
       "source_artifact_ids": [
-        "r8-robustness-holdout-gate-current-001"
+        "r8-robustness-holdout-gate-current-001",
+        "r8-stop-loss-diagnosis-current-001"
       ],
       "status": "r8_robustness_diagnostic_or_stop_loss",
       "stop_loss_recommendation": "keep_r8_as_diagnostic_asset"
@@ -483,12 +511,14 @@
         "field_outcome_validated=true",
         "runtime_default_allowed=true",
         "runtime default ready",
-        "R8 validated"
+        "R8 validated",
+        "accuracy superiority"
       ],
       "claim_status": "diagnostic",
       "section_id": "r8_method_support",
       "source_artifact_ids": [
-        "r8-robustness-holdout-gate-current-001"
+        "r8-robustness-holdout-gate-current-001",
+        "r8-stop-loss-diagnosis-current-001"
       ]
     },
     {
@@ -512,7 +542,8 @@
     "r6-product-claim-evidence-registry-current-001",
     "r6-learning-counterfactual-simulator-current-001",
     "r6-learning-counterfactual-holdout-validation-current-001",
-    "r8-robustness-holdout-gate-current-001"
+    "r8-robustness-holdout-gate-current-001",
+    "r8-stop-loss-diagnosis-current-001"
   ],
   "source_registry": [
     {
@@ -542,6 +573,10 @@
     {
       "artifact_id": "r8-robustness-holdout-gate-current-001",
       "path": "experiments/results/r8_robustness_holdout_gate/r8-robustness-holdout-gate-current-001.json"
+    },
+    {
+      "artifact_id": "r8-stop-loss-diagnosis-current-001",
+      "path": "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json"
     }
   ],
   "status": "customer_value_report_ready_guarded"
