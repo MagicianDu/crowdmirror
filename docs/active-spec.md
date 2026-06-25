@@ -151,6 +151,12 @@ R10 L1 已读取 Census 官方 HTOPS/HPS March 2026 PUF CSV zip，形成真实 p
 
 R10 L2 已把 HPS ingestion artifact 转成 route B semantic precedent retrieval 输入，包括 source-backed precedent case、低敏感 segment risk ranking 和 trend/interval/ranking metric candidates。它证明外部证据可以进入方法链路，但尚未证明该证据能提升 R9/R10 combination 的效果。
 
+当前 R10 L3 已完成：
+
+1. `r10_hps_combination_comparison`
+
+R10 L3 已把 HPS route-B evidence input 接入组合比较 overlay。当前只出现 source-backed risk-ranking candidate gain，且 interval non-regression 失败，因此它不能升级 Product core method；下一步必须针对 interval regression 做 holdout/outcome mapping 或区间校准。
+
 ## 降权历史材料
 
 以下材料只作为历史经验或基础设施参考，不再作为当前主线：
@@ -191,4 +197,5 @@ R10 L2 已把 HPS ingestion artifact 转成 route B semantic precedent retrieval
 - R10 L0 external evidence registry 只能作为数据接入入口；R10 L1 必须把至少一个官方公开候选源转成可复现 ingestion artifact，报告样本量、时间窗、outcome label、segment coverage、缺失字段和 blocked claims，才允许进入方法效果比较。
 - R10 L1 HPS ingestion 通过后，下一步不能停留在“数据已接入”；必须进入 route B precedent retrieval / route A evidence-constrained operator 的效果比较，继续报告 `field_outcome_validated=false` 和 `runtime_default_allowed=false`，直到有独立 holdout 或客户/field outcome。
 - R10 L2 route-B precedent retrieval 通过后，下一步必须进入组合比较：将 HPS route-B evidence input 接入 R9/R10 trend、interval、risk ranking 和 decision value 候选指标；若没有 holdout/outcome mapping，仍不得升级 Product core method。
+- R10 L3 combination overlay 若出现 risk-ranking gain 但 interval non-regression 失败，只能作为诊断正向信号；R10 L4 必须修复 interval regression 或明确止损为风险排序诊断资产。
 - Product 的 failure diagnosis、false-alarm gate、claim boundary、evidence cards 是新方法外层 guard，不能因为 Research 换方法而降级或移除。

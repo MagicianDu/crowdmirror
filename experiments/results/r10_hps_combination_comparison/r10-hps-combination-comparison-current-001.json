@@ -1,0 +1,154 @@
+{
+  "acceptance_gates": {
+    "comparison_metrics_present": true,
+    "field_outcome_validated": false,
+    "hps_precedent_retrieval_present": true,
+    "interval_non_regression_passed": false,
+    "r9_guarded_baseline_present": true,
+    "runtime_default_allowed": false,
+    "source_backed_risk_ranking_gain_present": true
+  },
+  "allowed_claims": [
+    "R10 HPS route-B evidence can be compared against the guarded R9 A+B+C baseline as a source-backed overlay.",
+    "The overlay adds a real-public-data risk-ranking candidate, but still needs holdout or outcome mapping."
+  ],
+  "artifact_id": "r10-hps-combination-comparison-current-001",
+  "blocked_claims": [
+    "R10 validated",
+    "R10 supports Product core method by default",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "runtime default ready",
+    "HPS evidence proves decision value",
+    "accuracy superiority",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_boundary": "R10 HPS combination comparison artifact. It overlays a real-public-data route-B HPS precedent signal onto the guarded R9 A+B+C baseline for method exploration only; it is not holdout validation, not field validation, and not runtime default authorization.",
+  "comparison_contract": {
+    "compares_against_r9_guarded_baseline": true,
+    "field_outcome_validated": false,
+    "runtime_default_allowed": false,
+    "source_backed_only": true,
+    "uses_real_public_data_ingestion": true
+  },
+  "evidence_gain_summary": {
+    "decision_value_delta": 0.0,
+    "external_public_data_ingested": true,
+    "interval_coverage_delta": -0.333,
+    "net_decision": "continue_guarded_holdout_mapping_before_product_escalation",
+    "risk_ranking_quality_delta": 0.083,
+    "route_b_source_backed_precedent_available": true
+  },
+  "hps_precedent_signal": {
+    "field_outcome_validated": false,
+    "risk_interval_proxy": {
+      "lower": 0.204271,
+      "median": 0.237774,
+      "upper": 0.33601
+    },
+    "runtime_default_allowed": false,
+    "top_segments": [
+      {
+        "risk_proxy_share": 0.33601,
+        "segment_column": "METRO_STATUS",
+        "segment_value": "2",
+        "weighted_valid_total": 11633385.576875
+      },
+      {
+        "risk_proxy_share": 0.32435,
+        "segment_column": "REGION",
+        "segment_value": "2",
+        "weighted_valid_total": 51740337.129658
+      },
+      {
+        "risk_proxy_share": 0.239438,
+        "segment_column": "METRO_STATUS",
+        "segment_value": "1",
+        "weighted_valid_total": 238892928.008232
+      },
+      {
+        "risk_proxy_share": 0.23611,
+        "segment_column": "REGION",
+        "segment_value": "1",
+        "weighted_valid_total": 43134232.343914
+      },
+      {
+        "risk_proxy_share": 0.228699,
+        "segment_column": "REGION",
+        "segment_value": "3",
+        "weighted_valid_total": 96098022.842502
+      }
+    ],
+    "trend_signal": "price_pressure_risk_watch"
+  },
+  "method_ids": [
+    "r9_A+B+C_guarded_current_fixture",
+    "r10_A+B_hps+C_guarded_overlay"
+  ],
+  "method_metrics": {
+    "r10_A+B_hps+C_guarded_overlay": {
+      "decision_value_score": 0.78,
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 0.667,
+      "risk_ranking_quality": 0.75,
+      "static_prior_miss_recovery_rate": 1.0,
+      "trend_direction_accuracy": 0.667
+    },
+    "r9_A+B+C_guarded_current_fixture": {
+      "decision_value_score": 0.78,
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 1.0,
+      "risk_ranking_quality": 0.667,
+      "static_prior_miss_recovery_rate": 1.0,
+      "trend_direction_accuracy": 0.667
+    }
+  },
+  "metric_direction": {
+    "decision_value_score": "higher_is_better",
+    "false_alarm_rate": "lower_is_better",
+    "interval_coverage": "higher_is_better",
+    "risk_ranking_quality": "higher_is_better",
+    "static_prior_miss_recovery_rate": "higher_is_better",
+    "trend_direction_accuracy": "higher_is_better"
+  },
+  "metric_ids": [
+    "trend_direction_accuracy",
+    "interval_coverage",
+    "risk_ranking_quality",
+    "false_alarm_rate",
+    "static_prior_miss_recovery_rate",
+    "decision_value_score"
+  ],
+  "run_id": "r10-hps-combination-comparison-current",
+  "schema_version": "r10-hps-combination-comparison-v1",
+  "source_refs": [
+    "r10-hps-precedent-retrieval-current-001"
+  ],
+  "status": "r10_hps_combination_comparison_ready_guarded",
+  "winner_by_metric": {
+    "decision_value_score": {
+      "method": "r9_A+B+C_guarded_current_fixture",
+      "value": 0.78
+    },
+    "false_alarm_rate": {
+      "method": "r9_A+B+C_guarded_current_fixture",
+      "value": 0.0
+    },
+    "interval_coverage": {
+      "method": "r9_A+B+C_guarded_current_fixture",
+      "value": 1.0
+    },
+    "risk_ranking_quality": {
+      "method": "r10_A+B_hps+C_guarded_overlay",
+      "value": 0.75
+    },
+    "static_prior_miss_recovery_rate": {
+      "method": "r9_A+B+C_guarded_current_fixture",
+      "value": 1.0
+    },
+    "trend_direction_accuracy": {
+      "method": "r9_A+B+C_guarded_current_fixture",
+      "value": 0.667
+    }
+  }
+}
