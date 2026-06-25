@@ -16,6 +16,7 @@ from experiments.r9_false_alarm_gate_redesign import (
 )
 from experiments.r9_holdout_guard import build_r9_holdout_guard
 from experiments.r9_synthetic_mechanism_lab import build_r9_synthetic_mechanism_lab
+from experiments.r11_product_shadow_trial import build_r11_product_shadow_trial
 
 
 def test_r6_product_customer_value_report_contains_trend_interval_risk_sections():
@@ -309,3 +310,53 @@ def test_product_customer_value_report_can_show_r9_guarded_diagnostic_support():
     assert holdout_guard["artifact_id"] in section["source_artifact_ids"]
     assert "R9 validated" in report["blocked_claims"]
     assert "runtime default ready" in report["blocked_claims"]
+
+
+def test_product_customer_value_report_can_show_r11_shadow_trial():
+    shadow_trial = build_r11_product_shadow_trial(
+        artifact_id="r11-product-shadow-trial-test",
+        run_id="r11-product-ingestion-run",
+        r11_external_holdout_validation=_load_current_r11_external_holdout(),
+    )
+
+    report = build_r6_product_customer_value_report(
+        artifact_id="r6-product-customer-value-report-r11-test",
+        run_id="r11-product-ingestion-run",
+        r11_product_shadow_trial=shadow_trial,
+    )
+
+    assert "r11_shadow_trial" in report["customer_sections"]
+    assert "r11_shadow_trial" in report["display_payload"]
+    r11_shadow = report["display_payload"]["r11_shadow_trial"]
+    assert r11_shadow["support_status"] == "shadow_only_guarded_positive"
+    assert r11_shadow["primary_decision_source"] == (
+        "guarded_baseline_customer_value_report"
+    )
+    assert r11_shadow["r11_can_override_primary_decision"] is False
+    assert r11_shadow["runtime_default_allowed"] is False
+    assert r11_shadow["field_outcome_validated"] is False
+    assert r11_shadow["outcome_review_handoff"]["target_artifact_id"] == (
+        "r6-product-outcome-review-current-001"
+    )
+    assert shadow_trial["artifact_id"] in report["source_refs"]
+    section = next(
+        item
+        for item in report["section_contracts"]
+        if item["section_id"] == "r11_shadow_trial"
+    )
+    assert section["claim_status"] == "shadow_only"
+    assert shadow_trial["artifact_id"] in section["source_artifact_ids"]
+    assert "R11 supports Product core method by default" in report["blocked_claims"]
+
+
+def _load_current_r11_external_holdout():
+    from pathlib import Path
+
+    repo_root = Path(__file__).resolve().parents[1]
+    return json.loads(
+        (
+            repo_root
+            / "experiments/results/r11_external_holdout_validation/"
+            "r11-external-holdout-validation-current-001.json"
+        ).read_text()
+    )

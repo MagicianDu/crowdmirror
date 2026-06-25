@@ -41,6 +41,7 @@ def test_r6_product_api_manifest_exposes_guarded_artifact_contract():
         "story_package",
         "decision_report",
         "customer_value_report",
+        "r11_shadow_trial",
         "r9_diagnostic_workflow",
         "outcome_review",
         "source_registry",
@@ -51,6 +52,7 @@ def test_r6_product_api_manifest_exposes_guarded_artifact_contract():
         "story_package": "r6-product-story-package-current-001",
         "decision_report": "r6-product-decision-report-current-001",
         "customer_value_report": "r6-product-customer-value-report-current-001",
+        "r11_product_shadow_trial": "r11-product-shadow-trial-current-001",
         "r9_diagnostic_workflow": "r6-product-r9-diagnostic-workflow-current-001",
         "outcome_review": "r6-product-outcome-review-current-001",
     }
@@ -186,6 +188,10 @@ def _copy_current_product_artifacts(tmp_path):
         "customer_value_report": (
             "experiments/results/r6_product_customer_value_report/"
             "r6-product-customer-value-report-current-001.json"
+        ),
+        "r11_product_shadow_trial": (
+            "experiments/results/r11_product_shadow_trial/"
+            "r11-product-shadow-trial-current-001.json"
         ),
         "r9_diagnostic_workflow": (
             "experiments/results/r6_product_r9_diagnostic_workflow/"

@@ -149,6 +149,38 @@ L1 使用 HPS public-use ingestion artifact 中的两个不同 outcome proxy：
 
 这是一条比 L0 更强的正向信号：R11 不只是在 controlled proxy lab 中成立，也能在真实 public-use HPS proxy holdout 中保持风险排序、区间覆盖、误报和静态漏报恢复边界。但它仍不是客户 field outcome，也不能直接升级 Product core method。下一步应进入 Product shadow trial，让 Product 后台运行 R11，同时保持客户可见主结论由 guarded baseline 输出。
 
+## 当前 L2 Product shadow trial
+
+当前 L2 已实现为：
+
+- `experiments/r11_product_shadow_trial.py`
+- `experiments/results/r11_product_shadow_trial/r11-product-shadow-trial-current-001.json`
+- `tests/test_r11_product_shadow_trial.py`
+- `experiments/r6_product_customer_value_report.py` 的 `r11_shadow_trial` section
+- `experiments/r6_product_api_manifest.py` 的 `/r6/product/r11-shadow-trial` endpoint
+
+L2 的 Product 合同是：
+
+- R11 后台运行，作为 shadow-only evidence card。
+- 客户可见主结论仍由 guarded baseline customer value report 输出。
+- R11 不允许覆盖 primary decision。
+- R11 输出必须进入 outcome review handoff。
+- 真实客户或 field outcome 回来前，不允许 runtime default。
+
+当前 L2 current result：
+
+- `status=r11_product_shadow_trial_ready_guarded`
+- `claim_level=product_shadow_trial_only`
+- `shadow_evidence_card.claim_status=shadow_only_guarded_positive`
+- `customer_visible_primary_decision.r11_can_override_primary_decision=false`
+- `outcome_review_handoff.requires_customer_or_field_outcome=true`
+- `prompt_or_persona_manual_patch_allowed=false`
+- `product_core_method_ready=false`
+- `field_outcome_validated=false`
+- `runtime_default_allowed=false`
+
+Product customer value report 已新增 `r11_shadow_trial` section，API manifest 已新增 `/r6/product/r11-shadow-trial` endpoint。该能力使 Product 能展示 R11 的技术壁垒和证据进展，但仍不把 R11 包装成默认可用的核心预测方法。
+
 ## 下一阶段任务
 
 ### R11 L1：外部 holdout 映射
@@ -172,6 +204,8 @@ L1 使用 HPS public-use ingestion artifact 中的两个不同 outcome proxy：
 - 客户可见主结论仍由 guarded baseline 输出。
 - R11 输出必须绑定 artifact、source refs 和 blocked claims。
 - shadow trial 记录人工复核入口和 outcome 回流入口。
+
+当前状态：已完成。
 
 ### R11 L3：Outcome feedback update
 

@@ -39,6 +39,10 @@ R6_PRODUCT_API_MANIFEST_DEFAULT_PATHS = {
         "experiments/results/r6_product_customer_value_report/"
         "r6-product-customer-value-report-current-001.json"
     ),
+    "r11_product_shadow_trial": (
+        "experiments/results/r11_product_shadow_trial/"
+        "r11-product-shadow-trial-current-001.json"
+    ),
     "r9_diagnostic_workflow": (
         "experiments/results/r6_product_r9_diagnostic_workflow/"
         "r6-product-r9-diagnostic-workflow-current-001.json"
@@ -65,6 +69,10 @@ R6_PRODUCT_API_REQUIRED_ARTIFACTS = {
     "customer_value_report": (
         "r6-product-customer-value-report-v1",
         "customer_value_report_ready_guarded",
+    ),
+    "r11_product_shadow_trial": (
+        "r11-product-shadow-trial-v1",
+        "r11_product_shadow_trial_ready_guarded",
     ),
     "r9_diagnostic_workflow": (
         "r6-product-r9-diagnostic-workflow-v1",
@@ -93,6 +101,7 @@ def build_r6_product_api_manifest(
     _validate_story_package(artifacts["story_package"])
     _validate_decision_report(artifacts["decision_report"])
     _validate_customer_value_report(artifacts["customer_value_report"])
+    _validate_r11_product_shadow_trial(artifacts["r11_product_shadow_trial"])
     _validate_r9_diagnostic_workflow(artifacts["r9_diagnostic_workflow"])
     _validate_runtime_boundaries(
         readiness_index=artifacts["readiness_index"],
@@ -113,6 +122,7 @@ def build_r6_product_api_manifest(
         story_package=artifacts["story_package"],
         decision_report=artifacts["decision_report"],
         customer_value_report=artifacts["customer_value_report"],
+        r11_product_shadow_trial=artifacts["r11_product_shadow_trial"],
         r9_diagnostic_workflow=artifacts["r9_diagnostic_workflow"],
     )
     _assert_registry_paths_match_artifacts(source_registry)
@@ -149,6 +159,7 @@ def build_r6_product_api_manifest(
                 *artifacts["story_package"].get("source_refs", []),
                 *artifacts["decision_report"].get("source_refs", []),
                 *artifacts["customer_value_report"].get("source_refs", []),
+                *artifacts["r11_product_shadow_trial"].get("source_refs", []),
                 *artifacts["r9_diagnostic_workflow"].get("source_refs", []),
             ]
         ),
@@ -179,6 +190,7 @@ def build_r6_product_api_manifest(
                 *artifacts["story_package"].get("blocked_claims", []),
                 *artifacts["decision_report"].get("blocked_claims", []),
                 *artifacts["customer_value_report"].get("blocked_claims", []),
+                *artifacts["r11_product_shadow_trial"].get("blocked_claims", []),
                 *artifacts["r9_diagnostic_workflow"].get("blocked_claims", []),
                 "field validation 已完成",
                 "runtime default 可以开启",
@@ -316,6 +328,74 @@ def _validate_customer_value_report(customer_value_report: dict[str, Any]) -> No
                     customer_value_report["section_contracts"]
                 )
             ],
+        ],
+    )
+
+
+def _validate_r11_product_shadow_trial(r11_product_shadow_trial: dict[str, Any]) -> None:
+    contract = _require_object(
+        r11_product_shadow_trial.get("trial_contract"),
+        field="r11_product_shadow_trial.trial_contract",
+    )
+    if contract.get("source_backed_only") is not True:
+        raise ValueError(
+            "r11_product_shadow_trial.trial_contract.source_backed_only must be True"
+        )
+    if contract.get("shadow_only") is not True:
+        raise ValueError(
+            "r11_product_shadow_trial.trial_contract.shadow_only must be True"
+        )
+    if contract.get("customer_visible_primary_claims_use_guarded_baseline") is not True:
+        raise ValueError(
+            "r11_product_shadow_trial.trial_contract."
+            "customer_visible_primary_claims_use_guarded_baseline must be True"
+        )
+    if contract.get("r11_can_override_primary_decision") is not False:
+        raise ValueError(
+            "r11_product_shadow_trial.trial_contract."
+            "r11_can_override_primary_decision must be False"
+        )
+    if contract.get("field_outcome_validated") is not False:
+        raise ValueError(
+            "r11_product_shadow_trial.trial_contract.field_outcome_validated must be False"
+        )
+    if contract.get("runtime_default_allowed") is not False:
+        raise ValueError(
+            "r11_product_shadow_trial.trial_contract.runtime_default_allowed must be False"
+        )
+    handoff = _require_object(
+        r11_product_shadow_trial.get("outcome_review_handoff"),
+        field="r11_product_shadow_trial.outcome_review_handoff",
+    )
+    if handoff.get("requires_customer_or_field_outcome") is not True:
+        raise ValueError(
+            "r11_product_shadow_trial.outcome_review_handoff."
+            "requires_customer_or_field_outcome must be True"
+        )
+    if handoff.get("runtime_default_allowed") is not False:
+        raise ValueError(
+            "r11_product_shadow_trial.outcome_review_handoff."
+            "runtime_default_allowed must be False"
+        )
+    _assert_artifact_sources_resolvable(
+        artifact=r11_product_shadow_trial,
+        artifact_label="r11_product_shadow_trial",
+        direct_refs={
+            r11_product_shadow_trial["artifact_id"],
+            "r6-product-outcome-review-current-001",
+        },
+        source_fields=[
+            ("source_refs", r11_product_shadow_trial.get("source_refs")),
+            (
+                "shadow_evidence_card.source_artifact_ids",
+                r11_product_shadow_trial["shadow_evidence_card"].get(
+                    "source_artifact_ids"
+                ),
+            ),
+            (
+                "outcome_review_handoff.target_artifact_id",
+                [handoff.get("target_artifact_id")],
+            ),
         ],
     )
 
@@ -465,6 +545,7 @@ def _source_registry(
     story_package: dict[str, Any],
     decision_report: dict[str, Any],
     customer_value_report: dict[str, Any],
+    r11_product_shadow_trial: dict[str, Any],
     r9_diagnostic_workflow: dict[str, Any],
 ) -> list[dict[str, str]]:
     entries = [
@@ -477,6 +558,7 @@ def _source_registry(
     entries.extend(story_package["source_registry"])
     entries.extend(decision_report["source_registry"])
     entries.extend(customer_value_report["source_registry"])
+    entries.extend(r11_product_shadow_trial["source_registry"])
     entries.extend(r9_diagnostic_workflow["source_registry"])
     return _dedupe_registry(entries)
 
@@ -501,6 +583,11 @@ def _endpoints(artifact_refs: dict[str, str]) -> list[dict[str, Any]]:
             "customer_value_report",
             "/r6/product/customer-value-report",
             artifact_refs["customer_value_report"],
+        ),
+        _endpoint(
+            "r11_shadow_trial",
+            "/r6/product/r11-shadow-trial",
+            artifact_refs["r11_product_shadow_trial"],
         ),
         _endpoint(
             "r9_diagnostic_workflow",

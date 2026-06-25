@@ -35,7 +35,10 @@
     "R8 supports Product core method by default",
     "R9 validated",
     "R9 supports Product core method by default",
-    "field validation completed"
+    "field validation completed",
+    "R11 validated",
+    "R11 supports Product core method by default",
+    "R11 can override guarded baseline primary decision"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -54,6 +57,7 @@
     "research_support_gap_ledger",
     "r8_method_support",
     "r9_method_support",
+    "r11_shadow_trial",
     "evidence_and_blocked_claims",
     "outcome_review_plan"
   ],
@@ -224,6 +228,56 @@
     "mechanism_explanation": {
       "claim_status": "diagnostic_only",
       "support_status": "diagnostic_only"
+    },
+    "r11_shadow_trial": {
+      "blocked_claims": [
+        "R11 validated",
+        "R11 supports Product core method by default",
+        "R11 can override guarded baseline primary decision",
+        "field_outcome_validated=true",
+        "runtime_default_allowed=true",
+        "runtime default ready",
+        "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+      ],
+      "claim_level": "product_shadow_trial_only",
+      "evidence_summary": {
+        "case_count": 6,
+        "failure_reasons": [],
+        "holdout_outcome_proxy": "PRICESTRESS",
+        "source_signal": "PRICECONCERN",
+        "stop_loss_or_next_step": "continue_to_product_shadow_trial_guarded"
+      },
+      "field_outcome_validated": false,
+      "metrics": {
+        "abnormal_segment_recall": 1.0,
+        "false_alarm_rate": 0.0,
+        "interval_coverage": 1.0,
+        "risk_ranking_quality": 1.0,
+        "static_prior_miss_recovery_rate": 1.0,
+        "trend_direction_accuracy": 0.833
+      },
+      "outcome_review_handoff": {
+        "handoff_id": "r11_shadow_trial_outcome_review",
+        "prompt_or_persona_manual_patch_allowed": false,
+        "requires_customer_or_field_outcome": true,
+        "runtime_default_allowed": false,
+        "target_artifact_id": "r6-product-outcome-review-current-001",
+        "update_candidate_scope": [
+          "mechanism_weight",
+          "segment_sensitivity",
+          "propagation_edge",
+          "interval_uncertainty"
+        ]
+      },
+      "primary_decision_source": "guarded_baseline_customer_value_report",
+      "r11_can_override_primary_decision": false,
+      "r11_shadow_output_role": "secondary_evidence_card_only",
+      "runtime_default_allowed": false,
+      "source_artifact_ids": [
+        "r11-product-shadow-trial-current-001"
+      ],
+      "support_status": "shadow_only_guarded_positive",
+      "trial_status": "r11_product_shadow_trial_ready_guarded"
     },
     "r8_method_support": {
       "diagnosis_status": "r8_stop_loss_diagnosis_ready",
@@ -609,7 +663,7 @@
     "source_backed_only": true,
     "static_narrative_fallback_allowed": false
   },
-  "run_id": "r6-product-customer-value-report-current",
+  "run_id": "r11-l2-product-current",
   "schema_version": "r6-product-customer-value-report-v1",
   "section_contracts": [
     {
@@ -704,6 +758,22 @@
       ]
     },
     {
+      "blocked_claims": [
+        "R11 validated",
+        "R11 supports Product core method by default",
+        "R11 can override guarded baseline primary decision",
+        "field_outcome_validated=true",
+        "runtime_default_allowed=true",
+        "runtime default ready",
+        "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+      ],
+      "claim_status": "shadow_only",
+      "section_id": "r11_shadow_trial",
+      "source_artifact_ids": [
+        "r11-product-shadow-trial-current-001"
+      ]
+    },
+    {
       "section_id": "evidence_and_blocked_claims",
       "source_artifact_ids": [
         "r6-product-decision-report-current-001",
@@ -730,7 +800,9 @@
     "r9-combination-comparison-current-001",
     "r9-synthetic-mechanism-lab-current-001",
     "r9-false-alarm-gate-redesign-current-001",
-    "r9-holdout-guard-current-001"
+    "r9-holdout-guard-current-001",
+    "r11-product-shadow-trial-current-001",
+    "r11-external-holdout-validation-current-001"
   ],
   "source_registry": [
     {
@@ -784,6 +856,14 @@
     {
       "artifact_id": "r9-holdout-guard-current-001",
       "path": "experiments/results/r9_holdout_guard/r9-holdout-guard-current-001.json"
+    },
+    {
+      "artifact_id": "r11-product-shadow-trial-current-001",
+      "path": "experiments/results/r11_product_shadow_trial/r11-product-shadow-trial-current-001.json"
+    },
+    {
+      "artifact_id": "r11-external-holdout-validation-current-001",
+      "path": "experiments/results/r11_external_holdout_validation/r11-external-holdout-validation-current-001.json"
     }
   ],
   "status": "customer_value_report_ready_guarded"

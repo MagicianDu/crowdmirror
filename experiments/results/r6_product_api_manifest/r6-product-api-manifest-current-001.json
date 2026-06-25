@@ -17,6 +17,7 @@
     "customer_value_report": "experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json",
     "decision_report": "experiments/results/r6_product_decision_report/r6-product-decision-report-current-001.json",
     "outcome_review": "experiments/results/r6_product_outcome_review/r6-product-outcome-review-current-001.json",
+    "r11_product_shadow_trial": "experiments/results/r11_product_shadow_trial/r11-product-shadow-trial-current-001.json",
     "r9_diagnostic_workflow": "experiments/results/r6_product_r9_diagnostic_workflow/r6-product-r9-diagnostic-workflow-current-001.json",
     "readiness_index": "experiments/results/r6_product_readiness_index/r6-product-readiness-index-current-001.json",
     "scenario_intake": "experiments/results/r6_product_scenario_intake/r6-product-scenario-intake-current-001.json",
@@ -26,6 +27,7 @@
     "customer_value_report": "r6-product-customer-value-report-current-001",
     "decision_report": "r6-product-decision-report-current-001",
     "outcome_review": "r6-product-outcome-review-current-001",
+    "r11_product_shadow_trial": "r11-product-shadow-trial-current-001",
     "r9_diagnostic_workflow": "r6-product-r9-diagnostic-workflow-current-001",
     "readiness_index": "r6-product-readiness-index-current-001",
     "scenario_intake": "r6-product-scenario-intake-current-001",
@@ -63,7 +65,10 @@
     "R8 supports Product core method by default",
     "R9 validated",
     "R9 supports Product core method by default",
-    "field validation completed"
+    "field validation completed",
+    "R11 validated",
+    "R11 supports Product core method by default",
+    "R11 can override guarded baseline primary decision"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -87,6 +92,7 @@
       "research_support_gap_ledger",
       "r8_method_support",
       "r9_method_support",
+      "r11_shadow_trial",
       "evidence_and_blocked_claims",
       "outcome_review_plan"
     ],
@@ -150,6 +156,15 @@
       ]
     },
     {
+      "endpoint_id": "r11_shadow_trial",
+      "method": "GET",
+      "path": "/r6/product/r11-shadow-trial",
+      "response_contract": "source_artifact_json",
+      "source_artifact_ids": [
+        "r11-product-shadow-trial-current-001"
+      ]
+    },
+    {
       "endpoint_id": "r9_diagnostic_workflow",
       "method": "GET",
       "path": "/r6/product/r9-diagnostic-workflow",
@@ -178,6 +193,7 @@
         "r6-product-story-package-current-001",
         "r6-product-decision-report-current-001",
         "r6-product-customer-value-report-current-001",
+        "r11-product-shadow-trial-current-001",
         "r6-product-r9-diagnostic-workflow-current-001",
         "r6-product-outcome-review-current-001"
       ]
@@ -189,7 +205,7 @@
     "product_api_manifest_ready": true,
     "runtime_default_allowed": false
   },
-  "run_id": "r6-product-api-manifest-current",
+  "run_id": "r11-l2-product-current",
   "schema_version": "r6-product-api-manifest-v1",
   "source_refs": [
     "r6-product-readiness-index-current-001",
@@ -197,6 +213,7 @@
     "r6-product-story-package-current-001",
     "r6-product-decision-report-current-001",
     "r6-product-customer-value-report-current-001",
+    "r11-product-shadow-trial-current-001",
     "r6-product-r9-diagnostic-workflow-current-001",
     "r6-product-outcome-review-current-001",
     "r6-product-evidence-cards-current-003",
@@ -213,7 +230,8 @@
     "r9-combination-comparison-current-001",
     "r9-synthetic-mechanism-lab-current-001",
     "r9-false-alarm-gate-redesign-current-001",
-    "r9-holdout-guard-current-001"
+    "r9-holdout-guard-current-001",
+    "r11-external-holdout-validation-current-001"
   ],
   "source_registry": [
     {
@@ -235,6 +253,10 @@
     {
       "artifact_id": "r6-product-customer-value-report-current-001",
       "path": "experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json"
+    },
+    {
+      "artifact_id": "r11-product-shadow-trial-current-001",
+      "path": "experiments/results/r11_product_shadow_trial/r11-product-shadow-trial-current-001.json"
     },
     {
       "artifact_id": "r6-product-r9-diagnostic-workflow-current-001",
@@ -319,6 +341,10 @@
     {
       "artifact_id": "r9-holdout-guard-current-001",
       "path": "experiments/results/r9_holdout_guard/r9-holdout-guard-current-001.json"
+    },
+    {
+      "artifact_id": "r11-external-holdout-validation-current-001",
+      "path": "experiments/results/r11_external_holdout_validation/r11-external-holdout-validation-current-001.json"
     }
   ],
   "status": "product_api_manifest_ready_guarded"
