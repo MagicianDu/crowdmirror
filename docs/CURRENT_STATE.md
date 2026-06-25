@@ -207,6 +207,7 @@
 51. Product 客户可见前端第一版已实现为 `/demo/` source-backed report UI：页面从 `r6-product-customer-value-report-current-001`、`r6-research-product-value-support-current-001`、`r6-product-readiness-index-current-001` 和 `r6-product-api-manifest-current-001` 读取数据，展示趋势方向、风险区间、风险分布、异常群体、机制解释、证据边界、阻断声明和来源。`customer_facing_ui_demo_ready=true` 已写入 readiness/API/customer report artifacts；旧 gap `needs_customer_facing_ui_integration` 已收窄为 `needs_customer_workflow_runtime_integration`，仍保留 `needs_field_outcome_validation` 和 `needs_runtime_default_holdout_review`。
 52. Research -> Product 支撑补齐第一步已实现为可审计 gap ledger：`r6-research-product-value-support-current-001` 现在包含 `support_coverage`、`support_gap_ledger`、`research_next_tasks`、`product_claim_support_summary` 和 `acceptance_gates`。当前结论仍是 `overall_product_core_value_supported=false`，但每个 Product value 已绑定当前指标、目标阈值、差距、阻断原因、下一步任务和验收标准。Customer value report 与 `/demo/` 前端已消费该 ledger，展示“研究支撑”面板。当前可说的是“Research 支撑合同已补齐”，不是“Research 已全面支撑 Product”。
 53. 五个 `research_next_tasks` 已全部执行并落盘为 `r6-research-next-task-execution-current-001`：`all_five_tasks_executed=true`、`task_count=5`、`accepted_for_guarded_reporting_count=1`、`blocked_or_failed_count=4`。具体结论是：trend/interval holdout 在当前 public proxy 上未过阈值；false-alarm control 在 current proxy 上可把误报降到 0 但缺 holdout validation；segment outcome labels 已有 proxy-aligned audit fixture，可计算 precision/recall，但不是 field segment labels；mechanism holdout validation 仍失败；outcome feedback transfer 可改善 prior-interaction error，但未过 runtime update guard。测试通过只证明五项任务链路已执行，不代表 Research 已全面支撑 Product。
+54. 由于 R6 证据链已搭好但方法本身仍偏弱，当前 Research 主线新增 `2026-06-25-r6-learning-counterfactual-method-upgrade.md`：不再继续包装旧 scoring candidate，而是转向“学习型反事实机制仿真器”。新增 `experiments/r6_learning_counterfactual_simulator.py` 用 outcome residual 学习机制层权重，并输出 counterfactual policy ranking；当前 MVP 在 public proxy fixture 上显示 `raw_interaction_false_alarm_rate=0.667` 降到 `learned_operator_false_alarm_rate=0.0`，同时保留 `static_prior_miss_recovery_rate=1.0`。该结果只能作为 current-proxy guarded positive signal，仍不是 field validation、跨域泛化或 runtime default。
 
 ## 可复用资产
 
@@ -249,6 +250,7 @@ R6 开发时必须只 stage 本轮明确修改的文件。
 3. 数据侧不再泛泛增加 proxy；新增数据必须服务于 Product decision report、outcome review、operator holdout 或 field outcome 复核。
 4. 方法侧停止继续优化当前 scoring candidate；它保留为 negative baseline 和 diagnostic gate。
 5. Product 侧保留并强化 `interaction_signal_validity_holdout_summary`、false-alarm diagnosis、blocked update reason 和 claim boundary，确保新 Research 方法不会污染 runtime default。
+6. Research 方法侧优先推进 learning counterfactual mechanism simulator：下一步要做独立 holdout、operator ablation、Product report/API ingestion 和 bounded outcome feedback update；`behavioral_update_operator_v3` 保留为 guarded static-fallback baseline。
 
 ## 验收边界
 

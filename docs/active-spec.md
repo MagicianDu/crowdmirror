@@ -10,6 +10,7 @@
 - `docs/superpowers/specs/2026-06-16-r6-mechanism-driven-interaction-learning-design.md`
 - `docs/superpowers/specs/2026-06-16-r6-product-first-solid-value-spec.md`
 - `docs/superpowers/specs/2026-06-19-r6-trend-interval-risk-positioning.md`
+- `docs/superpowers/specs/2026-06-25-r6-learning-counterfactual-method-upgrade.md`
 
 工作名：
 
@@ -24,6 +25,7 @@
 - `2026-06-16-r6-mechanism-driven-interaction-learning-design.md` 定义当前 scoring candidate 止损后的方法升级方向：机制驱动交互传播、结构化 behavioral update operator、outcome-feedback learning，以及 Product guard 保留边界。
 - `2026-06-16-r6-product-first-solid-value-spec.md` 定义当前降级后的真实目标：不再默认冲 CCF-A 主贡献，而是把 Research 变成有理论和学术价值的产品可信度支撑，把 Product 作为主交付目标。
 - `2026-06-19-r6-trend-interval-risk-positioning.md` 定义最新目标修正：产品定位为“人群反应趋势与风险区间模拟器”，Research 不再以点预测 beat 静态先验为唯一目标，而是验证趋势判断、区间校准、风险排序、异常群体识别和决策价值。
+- `2026-06-25-r6-learning-counterfactual-method-upgrade.md` 定义当前方法升级方向：用 outcome residual 学习机制层权重，并把交互仿真推进为可比较的反事实策略沙盘。
 
 后续实现若与历史 R2-R5、旧 prompt/persona 优化、单一 proxy 扩张路线冲突，以当前阶段 addendum 为准。
 
@@ -95,6 +97,7 @@ R6 必须同时满足：
 13. `Product frontend demo / source-backed customer report UI`
 14. `Research -> Product support gap ledger / next research task contract`
 15. `Research next task execution artifact`
+16. `Learning counterfactual mechanism simulator / policy comparison artifact`
 
 不再把“继续增加 public proxy 数量”作为默认目标；只有当新增数据能触发 acceptance gate，才进入数据接入。
 
@@ -133,4 +136,5 @@ R6 必须同时满足：
 - `Interaction Signal Validity Score` 是当前非阈值主 gate；它必须显式排除 source/family 标签，并通过独立 holdout 或 field outcome 复核后才能从 diagnostic 升级。
 - `Interaction Signal Validity holdout validation` 已实现不等于 R6 通过；当前结论是 `source_supported_count=1`、`eligible_independent_holdout_count=2`、`passed_holdout_count=0`、`contradicted_holdout_count=2`，因此正向信号仍停留在 diagnostic。
 - 当前 scoring candidate 不再作为 Research 主贡献继续优化；下一步必须转向机制传播 trace、结构化 behavioral update operator 和 outcome-feedback learning。
+- 当前 behavioral update operator v3 只能作为 guarded static-fallback baseline；下一步方法主线转向 learning counterfactual mechanism simulator，用 outcome residual 学习机制权重，并输出反事实策略排序。
 - Product 的 failure diagnosis、false-alarm gate、claim boundary、evidence cards 是新方法外层 guard，不能因为 Research 换方法而降级或移除。
