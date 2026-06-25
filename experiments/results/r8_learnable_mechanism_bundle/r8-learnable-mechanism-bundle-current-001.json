@@ -377,13 +377,17 @@
       "artifact_id": "r8-learnable-mechanism-bundle-current-001-operator-update-candidate",
       "candidate_id": "r8-learnable-mechanism-bundle-current-001-operator-update-candidate:candidate-001",
       "claim_boundary": "R8 learnable mechanism artifact. It supports guarded mechanism-causal interaction simulation, interval/risk diagnosis, attribution, and bounded operator update candidates only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
-      "expected_metric_delta": {},
+      "expected_metric_delta": {
+        "mean_absolute_error": "decrease"
+      },
       "guard_checks": {
+        "bounded_update": true,
         "holdout_required": true,
+        "robustness_required": true,
         "runtime_default_allowed": false
       },
       "holdout_results": [],
-      "rejected_reason": "blocked_until_outcome_and_holdout",
+      "rejected_reason": "pending_holdout_review",
       "robustness_results": [],
       "run_id": "r8-learnable-mechanism-current",
       "runtime_default_allowed": false,
@@ -391,18 +395,96 @@
       "source_refs": [
         "r8-learnable-mechanism-bundle-current-001-outcome-attribution"
       ],
-      "updated_parameters": []
+      "updated_parameters": [
+        {
+          "candidate_value": 0.4595,
+          "current_value": 0.4,
+          "delta": 0.0595,
+          "max_abs_delta": 0.08,
+          "parameter_family": "mechanism_activation",
+          "parameter_id": "mechanism_activation:service_access_constraint",
+          "source_attribution_id": "r8-learnable-mechanism-bundle-current-001-outcome-attribution"
+        },
+        {
+          "candidate_value": 0.3797,
+          "current_value": 0.35,
+          "delta": 0.0297,
+          "max_abs_delta": 0.08,
+          "parameter_family": "propagation_edge",
+          "parameter_id": "propagation_edge:segment_response_to_interaction",
+          "source_attribution_id": "r8-learnable-mechanism-bundle-current-001-outcome-attribution"
+        }
+      ]
     },
     "r8_outcome_attribution_report": {
       "artifact_id": "r8-learnable-mechanism-bundle-current-001-outcome-attribution",
-      "attribution_by_edge": [],
-      "attribution_by_mechanism": [],
-      "attribution_by_segment": [],
+      "attribution_by_edge": [
+        {
+          "edge_id": "segment_response_to_interaction",
+          "error_type": "propagation_strength_error",
+          "recommended_update_direction": "increase",
+          "residual_share": 0.25,
+          "source_refs": [
+            "r8-learnable-mechanism-bundle-current-001-rollout-distribution"
+          ]
+        }
+      ],
+      "attribution_by_mechanism": [
+        {
+          "error_type": "mechanism_strength_error",
+          "mechanism": "service_access_constraint",
+          "recommended_update_direction": "increase",
+          "residual_share": 0.45,
+          "source_refs": [
+            "r8-learnable-mechanism-bundle-current-001-rollout-distribution"
+          ]
+        },
+        {
+          "error_type": "mechanism_direction_supported",
+          "mechanism": "fairness_perception",
+          "recommended_update_direction": "increase",
+          "residual_share": 0.3,
+          "source_refs": [
+            "r8-learnable-mechanism-bundle-current-001-rollout-distribution"
+          ]
+        }
+      ],
+      "attribution_by_segment": [
+        {
+          "error_type": "segment_sensitivity_error",
+          "recommended_update_direction": "increase",
+          "residual_share": 0.0667,
+          "segment_id": "service_dependent_low_trust",
+          "source_refs": [
+            "fixture:generic_policy_change_prior"
+          ]
+        },
+        {
+          "error_type": "segment_sensitivity_error",
+          "recommended_update_direction": "increase",
+          "residual_share": 0.0667,
+          "segment_id": "community_watchers",
+          "source_refs": [
+            "fixture:generic_policy_change_prior"
+          ]
+        },
+        {
+          "error_type": "segment_sensitivity_error",
+          "recommended_update_direction": "increase",
+          "residual_share": 0.0667,
+          "segment_id": "low_dependency_high_trust",
+          "source_refs": [
+            "fixture:generic_policy_change_prior"
+          ]
+        }
+      ],
       "claim_boundary": "R8 learnable mechanism artifact. It supports guarded mechanism-causal interaction simulation, interval/risk diagnosis, attribution, and bounded operator update candidates only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
       "false_alarm_sources": [],
-      "interval_error_type": "not_evaluated_without_outcome",
+      "interval_error_type": "missed_interval",
       "missed_risk_sources": [],
-      "outcome_residual": null,
+      "outcome_reject_proxy": 0.47,
+      "outcome_residual": 0.1191,
+      "prediction_median": 0.3509,
       "run_id": "r8-learnable-mechanism-current",
       "schema_version": "r8-outcome-attribution-report-v1",
       "source_refs": [
@@ -410,7 +492,7 @@
         "r8-learnable-mechanism-bundle-current-001-risk-ranking",
         "generic-public-service-policy-change"
       ],
-      "unexplained_error": "not_evaluated_without_outcome"
+      "unexplained_error": 0.0
     },
     "r8_product_support_gate": {
       "abnormal_segment_supported": "contract_only",

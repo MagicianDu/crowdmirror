@@ -131,3 +131,51 @@ def test_r8_bundle_cli_writes_current_artifact(tmp_path):
         "output": str(output),
         "status": "r8_contract_ready_guarded",
     }
+
+
+def test_r8_outcome_feedback_generates_mechanism_level_attribution():
+    bundle = build_r8_learnable_mechanism_bundle(
+        artifact_id="r8-learnable-mechanism-bundle-test",
+        run_id="r8-l1-run",
+        case_id="generic-public-service-policy-change",
+        observed_reject_proxy=0.47,
+    )
+
+    attribution = bundle["artifacts"]["r8_outcome_attribution_report"]
+    assert attribution["outcome_residual"] is not None
+    assert attribution["attribution_by_mechanism"]
+    assert attribution["attribution_by_edge"]
+    assert attribution["attribution_by_segment"]
+    assert attribution["unexplained_error"] <= 0.5
+    assert {item["error_type"] for item in attribution["attribution_by_mechanism"]} <= {
+        "mechanism_strength_error",
+        "mechanism_direction_supported",
+        "mechanism_missing",
+    }
+
+
+def test_r8_operator_update_candidate_is_bounded_and_not_runtime_default():
+    bundle = build_r8_learnable_mechanism_bundle(
+        artifact_id="r8-learnable-mechanism-bundle-test",
+        run_id="r8-l1-run",
+        case_id="generic-public-service-policy-change",
+        observed_reject_proxy=0.47,
+    )
+
+    update = bundle["artifacts"]["r8_operator_update_candidate"]
+    assert update["updated_parameters"]
+    assert update["accepted"] is False
+    assert update["rejected_reason"] == "pending_holdout_review"
+    assert update["runtime_default_allowed"] is False
+    assert update["guard_checks"] == {
+        "bounded_update": True,
+        "holdout_required": True,
+        "robustness_required": True,
+        "runtime_default_allowed": False,
+    }
+    for parameter in update["updated_parameters"]:
+        assert abs(parameter["delta"]) <= parameter["max_abs_delta"]
+        assert (
+            parameter["source_attribution_id"]
+            == bundle["artifacts"]["r8_outcome_attribution_report"]["artifact_id"]
+        )

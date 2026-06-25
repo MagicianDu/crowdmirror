@@ -46,6 +46,7 @@ def build_r8_learnable_mechanism_bundle(
     run_id: str,
     case_id: str = "generic-public-service-policy-change",
     rollout_count: int = 50,
+    observed_reject_proxy: float | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
@@ -77,6 +78,7 @@ def build_r8_learnable_mechanism_bundle(
         case,
         rollout,
         ranking,
+        observed_reject_proxy,
     )
     update = _operator_update_candidate(
         f"{artifact_id}-operator-update-candidate",
@@ -415,7 +417,68 @@ def _outcome_attribution_report(
     case: dict[str, Any],
     rollout: dict[str, Any],
     ranking: dict[str, Any],
+    observed_reject_proxy: float | None,
 ) -> dict[str, Any]:
+    predicted = rollout["interaction_distribution"]["median"]
+    if observed_reject_proxy is not None:
+        observed = float(observed_reject_proxy)
+        residual = round(observed - predicted, 4)
+        direction = "increase" if residual > 0 else "decrease"
+        segment_count = max(1, len(ranking["interaction_amplified_segments"]))
+        return _artifact(
+            schema_version="r8-outcome-attribution-report-v1",
+            artifact_id=artifact_id,
+            run_id=run_id,
+            source_refs=[rollout["artifact_id"], ranking["artifact_id"], case["case_id"]],
+            outcome_reject_proxy=round(observed, 4),
+            prediction_median=predicted,
+            outcome_residual=residual,
+            attribution_by_mechanism=[
+                {
+                    "mechanism": "service_access_constraint",
+                    "error_type": "mechanism_strength_error",
+                    "recommended_update_direction": direction,
+                    "residual_share": 0.45,
+                    "source_refs": [rollout["artifact_id"]],
+                },
+                {
+                    "mechanism": "fairness_perception",
+                    "error_type": "mechanism_direction_supported",
+                    "recommended_update_direction": direction,
+                    "residual_share": 0.3,
+                    "source_refs": [rollout["artifact_id"]],
+                },
+            ],
+            attribution_by_edge=[
+                {
+                    "edge_id": "segment_response_to_interaction",
+                    "error_type": "propagation_strength_error",
+                    "recommended_update_direction": direction,
+                    "residual_share": 0.25,
+                    "source_refs": [rollout["artifact_id"]],
+                }
+            ],
+            attribution_by_segment=[
+                {
+                    "segment_id": item["segment_id"],
+                    "error_type": "segment_sensitivity_error",
+                    "recommended_update_direction": direction,
+                    "residual_share": round(0.2 / segment_count, 4),
+                    "source_refs": item["source_refs"],
+                }
+                for item in ranking["interaction_amplified_segments"]
+            ],
+            interval_error_type=(
+                "covered"
+                if rollout["interaction_distribution"]["p10"]
+                <= observed
+                <= rollout["interaction_distribution"]["p90"]
+                else "missed_interval"
+            ),
+            false_alarm_sources=[],
+            missed_risk_sources=[],
+            unexplained_error=0.0,
+        )
     return _artifact(
         schema_version="r8-outcome-attribution-report-v1",
         artifact_id=artifact_id,
@@ -437,19 +500,59 @@ def _operator_update_candidate(
     run_id: str,
     attribution: dict[str, Any],
 ) -> dict[str, Any]:
+    updated_parameters: list[dict[str, Any]]
+    if attribution["outcome_residual"] is None:
+        updated_parameters = []
+        expected_metric_delta: dict[str, Any] = {}
+        rejected_reason = "blocked_until_outcome_and_holdout"
+        guard_checks = {"holdout_required": True, "runtime_default_allowed": False}
+    else:
+        residual = float(attribution["outcome_residual"])
+        bounded_delta = round(max(-0.08, min(0.08, residual * 0.5)), 4)
+        updated_parameters = [
+            {
+                "parameter_id": "mechanism_activation:service_access_constraint",
+                "parameter_family": "mechanism_activation",
+                "current_value": 0.4,
+                "delta": bounded_delta,
+                "candidate_value": round(max(0.0, min(1.0, 0.4 + bounded_delta)), 4),
+                "max_abs_delta": 0.08,
+                "source_attribution_id": attribution["artifact_id"],
+            },
+            {
+                "parameter_id": "propagation_edge:segment_response_to_interaction",
+                "parameter_family": "propagation_edge",
+                "current_value": 0.35,
+                "delta": round(bounded_delta * 0.5, 4),
+                "candidate_value": round(
+                    max(0.0, min(1.0, 0.35 + bounded_delta * 0.5)),
+                    4,
+                ),
+                "max_abs_delta": 0.08,
+                "source_attribution_id": attribution["artifact_id"],
+            },
+        ]
+        expected_metric_delta = {"mean_absolute_error": "decrease"}
+        rejected_reason = "pending_holdout_review"
+        guard_checks = {
+            "bounded_update": True,
+            "holdout_required": True,
+            "robustness_required": True,
+            "runtime_default_allowed": False,
+        }
     return _artifact(
         schema_version="r8-operator-update-candidate-v1",
         artifact_id=artifact_id,
         run_id=run_id,
         source_refs=[attribution["artifact_id"]],
         candidate_id=f"{artifact_id}:candidate-001",
-        updated_parameters=[],
-        expected_metric_delta={},
-        guard_checks={"holdout_required": True, "runtime_default_allowed": False},
+        updated_parameters=updated_parameters,
+        expected_metric_delta=expected_metric_delta,
+        guard_checks=guard_checks,
         holdout_results=[],
         robustness_results=[],
         accepted=False,
-        rejected_reason="blocked_until_outcome_and_holdout",
+        rejected_reason=rejected_reason,
         runtime_default_allowed=False,
     )
 
@@ -506,6 +609,7 @@ def main() -> None:
     parser.add_argument("--run-id", default="r8-learnable-mechanism-current")
     parser.add_argument("--case-id", default="generic-public-service-policy-change")
     parser.add_argument("--rollout-count", type=int, default=50)
+    parser.add_argument("--observed-reject-proxy", type=float, default=None)
     parser.add_argument(
         "--output",
         default=(
@@ -520,12 +624,14 @@ def main() -> None:
         run_id=args.run_id,
         case_id=args.case_id,
         rollout_count=args.rollout_count,
+        observed_reject_proxy=args.observed_reject_proxy,
     )
     artifact = build_r8_learnable_mechanism_bundle(
         artifact_id=args.artifact_id,
         run_id=args.run_id,
         case_id=args.case_id,
         rollout_count=args.rollout_count,
+        observed_reject_proxy=args.observed_reject_proxy,
     )
     print(
         json.dumps(
