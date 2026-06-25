@@ -7,6 +7,9 @@ from experiments.r6_product_customer_value_report import (
 )
 from experiments.r8_robustness_holdout_gate import build_r8_robustness_holdout_gate
 from experiments.r8_stop_loss_diagnosis import build_r8_stop_loss_diagnosis
+from experiments.r8_product_failure_diagnosis_package import (
+    build_r8_product_failure_diagnosis_package,
+)
 
 
 def test_r6_product_customer_value_report_contains_trend_interval_risk_sections():
@@ -158,3 +161,45 @@ def test_product_customer_value_report_can_show_r8_stop_loss_diagnosis():
         if item["section_id"] == "r8_method_support"
     )
     assert diagnosis["artifact_id"] in section["source_artifact_ids"]
+
+
+def test_product_customer_value_report_can_show_r8_failure_diagnosis_package():
+    r8_gate = build_r8_robustness_holdout_gate(
+        artifact_id="r8-robustness-holdout-gate-test",
+        run_id="r8-product-ingestion-run",
+    )
+    diagnosis = build_r8_stop_loss_diagnosis(
+        artifact_id="r8-stop-loss-diagnosis-test",
+        run_id="r8-product-ingestion-run",
+        robustness_holdout_gate=r8_gate,
+    )
+    failure_package = build_r8_product_failure_diagnosis_package(
+        artifact_id="r8-product-failure-diagnosis-package-test",
+        run_id="r8-product-ingestion-run",
+        stop_loss_diagnosis=diagnosis,
+    )
+    report = build_r6_product_customer_value_report(
+        artifact_id="r6-product-customer-value-report-r8-failure-package-test",
+        run_id="r8-product-ingestion-run",
+        r8_robustness_holdout_gate=r8_gate,
+        r8_stop_loss_diagnosis=diagnosis,
+        r8_product_failure_diagnosis_package=failure_package,
+    )
+
+    r8_support = report["display_payload"]["r8_method_support"]
+    assert r8_support["failure_diagnosis_package_status"] == (
+        "r8_product_failure_diagnosis_package_ready_guarded"
+    )
+    assert r8_support["failure_cards"] == failure_package["failure_cards"]
+    assert r8_support["evidence_requests"] == failure_package["evidence_requests"]
+    assert r8_support["outcome_replay_workflow"] == failure_package[
+        "outcome_replay_workflow"
+    ]
+    assert failure_package["artifact_id"] in r8_support["source_artifact_ids"]
+    assert failure_package["artifact_id"] in report["source_refs"]
+    section = next(
+        item
+        for item in report["section_contracts"]
+        if item["section_id"] == "r8_method_support"
+    )
+    assert failure_package["artifact_id"] in section["source_artifact_ids"]

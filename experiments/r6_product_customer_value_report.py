@@ -60,6 +60,7 @@ def build_r6_product_customer_value_report(
     learning_counterfactual_holdout_validation: dict[str, Any] | None = None,
     r8_robustness_holdout_gate: dict[str, Any] | None = None,
     r8_stop_loss_diagnosis: dict[str, Any] | None = None,
+    r8_product_failure_diagnosis_package: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
@@ -111,6 +112,7 @@ def build_r6_product_customer_value_report(
         counterfactual_holdout,
         r8_robustness_holdout_gate,
         r8_stop_loss_diagnosis,
+        r8_product_failure_diagnosis_package,
     )
     customer_sections = list(R6_PRODUCT_CUSTOMER_VALUE_SECTIONS)
     if r8_robustness_holdout_gate is not None:
@@ -137,6 +139,7 @@ def build_r6_product_customer_value_report(
             counterfactual_holdout,
             r8_robustness_holdout_gate,
             r8_stop_loss_diagnosis,
+            r8_product_failure_diagnosis_package,
         ),
         "section_contracts": _section_contracts(
             decision,
@@ -146,6 +149,7 @@ def build_r6_product_customer_value_report(
             counterfactual_holdout,
             r8_robustness_holdout_gate,
             r8_stop_loss_diagnosis,
+            r8_product_failure_diagnosis_package,
         ),
         "source_registry": source_registry,
         "source_refs": [entry["artifact_id"] for entry in source_registry],
@@ -155,6 +159,10 @@ def build_r6_product_customer_value_report(
                 *support.get("blocked_claims", []),
                 *(r8_robustness_holdout_gate or {}).get("blocked_claims", []),
                 *(r8_stop_loss_diagnosis or {}).get("blocked_claims", []),
+                *(r8_product_failure_diagnosis_package or {}).get(
+                    "blocked_claims",
+                    [],
+                ),
                 "精准预测系统",
                 "系统可以精确预测单点结果",
             ]
@@ -187,6 +195,7 @@ def _display_payload(
     counterfactual_holdout: dict[str, Any],
     r8_robustness_holdout_gate: dict[str, Any] | None = None,
     r8_stop_loss_diagnosis: dict[str, Any] | None = None,
+    r8_product_failure_diagnosis_package: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     cases = metrics["case_results"]
     payload = {
@@ -281,6 +290,10 @@ def _display_payload(
         source_artifact_ids = [r8_robustness_holdout_gate["artifact_id"]]
         if r8_stop_loss_diagnosis is not None:
             source_artifact_ids.append(r8_stop_loss_diagnosis["artifact_id"])
+        if r8_product_failure_diagnosis_package is not None:
+            source_artifact_ids.append(
+                r8_product_failure_diagnosis_package["artifact_id"]
+            )
         payload["r8_method_support"] = {
             "status": r8_robustness_holdout_gate["status"],
             "l1_status": r8_robustness_holdout_gate["l1_status"],
@@ -309,6 +322,25 @@ def _display_payload(
                     ],
                 }
             )
+        if r8_product_failure_diagnosis_package is not None:
+            payload["r8_method_support"].update(
+                {
+                    "failure_diagnosis_package_status": (
+                        r8_product_failure_diagnosis_package["status"]
+                    ),
+                    "failure_cards": r8_product_failure_diagnosis_package[
+                        "failure_cards"
+                    ],
+                    "evidence_requests": r8_product_failure_diagnosis_package[
+                        "evidence_requests"
+                    ],
+                    "outcome_replay_workflow": (
+                        r8_product_failure_diagnosis_package[
+                            "outcome_replay_workflow"
+                        ]
+                    ),
+                }
+            )
     return payload
 
 
@@ -320,6 +352,7 @@ def _section_contracts(
     counterfactual_holdout: dict[str, Any],
     r8_robustness_holdout_gate: dict[str, Any] | None = None,
     r8_stop_loss_diagnosis: dict[str, Any] | None = None,
+    r8_product_failure_diagnosis_package: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     contracts = [
         {
@@ -371,6 +404,10 @@ def _section_contracts(
         source_artifact_ids = [r8_robustness_holdout_gate["artifact_id"]]
         if r8_stop_loss_diagnosis is not None:
             source_artifact_ids.append(r8_stop_loss_diagnosis["artifact_id"])
+        if r8_product_failure_diagnosis_package is not None:
+            source_artifact_ids.append(
+                r8_product_failure_diagnosis_package["artifact_id"]
+            )
         contracts.insert(
             -2,
             {
@@ -385,6 +422,10 @@ def _section_contracts(
                     [
                         *r8_robustness_holdout_gate["blocked_claims"],
                         *(r8_stop_loss_diagnosis or {}).get("blocked_claims", []),
+                        *(r8_product_failure_diagnosis_package or {}).get(
+                            "blocked_claims",
+                            [],
+                        ),
                     ]
                 ),
             },
@@ -400,6 +441,7 @@ def _source_registry(
     counterfactual_holdout: dict[str, Any],
     r8_robustness_holdout_gate: dict[str, Any] | None = None,
     r8_stop_loss_diagnosis: dict[str, Any] | None = None,
+    r8_product_failure_diagnosis_package: dict[str, Any] | None = None,
 ) -> list[dict[str, str]]:
     support_path = (
         "experiments/results/r6_research_product_value_support_v2/"
@@ -471,6 +513,16 @@ def _source_registry(
                 ),
             }
         )
+    if r8_product_failure_diagnosis_package is not None:
+        registry.append(
+            {
+                "artifact_id": r8_product_failure_diagnosis_package["artifact_id"],
+                "path": (
+                    "experiments/results/r8_product_failure_diagnosis_package/"
+                    "r8-product-failure-diagnosis-package-current-001.json"
+                ),
+            }
+        )
     return registry
 
 
@@ -529,6 +581,7 @@ def main() -> int:
     parser.add_argument("--output", required=True)
     parser.add_argument("--r8-robustness-holdout-gate-path", default=None)
     parser.add_argument("--r8-stop-loss-diagnosis-path", default=None)
+    parser.add_argument("--r8-product-failure-diagnosis-package-path", default=None)
     args = parser.parse_args()
     r8_gate = (
         load_json_artifact(args.r8_robustness_holdout_gate_path)
@@ -540,6 +593,11 @@ def main() -> int:
         if args.r8_stop_loss_diagnosis_path
         else None
     )
+    r8_failure_package = (
+        load_json_artifact(args.r8_product_failure_diagnosis_package_path)
+        if args.r8_product_failure_diagnosis_package_path
+        else None
+    )
 
     output_path = write_r6_product_customer_value_report(
         args.output,
@@ -547,6 +605,7 @@ def main() -> int:
         run_id=args.run_id,
         r8_robustness_holdout_gate=r8_gate,
         r8_stop_loss_diagnosis=r8_diagnosis,
+        r8_product_failure_diagnosis_package=r8_failure_package,
     )
     report = json.loads(Path(output_path).read_text())
     print(
