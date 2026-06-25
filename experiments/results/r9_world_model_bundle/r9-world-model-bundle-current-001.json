@@ -5,6 +5,7 @@
     "field_outcome_validated": false,
     "product_guard_consumable": true,
     "route_artifacts_present": true,
+    "route_mvp_outputs_present": true,
     "runtime_default_allowed": false,
     "source_refs_present": true
   },
@@ -432,12 +433,45 @@
       ],
       "routes": {
         "route_a_evidence_constrained_mechanism_operator": {
+          "abnormal_segments": [
+            {
+              "reason": "bounded mechanism operator assigns highest sensitivity to price change",
+              "risk_flag": "top_abnormal_segment",
+              "segment_id": "price_sensitive_users",
+              "source_status": "fixture_level_evidence"
+            }
+          ],
           "blocked_claims": [
             "route validated",
             "field_outcome_validated=true",
             "runtime_default_allowed=true"
           ],
           "claim_boundary": "R9 evidence-constrained interaction world model artifact. It defines source-backed mechanism, retrieval, and constrained-agent rollout routes plus a combination matrix for guarded evaluation only; it is not field validation, not point-prediction evidence, and not runtime default authorization.",
+          "failure_reasons": [
+            {
+              "description": "no customer or field outcome is attached to this route output",
+              "reason_id": "field_outcome_missing"
+            },
+            {
+              "description": "mechanism parameters are fixture-level and not holdout validated",
+              "reason_id": "route_mvp_not_validated"
+            }
+          ],
+          "field_outcome_validated": false,
+          "mechanism_trace": [
+            {
+              "effect": "activates",
+              "evidence_status": "mvp_fixture_not_field_validated",
+              "source_node": "scenario_shock",
+              "target_node": "price_sensitivity"
+            },
+            {
+              "effect": "amplifies",
+              "evidence_status": "mvp_fixture_not_field_validated",
+              "source_node": "price_sensitivity",
+              "target_node": "reject_probability"
+            }
+          ],
           "metrics": {
             "decision_value_score": {
               "status": "not_computed_l0_contract_only",
@@ -464,11 +498,48 @@
               "value": null
             }
           },
+          "output_contract": {
+            "abnormal_segments_present": true,
+            "failure_reasons_present": true,
+            "field_outcome_validated": false,
+            "mechanism_trace_present": true,
+            "risk_distribution_present": true,
+            "risk_interval_present": true,
+            "runtime_default_allowed": false,
+            "trend_output_present": true
+          },
           "required_next_evidence": [
             "route-specific runnable implementation",
             "baseline comparison",
             "holdout or perturbation guard"
           ],
+          "risk_distribution": [
+            {
+              "claim_status": "diagnostic_mvp",
+              "risk_score": 0.46,
+              "segment_id": "price_sensitive_users",
+              "top_mechanism": "price_sensitivity"
+            },
+            {
+              "claim_status": "diagnostic_mvp",
+              "risk_score": 0.38,
+              "segment_id": "trust_sensitive_users",
+              "top_mechanism": "trust_loss"
+            },
+            {
+              "claim_status": "diagnostic_mvp",
+              "risk_score": 0.27,
+              "segment_id": "low_exposure_users",
+              "top_mechanism": "service_access_constraint"
+            }
+          ],
+          "risk_interval": {
+            "calibration_status": "mvp_fixture_not_holdout_validated",
+            "lower": 0.3,
+            "median": 0.37,
+            "unit": "reject_probability",
+            "upper": 0.45
+          },
           "route_contract": {
             "field_outcome_validated": false,
             "llm_direct_prediction_allowed": false,
@@ -478,19 +549,59 @@
           "route_goal": "learn mechanism activation, propagation edges, and bounded updates",
           "route_id": "route_a_evidence_constrained_mechanism_operator",
           "route_name": "\u8bc1\u636e\u7ea6\u675f\u673a\u5236\u7b97\u5b50",
+          "route_status": "r9_route_mvp_output_ready_guarded",
+          "runtime_default_allowed": false,
           "source_refs": [
             "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
             "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
             "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
-          ]
+          ],
+          "trend_output": {
+            "confidence": 0.62,
+            "direction": "risk_increase",
+            "rationale": "mechanism operator flags trust_loss and service_access_constraint as bounded risk amplifiers"
+          }
         },
         "route_b_semantic_precedent_retrieval": {
+          "abnormal_segments": [
+            {
+              "reason": "retrieved precedent cases concentrate risk in price-sensitive groups",
+              "risk_flag": "top_abnormal_segment",
+              "segment_id": "price_sensitive_users",
+              "source_status": "fixture_level_evidence"
+            }
+          ],
           "blocked_claims": [
             "route validated",
             "field_outcome_validated=true",
             "runtime_default_allowed=true"
           ],
           "claim_boundary": "R9 evidence-constrained interaction world model artifact. It defines source-backed mechanism, retrieval, and constrained-agent rollout routes plus a combination matrix for guarded evaluation only; it is not field validation, not point-prediction evidence, and not runtime default authorization.",
+          "failure_reasons": [
+            {
+              "description": "no customer or field outcome is attached to this route output",
+              "reason_id": "field_outcome_missing"
+            },
+            {
+              "description": "precedent retrieval uses a minimal fixture rather than a real case index",
+              "reason_id": "route_mvp_not_validated"
+            }
+          ],
+          "field_outcome_validated": false,
+          "mechanism_trace": [
+            {
+              "effect": "retrieves",
+              "evidence_status": "mvp_fixture_not_field_validated",
+              "source_node": "semantic_query",
+              "target_node": "precedent_case_cluster"
+            },
+            {
+              "effect": "calibrates",
+              "evidence_status": "mvp_fixture_not_field_validated",
+              "source_node": "precedent_case_cluster",
+              "target_node": "risk_interval"
+            }
+          ],
           "metrics": {
             "decision_value_score": {
               "status": "not_computed_l0_contract_only",
@@ -517,11 +628,48 @@
               "value": null
             }
           },
+          "output_contract": {
+            "abnormal_segments_present": true,
+            "failure_reasons_present": true,
+            "field_outcome_validated": false,
+            "mechanism_trace_present": true,
+            "risk_distribution_present": true,
+            "risk_interval_present": true,
+            "runtime_default_allowed": false,
+            "trend_output_present": true
+          },
           "required_next_evidence": [
             "route-specific runnable implementation",
             "baseline comparison",
             "holdout or perturbation guard"
           ],
+          "risk_distribution": [
+            {
+              "claim_status": "diagnostic_mvp",
+              "risk_score": 0.43,
+              "segment_id": "price_sensitive_users",
+              "top_mechanism": "price_sensitivity"
+            },
+            {
+              "claim_status": "diagnostic_mvp",
+              "risk_score": 0.36,
+              "segment_id": "trust_sensitive_users",
+              "top_mechanism": "trust_loss"
+            },
+            {
+              "claim_status": "diagnostic_mvp",
+              "risk_score": 0.29,
+              "segment_id": "low_exposure_users",
+              "top_mechanism": "service_access_constraint"
+            }
+          ],
+          "risk_interval": {
+            "calibration_status": "mvp_fixture_not_holdout_validated",
+            "lower": 0.28,
+            "median": 0.35,
+            "unit": "reject_probability",
+            "upper": 0.44
+          },
           "route_contract": {
             "field_outcome_validated": false,
             "llm_direct_prediction_allowed": false,
@@ -531,19 +679,59 @@
           "route_goal": "retrieve source-backed precedent cases to constrain mechanisms",
           "route_id": "route_b_semantic_precedent_retrieval",
           "route_name": "\u8bed\u4e49\u6848\u4f8b\u68c0\u7d22\u4e0e\u5148\u4f8b\u7ea6\u675f",
+          "route_status": "r9_route_mvp_output_ready_guarded",
+          "runtime_default_allowed": false,
           "source_refs": [
             "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
             "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
             "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
-          ]
+          ],
+          "trend_output": {
+            "confidence": 0.58,
+            "direction": "risk_increase",
+            "rationale": "precedent fixture links price/service changes to moderate customer rejection risk"
+          }
         },
         "route_c_constrained_multi_agent_rollout": {
+          "abnormal_segments": [
+            {
+              "reason": "agent interaction trace amplifies complaint sharing in high-sensitivity group",
+              "risk_flag": "top_abnormal_segment",
+              "segment_id": "price_sensitive_users",
+              "source_status": "fixture_level_evidence"
+            }
+          ],
           "blocked_claims": [
             "route validated",
             "field_outcome_validated=true",
             "runtime_default_allowed=true"
           ],
           "claim_boundary": "R9 evidence-constrained interaction world model artifact. It defines source-backed mechanism, retrieval, and constrained-agent rollout routes plus a combination matrix for guarded evaluation only; it is not field validation, not point-prediction evidence, and not runtime default authorization.",
+          "failure_reasons": [
+            {
+              "description": "no customer or field outcome is attached to this route output",
+              "reason_id": "field_outcome_missing"
+            },
+            {
+              "description": "agent rollout is deterministic fixture output and not provider-stability tested",
+              "reason_id": "route_mvp_not_validated"
+            }
+          ],
+          "field_outcome_validated": false,
+          "mechanism_trace": [
+            {
+              "effect": "exchange",
+              "evidence_status": "mvp_fixture_not_field_validated",
+              "source_node": "segment_agents",
+              "target_node": "concern_signal"
+            },
+            {
+              "effect": "amplifies",
+              "evidence_status": "mvp_fixture_not_field_validated",
+              "source_node": "concern_signal",
+              "target_node": "abnormal_segment_risk"
+            }
+          ],
           "metrics": {
             "decision_value_score": {
               "status": "not_computed_l0_contract_only",
@@ -570,11 +758,48 @@
               "value": null
             }
           },
+          "output_contract": {
+            "abnormal_segments_present": true,
+            "failure_reasons_present": true,
+            "field_outcome_validated": false,
+            "mechanism_trace_present": true,
+            "risk_distribution_present": true,
+            "risk_interval_present": true,
+            "runtime_default_allowed": false,
+            "trend_output_present": true
+          },
           "required_next_evidence": [
             "route-specific runnable implementation",
             "baseline comparison",
             "holdout or perturbation guard"
           ],
+          "risk_distribution": [
+            {
+              "claim_status": "diagnostic_mvp",
+              "risk_score": 0.49,
+              "segment_id": "price_sensitive_users",
+              "top_mechanism": "price_sensitivity"
+            },
+            {
+              "claim_status": "diagnostic_mvp",
+              "risk_score": 0.41,
+              "segment_id": "trust_sensitive_users",
+              "top_mechanism": "trust_loss"
+            },
+            {
+              "claim_status": "diagnostic_mvp",
+              "risk_score": 0.31,
+              "segment_id": "low_exposure_users",
+              "top_mechanism": "service_access_constraint"
+            }
+          ],
+          "risk_interval": {
+            "calibration_status": "mvp_fixture_not_holdout_validated",
+            "lower": 0.31,
+            "median": 0.39,
+            "unit": "reject_probability",
+            "upper": 0.5
+          },
           "route_contract": {
             "field_outcome_validated": false,
             "llm_direct_prediction_allowed": false,
@@ -584,11 +809,18 @@
           "route_goal": "generate structured interaction traces and anomaly candidates",
           "route_id": "route_c_constrained_multi_agent_rollout",
           "route_name": "\u53d7\u7ea6\u675f\u591a\u4e3b\u4f53\u4ea4\u4e92 rollout",
+          "route_status": "r9_route_mvp_output_ready_guarded",
+          "runtime_default_allowed": false,
           "source_refs": [
             "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
             "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
             "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
-          ]
+          ],
+          "trend_output": {
+            "confidence": 0.55,
+            "direction": "risk_increase",
+            "rationale": "constrained rollout produces interaction concern signals in price-sensitive and trust-sensitive segments"
+          }
         }
       },
       "run_id": "r9-world-model-bundle-current",
@@ -598,7 +830,7 @@
         "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
         "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
       ],
-      "status": "r9_route_outputs_contract_ready"
+      "status": "r9_route_outputs_mvp_ready_guarded"
     },
     "r9_world_model_manifest": {
       "artifact_id": "r9-world-model-bundle-current-001-world-model-manifest",
@@ -660,5 +892,5 @@
     "experiments/results/r8_stop_loss_diagnosis/r8-stop-loss-diagnosis-current-001.json",
     "experiments/results/r8_product_failure_diagnosis_package/r8-product-failure-diagnosis-package-current-001.json"
   ],
-  "status": "r9_artifact_contract_ready_guarded"
+  "status": "r9_route_mvp_ready_guarded"
 }

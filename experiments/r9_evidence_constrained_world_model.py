@@ -93,7 +93,7 @@ def build_r9_world_model_bundle(
         "schema_version": R9_WORLD_MODEL_BUNDLE_SCHEMA_VERSION,
         "artifact_id": artifact_id,
         "run_id": run_id,
-        "status": "r9_artifact_contract_ready_guarded",
+        "status": "r9_route_mvp_ready_guarded",
         "product_positioning": "人群反应趋势与风险区间模拟器",
         "claim_boundary": R9_CLAIM_BOUNDARY,
         "source_refs": refs,
@@ -106,6 +106,7 @@ def build_r9_world_model_bundle(
         "acceptance_gates": {
             "artifact_contracts_present": True,
             "route_artifacts_present": True,
+            "route_mvp_outputs_present": True,
             "combination_matrix_present": True,
             "source_refs_present": True,
             "product_guard_consumable": True,
@@ -176,7 +177,7 @@ def _route_outputs(
         artifact_id=artifact_id,
         run_id=run_id,
         source_refs=source_refs,
-        status="r9_route_outputs_contract_ready",
+        status="r9_route_outputs_mvp_ready_guarded",
         routes=routes,
         metrics_schema=_metric_schema(),
     )
@@ -203,6 +204,7 @@ def _route_output(*, route_id: str, source_refs: list[str]) -> dict[str, Any]:
         "route_id": route_id,
         "route_name": route_names[route_id],
         "route_goal": route_goals[route_id],
+        "route_status": "r9_route_mvp_output_ready_guarded",
         "claim_boundary": R9_CLAIM_BOUNDARY,
         "source_refs": source_refs,
         "route_contract": {
@@ -211,7 +213,25 @@ def _route_output(*, route_id: str, source_refs: list[str]) -> dict[str, Any]:
             "field_outcome_validated": False,
             "runtime_default_allowed": False,
         },
+        "output_contract": {
+            "trend_output_present": True,
+            "risk_interval_present": True,
+            "risk_distribution_present": True,
+            "abnormal_segments_present": True,
+            "mechanism_trace_present": True,
+            "failure_reasons_present": True,
+            "field_outcome_validated": False,
+            "runtime_default_allowed": False,
+        },
+        "trend_output": _route_trend_output(route_id),
+        "risk_interval": _route_risk_interval(route_id),
+        "risk_distribution": _route_risk_distribution(route_id),
+        "abnormal_segments": _route_abnormal_segments(route_id),
+        "mechanism_trace": _route_mechanism_trace(route_id),
+        "failure_reasons": _route_failure_reasons(route_id),
         "metrics": _uncomputed_metrics(),
+        "field_outcome_validated": False,
+        "runtime_default_allowed": False,
         "required_next_evidence": [
             "route-specific runnable implementation",
             "baseline comparison",
@@ -223,6 +243,156 @@ def _route_output(*, route_id: str, source_refs: list[str]) -> dict[str, Any]:
             "runtime_default_allowed=true",
         ],
     }
+
+
+def _route_trend_output(route_id: str) -> dict[str, Any]:
+    trend_by_route = {
+        "route_a_evidence_constrained_mechanism_operator": {
+            "direction": "risk_increase",
+            "confidence": 0.62,
+            "rationale": (
+                "mechanism operator flags trust_loss and service_access_constraint "
+                "as bounded risk amplifiers"
+            ),
+        },
+        "route_b_semantic_precedent_retrieval": {
+            "direction": "risk_increase",
+            "confidence": 0.58,
+            "rationale": (
+                "precedent fixture links price/service changes to moderate "
+                "customer rejection risk"
+            ),
+        },
+        "route_c_constrained_multi_agent_rollout": {
+            "direction": "risk_increase",
+            "confidence": 0.55,
+            "rationale": (
+                "constrained rollout produces interaction concern signals in "
+                "price-sensitive and trust-sensitive segments"
+            ),
+        },
+    }
+    return trend_by_route[route_id]
+
+
+def _route_risk_interval(route_id: str) -> dict[str, Any]:
+    interval_by_route = {
+        "route_a_evidence_constrained_mechanism_operator": (0.30, 0.37, 0.45),
+        "route_b_semantic_precedent_retrieval": (0.28, 0.35, 0.44),
+        "route_c_constrained_multi_agent_rollout": (0.31, 0.39, 0.50),
+    }
+    lower, median, upper = interval_by_route[route_id]
+    return {
+        "lower": lower,
+        "median": median,
+        "upper": upper,
+        "unit": "reject_probability",
+        "calibration_status": "mvp_fixture_not_holdout_validated",
+    }
+
+
+def _route_risk_distribution(route_id: str) -> list[dict[str, Any]]:
+    risk_scores = {
+        "route_a_evidence_constrained_mechanism_operator": [0.46, 0.38, 0.27],
+        "route_b_semantic_precedent_retrieval": [0.43, 0.36, 0.29],
+        "route_c_constrained_multi_agent_rollout": [0.49, 0.41, 0.31],
+    }
+    segment_ids = [
+        "price_sensitive_users",
+        "trust_sensitive_users",
+        "low_exposure_users",
+    ]
+    mechanism_ids = [
+        "price_sensitivity",
+        "trust_loss",
+        "service_access_constraint",
+    ]
+    return [
+        {
+            "segment_id": segment_id,
+            "risk_score": risk_score,
+            "top_mechanism": mechanism_id,
+            "claim_status": "diagnostic_mvp",
+        }
+        for segment_id, risk_score, mechanism_id in zip(
+            segment_ids,
+            risk_scores[route_id],
+            mechanism_ids,
+            strict=True,
+        )
+    ]
+
+
+def _route_abnormal_segments(route_id: str) -> list[dict[str, Any]]:
+    top_reason = {
+        "route_a_evidence_constrained_mechanism_operator": (
+            "bounded mechanism operator assigns highest sensitivity to price change"
+        ),
+        "route_b_semantic_precedent_retrieval": (
+            "retrieved precedent cases concentrate risk in price-sensitive groups"
+        ),
+        "route_c_constrained_multi_agent_rollout": (
+            "agent interaction trace amplifies complaint sharing in high-sensitivity group"
+        ),
+    }
+    return [
+        {
+            "segment_id": "price_sensitive_users",
+            "risk_flag": "top_abnormal_segment",
+            "reason": top_reason[route_id],
+            "source_status": "fixture_level_evidence",
+        }
+    ]
+
+
+def _route_mechanism_trace(route_id: str) -> list[dict[str, Any]]:
+    trace_by_route = {
+        "route_a_evidence_constrained_mechanism_operator": [
+            ("scenario_shock", "price_sensitivity", "activates"),
+            ("price_sensitivity", "reject_probability", "amplifies"),
+        ],
+        "route_b_semantic_precedent_retrieval": [
+            ("semantic_query", "precedent_case_cluster", "retrieves"),
+            ("precedent_case_cluster", "risk_interval", "calibrates"),
+        ],
+        "route_c_constrained_multi_agent_rollout": [
+            ("segment_agents", "concern_signal", "exchange"),
+            ("concern_signal", "abnormal_segment_risk", "amplifies"),
+        ],
+    }
+    return [
+        {
+            "source_node": source,
+            "target_node": target,
+            "effect": effect,
+            "evidence_status": "mvp_fixture_not_field_validated",
+        }
+        for source, target, effect in trace_by_route[route_id]
+    ]
+
+
+def _route_failure_reasons(route_id: str) -> list[dict[str, str]]:
+    reason_by_route = {
+        "route_a_evidence_constrained_mechanism_operator": (
+            "mechanism parameters are fixture-level and not holdout validated"
+        ),
+        "route_b_semantic_precedent_retrieval": (
+            "precedent retrieval uses a minimal fixture rather than a real case index"
+        ),
+        "route_c_constrained_multi_agent_rollout": (
+            "agent rollout is deterministic fixture output and not provider-stability tested"
+        ),
+    }
+    return [
+        {
+            "reason_id": "field_outcome_missing",
+            "description": "no customer or field outcome is attached to this route output",
+        },
+        {
+            "reason_id": "route_mvp_not_validated",
+            "description": reason_by_route[route_id],
+        },
+    ]
 
 
 def _combination_matrix(

@@ -17,12 +17,13 @@ def test_r9_world_model_bundle_contains_routes_combinations_and_guard():
     )
 
     assert bundle["schema_version"] == "r9-world-model-bundle-v1"
-    assert bundle["status"] == "r9_artifact_contract_ready_guarded"
+    assert bundle["status"] == "r9_route_mvp_ready_guarded"
     assert bundle["product_positioning"] == "人群反应趋势与风险区间模拟器"
     assert bundle["claim_boundary"] == R9_CLAIM_BOUNDARY
     assert bundle["acceptance_gates"] == {
         "artifact_contracts_present": True,
         "route_artifacts_present": True,
+        "route_mvp_outputs_present": True,
         "combination_matrix_present": True,
         "source_refs_present": True,
         "product_guard_consumable": True,
@@ -73,6 +74,45 @@ def test_r9_routes_have_uniform_source_backed_metric_structure():
         for metric in route["metrics"].values():
             assert metric["value"] is None
             assert metric["status"] == "not_computed_l0_contract_only"
+
+
+def test_r9_routes_emit_minimum_trend_interval_risk_segment_mechanism_outputs():
+    bundle = build_r9_world_model_bundle(
+        artifact_id="r9-world-model-bundle-test",
+        run_id="r9-task2-run",
+    )
+    routes = bundle["artifacts"]["r9_route_outputs"]["routes"]
+
+    for route_id in R9_ROUTE_IDS:
+        route = routes[route_id]
+        assert route["route_status"] == "r9_route_mvp_output_ready_guarded"
+        assert route["output_contract"] == {
+            "trend_output_present": True,
+            "risk_interval_present": True,
+            "risk_distribution_present": True,
+            "abnormal_segments_present": True,
+            "mechanism_trace_present": True,
+            "failure_reasons_present": True,
+            "field_outcome_validated": False,
+            "runtime_default_allowed": False,
+        }
+        assert route["trend_output"]["direction"] in {
+            "risk_increase",
+            "risk_decrease",
+            "risk_stable",
+        }
+        assert 0 <= route["trend_output"]["confidence"] <= 1
+        interval = route["risk_interval"]
+        assert interval["lower"] <= interval["median"] <= interval["upper"]
+        assert 0 <= interval["lower"] <= 1
+        assert 0 <= interval["upper"] <= 1
+        assert route["risk_distribution"]
+        assert all("segment_id" in item for item in route["risk_distribution"])
+        assert route["abnormal_segments"]
+        assert route["mechanism_trace"]
+        assert route["failure_reasons"]
+        assert route["field_outcome_validated"] is False
+        assert route["runtime_default_allowed"] is False
 
 
 def test_r9_combination_matrix_records_all_combinations_without_success_claims():
@@ -144,5 +184,5 @@ def test_r9_world_model_cli_writes_current_artifact(tmp_path):
     assert json.loads(completed.stdout) == {
         "artifact_id": "r9-world-model-bundle-cli",
         "output": str(output),
-        "status": "r9_artifact_contract_ready_guarded",
+        "status": "r9_route_mvp_ready_guarded",
     }
