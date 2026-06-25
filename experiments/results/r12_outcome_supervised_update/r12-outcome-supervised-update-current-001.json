@@ -1,0 +1,133 @@
+{
+  "artifact_id": "r12-outcome-supervised-update-current-001",
+  "blocked_claims": [
+    "R12 transfer validation already passed",
+    "R12 Product core method ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "validation or holdout outcome used for training",
+    "prompt/persona manual patch as automatic calibration",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "train_only_outcome_update_candidate",
+  "next_required_artifact": "r12_transfer_validation",
+  "run_id": "r12-l2-current",
+  "schema_version": "r12-outcome-supervised-update-v1",
+  "source_refs": [
+    "r12-outcome-case-registry-current-001",
+    "r12-causal-interaction-operator-current-001"
+  ],
+  "status": "r12_outcome_supervised_update_ready_guarded",
+  "training_data_guard": {
+    "holdout_outcomes_used_for_update": [],
+    "outcome_leakage_blocked": true,
+    "train_outcomes_used_for_update": [
+      "hps_METRO_STATUS_2",
+      "hps_REGION_2"
+    ],
+    "validation_outcomes_used_for_update": []
+  },
+  "training_residual_summary": {
+    "mean_abs_train_residual_vs_interaction": 0.041323,
+    "mean_train_residual_vs_interaction": 0.041323,
+    "negative_train_residual_count": 0,
+    "positive_train_residual_count": 2,
+    "train_case_count": 2
+  },
+  "training_residuals": [
+    {
+      "case_id": "hps_METRO_STATUS_2",
+      "interaction_prediction": 0.498821,
+      "observed_value": 0.55329,
+      "residual_vs_interaction": 0.054469,
+      "residual_vs_static_prior": 0.098671,
+      "source_signal_delta": 0.092087,
+      "split": "train",
+      "static_prior_prediction": 0.454619
+    },
+    {
+      "case_id": "hps_REGION_2",
+      "interaction_prediction": 0.493224,
+      "observed_value": 0.5214,
+      "residual_vs_interaction": 0.028176,
+      "residual_vs_static_prior": 0.066781,
+      "source_signal_delta": 0.080427,
+      "split": "train",
+      "static_prior_prediction": 0.454619
+    }
+  ],
+  "update_candidates": [
+    {
+      "current_value": 0.52,
+      "default_runtime_enabled": false,
+      "recommended_delta": 0.03,
+      "recommended_value": 0.55,
+      "requires_human_review": true,
+      "status": "accepted",
+      "status_reason": "positive train residual supports bounded price-pressure update for holdout replay",
+      "target": "price_pressure",
+      "transfer_scope": "same_family_holdout_required",
+      "update_id": "r12-mechanism-weight-price-pressure-accepted-001",
+      "update_type": "mechanism_weight"
+    },
+    {
+      "current_value": {
+        "hps_METRO_STATUS_2": 1.09,
+        "hps_REGION_2": 1.04
+      },
+      "default_runtime_enabled": false,
+      "recommended_delta": 0.0,
+      "recommended_value": {
+        "hps_METRO_STATUS_2": 1.09,
+        "hps_REGION_2": 1.04
+      },
+      "requires_human_review": true,
+      "status": "diagnostic_only",
+      "status_reason": "train segments show positive residuals but segment-local gains are not transferable before holdout replay",
+      "target": [
+        "hps_METRO_STATUS_2",
+        "hps_REGION_2"
+      ],
+      "transfer_scope": "same_case_diagnostic_only",
+      "update_id": "r12-segment-sensitivity-train-diagnostic-001",
+      "update_type": "segment_sensitivity"
+    },
+    {
+      "current_value": 0.0,
+      "default_runtime_enabled": false,
+      "recommended_delta": 0.0,
+      "recommended_value": 0.0,
+      "requires_human_review": true,
+      "status": "rejected",
+      "status_reason": "direct interaction propagation evidence is absent, so edge updates would be unsupported",
+      "target": "segment_peer_amplification",
+      "transfer_scope": "blocked_until_direct_propagation_evidence",
+      "update_id": "r12-interaction-edge-weight-rejected-001",
+      "update_type": "interaction_edge_weight"
+    },
+    {
+      "current_value": 0.1,
+      "default_runtime_enabled": false,
+      "recommended_delta": 0.0,
+      "recommended_value": 0.1,
+      "requires_human_review": true,
+      "status": "diagnostic_only",
+      "status_reason": "train outcomes remain inside current intervals, so uncertainty changes are diagnostic rather than accepted",
+      "target": "interval_half_width",
+      "transfer_scope": "diagnostic_only_until_interval_miss",
+      "update_id": "r12-uncertainty-parameter-diagnostic-001",
+      "update_type": "uncertainty_parameter"
+    }
+  ],
+  "update_gate": {
+    "accepted_shadow_only_count": 1,
+    "candidate_update_generated": true,
+    "diagnostic_only_count": 2,
+    "field_outcome_validated": false,
+    "outcome_leakage_blocked": true,
+    "rejected_count": 1,
+    "requires_transfer_validation_before_product_support": true,
+    "runtime_default_allowed": false,
+    "train_only_update": true
+  }
+}
