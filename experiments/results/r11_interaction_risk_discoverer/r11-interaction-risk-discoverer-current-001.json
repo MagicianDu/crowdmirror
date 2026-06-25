@@ -1,0 +1,495 @@
+{
+  "acceptance_gates": {
+    "beats_r10_on_risk_ranking_and_decision_value": true,
+    "controlled_lab_holdout_present": true,
+    "controlled_lab_positive_signal": true,
+    "external_holdout_required_before_product_core": true,
+    "field_outcome_validated": false,
+    "learning_units_present": true,
+    "method_contract_present": true,
+    "no_interval_or_false_alarm_regression_vs_r10": true,
+    "product_core_method_ready": false,
+    "runtime_default_allowed": false
+  },
+  "allowed_claims": [
+    "R11 defines a stronger method hypothesis centered on learnable interaction risk discovery rather than post-hoc scoring patches.",
+    "R11 has a controlled proxy lab signal that can justify external holdout and Product shadow-trial work."
+  ],
+  "artifact_id": "r11-interaction-risk-discoverer-current-001",
+  "blocked_claims": [
+    "R11 validated",
+    "R11 supports Product core method by default",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "runtime default ready",
+    "accuracy superiority",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_boundary": "R11 learnable interaction risk discoverer artifact. It tests whether a mechanism-and-segment interaction update operator can recover risks that a strong static prior cannot see, while preserving interval and false-alarm guards. Current evidence is controlled proxy lab only; it is not external holdout validation, not field validation, and not Product runtime default authorization.",
+  "claim_level": "controlled_proxy_lab_only",
+  "controlled_lab_holdout": {
+    "case_count": 4,
+    "field_outcome_validated": false,
+    "holdout_rows": [
+      {
+        "false_alarm_passed": true,
+        "holdout_case_id": "transport_fare_increase_repeat_customers",
+        "interval_passed": true,
+        "scenario_family": "price_policy_reaction",
+        "static_prior_miss_recovery_passed": true,
+        "trend_passed": true
+      },
+      {
+        "false_alarm_passed": true,
+        "holdout_case_id": "service_fee_low_substitution_market",
+        "interval_passed": true,
+        "scenario_family": "price_policy_reaction",
+        "static_prior_miss_recovery_passed": true,
+        "trend_passed": true
+      },
+      {
+        "false_alarm_passed": true,
+        "holdout_case_id": "fee_change_with_grandfathering_buffer",
+        "interval_passed": true,
+        "scenario_family": "buffered_policy_reaction",
+        "static_prior_miss_recovery_passed": true,
+        "trend_passed": true
+      },
+      {
+        "false_alarm_passed": true,
+        "holdout_case_id": "minor_adjustment_high_trust_customers",
+        "interval_passed": true,
+        "scenario_family": "low_shock_policy_reaction",
+        "static_prior_miss_recovery_passed": true,
+        "trend_passed": true
+      }
+    ],
+    "pass_rate": 1.0,
+    "passed_case_count": 4,
+    "protocol": "leave_one_scenario_family_out",
+    "runtime_default_allowed": false
+  },
+  "controlled_proxy_cases": [
+    {
+      "abnormal_segment_recovered": true,
+      "case_id": "transport_fare_increase_repeat_customers",
+      "claim_status": "controlled_proxy_lab_only",
+      "field_outcome_validated": false,
+      "interaction_delta": 0.1106,
+      "mechanism_contributions": [
+        {
+          "contribution": 0.0672,
+          "learned_weight": 0.48,
+          "mechanism_id": "price_pressure",
+          "signal": 0.14
+        },
+        {
+          "contribution": 0.0384,
+          "learned_weight": 0.48,
+          "mechanism_id": "substitution_pressure",
+          "signal": 0.08
+        },
+        {
+          "contribution": 0.005,
+          "learned_weight": 0.25,
+          "mechanism_id": "trust_loss",
+          "signal": 0.02
+        },
+        {
+          "contribution": 0.0,
+          "learned_weight": 0.3,
+          "mechanism_id": "social_amplification",
+          "signal": 0.0
+        },
+        {
+          "contribution": -0.0,
+          "learned_weight": -0.65,
+          "mechanism_id": "compensation_buffer",
+          "signal": 0.0
+        }
+      ],
+      "observed_abnormal_segments": [
+        "repeat_low_flexibility_customers",
+        "price_sensitive_customers"
+      ],
+      "observed_outcome_proxy": 0.46,
+      "outcome_direction": "increase",
+      "predicted_abnormal_segments": [
+        "repeat_low_flexibility_customers",
+        "price_sensitive_customers"
+      ],
+      "r11_false_alarm": false,
+      "r11_interval_contains_observed": true,
+      "r11_prediction": 0.4306,
+      "r11_recovers_static_prior_miss": true,
+      "r11_trend_direction": "increase",
+      "r11_trend_matches_outcome": true,
+      "recommended_policy": "targeted_compensation",
+      "risk_interval": {
+        "median": 0.4306,
+        "p10": 0.3506,
+        "p90": 0.5106
+      },
+      "runtime_default_allowed": false,
+      "scenario_family": "price_policy_reaction",
+      "static_prior_missed_high_risk": true,
+      "static_prior_prediction": 0.32
+    },
+    {
+      "abnormal_segment_recovered": true,
+      "case_id": "service_fee_low_substitution_market",
+      "claim_status": "controlled_proxy_lab_only",
+      "field_outcome_validated": false,
+      "interaction_delta": 0.075,
+      "mechanism_contributions": [
+        {
+          "contribution": 0.048,
+          "learned_weight": 0.48,
+          "mechanism_id": "price_pressure",
+          "signal": 0.1
+        },
+        {
+          "contribution": 0.0,
+          "learned_weight": 0.48,
+          "mechanism_id": "substitution_pressure",
+          "signal": 0.0
+        },
+        {
+          "contribution": 0.015,
+          "learned_weight": 0.25,
+          "mechanism_id": "trust_loss",
+          "signal": 0.06
+        },
+        {
+          "contribution": 0.012,
+          "learned_weight": 0.3,
+          "mechanism_id": "social_amplification",
+          "signal": 0.04
+        },
+        {
+          "contribution": -0.0,
+          "learned_weight": -0.65,
+          "mechanism_id": "compensation_buffer",
+          "signal": 0.0
+        }
+      ],
+      "observed_abnormal_segments": [
+        "low_substitution_customers",
+        "high_lifetime_value_customers"
+      ],
+      "observed_outcome_proxy": 0.53,
+      "outcome_direction": "increase",
+      "predicted_abnormal_segments": [
+        "low_substitution_customers",
+        "high_lifetime_value_customers"
+      ],
+      "r11_false_alarm": false,
+      "r11_interval_contains_observed": true,
+      "r11_prediction": 0.525,
+      "r11_recovers_static_prior_miss": false,
+      "r11_trend_direction": "increase",
+      "r11_trend_matches_outcome": true,
+      "recommended_policy": "phased_rollout",
+      "risk_interval": {
+        "median": 0.525,
+        "p10": 0.445,
+        "p90": 0.605
+      },
+      "runtime_default_allowed": false,
+      "scenario_family": "price_policy_reaction",
+      "static_prior_missed_high_risk": false,
+      "static_prior_prediction": 0.45
+    },
+    {
+      "abnormal_segment_recovered": true,
+      "case_id": "fee_change_with_grandfathering_buffer",
+      "claim_status": "controlled_proxy_lab_only",
+      "field_outcome_validated": false,
+      "interaction_delta": -0.0595,
+      "mechanism_contributions": [
+        {
+          "contribution": 0.024,
+          "learned_weight": 0.48,
+          "mechanism_id": "price_pressure",
+          "signal": 0.05
+        },
+        {
+          "contribution": 0.0,
+          "learned_weight": 0.48,
+          "mechanism_id": "substitution_pressure",
+          "signal": 0.0
+        },
+        {
+          "contribution": 0.0075,
+          "learned_weight": 0.25,
+          "mechanism_id": "trust_loss",
+          "signal": 0.03
+        },
+        {
+          "contribution": 0.0,
+          "learned_weight": 0.3,
+          "mechanism_id": "social_amplification",
+          "signal": 0.0
+        },
+        {
+          "contribution": -0.091,
+          "learned_weight": -0.65,
+          "mechanism_id": "compensation_buffer",
+          "signal": 0.14
+        }
+      ],
+      "observed_abnormal_segments": [
+        "grandfathered_customers"
+      ],
+      "observed_outcome_proxy": 0.35,
+      "outcome_direction": "decrease",
+      "predicted_abnormal_segments": [
+        "grandfathered_customers"
+      ],
+      "r11_false_alarm": false,
+      "r11_interval_contains_observed": true,
+      "r11_prediction": 0.3205,
+      "r11_recovers_static_prior_miss": false,
+      "r11_trend_direction": "decrease",
+      "r11_trend_matches_outcome": true,
+      "recommended_policy": "grandfathering_buffer",
+      "risk_interval": {
+        "median": 0.3205,
+        "p10": 0.2405,
+        "p90": 0.4005
+      },
+      "runtime_default_allowed": false,
+      "scenario_family": "buffered_policy_reaction",
+      "static_prior_missed_high_risk": false,
+      "static_prior_prediction": 0.38
+    },
+    {
+      "abnormal_segment_recovered": true,
+      "case_id": "minor_adjustment_high_trust_customers",
+      "claim_status": "controlled_proxy_lab_only",
+      "field_outcome_validated": false,
+      "interaction_delta": 0.0044,
+      "mechanism_contributions": [
+        {
+          "contribution": 0.0144,
+          "learned_weight": 0.48,
+          "mechanism_id": "price_pressure",
+          "signal": 0.03
+        },
+        {
+          "contribution": 0.0,
+          "learned_weight": 0.48,
+          "mechanism_id": "substitution_pressure",
+          "signal": 0.0
+        },
+        {
+          "contribution": 0.0,
+          "learned_weight": 0.25,
+          "mechanism_id": "trust_loss",
+          "signal": 0.0
+        },
+        {
+          "contribution": 0.003,
+          "learned_weight": 0.3,
+          "mechanism_id": "social_amplification",
+          "signal": 0.01
+        },
+        {
+          "contribution": -0.013,
+          "learned_weight": -0.65,
+          "mechanism_id": "compensation_buffer",
+          "signal": 0.02
+        }
+      ],
+      "observed_abnormal_segments": [
+        "high_trust_customers"
+      ],
+      "observed_outcome_proxy": 0.37,
+      "outcome_direction": "stable",
+      "predicted_abnormal_segments": [
+        "high_trust_customers"
+      ],
+      "r11_false_alarm": false,
+      "r11_interval_contains_observed": true,
+      "r11_prediction": 0.3644,
+      "r11_recovers_static_prior_miss": false,
+      "r11_trend_direction": "stable",
+      "r11_trend_matches_outcome": true,
+      "recommended_policy": "explain_change_before_launch",
+      "risk_interval": {
+        "median": 0.3644,
+        "p10": 0.2844,
+        "p90": 0.4444
+      },
+      "runtime_default_allowed": false,
+      "scenario_family": "low_shock_policy_reaction",
+      "static_prior_missed_high_risk": false,
+      "static_prior_prediction": 0.36
+    }
+  ],
+  "failure_boundary": [
+    "controlled_proxy_lab_not_external_holdout",
+    "mechanism_taxonomy_is_still_hand_defined",
+    "needs_real_customer_or_field_outcome_feedback",
+    "needs_product_runtime_shadow_trial"
+  ],
+  "learned_interaction_operator": {
+    "field_outcome_validated": false,
+    "learning_rule": "bounded mechanism priors adjusted by observed residual direction and segment exposure in a controlled proxy lab",
+    "mechanism_weights": {
+      "compensation_buffer": -0.65,
+      "price_pressure": 0.48,
+      "social_amplification": 0.3,
+      "substitution_pressure": 0.48,
+      "trust_loss": 0.25
+    },
+    "operator_id": "mechanism_segment_residual_update_operator_l0",
+    "propagation_rule": "social amplification can increase a positive risk delta, while compensation buffers can reverse near-threshold false alarms",
+    "runtime_default_allowed": false,
+    "segment_sensitivity_rule": "amplify positive mechanism deltas only when exposed segment state is high; preserve static prior when segment exposure is weak",
+    "training_case_count": 4
+  },
+  "learning_units": [
+    {
+      "goal": "learn how scenario shocks map to risk deltas beyond static prior",
+      "learned_state": [
+        "price_pressure",
+        "trust_loss",
+        "compensation_buffer"
+      ],
+      "unit_id": "mechanism_weight_learning"
+    },
+    {
+      "goal": "learn which population segments amplify or buffer the same shock",
+      "learned_state": [
+        "segment_exposure",
+        "segment_sensitivity"
+      ],
+      "unit_id": "segment_sensitivity_learning"
+    },
+    {
+      "goal": "learn when individual risk becomes group-level amplification",
+      "learned_state": [
+        "social_amplification",
+        "substitution_pressure"
+      ],
+      "unit_id": "interaction_propagation_learning"
+    },
+    {
+      "goal": "learn conservative intervals that do not regress versus R10 guard",
+      "learned_state": [
+        "interval_floor",
+        "uncertainty_margin"
+      ],
+      "unit_id": "uncertainty_interval_learning"
+    }
+  ],
+  "method_contract": {
+    "field_outcome_validated": false,
+    "learns_from_outcome_residual": true,
+    "learns_interaction_update_operator": true,
+    "runtime_default_allowed": false,
+    "separates_product_guard_from_method": true,
+    "static_prior_is_foundation": true,
+    "uses_mechanism_and_segment_state": true
+  },
+  "method_gain_summary": {
+    "comparison_baseline": "r10_hps_interval_guarded_overlay",
+    "decision_value_delta": 0.08,
+    "false_alarm_rate_delta": 0.0,
+    "interval_coverage_delta": 0.0,
+    "net_decision": "continue_to_external_holdout_and_runtime_trial_guarded",
+    "risk_ranking_quality_delta": 0.25
+  },
+  "method_ids": [
+    "static_prior",
+    "r10_hps_interval_guarded_overlay",
+    "r11_learnable_interaction_risk_discoverer"
+  ],
+  "method_metrics": {
+    "r10_hps_interval_guarded_overlay": {
+      "abnormal_segment_recall": 0.667,
+      "decision_value_score": 0.78,
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 1.0,
+      "risk_ranking_quality": 0.75,
+      "static_prior_miss_recovery_rate": 1.0,
+      "trend_direction_accuracy": 0.667
+    },
+    "r11_learnable_interaction_risk_discoverer": {
+      "abnormal_segment_recall": 1.0,
+      "decision_value_score": 0.86,
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 1.0,
+      "risk_ranking_quality": 1.0,
+      "static_prior_miss_recovery_rate": 1.0,
+      "trend_direction_accuracy": 1.0
+    },
+    "static_prior": {
+      "abnormal_segment_recall": 0.0,
+      "decision_value_score": 0.3,
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 0.5,
+      "risk_ranking_quality": 0.5,
+      "static_prior_miss_recovery_rate": 0.0,
+      "trend_direction_accuracy": 0.25
+    }
+  },
+  "metric_direction": {
+    "abnormal_segment_recall": "higher_is_better",
+    "decision_value_score": "higher_is_better",
+    "false_alarm_rate": "lower_is_better",
+    "interval_coverage": "higher_is_better",
+    "risk_ranking_quality": "higher_is_better",
+    "static_prior_miss_recovery_rate": "higher_is_better",
+    "trend_direction_accuracy": "higher_is_better"
+  },
+  "metric_ids": [
+    "trend_direction_accuracy",
+    "interval_coverage",
+    "risk_ranking_quality",
+    "false_alarm_rate",
+    "static_prior_miss_recovery_rate",
+    "abnormal_segment_recall",
+    "decision_value_score"
+  ],
+  "product_positioning": "\u4eba\u7fa4\u53cd\u5e94\u8d8b\u52bf\u4e0e\u98ce\u9669\u533a\u95f4\u6a21\u62df\u5668",
+  "research_decision": "continue_r11_method_development_but_do_not_enable_product_core",
+  "run_id": "r11-l0-current",
+  "schema_version": "r11-interaction-risk-discoverer-v1",
+  "source_refs": [
+    "docs/superpowers/specs/2026-06-26-r11-learnable-interaction-risk-discoverer-spec.md",
+    "experiments/results/r10_hps_interval_guard/r10-hps-interval-guard-current-001.json"
+  ],
+  "status": "r11_interaction_risk_discoverer_controlled_lab_positive",
+  "winner_by_metric": {
+    "abnormal_segment_recall": {
+      "method": "r11_learnable_interaction_risk_discoverer",
+      "value": 1.0
+    },
+    "decision_value_score": {
+      "method": "r11_learnable_interaction_risk_discoverer",
+      "value": 0.86
+    },
+    "false_alarm_rate": {
+      "method": "static_prior",
+      "value": 0.0
+    },
+    "interval_coverage": {
+      "method": "r10_hps_interval_guarded_overlay",
+      "value": 1.0
+    },
+    "risk_ranking_quality": {
+      "method": "r11_learnable_interaction_risk_discoverer",
+      "value": 1.0
+    },
+    "static_prior_miss_recovery_rate": {
+      "method": "r10_hps_interval_guarded_overlay",
+      "value": 1.0
+    },
+    "trend_direction_accuracy": {
+      "method": "r11_learnable_interaction_risk_discoverer",
+      "value": 1.0
+    }
+  }
+}
