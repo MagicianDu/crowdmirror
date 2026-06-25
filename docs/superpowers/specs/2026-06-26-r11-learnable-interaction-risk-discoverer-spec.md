@@ -117,6 +117,38 @@ L0 只做 controlled proxy lab，不做外部 holdout 或 field validation。
 
 这说明 R11 有一个比 R10 更接近 Product 目标的方法候选，但证据级别仍然很低。当前只能支持继续做外部 holdout 和 Product shadow trial，不能对外宣称 R11 已经支撑 Product core method。
 
+## 当前 L1 外部 proxy holdout
+
+当前 L1 已实现为：
+
+- `experiments/r11_external_holdout_validation.py`
+- `experiments/results/r11_external_holdout_validation/r11-external-holdout-validation-current-001.json`
+- `tests/test_r11_external_holdout_validation.py`
+
+L1 使用 HPS public-use ingestion artifact 中的两个不同 outcome proxy：
+
+- source signal：`PRICECONCERN`
+- holdout outcome proxy：`PRICESTRESS`
+
+验证方式是把 R11 L0 学到的 `price_pressure` transfer rule 投射到 HPS segment-level public-use proxy holdout，并在 `REGION` 与 `METRO_STATUS` 两个低敏感 segment 轴上计算趋势、区间、风险排序、误报、静态先验漏报恢复和异常群体召回。
+
+当前 L1 current result：
+
+- `status=r11_external_holdout_validation_passed_guarded`
+- `claim_level=public_use_proxy_holdout_only`
+- `case_count=6`
+- `trend_direction_accuracy=0.833`
+- `interval_coverage=1.0`
+- `risk_ranking_quality=1.0`
+- `false_alarm_rate=0.0`
+- `static_prior_miss_recovery_rate=1.0`
+- `abnormal_segment_recall=1.0`
+- `product_core_method_ready=false`
+- `field_outcome_validated=false`
+- `runtime_default_allowed=false`
+
+这是一条比 L0 更强的正向信号：R11 不只是在 controlled proxy lab 中成立，也能在真实 public-use HPS proxy holdout 中保持风险排序、区间覆盖、误报和静态漏报恢复边界。但它仍不是客户 field outcome，也不能直接升级 Product core method。下一步应进入 Product shadow trial，让 Product 后台运行 R11，同时保持客户可见主结论由 guarded baseline 输出。
+
 ## 下一阶段任务
 
 ### R11 L1：外部 holdout 映射

@@ -171,6 +171,12 @@ R10 L4 已把 L3 暴露的 interval regression 转成显式 guard：保留 HPS s
 
 R11 L0 已把 Research 主线从 R10 的 external evidence overlay / interval guard 切换到可学习交互风险发现器。当前 artifact `r11-interaction-risk-discoverer-current-001` 在 controlled proxy lab 中显示相对 R10 guarded overlay 的 `risk_ranking_quality_delta=0.25`、`decision_value_delta=0.08`，同时 `interval_coverage_delta=0.0`、`false_alarm_rate_delta=0.0`。这说明 R11 是一个值得继续做外部 holdout 和 Product shadow trial 的方法候选；但该结果仍是 `controlled_proxy_lab_only`，`product_core_method_ready=false`、`field_outcome_validated=false`、`runtime_default_allowed=false`。
 
+当前 R11 L1 已完成：
+
+1. `r11_external_holdout_validation`
+
+R11 L1 已把 L0 controlled proxy lab 推进到 HPS public-use proxy holdout：使用 `PRICECONCERN` 作为外部信号、`PRICESTRESS` 作为 held-out outcome proxy，在 `REGION` 与 `METRO_STATUS` 两个低敏感 segment 轴上计算趋势、区间、风险排序、误报、静态先验漏报恢复和异常群体召回。当前 artifact `r11-external-holdout-validation-current-001` 为 `r11_external_holdout_validation_passed_guarded`，`trend_direction_accuracy=0.833`、`interval_coverage=1.0`、`risk_ranking_quality=1.0`、`false_alarm_rate=0.0`、`static_prior_miss_recovery_rate=1.0`、`abnormal_segment_recall=1.0`。这是一条 source-backed proxy holdout 正向信号，但仍不是客户 field outcome；`product_core_method_ready=false`、`field_outcome_validated=false`、`runtime_default_allowed=false`。
+
 ## 降权历史材料
 
 以下材料只作为历史经验或基础设施参考，不再作为当前主线：
@@ -213,6 +219,6 @@ R11 L0 已把 Research 主线从 R10 的 external evidence overlay / interval gu
 - R10 L2 route-B precedent retrieval 通过后，下一步必须进入组合比较：将 HPS route-B evidence input 接入 R9/R10 trend、interval、risk ranking 和 decision value 候选指标；若没有 holdout/outcome mapping，仍不得升级 Product core method。
 - R10 L3 combination overlay 若出现 risk-ranking gain 但 interval non-regression 失败，只能作为诊断正向信号；R10 L4 必须修复 interval regression 或明确止损为风险排序诊断资产。
 - R10 L4 interval guard 通过后，下一步必须做 holdout/outcome mapping；没有独立 outcome 映射前，HPS route-B 只能作为风险排序诊断和保守区间 guard，不得成为 Product runtime default。
-- R11 L0 controlled proxy lab 通过后，下一步必须做外部 holdout 和 Product shadow trial；不能把 controlled lab 正向信号直接升级为 Product core method。
+- R11 L1 public-use proxy holdout 通过后，下一步必须做 Product shadow trial；不能把 public-use proxy holdout 正向信号直接升级为 Product core method。
 - R11 的方法更新对象必须是机制权重、群体敏感度、传播边权或区间不确定性；不得把人工 prompt/persona 文案修改包装成自动校准。
 - Product 的 failure diagnosis、false-alarm gate、claim boundary、evidence cards 是新方法外层 guard，不能因为 Research 换方法而降级或移除。
