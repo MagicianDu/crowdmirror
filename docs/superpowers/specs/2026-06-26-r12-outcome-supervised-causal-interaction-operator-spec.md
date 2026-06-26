@@ -542,6 +542,42 @@ L3+ 已新增 Product 扩展指标：
 
 L5 的下一步是 `r12_high_risk_holdout_transfer_replay`：在这 29 个 research-only 高风险候选上复核 R12 update 对 static-prior miss recovery、abnormal segment recall、false alarm 和 interval coverage 的影响，并继续报告敏感 segment 治理边界。
 
+### R12 L6：High-risk holdout transfer replay
+
+目标：不再停留在 L5 registry 的“有候选”，而是在 29 个 research-only high-risk 候选上实际回放 R12 L2 的 `price_pressure=0.55` update，判断它是否改善高风险漏报恢复、异常群体召回、区间覆盖和误报边界。
+
+当前已实现：
+
+- `experiments/r12_high_risk_holdout_transfer_replay.py`
+- `tests/test_r12_high_risk_holdout_transfer_replay.py`
+- `experiments/results/r12_high_risk_holdout_transfer_replay/r12-high-risk-holdout-transfer-replay-current-001.json`
+- `experiments/r12_product_support_gate.py` 已支持消费 L6 replay。
+- `experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json` 已刷新 L6 边界。
+- `experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json` 已刷新 R12 evidence summary。
+- `demo/app.js` 已展示 replay MAE、漏报恢复变化、异常召回变化和 replay decision。
+
+当前状态为 `r12_high_risk_holdout_transfer_replay_partial_research_positive`。指标如下：
+
+- high-risk candidate count：29。
+- MAE：`0.087818 -> 0.084134`，`delta=-0.003684`。
+- static-prior miss recovery：`0.413793 -> 0.413793`，`delta=0.0`。
+- abnormal segment recall：`0.413793 -> 0.413793`，`delta=0.0`。
+- interval coverage：`0.62069 -> 0.62069`，`delta=0.0`。
+- risk ranking quality：`0.662562 -> 0.662562`，`delta=0.0`。
+- false alarm：不可评估，因为 replay 候选集全是 observed high-risk。
+- Product default eligible high-risk holdout：0。
+
+这给出一个更严格的结论：
+
+- R12 update 在 high-risk research-only replay 上确实继续降低误差幅度。
+- 但它没有提升静态先验漏报恢复率，也没有提升异常群体召回。
+- 因此 L6 只能支撑 `research_only_mae_positive_recall_and_product_default_gap`，不能升级为 Product core method。
+
+L6 后的下一步不应继续包装 MAE 正向，而应优先解决两个问题：
+
+1. 找到低敏感或客户授权的 high-risk holdout，以便 Product 可默认展示。
+2. 设计能改变 high-risk recall 的结构化 update，例如 segment sensitivity、threshold/activation 或 uncertainty-tail update，而不是只调整全局 `price_pressure` mechanism weight。
+
 ## 当前推荐推进顺序
 
 1. R12 L0/L1 已完成：case registry 和 operator contract 已建立。
@@ -549,7 +585,8 @@ L5 的下一步是 `r12_high_risk_holdout_transfer_replay`：在这 29 个 resea
 3. R12 L3 已完成：当前 HPS public-use proxy split 上存在 guarded positive transfer signal。
 4. R12 L4 已完成：只以 guarded evidence card / API manifest source refs / blocked claims 的方式接入 Product，不覆盖主决策，不开启 runtime default。
 5. R12 L5 已完成：已找到 29 个 source-backed research-only 高风险 holdout 候选，其中 12 个可用于验证静态先验漏报恢复；但 Product 默认可用的低敏感高风险 holdout 仍为 0。
-6. 下一步推进 R12 high-risk replay：验证这些 research-only candidate 是否真的改善 static-prior miss recovery、abnormal segment recall、false alarm 和 interval coverage，并寻找低敏感或客户授权的高风险 holdout。
+6. R12 L6 已完成：high-risk replay 有 MAE 小幅正向，但 static-prior miss recovery 和 abnormal segment recall 没有提升，false alarm 不可评估，Product default 仍阻断。
+7. 下一步推进 R12 recall-oriented update：优先验证 segment sensitivity、activation threshold 或 uncertainty-tail update 是否能改善 high-risk recall，同时保持 interval 和 false alarm guard。
 
 ## 成功信号
 
@@ -563,8 +600,8 @@ R12 的最小成功信号不是“指标全赢”，而是：
 
 ## 当前判断
 
-R12 目前拿到了比 R11 更强的最低正向信号：R11 只能证明 feedback ledger 可审计，R12 L3 已证明一个 train-only 结构化 mechanism update 能在 validation / holdout 上产生小幅正向迁移，且没有牺牲区间覆盖和 false alarm；R12 L5 进一步找到了 high-risk replay 所需的 source-backed research-only holdout 材料。
+R12 目前拿到了比 R11 更强的最低正向信号：R11 只能证明 feedback ledger 可审计，R12 L3 已证明一个 train-only 结构化 mechanism update 能在 validation / holdout 上产生小幅正向迁移，且没有牺牲区间覆盖和 false alarm；R12 L5/L6 进一步找到了 high-risk replay 材料，并证明当前 update 在 high-risk research-only replay 上有 MAE 小幅正向。
 
 但这个结果仍不足以说 Research 已全面支撑 Product。当前最准确的表述是：
 
-> R12 在 HPS public-use proxy split 上形成了 guarded positive transfer signal，并找到了 research-only high-risk holdout 扩展材料，值得继续做 high-risk replay；但它尚不是 field-validated、customer-validated、低敏感 Product-default-ready 或 runtime-default-ready 的 Product core method。
+> R12 在 HPS public-use proxy split 上形成了 guarded positive transfer signal，并在 research-only high-risk replay 上取得 MAE 小幅改善；但它尚未提升 high-risk recall，也不是 field-validated、customer-validated、低敏感 Product-default-ready 或 runtime-default-ready 的 Product core method。

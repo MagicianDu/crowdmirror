@@ -10,6 +10,9 @@ from experiments.r12_product_support_gate import (
 from experiments.r12_high_risk_holdout_registry import (
     build_r12_high_risk_holdout_registry,
 )
+from experiments.r12_high_risk_holdout_transfer_replay import (
+    build_r12_high_risk_holdout_transfer_replay,
+)
 
 
 def test_r12_product_support_gate_creates_guarded_transfer_evidence_card():
@@ -152,6 +155,63 @@ def test_r12_product_support_gate_surfaces_l5_high_risk_holdout_boundary():
         "r12-transfer-validation-current-001",
         "r12-high-risk-holdout-registry-test",
     }
+    json.dumps(gate, allow_nan=False)
+
+
+def test_r12_product_support_gate_surfaces_l6_high_risk_replay_boundary():
+    registry = build_r12_high_risk_holdout_registry(
+        artifact_id="r12-high-risk-holdout-registry-test",
+        run_id="r12-l5-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=_load_current_transfer_validation(),
+    )
+    replay = build_r12_high_risk_holdout_transfer_replay(
+        artifact_id="r12-high-risk-holdout-transfer-replay-test",
+        run_id="r12-l6-test",
+        r12_high_risk_holdout_registry=registry,
+        r12_transfer_validation=_load_current_transfer_validation(),
+    )
+    gate = build_r12_product_support_gate(
+        artifact_id="r12-product-support-gate-test",
+        run_id="r12-l6-product-test",
+        r12_transfer_validation=_load_current_transfer_validation(),
+        r12_high_risk_holdout_registry=registry,
+        r12_high_risk_holdout_transfer_replay=replay,
+    )
+
+    replay_boundary = gate["transfer_evidence_card"]["evidence_summary"][
+        "high_risk_replay_boundary"
+    ]
+    assert replay_boundary == {
+        "replay_status": (
+            "r12_high_risk_holdout_transfer_replay_partial_research_positive"
+        ),
+        "transfer_decision": (
+            "r12_high_risk_replay_mae_positive_recall_flat_research_only"
+        ),
+        "mean_absolute_error_delta": -0.003684,
+        "static_prior_miss_recovery_delta": 0.0,
+        "abnormal_segment_recall_delta": 0.0,
+        "product_support_level": (
+            "research_only_mae_positive_recall_and_product_default_gap"
+        ),
+        "product_default_eligible_high_risk_holdout_present": False,
+    }
+    assert gate["acceptance_gates"]["r12_high_risk_replay_mae_improved"] is True
+    assert (
+        gate["acceptance_gates"]["r12_high_risk_replay_recall_improved"] is False
+    )
+    assert {
+        entry["artifact_id"] for entry in gate["source_registry"]
+    } == {
+        "r12-transfer-validation-current-001",
+        "r12-high-risk-holdout-registry-test",
+        "r12-high-risk-holdout-transfer-replay-test",
+    }
+    assert (
+        "static-prior miss recovery improved on high-risk replay"
+        in gate["blocked_claims"]
+    )
     json.dumps(gate, allow_nan=False)
 
 

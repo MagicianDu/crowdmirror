@@ -21,6 +21,9 @@ from experiments.r12_transfer_validation import (
 from experiments.r12_high_risk_holdout_registry import (
     R12_HIGH_RISK_HOLDOUT_REGISTRY_SCHEMA_VERSION,
 )
+from experiments.r12_high_risk_holdout_transfer_replay import (
+    R12_HIGH_RISK_HOLDOUT_TRANSFER_REPLAY_SCHEMA_VERSION,
+)
 
 
 R12_PRODUCT_SUPPORT_GATE_SCHEMA_VERSION = "r12-product-support-gate-v1"
@@ -39,18 +42,24 @@ def build_r12_product_support_gate(
     run_id: str,
     r12_transfer_validation: dict[str, Any],
     r12_high_risk_holdout_registry: dict[str, Any] | None = None,
+    r12_high_risk_holdout_transfer_replay: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
     _validate_transfer_validation(r12_transfer_validation)
     if r12_high_risk_holdout_registry is not None:
         _validate_high_risk_registry(r12_high_risk_holdout_registry)
+    if r12_high_risk_holdout_transfer_replay is not None:
+        _validate_high_risk_replay(r12_high_risk_holdout_transfer_replay)
     positive_transfer = (
         r12_transfer_validation["acceptance_gates"]["positive_transfer_guarded"]
         is True
     )
     high_risk_boundary = _high_risk_holdout_boundary(
         r12_high_risk_holdout_registry
+    )
+    high_risk_replay_boundary = _high_risk_replay_boundary(
+        r12_high_risk_holdout_transfer_replay
     )
     report = {
         "schema_version": R12_PRODUCT_SUPPORT_GATE_SCHEMA_VERSION,
@@ -72,6 +81,7 @@ def build_r12_product_support_gate(
             r12_transfer_validation,
             positive_transfer=positive_transfer,
             high_risk_boundary=high_risk_boundary,
+            high_risk_replay_boundary=high_risk_replay_boundary,
         ),
         "customer_visible_primary_decision": {
             "primary_decision_source": "guarded_baseline_customer_value_report",
@@ -117,16 +127,43 @@ def build_r12_product_support_gate(
                 if r12_high_risk_holdout_registry is not None
                 else {}
             ),
+            **(
+                {
+                    "r12_high_risk_replay_mae_improved": (
+                        r12_high_risk_holdout_transfer_replay["acceptance_gates"][
+                            "mae_improved"
+                        ]
+                    ),
+                    "r12_high_risk_replay_recall_improved": (
+                        r12_high_risk_holdout_transfer_replay["acceptance_gates"][
+                            "static_prior_miss_recovery_improved"
+                        ]
+                        or r12_high_risk_holdout_transfer_replay["acceptance_gates"][
+                            "abnormal_segment_recall_improved"
+                        ]
+                    ),
+                }
+                if r12_high_risk_holdout_transfer_replay is not None
+                else {}
+            ),
         },
         "source_registry": _source_registry(
             r12_transfer_validation=r12_transfer_validation,
             r12_high_risk_holdout_registry=r12_high_risk_holdout_registry,
+            r12_high_risk_holdout_transfer_replay=(
+                r12_high_risk_holdout_transfer_replay
+            ),
         ),
         "source_refs": [
             r12_transfer_validation["artifact_id"],
             *(
                 [r12_high_risk_holdout_registry["artifact_id"]]
                 if r12_high_risk_holdout_registry is not None
+                else []
+            ),
+            *(
+                [r12_high_risk_holdout_transfer_replay["artifact_id"]]
+                if r12_high_risk_holdout_transfer_replay is not None
                 else []
             ),
         ],
@@ -156,6 +193,8 @@ def build_r12_product_support_gate(
             "R12 supports Product core method by default",
             "R12 can override guarded baseline primary decision",
             "R12 Product default high-risk recovery validated",
+            "static-prior miss recovery improved on high-risk replay",
+            "abnormal segment recall improved on high-risk replay",
             "field_outcome_validated=true",
             "runtime_default_allowed=true",
             "runtime default ready",
@@ -167,6 +206,8 @@ def build_r12_product_support_gate(
             item
             for item in report["blocked_claims"]
             if item != "R12 Product default high-risk recovery validated"
+            and item != "static-prior miss recovery improved on high-risk replay"
+            and item != "abnormal segment recall improved on high-risk replay"
         ]
     assert_strict_json(report)
     return report
@@ -212,11 +253,27 @@ def _validate_high_risk_registry(artifact: dict[str, Any]) -> None:
         raise ValueError("r12 high-risk registry must not allow runtime default")
 
 
+def _validate_high_risk_replay(artifact: dict[str, Any]) -> None:
+    if artifact.get("schema_version") != R12_HIGH_RISK_HOLDOUT_TRANSFER_REPLAY_SCHEMA_VERSION:
+        raise ValueError(
+            "r12_high_risk_holdout_transfer_replay.schema_version must be "
+            f"{R12_HIGH_RISK_HOLDOUT_TRANSFER_REPLAY_SCHEMA_VERSION}"
+        )
+    gates = artifact.get("acceptance_gates")
+    if not isinstance(gates, dict):
+        raise ValueError("r12 high-risk replay acceptance_gates required")
+    if gates.get("field_outcome_validated") is not False:
+        raise ValueError("r12 high-risk replay must not be field validated")
+    if gates.get("runtime_default_allowed") is not False:
+        raise ValueError("r12 high-risk replay must not allow runtime default")
+
+
 def _transfer_evidence_card(
     transfer_validation: dict[str, Any],
     *,
     positive_transfer: bool,
     high_risk_boundary: dict[str, Any] | None = None,
+    high_risk_replay_boundary: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     split_metrics = transfer_validation["split_metrics"]
     validation = split_metrics["validation"]
@@ -238,6 +295,8 @@ def _transfer_evidence_card(
     }
     if high_risk_boundary is not None:
         evidence_summary["high_risk_holdout_boundary"] = high_risk_boundary
+    if high_risk_replay_boundary is not None:
+        evidence_summary["high_risk_replay_boundary"] = high_risk_replay_boundary
     return {
         "card_id": "r12_transfer_validation_evidence_card",
         "title": "R12 guarded transfer validation evidence",
@@ -306,10 +365,35 @@ def _high_risk_holdout_boundary(
     }
 
 
+def _high_risk_replay_boundary(
+    replay: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    if replay is None:
+        return None
+    metrics = replay["metric_comparison"]
+    gates = replay["acceptance_gates"]
+    return {
+        "replay_status": replay["status"],
+        "transfer_decision": replay["transfer_decision"],
+        "mean_absolute_error_delta": metrics["mean_absolute_error"]["delta"],
+        "static_prior_miss_recovery_delta": metrics[
+            "static_prior_miss_recovery"
+        ]["delta"],
+        "abnormal_segment_recall_delta": metrics["abnormal_segment_recall"][
+            "delta"
+        ],
+        "product_support_level": replay["product_support_level"],
+        "product_default_eligible_high_risk_holdout_present": gates[
+            "product_default_eligible_high_risk_holdout_present"
+        ],
+    }
+
+
 def _source_registry(
     *,
     r12_transfer_validation: dict[str, Any],
     r12_high_risk_holdout_registry: dict[str, Any] | None,
+    r12_high_risk_holdout_transfer_replay: dict[str, Any] | None,
 ) -> list[dict[str, str]]:
     registry = [
         {
@@ -330,6 +414,18 @@ def _source_registry(
                 ),
             }
         )
+    if r12_high_risk_holdout_transfer_replay is not None:
+        registry.append(
+            {
+                "artifact_id": r12_high_risk_holdout_transfer_replay[
+                    "artifact_id"
+                ],
+                "path": (
+                    "experiments/results/r12_high_risk_holdout_transfer_replay/"
+                    "r12-high-risk-holdout-transfer-replay-current-001.json"
+                ),
+            }
+        )
     return registry
 
 
@@ -339,6 +435,7 @@ def main() -> int:
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--r12-transfer-validation-path", required=True)
     parser.add_argument("--r12-high-risk-holdout-registry-path")
+    parser.add_argument("--r12-high-risk-holdout-transfer-replay-path")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     output_path = write_r12_product_support_gate(
@@ -349,6 +446,11 @@ def main() -> int:
         r12_high_risk_holdout_registry=(
             load_json_artifact(args.r12_high_risk_holdout_registry_path)
             if args.r12_high_risk_holdout_registry_path
+            else None
+        ),
+        r12_high_risk_holdout_transfer_replay=(
+            load_json_artifact(args.r12_high_risk_holdout_transfer_replay_path)
+            if args.r12_high_risk_holdout_transfer_replay_path
             else None
         ),
     )

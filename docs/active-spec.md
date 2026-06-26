@@ -225,6 +225,8 @@ R12 L4 已输出 `r12-product-support-gate-current-001`，并接入 `r6-product-
 
 R12 L5 已输出 `r12-high-risk-holdout-registry-current-001`，并刷新 `r12-product-support-gate-current-001` 与 `r6-product-customer-value-report-current-001`。L5 从当前 HPS public-use artifact 中找到了 29 个 source-backed research-only 高风险 holdout 候选，其中 12 个可用于验证 R12 update 是否恢复静态先验漏报；但 Product 默认可用的低敏感高风险 holdout 候选为 0。因此当前边界更新为：Research 可以继续做 high-risk replay / transfer validation，Product 只能展示该边界，不能宣称 `R12 Product default high-risk recovery validated`，也不能开启 runtime default。
 
+R12 L6 已输出 `r12-high-risk-holdout-transfer-replay-current-001`，并刷新 Product gate、customer value report 和 demo。L6 在 29 个 research-only high-risk 候选上回放 R12 update：MAE 从 `0.087818` 降至 `0.084134`，但 static-prior miss recovery 与 abnormal segment recall 均未提升，false alarm 因候选集全是 observed high-risk 而不可评估。当前边界更新为：Research 有 high-risk replay 的小幅误差正向信号，但还没有证明高风险漏报恢复能力提升，Product default 继续阻断。
+
 ## 降权历史材料
 
 以下材料只作为历史经验或基础设施参考，不再作为当前主线：

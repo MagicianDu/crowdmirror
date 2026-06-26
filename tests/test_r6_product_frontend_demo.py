@@ -70,6 +70,11 @@ def test_r6_product_frontend_is_source_backed_and_fail_closed():
     assert "research_recoverable_static_prior_miss_count" in js
     assert "product_default_low_sensitive_high_risk_holdout_present" in js
     assert "research_only_until_low_sensitive_or_customer_approved_holdout" in js
+    assert "high_risk_replay_boundary" in js
+    assert "mean_absolute_error_delta" in js
+    assert "static_prior_miss_recovery_delta" in js
+    assert "abnormal_segment_recall_delta" in js
+    assert "r12_high_risk_replay_mae_positive_recall_flat_research_only" in js
     assert "secondary_transfer_evidence_card_only" in js
     assert "/r6/product/r12-transfer-evidence" in js
 

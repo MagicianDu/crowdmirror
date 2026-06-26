@@ -42,7 +42,9 @@
     "R12 validated",
     "R12 supports Product core method by default",
     "R12 can override guarded baseline primary decision",
-    "R12 Product default high-risk recovery validated"
+    "R12 Product default high-risk recovery validated",
+    "static-prior miss recovery improved on high-risk replay",
+    "abnormal segment recall improved on high-risk replay"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -290,6 +292,8 @@
         "R12 supports Product core method by default",
         "R12 can override guarded baseline primary decision",
         "R12 Product default high-risk recovery validated",
+        "static-prior miss recovery improved on high-risk replay",
+        "abnormal segment recall improved on high-risk replay",
         "field_outcome_validated=true",
         "runtime_default_allowed=true",
         "runtime default ready",
@@ -320,6 +324,15 @@
           "registry_status": "r12_high_risk_holdout_registry_ready_research_only",
           "research_eligible_case_count": 29,
           "research_recoverable_static_prior_miss_count": 12
+        },
+        "high_risk_replay_boundary": {
+          "abnormal_segment_recall_delta": 0.0,
+          "mean_absolute_error_delta": -0.003684,
+          "product_default_eligible_high_risk_holdout_present": false,
+          "product_support_level": "research_only_mae_positive_recall_and_product_default_gap",
+          "replay_status": "r12_high_risk_holdout_transfer_replay_partial_research_positive",
+          "static_prior_miss_recovery_delta": 0.0,
+          "transfer_decision": "r12_high_risk_replay_mae_positive_recall_flat_research_only"
         },
         "runtime_default_allowed": false,
         "train_metrics_used_for_transfer_decision": false,
@@ -740,7 +753,7 @@
     "source_backed_only": true,
     "static_narrative_fallback_allowed": false
   },
-  "run_id": "r12-l5-product-current",
+  "run_id": "r12-l6-product-current",
   "schema_version": "r6-product-customer-value-report-v1",
   "section_contracts": [
     {
@@ -856,6 +869,8 @@
         "R12 supports Product core method by default",
         "R12 can override guarded baseline primary decision",
         "R12 Product default high-risk recovery validated",
+        "static-prior miss recovery improved on high-risk replay",
+        "abnormal segment recall improved on high-risk replay",
         "field_outcome_validated=true",
         "runtime_default_allowed=true",
         "runtime default ready",
@@ -899,7 +914,8 @@
     "r11-external-holdout-validation-current-001",
     "r12-product-support-gate-current-001",
     "r12-transfer-validation-current-001",
-    "r12-high-risk-holdout-registry-current-001"
+    "r12-high-risk-holdout-registry-current-001",
+    "r12-high-risk-holdout-transfer-replay-current-001"
   ],
   "source_registry": [
     {
@@ -973,6 +989,10 @@
     {
       "artifact_id": "r12-high-risk-holdout-registry-current-001",
       "path": "experiments/results/r12_high_risk_holdout_registry/r12-high-risk-holdout-registry-current-001.json"
+    },
+    {
+      "artifact_id": "r12-high-risk-holdout-transfer-replay-current-001",
+      "path": "experiments/results/r12_high_risk_holdout_transfer_replay/r12-high-risk-holdout-transfer-replay-current-001.json"
     }
   ],
   "status": "customer_value_report_ready_guarded"
