@@ -24,6 +24,9 @@ from experiments.r12_high_risk_holdout_registry import (
 from experiments.r12_high_risk_holdout_transfer_replay import (
     R12_HIGH_RISK_HOLDOUT_TRANSFER_REPLAY_SCHEMA_VERSION,
 )
+from experiments.r12_recall_oriented_update import (
+    R12_RECALL_ORIENTED_UPDATE_SCHEMA_VERSION,
+)
 
 
 R12_PRODUCT_SUPPORT_GATE_SCHEMA_VERSION = "r12-product-support-gate-v1"
@@ -43,6 +46,7 @@ def build_r12_product_support_gate(
     r12_transfer_validation: dict[str, Any],
     r12_high_risk_holdout_registry: dict[str, Any] | None = None,
     r12_high_risk_holdout_transfer_replay: dict[str, Any] | None = None,
+    r12_recall_oriented_update: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
@@ -51,6 +55,8 @@ def build_r12_product_support_gate(
         _validate_high_risk_registry(r12_high_risk_holdout_registry)
     if r12_high_risk_holdout_transfer_replay is not None:
         _validate_high_risk_replay(r12_high_risk_holdout_transfer_replay)
+    if r12_recall_oriented_update is not None:
+        _validate_recall_oriented_update(r12_recall_oriented_update)
     positive_transfer = (
         r12_transfer_validation["acceptance_gates"]["positive_transfer_guarded"]
         is True
@@ -60,6 +66,9 @@ def build_r12_product_support_gate(
     )
     high_risk_replay_boundary = _high_risk_replay_boundary(
         r12_high_risk_holdout_transfer_replay
+    )
+    recall_update_boundary = _recall_oriented_update_boundary(
+        r12_recall_oriented_update
     )
     report = {
         "schema_version": R12_PRODUCT_SUPPORT_GATE_SCHEMA_VERSION,
@@ -82,6 +91,7 @@ def build_r12_product_support_gate(
             positive_transfer=positive_transfer,
             high_risk_boundary=high_risk_boundary,
             high_risk_replay_boundary=high_risk_replay_boundary,
+            recall_update_boundary=recall_update_boundary,
         ),
         "customer_visible_primary_decision": {
             "primary_decision_source": "guarded_baseline_customer_value_report",
@@ -146,6 +156,27 @@ def build_r12_product_support_gate(
                 if r12_high_risk_holdout_transfer_replay is not None
                 else {}
             ),
+            **(
+                {
+                    "r12_recall_oriented_update_recall_improved": (
+                        r12_recall_oriented_update["acceptance_gates"][
+                            "recall_improved"
+                        ]
+                    ),
+                    "r12_recall_oriented_update_false_alarm_non_regression": (
+                        r12_recall_oriented_update["acceptance_gates"][
+                            "false_alarm_non_regression"
+                        ]
+                    ),
+                    "r12_recall_oriented_update_product_default_allowed": (
+                        r12_recall_oriented_update["acceptance_gates"][
+                            "product_default_allowed"
+                        ]
+                    ),
+                }
+                if r12_recall_oriented_update is not None
+                else {}
+            ),
         },
         "source_registry": _source_registry(
             r12_transfer_validation=r12_transfer_validation,
@@ -153,6 +184,7 @@ def build_r12_product_support_gate(
             r12_high_risk_holdout_transfer_replay=(
                 r12_high_risk_holdout_transfer_replay
             ),
+            r12_recall_oriented_update=r12_recall_oriented_update,
         ),
         "source_refs": [
             r12_transfer_validation["artifact_id"],
@@ -164,6 +196,11 @@ def build_r12_product_support_gate(
             *(
                 [r12_high_risk_holdout_transfer_replay["artifact_id"]]
                 if r12_high_risk_holdout_transfer_replay is not None
+                else []
+            ),
+            *(
+                [r12_recall_oriented_update["artifact_id"]]
+                if r12_recall_oriented_update is not None
                 else []
             ),
         ],
@@ -187,8 +224,20 @@ def build_r12_product_support_gate(
                 if r12_high_risk_holdout_registry is not None
                 else []
             ),
+            *(
+                [
+                    (
+                        "R12 recall-oriented activation margin can be shown as a "
+                        "research-only improvement with explicit false-alarm and "
+                        "precision tradeoff."
+                    )
+                ]
+                if r12_recall_oriented_update is not None
+                else []
+            ),
         ],
-        "blocked_claims": [
+        "blocked_claims": _unique_strings(
+            [
             "R12 validated",
             "R12 supports Product core method by default",
             "R12 can override guarded baseline primary decision",
@@ -199,7 +248,9 @@ def build_r12_product_support_gate(
             "runtime_default_allowed=true",
             "runtime default ready",
             "精准预测系统",
-        ],
+            *(r12_recall_oriented_update or {}).get("blocked_claims", []),
+            ]
+        ),
     }
     if r12_high_risk_holdout_registry is None:
         report["blocked_claims"] = [
@@ -268,12 +319,30 @@ def _validate_high_risk_replay(artifact: dict[str, Any]) -> None:
         raise ValueError("r12 high-risk replay must not allow runtime default")
 
 
+def _validate_recall_oriented_update(artifact: dict[str, Any]) -> None:
+    if artifact.get("schema_version") != R12_RECALL_ORIENTED_UPDATE_SCHEMA_VERSION:
+        raise ValueError(
+            "r12_recall_oriented_update.schema_version must be "
+            f"{R12_RECALL_ORIENTED_UPDATE_SCHEMA_VERSION}"
+        )
+    gates = artifact.get("acceptance_gates")
+    if not isinstance(gates, dict):
+        raise ValueError("r12 recall-oriented update acceptance_gates required")
+    if gates.get("field_outcome_validated") is not False:
+        raise ValueError("r12 recall-oriented update must not be field validated")
+    if gates.get("runtime_default_allowed") is not False:
+        raise ValueError("r12 recall-oriented update must not allow runtime default")
+    if gates.get("product_default_allowed") is not False:
+        raise ValueError("r12 recall-oriented update must not allow Product default")
+
+
 def _transfer_evidence_card(
     transfer_validation: dict[str, Any],
     *,
     positive_transfer: bool,
     high_risk_boundary: dict[str, Any] | None = None,
     high_risk_replay_boundary: dict[str, Any] | None = None,
+    recall_update_boundary: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     split_metrics = transfer_validation["split_metrics"]
     validation = split_metrics["validation"]
@@ -297,6 +366,8 @@ def _transfer_evidence_card(
         evidence_summary["high_risk_holdout_boundary"] = high_risk_boundary
     if high_risk_replay_boundary is not None:
         evidence_summary["high_risk_replay_boundary"] = high_risk_replay_boundary
+    if recall_update_boundary is not None:
+        evidence_summary["recall_oriented_update_boundary"] = recall_update_boundary
     return {
         "card_id": "r12_transfer_validation_evidence_card",
         "title": "R12 guarded transfer validation evidence",
@@ -389,11 +460,36 @@ def _high_risk_replay_boundary(
     }
 
 
+def _recall_oriented_update_boundary(
+    recall_update: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    if recall_update is None:
+        return None
+    metrics = recall_update["metric_comparison"]
+    update_candidate = recall_update["update_candidate"]
+    return {
+        "update_status": recall_update["status"],
+        "acceptance_decision": recall_update["acceptance_decision"],
+        "recommended_activation_margin": update_candidate["recommended_value"],
+        "static_prior_miss_recovery_delta": metrics[
+            "static_prior_miss_recovery"
+        ]["delta"],
+        "abnormal_segment_recall_delta": metrics["abnormal_segment_recall"][
+            "delta"
+        ],
+        "false_alarm_rate_delta": metrics["false_alarm_rate"]["delta"],
+        "precision_delta": metrics["precision"]["delta"],
+        "product_default_allowed": update_candidate["product_default_allowed"],
+        "next_required_artifact": recall_update["next_required_artifact"],
+    }
+
+
 def _source_registry(
     *,
     r12_transfer_validation: dict[str, Any],
     r12_high_risk_holdout_registry: dict[str, Any] | None,
     r12_high_risk_holdout_transfer_replay: dict[str, Any] | None,
+    r12_recall_oriented_update: dict[str, Any] | None,
 ) -> list[dict[str, str]]:
     registry = [
         {
@@ -426,7 +522,27 @@ def _source_registry(
                 ),
             }
         )
+    if r12_recall_oriented_update is not None:
+        registry.append(
+            {
+                "artifact_id": r12_recall_oriented_update["artifact_id"],
+                "path": (
+                    "experiments/results/r12_recall_oriented_update/"
+                    "r12-recall-oriented-update-current-001.json"
+                ),
+            }
+        )
     return registry
+
+
+def _unique_strings(items: list[str]) -> list[str]:
+    seen = set()
+    result = []
+    for item in items:
+        if item not in seen:
+            seen.add(item)
+            result.append(item)
+    return result
 
 
 def main() -> int:
@@ -436,6 +552,7 @@ def main() -> int:
     parser.add_argument("--r12-transfer-validation-path", required=True)
     parser.add_argument("--r12-high-risk-holdout-registry-path")
     parser.add_argument("--r12-high-risk-holdout-transfer-replay-path")
+    parser.add_argument("--r12-recall-oriented-update-path")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     output_path = write_r12_product_support_gate(
@@ -451,6 +568,11 @@ def main() -> int:
         r12_high_risk_holdout_transfer_replay=(
             load_json_artifact(args.r12_high_risk_holdout_transfer_replay_path)
             if args.r12_high_risk_holdout_transfer_replay_path
+            else None
+        ),
+        r12_recall_oriented_update=(
+            load_json_artifact(args.r12_recall_oriented_update_path)
+            if args.r12_recall_oriented_update_path
             else None
         ),
     )

@@ -13,6 +13,9 @@ from experiments.r12_high_risk_holdout_registry import (
 from experiments.r12_high_risk_holdout_transfer_replay import (
     build_r12_high_risk_holdout_transfer_replay,
 )
+from experiments.r12_recall_oriented_update import (
+    build_r12_recall_oriented_update,
+)
 
 
 def test_r12_product_support_gate_creates_guarded_transfer_evidence_card():
@@ -212,6 +215,77 @@ def test_r12_product_support_gate_surfaces_l6_high_risk_replay_boundary():
         "static-prior miss recovery improved on high-risk replay"
         in gate["blocked_claims"]
     )
+    json.dumps(gate, allow_nan=False)
+
+
+def test_r12_product_support_gate_surfaces_l7_recall_oriented_update_boundary():
+    transfer = _load_current_transfer_validation()
+    registry = build_r12_high_risk_holdout_registry(
+        artifact_id="r12-high-risk-holdout-registry-test",
+        run_id="r12-l5-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+    )
+    replay = build_r12_high_risk_holdout_transfer_replay(
+        artifact_id="r12-high-risk-holdout-transfer-replay-test",
+        run_id="r12-l6-test",
+        r12_high_risk_holdout_registry=registry,
+        r12_transfer_validation=transfer,
+    )
+    recall_update = build_r12_recall_oriented_update(
+        artifact_id="r12-recall-oriented-update-test",
+        run_id="r12-l7-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+        r12_high_risk_holdout_transfer_replay=replay,
+    )
+
+    gate = build_r12_product_support_gate(
+        artifact_id="r12-product-support-gate-test",
+        run_id="r12-l7-product-test",
+        r12_transfer_validation=transfer,
+        r12_high_risk_holdout_registry=registry,
+        r12_high_risk_holdout_transfer_replay=replay,
+        r12_recall_oriented_update=recall_update,
+    )
+
+    recall_boundary = gate["transfer_evidence_card"]["evidence_summary"][
+        "recall_oriented_update_boundary"
+    ]
+    assert recall_boundary == {
+        "update_status": "r12_recall_oriented_update_ready_research_guarded",
+        "acceptance_decision": (
+            "research_guarded_recall_candidate_accept_false_alarm_tradeoff"
+        ),
+        "recommended_activation_margin": 0.01,
+        "static_prior_miss_recovery_delta": 0.206897,
+        "abnormal_segment_recall_delta": 0.206897,
+        "false_alarm_rate_delta": 0.073171,
+        "precision_delta": -0.03,
+        "product_default_allowed": False,
+        "next_required_artifact": (
+            "r12_recall_update_holdout_false_alarm_stress_test"
+        ),
+    }
+    assert gate["acceptance_gates"][
+        "r12_recall_oriented_update_recall_improved"
+    ] is True
+    assert gate["acceptance_gates"][
+        "r12_recall_oriented_update_false_alarm_non_regression"
+    ] is False
+    assert gate["acceptance_gates"][
+        "r12_recall_oriented_update_product_default_allowed"
+    ] is False
+    assert {
+        entry["artifact_id"] for entry in gate["source_registry"]
+    } == {
+        "r12-transfer-validation-current-001",
+        "r12-high-risk-holdout-registry-test",
+        "r12-high-risk-holdout-transfer-replay-test",
+        "r12-recall-oriented-update-test",
+    }
+    assert "false_alarm_non_regression=true" in gate["blocked_claims"]
+    assert "precision_non_regression=true" in gate["blocked_claims"]
     json.dumps(gate, allow_nan=False)
 
 

@@ -73,7 +73,14 @@
     "R11 can override guarded baseline primary decision",
     "R12 validated",
     "R12 supports Product core method by default",
-    "R12 can override guarded baseline primary decision"
+    "R12 can override guarded baseline primary decision",
+    "R12 Product default high-risk recovery validated",
+    "static-prior miss recovery improved on high-risk replay",
+    "abnormal segment recall improved on high-risk replay",
+    "false_alarm_non_regression=true",
+    "precision_non_regression=true",
+    "R12 Product core method ready",
+    "customer outcome validated"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -221,7 +228,7 @@
     "product_api_manifest_ready": true,
     "runtime_default_allowed": false
   },
-  "run_id": "r12-product-l4-plus-current",
+  "run_id": "r12-l7-product-current",
   "schema_version": "r6-product-api-manifest-v1",
   "source_refs": [
     "r6-product-readiness-index-current-001",
@@ -249,7 +256,10 @@
     "r9-false-alarm-gate-redesign-current-001",
     "r9-holdout-guard-current-001",
     "r11-external-holdout-validation-current-001",
-    "r12-transfer-validation-current-001"
+    "r12-transfer-validation-current-001",
+    "r12-high-risk-holdout-registry-current-001",
+    "r12-high-risk-holdout-transfer-replay-current-001",
+    "r12-recall-oriented-update-current-001"
   ],
   "source_registry": [
     {
@@ -371,6 +381,18 @@
     {
       "artifact_id": "r12-transfer-validation-current-001",
       "path": "experiments/results/r12_transfer_validation/r12-transfer-validation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-high-risk-holdout-registry-current-001",
+      "path": "experiments/results/r12_high_risk_holdout_registry/r12-high-risk-holdout-registry-current-001.json"
+    },
+    {
+      "artifact_id": "r12-high-risk-holdout-transfer-replay-current-001",
+      "path": "experiments/results/r12_high_risk_holdout_transfer_replay/r12-high-risk-holdout-transfer-replay-current-001.json"
+    },
+    {
+      "artifact_id": "r12-recall-oriented-update-current-001",
+      "path": "experiments/results/r12_recall_oriented_update/r12-recall-oriented-update-current-001.json"
     }
   ],
   "status": "product_api_manifest_ready_guarded"

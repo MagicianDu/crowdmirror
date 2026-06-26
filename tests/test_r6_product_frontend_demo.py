@@ -75,6 +75,11 @@ def test_r6_product_frontend_is_source_backed_and_fail_closed():
     assert "static_prior_miss_recovery_delta" in js
     assert "abnormal_segment_recall_delta" in js
     assert "r12_high_risk_replay_mae_positive_recall_flat_research_only" in js
+    assert "recall_oriented_update_boundary" in js
+    assert "recommended_activation_margin" in js
+    assert "false_alarm_rate_delta" in js
+    assert "precision_delta" in js
+    assert "r12_recall_update_holdout_false_alarm_stress_test" in js
     assert "secondary_transfer_evidence_card_only" in js
     assert "/r6/product/r12-transfer-evidence" in js
 

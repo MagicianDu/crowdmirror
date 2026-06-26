@@ -578,6 +578,56 @@ L6 后的下一步不应继续包装 MAE 正向，而应优先解决两个问题
 1. 找到低敏感或客户授权的 high-risk holdout，以便 Product 可默认展示。
 2. 设计能改变 high-risk recall 的结构化 update，例如 segment sensitivity、threshold/activation 或 uncertainty-tail update，而不是只调整全局 `price_pressure` mechanism weight。
 
+### R12 L7：Recall-oriented update
+
+目标：针对 L6 暴露的“MAE 小幅改善但 high-risk recall 没有提升”问题，验证是否存在一个结构化、可审计、非 prompt/persona 的召回导向更新候选。L7 选择 activation threshold / margin，而不是继续调全局 mechanism weight。
+
+当前已实现：
+
+- `experiments/r12_recall_oriented_update.py`
+- `tests/test_r12_recall_oriented_update.py`
+- `experiments/results/r12_recall_oriented_update/r12-recall-oriented-update-current-001.json`
+- `experiments/r12_product_support_gate.py` 已支持消费 L7 recall update。
+- `experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json` 已刷新 L7 边界。
+- `experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json` 已刷新 R12 evidence summary。
+- `experiments/results/r6_product_api_manifest/r6-product-api-manifest-current-001.json` 已刷新 source registry 与 blocked claims。
+- `demo/app.js` 已展示召回更新 margin、漏报恢复、误报代价、精度代价、默认启用状态和下一验收产物。
+
+当前状态为 `r12_recall_oriented_update_ready_research_guarded`。L7 在排除 R12 train cases 且要求 `valid_response_count >= 100` 后，评估 70 个 HPS segment cases，其中 observed high-risk 为 29 个，observed low-risk 为 41 个。候选选择规则为：
+
+> 在 research false-alarm delta ceiling `0.08` 以内，选择 recall improvement 最大的 activation margin。
+
+当前选择：
+
+- current activation margin：`0.03`
+- recommended activation margin：`0.01`
+- update status：`accepted_for_research_replay`
+- product default allowed：`false`
+
+指标如下：
+
+- static-prior miss recovery：`0.413793 -> 0.62069`，`delta=0.206897`。
+- abnormal segment recall：`0.413793 -> 0.62069`，`delta=0.206897`。
+- false alarm rate：`0.097561 -> 0.170732`，`delta=0.073171`。
+- precision：`0.75 -> 0.72`，`delta=-0.03`。
+- interval coverage：`0.8 -> 0.8`，`delta=0.0`。
+- newly recovered cases：`hps_ESEX_1`、`hps_RRACETH_1`、`hps_TAGE_46`、`hps_TAGE_60`、`hps_TAGE_64`、`hps_TAGE_73`。
+- new false alarm cases：`hps_TAGE_58`、`hps_TAGE_59`、`hps_TAGE_62`。
+
+这给出一个更精确的结论：
+
+- R12 已经找到能提升静态先验漏报恢复和异常群体召回的结构化阈值候选。
+- 该候选没有破坏 interval coverage，并且 false-alarm delta 仍在 research ceiling 内。
+- 但它没有通过 `false_alarm_non_regression`，也没有通过 `precision_non_regression`。
+- 因此 L7 只能支撑 `research_only_recall_positive_false_alarm_tradeoff`，不能升级为 Product core method 或 runtime default。
+
+L7 后的下一步不是扩大 claim，而是补 `r12_recall_update_holdout_false_alarm_stress_test`：
+
+1. 检查 activation margin `0.01` 是否只在当前 HPS segment 切片上有效。
+2. 做 low-sensitive / customer-approved high-risk holdout。
+3. 对 false alarm 新增样本做 segment-level failure diagnosis。
+4. 比较 segment sensitivity、uncertainty-tail update 与 activation margin 的组合，判断能否保留 recall gain 并降低 false alarm / precision 代价。
+
 ## 当前推荐推进顺序
 
 1. R12 L0/L1 已完成：case registry 和 operator contract 已建立。
@@ -586,7 +636,8 @@ L6 后的下一步不应继续包装 MAE 正向，而应优先解决两个问题
 4. R12 L4 已完成：只以 guarded evidence card / API manifest source refs / blocked claims 的方式接入 Product，不覆盖主决策，不开启 runtime default。
 5. R12 L5 已完成：已找到 29 个 source-backed research-only 高风险 holdout 候选，其中 12 个可用于验证静态先验漏报恢复；但 Product 默认可用的低敏感高风险 holdout 仍为 0。
 6. R12 L6 已完成：high-risk replay 有 MAE 小幅正向，但 static-prior miss recovery 和 abnormal segment recall 没有提升，false alarm 不可评估，Product default 仍阻断。
-7. 下一步推进 R12 recall-oriented update：优先验证 segment sensitivity、activation threshold 或 uncertainty-tail update 是否能改善 high-risk recall，同时保持 interval 和 false alarm guard。
+7. R12 L7 已完成：activation margin recall-oriented update 让 high-risk recall 相关指标提升 `0.206897`，但引入 false alarm 与 precision 代价，Product default 仍阻断。
+8. 下一步推进 `r12_recall_update_holdout_false_alarm_stress_test`：优先验证 L7 候选在 holdout、低敏感切片和 false-alarm 压力样本上的稳定性，并探索能降低 false alarm / precision 代价的组合更新。
 
 ## 成功信号
 
@@ -594,14 +645,14 @@ R12 的最小成功信号不是“指标全赢”，而是：
 
 - 在 holdout case 上，结构化 outcome update 至少改善一个 Product-relevant 指标；
 - 没有牺牲 interval coverage；
-- 没有增加 false alarm；
+- 没有不可解释或不可治理地增加 false alarm；
 - 能解释为什么 update 对某类机制或群体可迁移；
 - 能明确阻断不该迁移的更新。
 
 ## 当前判断
 
-R12 目前拿到了比 R11 更强的最低正向信号：R11 只能证明 feedback ledger 可审计，R12 L3 已证明一个 train-only 结构化 mechanism update 能在 validation / holdout 上产生小幅正向迁移，且没有牺牲区间覆盖和 false alarm；R12 L5/L6 进一步找到了 high-risk replay 材料，并证明当前 update 在 high-risk research-only replay 上有 MAE 小幅正向。
+R12 目前拿到了比 R11 更强的最低正向信号：R11 只能证明 feedback ledger 可审计，R12 L3 已证明一个 train-only 结构化 mechanism update 能在 validation / holdout 上产生小幅正向迁移，且没有牺牲区间覆盖和 false alarm；R12 L5/L6 进一步找到了 high-risk replay 材料，并证明当前 update 在 high-risk research-only replay 上有 MAE 小幅正向；R12 L7 则进一步证明 activation margin 这类结构化阈值候选可以提升 static-prior miss recovery 与 abnormal segment recall。
 
 但这个结果仍不足以说 Research 已全面支撑 Product。当前最准确的表述是：
 
-> R12 在 HPS public-use proxy split 上形成了 guarded positive transfer signal，并在 research-only high-risk replay 上取得 MAE 小幅改善；但它尚未提升 high-risk recall，也不是 field-validated、customer-validated、低敏感 Product-default-ready 或 runtime-default-ready 的 Product core method。
+> R12 在 HPS public-use proxy split 上形成了 guarded positive transfer signal，在 research-only high-risk replay 上取得 MAE 小幅改善，并通过 activation margin 候选提升了 high-risk recall；但该召回增益伴随 false alarm 与 precision 代价，尚未通过 holdout false-alarm stress test，也不是 field-validated、customer-validated、低敏感 Product-default-ready 或 runtime-default-ready 的 Product core method。

@@ -1,0 +1,213 @@
+{
+  "acceptance_decision": "research_guarded_recall_candidate_accept_false_alarm_tradeoff",
+  "acceptance_gates": {
+    "false_alarm_delta_within_research_ceiling": true,
+    "false_alarm_non_regression": false,
+    "field_outcome_validated": false,
+    "interval_coverage_non_regression": true,
+    "precision_non_regression": false,
+    "product_default_allowed": false,
+    "recall_improved": true,
+    "runtime_default_allowed": false,
+    "source_backed_public_proxy_present": true
+  },
+  "allowed_claims": [
+    "R12 has a research-only activation-margin candidate that improves high-risk recall on source-backed public proxy segments.",
+    "The candidate exposes a false-alarm and precision tradeoff and requires stress testing before any Product default use."
+  ],
+  "artifact_id": "r12-recall-oriented-update-current-001",
+  "blocked_claims": [
+    "false_alarm_non_regression=true",
+    "precision_non_regression=true",
+    "R12 Product default high-risk recovery validated",
+    "R12 Product core method ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "customer outcome validated",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "research_only_recall_positive_false_alarm_tradeoff",
+  "evaluation_summary": {
+    "evaluated_case_count": 70,
+    "excluded_train_case_count": 2,
+    "minimum_valid_response_count": 100,
+    "observed_high_risk_case_count": 29,
+    "observed_low_risk_case_count": 41
+  },
+  "metric_comparison": {
+    "abnormal_segment_recall": {
+      "after": 0.62069,
+      "before": 0.413793,
+      "delta": 0.206897,
+      "eligible_case_count": 29
+    },
+    "false_alarm_rate": {
+      "after": 0.170732,
+      "before": 0.097561,
+      "delta": 0.073171,
+      "evaluable_case_count": 41
+    },
+    "interval_coverage": {
+      "after": 0.8,
+      "before": 0.8,
+      "delta": 0.0
+    },
+    "precision": {
+      "after": 0.72,
+      "before": 0.75,
+      "delta": -0.03
+    },
+    "static_prior_miss_recovery": {
+      "after": 0.62069,
+      "before": 0.413793,
+      "delta": 0.206897,
+      "eligible_case_count": 29
+    }
+  },
+  "new_false_alarm_case_ids": [
+    "hps_TAGE_58",
+    "hps_TAGE_59",
+    "hps_TAGE_62"
+  ],
+  "newly_recovered_static_prior_miss_case_ids": [
+    "hps_ESEX_1",
+    "hps_RRACETH_1",
+    "hps_TAGE_46",
+    "hps_TAGE_60",
+    "hps_TAGE_64",
+    "hps_TAGE_73"
+  ],
+  "next_required_artifact": "r12_recall_update_holdout_false_alarm_stress_test",
+  "run_id": "r12-l7-current",
+  "schema_version": "r12-recall-oriented-update-v1",
+  "selection_policy": {
+    "candidate_margins": [
+      0.03,
+      0.02,
+      0.015,
+      0.01,
+      0.005,
+      0.0,
+      -0.005,
+      -0.01,
+      -0.02
+    ],
+    "false_alarm_delta_research_ceiling": 0.08,
+    "minimum_valid_response_count": 100,
+    "selection_rule": "max recall improvement subject to research false-alarm delta ceiling",
+    "train_cases_excluded": true
+  },
+  "source_refs": [
+    "r10-hps-policy-reaction-ingestion-current-001",
+    "r12-transfer-validation-current-001",
+    "r12-high-risk-holdout-transfer-replay-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r10-hps-policy-reaction-ingestion-current-001",
+      "path": "experiments/results/r10_hps_policy_reaction_ingestion/r10-hps-policy-reaction-ingestion-current-001.json"
+    },
+    {
+      "artifact_id": "r12-transfer-validation-current-001",
+      "path": "experiments/results/r12_transfer_validation/r12-transfer-validation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-high-risk-holdout-transfer-replay-current-001",
+      "path": "experiments/results/r12_high_risk_holdout_transfer_replay/r12-high-risk-holdout-transfer-replay-current-001.json"
+    }
+  ],
+  "status": "r12_recall_oriented_update_ready_research_guarded",
+  "threshold_sweep": [
+    {
+      "activation_margin": 0.03,
+      "false_alarm_delta": 0.0,
+      "false_alarm_rate": 0.097561,
+      "passes_research_ceiling": true,
+      "precision": 0.75,
+      "recall": 0.413793,
+      "recall_delta": 0.0
+    },
+    {
+      "activation_margin": 0.02,
+      "false_alarm_delta": 0.04878,
+      "false_alarm_rate": 0.146341,
+      "passes_research_ceiling": true,
+      "precision": 0.684211,
+      "recall": 0.448276,
+      "recall_delta": 0.034483
+    },
+    {
+      "activation_margin": 0.015,
+      "false_alarm_delta": 0.073171,
+      "false_alarm_rate": 0.170732,
+      "passes_research_ceiling": true,
+      "precision": 0.695652,
+      "recall": 0.551724,
+      "recall_delta": 0.137931
+    },
+    {
+      "activation_margin": 0.01,
+      "false_alarm_delta": 0.073171,
+      "false_alarm_rate": 0.170732,
+      "passes_research_ceiling": true,
+      "precision": 0.72,
+      "recall": 0.62069,
+      "recall_delta": 0.206897
+    },
+    {
+      "activation_margin": 0.005,
+      "false_alarm_delta": 0.121951,
+      "false_alarm_rate": 0.219512,
+      "passes_research_ceiling": false,
+      "precision": 0.7,
+      "recall": 0.724138,
+      "recall_delta": 0.310345
+    },
+    {
+      "activation_margin": 0.0,
+      "false_alarm_delta": 0.170732,
+      "false_alarm_rate": 0.268293,
+      "passes_research_ceiling": false,
+      "precision": 0.685714,
+      "recall": 0.827586,
+      "recall_delta": 0.413793
+    },
+    {
+      "activation_margin": -0.005,
+      "false_alarm_delta": 0.243902,
+      "false_alarm_rate": 0.341463,
+      "passes_research_ceiling": false,
+      "precision": 0.65,
+      "recall": 0.896552,
+      "recall_delta": 0.482759
+    },
+    {
+      "activation_margin": -0.01,
+      "false_alarm_delta": 0.292683,
+      "false_alarm_rate": 0.390244,
+      "passes_research_ceiling": false,
+      "precision": 0.627907,
+      "recall": 0.931034,
+      "recall_delta": 0.517241
+    },
+    {
+      "activation_margin": -0.02,
+      "false_alarm_delta": 0.390244,
+      "false_alarm_rate": 0.487805,
+      "passes_research_ceiling": false,
+      "precision": 0.583333,
+      "recall": 0.965517,
+      "recall_delta": 0.551724
+    }
+  ],
+  "update_candidate": {
+    "current_value": 0.03,
+    "default_runtime_enabled": false,
+    "product_default_allowed": false,
+    "recommended_value": 0.01,
+    "status": "accepted_for_research_replay",
+    "target": "high_risk_activation_margin",
+    "update_id": "r12-high-risk-activation-margin-recall-001",
+    "update_type": "high_risk_activation_margin"
+  }
+}

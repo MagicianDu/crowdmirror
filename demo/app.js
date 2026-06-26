@@ -199,6 +199,7 @@ function renderR12TransferEvidence(evidence) {
   const extended = summary.extended_metric_gates || {};
   const highRiskBoundary = summary.high_risk_holdout_boundary || {};
   const highRiskReplay = summary.high_risk_replay_boundary || {};
+  const recallUpdate = summary.recall_oriented_update_boundary || {};
   const update = summary.accepted_update || {};
   return `
     <article class="panel panel-wide">
@@ -285,6 +286,30 @@ function renderR12TransferEvidence(evidence) {
           <div>
             <dt>Replay 决策</dt>
             <dd>${escapeHtml(highRiskReplay.transfer_decision || "r12_high_risk_replay_mae_positive_recall_flat_research_only")}</dd>
+          </div>
+          <div>
+            <dt>召回更新 margin</dt>
+            <dd>${escapeHtml(recallUpdate.recommended_activation_margin ?? "recommended_activation_margin 未提供")}</dd>
+          </div>
+          <div>
+            <dt>召回更新漏报恢复</dt>
+            <dd>${formatSignedNumber(recallUpdate.static_prior_miss_recovery_delta)}</dd>
+          </div>
+          <div>
+            <dt>召回更新误报代价</dt>
+            <dd>${formatSignedNumber(recallUpdate.false_alarm_rate_delta)}</dd>
+          </div>
+          <div>
+            <dt>召回更新精度代价</dt>
+            <dd>${formatSignedNumber(recallUpdate.precision_delta)}</dd>
+          </div>
+          <div>
+            <dt>召回更新默认启用</dt>
+            <dd>${formatBooleanGate(recallUpdate.product_default_allowed, "product_default_allowed")}</dd>
+          </div>
+          <div>
+            <dt>下一验收产物</dt>
+            <dd>${escapeHtml(recallUpdate.next_required_artifact || "r12_recall_update_holdout_false_alarm_stress_test")}</dd>
           </div>
         </dl>
         <p>R12 当前只能作为次级迁移证据展示，主决策仍来自 guarded baseline，真实客户 outcome 回流前不进入 runtime default。</p>
