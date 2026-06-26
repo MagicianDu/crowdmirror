@@ -204,6 +204,8 @@ function renderR12TransferEvidence(evidence) {
   const recallMitigation = summary.recall_false_alarm_mitigation_boundary || {};
   const recallMitigationHoldout =
     summary.recall_mitigation_holdout_validation_boundary || {};
+  const recallMitigationIndependentData =
+    summary.recall_mitigation_independent_holdout_data_boundary || {};
   const update = summary.accepted_update || {};
   return `
     <article class="panel panel-wide">
@@ -386,6 +388,30 @@ function renderR12TransferEvidence(evidence) {
           <div>
             <dt>holdout 下一验收</dt>
             <dd>${escapeHtml(recallMitigationHoldout.next_required_artifact || "r12_recall_mitigation_independent_holdout_data")}</dd>
+          </div>
+          <div>
+            <dt>独立数据审计</dt>
+            <dd>${escapeHtml(recallMitigationIndependentData.data_status || "recall_mitigation_independent_holdout_data_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>同源诊断候选</dt>
+            <dd>${formatCount(recallMitigationIndependentData.same_dataset_non_derivation_recall_candidate_count)}</dd>
+          </div>
+          <div>
+            <dt>低敏感高风险样本</dt>
+            <dd>${formatCount(recallMitigationIndependentData.low_sensitive_observed_high_risk_count)}</dd>
+          </div>
+          <div>
+            <dt>外部候选源</dt>
+            <dd>${formatCount(recallMitigationIndependentData.external_registry_candidate_count)}</dd>
+          </div>
+          <div>
+            <dt>已接入独立数据</dt>
+            <dd>${formatCount(recallMitigationIndependentData.ingested_external_independent_dataset_count)}</dd>
+          </div>
+          <div>
+            <dt>独立数据下一步</dt>
+            <dd>${escapeHtml(recallMitigationIndependentData.next_required_artifact || "r12_recall_mitigation_external_holdout_ingestion_or_customer_slice")}</dd>
           </div>
         </dl>
         <p>R12 当前只能作为次级迁移证据展示，主决策仍来自 guarded baseline，真实客户 outcome 回流前不进入 runtime default。</p>

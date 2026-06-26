@@ -52,7 +52,10 @@
     "r12 recall update false-alarm stress passed",
     "low_sensitive_recall_evaluable=true",
     "mitigation generalizes beyond current false-alarm band",
-    "mitigation holdout validated"
+    "mitigation holdout validated",
+    "independent holdout data exists",
+    "customer approved holdout slice exists",
+    "mitigation independent data ready"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -313,7 +316,10 @@
         "r12 recall update false-alarm stress passed",
         "low_sensitive_recall_evaluable=true",
         "mitigation generalizes beyond current false-alarm band",
-        "mitigation holdout validated"
+        "mitigation holdout validated",
+        "independent holdout data exists",
+        "customer approved holdout slice exists",
+        "mitigation independent data ready"
       ],
       "claim_level": "product_secondary_evidence_only",
       "evidence_summary": {
@@ -389,6 +395,17 @@
           "product_default_allowed": false,
           "stable_alternative_recall_retained": 0.333333,
           "validation_status": "r12_recall_mitigation_holdout_validation_blocked_overfit"
+        },
+        "recall_mitigation_independent_holdout_data_boundary": {
+          "acceptance_decision": "block_product_default_prepare_external_or_customer_holdout_ingestion",
+          "data_status": "r12_recall_mitigation_independent_holdout_data_blocked_needs_external_or_customer_slice",
+          "external_registry_candidate_count": 3,
+          "ingested_external_independent_dataset_count": 0,
+          "low_sensitive_observed_high_risk_count": 0,
+          "mitigation_independent_data_ready": false,
+          "next_required_artifact": "r12_recall_mitigation_external_holdout_ingestion_or_customer_slice",
+          "product_default_allowed": false,
+          "same_dataset_non_derivation_recall_candidate_count": 5
         },
         "recall_oriented_update_boundary": {
           "abnormal_segment_recall_delta": 0.206897,
@@ -820,7 +837,7 @@
     "source_backed_only": true,
     "static_narrative_fallback_allowed": false
   },
-  "run_id": "r12-l10-product-current",
+  "run_id": "r12-l11-product-current",
   "schema_version": "r6-product-customer-value-report-v1",
   "section_contracts": [
     {
@@ -949,7 +966,10 @@
         "r12 recall update false-alarm stress passed",
         "low_sensitive_recall_evaluable=true",
         "mitigation generalizes beyond current false-alarm band",
-        "mitigation holdout validated"
+        "mitigation holdout validated",
+        "independent holdout data exists",
+        "customer approved holdout slice exists",
+        "mitigation independent data ready"
       ],
       "claim_status": "secondary_evidence_only",
       "section_id": "r12_transfer_evidence",
@@ -994,7 +1014,8 @@
     "r12-recall-oriented-update-current-001",
     "r12-recall-update-false-alarm-stress-test-current-001",
     "r12-recall-false-alarm-mitigation-candidate-current-001",
-    "r12-recall-mitigation-holdout-validation-current-001"
+    "r12-recall-mitigation-holdout-validation-current-001",
+    "r12-recall-mitigation-independent-holdout-data-current-001"
   ],
   "source_registry": [
     {
@@ -1088,6 +1109,10 @@
     {
       "artifact_id": "r12-recall-mitigation-holdout-validation-current-001",
       "path": "experiments/results/r12_recall_mitigation_holdout_validation/r12-recall-mitigation-holdout-validation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-recall-mitigation-independent-holdout-data-current-001",
+      "path": "experiments/results/r12_recall_mitigation_independent_holdout_data/r12-recall-mitigation-independent-holdout-data-current-001.json"
     }
   ],
   "status": "customer_value_report_ready_guarded"

@@ -94,6 +94,10 @@ def test_r6_product_frontend_is_source_backed_and_fail_closed():
     assert "leave_one_pass_rate" in js
     assert "endpoint_holdout_failure_count" in js
     assert "r12_recall_mitigation_independent_holdout_data" in js
+    assert "recall_mitigation_independent_holdout_data_boundary" in js
+    assert "same_dataset_non_derivation_recall_candidate_count" in js
+    assert "external_registry_candidate_count" in js
+    assert "r12_recall_mitigation_external_holdout_ingestion_or_customer_slice" in js
     assert "secondary_transfer_evidence_card_only" in js
     assert "/r6/product/r12-transfer-evidence" in js
 

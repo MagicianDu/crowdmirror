@@ -786,7 +786,39 @@ L10 结论：
 - L9 的 `TAGE 58-62` guard 没有通过 holdout 稳定性验证。
 - 当前 mitigation candidate 不能作为 Product default、runtime default 或 field-validated 方法。
 - 该候选可以保留为 Product failure diagnosis：它能解释“当前召回提升为什么会集中引入年龄轴误报”，并帮助客户看到系统如何阻断不稳定更新。
-- 下一步是 `r12_recall_mitigation_independent_holdout_data`：获取独立 holdout、低敏感可召回切片或客户授权 outcome 切片。
+- 独立 holdout、低敏感可召回切片或客户授权 outcome 的数据审计已由 L11 执行。
+
+### R12 L11：Recall mitigation independent holdout data
+
+目标：不再停留在“需要独立数据”的抽象说法，而是审计当前已经有的数据、同源 public proxy 的剩余候选、低敏感可召回切片、外部公开数据候选源和客户授权切片是否足以解除 L10 阻断。
+
+当前已实现：
+
+- `experiments/r12_recall_mitigation_independent_holdout_data.py`
+- `tests/test_r12_recall_mitigation_independent_holdout_data.py`
+- `experiments/results/r12_recall_mitigation_independent_holdout_data/r12-recall-mitigation-independent-holdout-data-current-001.json`
+- `experiments/r12_product_support_gate.py` 已支持消费 L11 data audit artifact。
+- `experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json` 已刷新 L11 边界。
+- `experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json` 已刷新 R12 evidence summary。
+- `experiments/results/r6_product_api_manifest/r6-product-api-manifest-current-001.json` 已刷新 source registry 与 blocked claims。
+- `demo/app.js` 已展示 independent holdout data audit 状态、同源诊断候选数、低敏感高风险样本数、外部候选源数、已接入独立数据数和下一步。
+
+当前数据审计结果：
+
+- 当前 HPS public proxy 已 ingest，可以继续作为 source-backed diagnostic material。
+- L9 derivation band `TAGE 58-62` 覆盖 5 个 cases。
+- 排除 derivation band 后，同源 HPS 仍有 65 个 segment cases。
+- 同源非 derivation 召回诊断候选有 5 个：`hps_ESEX_1`、`hps_RRACETH_1`、`hps_TAGE_46`、`hps_TAGE_64`、`hps_TAGE_73`。
+- 但这些仍来自同一 HPS public proxy dataset，不能当作独立 holdout。
+- 低敏感 slice 只有 4 个 cases，observed high-risk count 为 0，因此 `low_sensitive_recall_evaluable=false`。
+- R10 external registry 中有 3 个官方公开候选源：HPS、BTS DB1B、DOT Air Travel Consumer Reports；但当前 ingestion status 均为 `candidate_source_not_ingested`。
+- 客户授权 holdout case count 为 0。
+
+L11 结论：
+
+- L11 没有解除 L10 的 Product default 阻断。
+- 它把“缺独立数据”从口头 gap 变成可审计 artifact：同源数据可用于 failure diagnosis，不能用于 Product default；外部公开源存在，但必须先 ingest 或切片；客户授权 outcome 仍缺失。
+- 下一步是 `r12_recall_mitigation_external_holdout_ingestion_or_customer_slice`：优先接入一个外部公开 holdout，或准备客户授权切片入口。
 
 ## 当前推荐推进顺序
 
@@ -800,7 +832,8 @@ L10 结论：
 8. R12 L8 已完成：false-alarm stress test 保留 L7 recall gain，但确认 Product default 被 global false alarm、precision regression、low-sensitive recall 不可验和 protected-sensitive 年龄轴误报集中共同阻断。
 9. R12 L9 已完成：false-alarm mitigation candidate 保留 `0.833333` 的 L7 recall gain，消除当前新增 false alarm，并把 precision delta 改为 `+0.059524`；但候选来自当前 false-alarm band，Product default 仍阻断。
 10. R12 L10 已完成：mitigation holdout validation 显示 leave-one pass rate 只有 `0.333333`，端点 holdout 失败 2 个，L9 guard 没有通过泛化验证。
-11. 下一步推进 `r12_recall_mitigation_independent_holdout_data`：寻找独立 holdout、低敏感可召回切片或客户授权 outcome 切片。
+11. R12 L11 已完成：independent holdout data audit 显示当前没有可解除阻断的独立数据、低敏感可召回切片或客户授权 outcome。
+12. 下一步推进 `r12_recall_mitigation_external_holdout_ingestion_or_customer_slice`：接入外部公开 holdout，或准备客户授权切片入口。
 
 ## 成功信号
 
@@ -814,8 +847,8 @@ R12 的最小成功信号不是“指标全赢”，而是：
 
 ## 当前判断
 
-R12 目前拿到了比 R11 更强的最低正向信号：R11 只能证明 feedback ledger 可审计，R12 L3 已证明一个 train-only 结构化 mechanism update 能在 validation / holdout 上产生小幅正向迁移，且没有牺牲区间覆盖和 false alarm；R12 L5/L6 进一步找到了 high-risk replay 材料，并证明当前 update 在 high-risk research-only replay 上有 MAE 小幅正向；R12 L7 则进一步证明 activation margin 这类结构化阈值候选可以提升 static-prior miss recovery 与 abnormal segment recall；R12 L8 又把该召回增益的 false-alarm 失败边界量化出来；R12 L9 进一步说明 false-alarm 代价存在可缓解候选；R12 L10 则证明该候选没有通过 holdout 稳定性，只能保留为 failure diagnosis candidate。
+R12 目前拿到了比 R11 更强的最低正向信号：R11 只能证明 feedback ledger 可审计，R12 L3 已证明一个 train-only 结构化 mechanism update 能在 validation / holdout 上产生小幅正向迁移，且没有牺牲区间覆盖和 false alarm；R12 L5/L6 进一步找到了 high-risk replay 材料，并证明当前 update 在 high-risk research-only replay 上有 MAE 小幅正向；R12 L7 则进一步证明 activation margin 这类结构化阈值候选可以提升 static-prior miss recovery 与 abnormal segment recall；R12 L8 又把该召回增益的 false-alarm 失败边界量化出来；R12 L9 进一步说明 false-alarm 代价存在可缓解候选；R12 L10 则证明该候选没有通过 holdout 稳定性，只能保留为 failure diagnosis candidate；R12 L11 进一步证明当前数据条件不足以解除 Product default 阻断。
 
 但这个结果仍不足以说 Research 已全面支撑 Product。当前最准确的表述是：
 
-> R12 在 HPS public-use proxy split 上形成了 guarded positive transfer signal，在 research-only high-risk replay 上取得 MAE 小幅改善，通过 activation margin 候选提升了 high-risk recall，并找到一个能消除当前新增误报的 research-only mitigation candidate；但 L10 已证明该候选未通过 leave-one holdout 稳定性，尚无独立 holdout / low-sensitive / customer-approved validation，因此它不是 field-validated、customer-validated、低敏感 Product-default-ready 或 runtime-default-ready 的 Product core method。
+> R12 在 HPS public-use proxy split 上形成了 guarded positive transfer signal，在 research-only high-risk replay 上取得 MAE 小幅改善，通过 activation margin 候选提升了 high-risk recall，并找到一个能消除当前新增误报的 research-only mitigation candidate；但 L10 已证明该候选未通过 leave-one holdout 稳定性，L11 又证明当前没有可解除阻断的 independent holdout / low-sensitive / customer-approved validation，因此它不是 field-validated、customer-validated、低敏感 Product-default-ready 或 runtime-default-ready 的 Product core method。

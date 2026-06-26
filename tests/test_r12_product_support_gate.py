@@ -25,6 +25,9 @@ from experiments.r12_recall_false_alarm_mitigation_candidate import (
 from experiments.r12_recall_mitigation_holdout_validation import (
     build_r12_recall_mitigation_holdout_validation,
 )
+from experiments.r12_recall_mitigation_independent_holdout_data import (
+    build_r12_recall_mitigation_independent_holdout_data,
+)
 
 
 def test_r12_product_support_gate_creates_guarded_transfer_evidence_card():
@@ -584,6 +587,120 @@ def test_r12_product_support_gate_surfaces_l10_mitigation_holdout_boundary():
     json.dumps(gate, allow_nan=False)
 
 
+def test_r12_product_support_gate_surfaces_l11_independent_holdout_data_boundary():
+    transfer = _load_current_transfer_validation()
+    registry = build_r12_high_risk_holdout_registry(
+        artifact_id="r12-high-risk-holdout-registry-test",
+        run_id="r12-l5-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+    )
+    replay = build_r12_high_risk_holdout_transfer_replay(
+        artifact_id="r12-high-risk-holdout-transfer-replay-test",
+        run_id="r12-l6-test",
+        r12_high_risk_holdout_registry=registry,
+        r12_transfer_validation=transfer,
+    )
+    recall_update = build_r12_recall_oriented_update(
+        artifact_id="r12-recall-oriented-update-test",
+        run_id="r12-l7-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+        r12_high_risk_holdout_transfer_replay=replay,
+    )
+    stress = build_r12_recall_update_false_alarm_stress_test(
+        artifact_id="r12-recall-update-false-alarm-stress-test",
+        run_id="r12-l8-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+        r12_recall_oriented_update=recall_update,
+    )
+    mitigation = build_r12_recall_false_alarm_mitigation_candidate(
+        artifact_id="r12-recall-false-alarm-mitigation-candidate-test",
+        run_id="r12-l9-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+        r12_recall_oriented_update=recall_update,
+        r12_recall_update_false_alarm_stress_test=stress,
+    )
+    holdout_validation = build_r12_recall_mitigation_holdout_validation(
+        artifact_id="r12-recall-mitigation-holdout-validation-test",
+        run_id="r12-l10-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+        r12_recall_oriented_update=recall_update,
+        r12_recall_false_alarm_mitigation_candidate=mitigation,
+    )
+    independent_data = build_r12_recall_mitigation_independent_holdout_data(
+        artifact_id="r12-recall-mitigation-independent-holdout-data-test",
+        run_id="r12-l11-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+        r12_recall_mitigation_holdout_validation=holdout_validation,
+        r10_external_evidence_registry=_load_current_external_registry(),
+    )
+
+    gate = build_r12_product_support_gate(
+        artifact_id="r12-product-support-gate-test",
+        run_id="r12-l11-product-test",
+        r12_transfer_validation=transfer,
+        r12_high_risk_holdout_registry=registry,
+        r12_high_risk_holdout_transfer_replay=replay,
+        r12_recall_oriented_update=recall_update,
+        r12_recall_update_false_alarm_stress_test=stress,
+        r12_recall_false_alarm_mitigation_candidate=mitigation,
+        r12_recall_mitigation_holdout_validation=holdout_validation,
+        r12_recall_mitigation_independent_holdout_data=independent_data,
+    )
+
+    boundary = gate["transfer_evidence_card"]["evidence_summary"][
+        "recall_mitigation_independent_holdout_data_boundary"
+    ]
+    assert boundary == {
+        "data_status": (
+            "r12_recall_mitigation_independent_holdout_data_blocked_needs_external_or_customer_slice"
+        ),
+        "acceptance_decision": (
+            "block_product_default_prepare_external_or_customer_holdout_ingestion"
+        ),
+        "same_dataset_non_derivation_recall_candidate_count": 5,
+        "low_sensitive_observed_high_risk_count": 0,
+        "external_registry_candidate_count": 3,
+        "ingested_external_independent_dataset_count": 0,
+        "mitigation_independent_data_ready": False,
+        "product_default_allowed": False,
+        "next_required_artifact": (
+            "r12_recall_mitigation_external_holdout_ingestion_or_customer_slice"
+        ),
+    }
+    assert gate["acceptance_gates"][
+        "r12_recall_mitigation_independent_data_ready"
+    ] is False
+    assert gate["acceptance_gates"][
+        "r12_recall_mitigation_independent_external_data_ingested"
+    ] is False
+    assert gate["acceptance_gates"][
+        "r12_recall_mitigation_independent_low_sensitive_recall_evaluable"
+    ] is False
+    assert gate["acceptance_gates"][
+        "r12_recall_mitigation_independent_product_default_allowed"
+    ] is False
+    assert {
+        entry["artifact_id"] for entry in gate["source_registry"]
+    } == {
+        "r12-transfer-validation-current-001",
+        "r12-high-risk-holdout-registry-test",
+        "r12-high-risk-holdout-transfer-replay-test",
+        "r12-recall-oriented-update-test",
+        "r12-recall-update-false-alarm-stress-test",
+        "r12-recall-false-alarm-mitigation-candidate-test",
+        "r12-recall-mitigation-holdout-validation-test",
+        "r12-recall-mitigation-independent-holdout-data-test",
+    }
+    assert "independent holdout data exists" in gate["blocked_claims"]
+    json.dumps(gate, allow_nan=False)
+
+
 def test_r12_product_support_gate_cli_writes_artifact(tmp_path):
     transfer_path = tmp_path / "r12-transfer-validation.json"
     output = tmp_path / "r12-product-support-gate.json"
@@ -637,5 +754,16 @@ def _load_current_hps_ingestion():
             repo_root
             / "experiments/results/r10_hps_policy_reaction_ingestion/"
             "r10-hps-policy-reaction-ingestion-current-001.json"
+        ).read_text()
+    )
+
+
+def _load_current_external_registry():
+    repo_root = Path(__file__).resolve().parents[1]
+    return json.loads(
+        (
+            repo_root
+            / "experiments/results/r10_external_evidence_registry/"
+            "r10-external-evidence-registry-current-001.json"
         ).read_text()
     )
