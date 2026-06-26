@@ -100,6 +100,76 @@ def test_r12_transfer_validation_finds_guarded_holdout_gain():
     json.dumps(report, allow_nan=False)
 
 
+def test_r12_transfer_validation_reports_extended_product_metrics_and_gaps():
+    report = build_r12_transfer_validation(
+        artifact_id="r12-transfer-validation-test",
+        run_id="r12-l3-test",
+        r12_outcome_case_registry=_load_current_case_registry(),
+        r12_causal_interaction_operator=_load_current_operator(),
+        r12_outcome_supervised_update=_load_current_update(),
+    )
+
+    assert report["extended_transfer_metrics"]["risk_ranking_quality"] == {
+        "train": {"before": 1.0, "after": 1.0, "delta": 0.0},
+        "validation": {"before": 1.0, "after": 1.0, "delta": 0.0},
+        "holdout": {"before": 1.0, "after": 1.0, "delta": 0.0},
+    }
+    assert report["extended_transfer_metrics"]["static_prior_miss_recovery"] == {
+        "train": {
+            "eligible_case_count": 2,
+            "before": 1.0,
+            "after": 1.0,
+            "delta": 0.0,
+        },
+        "validation": {
+            "eligible_case_count": 0,
+            "before": None,
+            "after": None,
+            "delta": None,
+        },
+        "holdout": {
+            "eligible_case_count": 0,
+            "before": None,
+            "after": None,
+            "delta": None,
+        },
+    }
+    assert report["extended_transfer_metrics"]["abnormal_segment_recall"] == {
+        "train": {
+            "eligible_case_count": 2,
+            "before": 1.0,
+            "after": 1.0,
+            "delta": 0.0,
+        },
+        "validation": {
+            "eligible_case_count": 0,
+            "before": None,
+            "after": None,
+            "delta": None,
+        },
+        "holdout": {
+            "eligible_case_count": 0,
+            "before": None,
+            "after": None,
+            "delta": None,
+        },
+    }
+    assert report["extended_transfer_metrics"]["decision_value_score"] == {
+        "train": {"before": 1.0, "after": 1.0, "delta": 0.0},
+        "validation": {"before": 1.0, "after": 1.0, "delta": 0.0},
+        "holdout": {"before": 1.0, "after": 1.0, "delta": 0.0},
+    }
+    assert report["extended_metric_gates"] == {
+        "risk_ranking_non_regression": True,
+        "decision_value_non_regression": True,
+        "static_prior_miss_recovery_holdout_covered": False,
+        "abnormal_segment_recall_holdout_covered": False,
+        "extended_product_metric_support_level": (
+            "guarded_mae_positive_extended_metric_coverage_gap"
+        ),
+    }
+
+
 def test_r12_transfer_validation_cli_writes_artifact(tmp_path):
     registry_path = tmp_path / "r12-case-registry.json"
     operator_path = tmp_path / "r12-causal-operator.json"

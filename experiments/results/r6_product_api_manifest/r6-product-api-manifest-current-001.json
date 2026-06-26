@@ -221,7 +221,7 @@
     "product_api_manifest_ready": true,
     "runtime_default_allowed": false
   },
-  "run_id": "r12-product-l4-current",
+  "run_id": "r12-product-l4-plus-current",
   "schema_version": "r6-product-api-manifest-v1",
   "source_refs": [
     "r6-product-readiness-index-current-001",

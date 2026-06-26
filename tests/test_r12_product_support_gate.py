@@ -43,6 +43,15 @@ def test_r12_product_support_gate_creates_guarded_transfer_evidence_card():
     assert card["source_artifact_ids"] == [
         "r12-transfer-validation-current-001",
     ]
+    assert card["evidence_summary"]["extended_metric_gates"] == {
+        "risk_ranking_non_regression": True,
+        "decision_value_non_regression": True,
+        "static_prior_miss_recovery_holdout_covered": False,
+        "abnormal_segment_recall_holdout_covered": False,
+        "extended_product_metric_support_level": (
+            "guarded_mae_positive_extended_metric_coverage_gap"
+        ),
+    }
     assert gate["customer_visible_primary_decision"] == {
         "primary_decision_source": "guarded_baseline_customer_value_report",
         "r12_output_role": "secondary_transfer_evidence_card_only",

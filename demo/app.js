@@ -196,6 +196,7 @@ function renderR12TransferEvidence(evidence) {
   if (!evidence) return "";
   const metrics = evidence.metrics || {};
   const summary = evidence.evidence_summary || {};
+  const extended = summary.extended_metric_gates || {};
   const update = summary.accepted_update || {};
   return `
     <article class="panel panel-wide">
@@ -242,6 +243,18 @@ function renderR12TransferEvidence(evidence) {
           <div>
             <dt>运行默认</dt>
             <dd>${evidence.runtime_default_allowed ? "允许" : "不允许"}</dd>
+          </div>
+          <div>
+            <dt>扩展指标</dt>
+            <dd>${escapeHtml(extended.extended_product_metric_support_level || "extended_product_metric_support_level 未提供")}</dd>
+          </div>
+          <div>
+            <dt>漏报恢复 holdout 覆盖</dt>
+            <dd>${formatBooleanGate(extended.static_prior_miss_recovery_holdout_covered, "static_prior_miss_recovery_holdout_covered")}</dd>
+          </div>
+          <div>
+            <dt>异常群体 holdout 覆盖</dt>
+            <dd>${formatBooleanGate(extended.abnormal_segment_recall_holdout_covered, "abnormal_segment_recall_holdout_covered")}</dd>
           </div>
         </dl>
         <p>R12 当前只能作为次级迁移证据展示，主决策仍来自 guarded baseline，真实客户 outcome 回流前不进入 runtime default。</p>
@@ -578,6 +591,12 @@ function formatSignedNumber(value) {
   if (number === null) return "未提供";
   const sign = number > 0 ? "+" : "";
   return `${sign}${number.toFixed(6)}`;
+}
+
+function formatBooleanGate(value, fallback) {
+  if (value === true) return "通过";
+  if (value === false) return `未覆盖: ${fallback}`;
+  return fallback;
 }
 
 function clampPercent(value) {

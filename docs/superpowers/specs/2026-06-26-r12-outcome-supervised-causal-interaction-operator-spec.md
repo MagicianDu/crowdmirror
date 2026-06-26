@@ -444,9 +444,18 @@ R12 可以使用 LLM，但 LLM 不作为主预测器。
 - `interval_coverage_delta=0.0`。
 - `false_alarm_rate_delta=0.0`。
 
+L3+ 已新增 Product 扩展指标：
+
+- risk ranking quality：train / validation / holdout 均为 `1.0 -> 1.0`，未回归。
+- decision value score：train / validation / holdout 均为 `1.0 -> 1.0`，未回归。
+- static-prior miss recovery：train eligible case count 为 `2`，但 validation / holdout eligible case count 为 `0`。
+- abnormal segment recall：train eligible case count 为 `2`，但 validation / holdout eligible case count 为 `0`。
+- 当前扩展支持等级为 `guarded_mae_positive_extended_metric_coverage_gap`。
+
 解释边界：
 
 - 这是 R12 当前最小正向信号，说明 outcome-supervised 结构化更新没有停留在 same-case 修补。
+- 正向信号主要来自 MAE 小幅改善和非回归；还没有覆盖 Product 最关键的静态漏报恢复与异常群体 holdout 验证。
 - 这是 public proxy split，不是客户 field outcome。
 - 样本仍很小，不能宣称 Product core method fully supported。
 - `runtime_default_allowed=false` 必须继续保持。
@@ -457,6 +466,7 @@ R12 可以使用 LLM，但 LLM 不作为主预测器。
 - 报告 same-case 和 holdout 的差别：已满足。
 - 明确 positive transfer、negative transfer 或 blocked same-case only：当前为 `r12_update_transfer_positive_guarded`。
 - 明确 train metrics 不作为 transfer proof：已满足。
+- 报告 risk ranking、static-prior miss recovery、abnormal segment recall 和 decision value：已满足，但其中 static-prior miss recovery 与 abnormal segment recall 暴露 holdout 覆盖 gap。
 
 ### R12 L4：Product support gate
 
@@ -477,6 +487,7 @@ R12 可以使用 LLM，但 LLM 不作为主预测器。
 - customer value report 新增 `r12_transfer_evidence` section。
 - API manifest 新增 `/r6/product/r12-transfer-evidence` endpoint。
 - `/demo/` 新增“R12 迁移验证”面板，展示 `update_transfer_gain`、validation / holdout MAE delta、区间覆盖变化和误报变化。
+- `/demo/` 同步展示 L3+ 的扩展指标覆盖 gap，避免把 MAE 小幅正向误读为 Product core method ready。
 
 边界：
 
@@ -500,7 +511,7 @@ R12 可以使用 LLM，但 LLM 不作为主预测器。
 2. R12 L2 已完成：train residual 已生成可审计结构化更新。
 3. R12 L3 已完成：当前 HPS public-use proxy split 上存在 guarded positive transfer signal。
 4. R12 L4 已完成：只以 guarded evidence card / API manifest source refs / blocked claims 的方式接入 Product，不覆盖主决策，不开启 runtime default。
-5. 下一步推进 R12 L3+ / L5：扩大 case family、补齐 risk ranking / static prior miss recovery / abnormal segment recall 的 transfer 指标，并寻找更接近业务 field outcome 的复核数据。
+5. 下一步推进 R12 L5：优先寻找包含 observed high-risk holdout 的 case family，用来验证 static-prior miss recovery 和 abnormal segment recall，并寻找更接近业务 field outcome 的复核数据。
 
 ## 成功信号
 

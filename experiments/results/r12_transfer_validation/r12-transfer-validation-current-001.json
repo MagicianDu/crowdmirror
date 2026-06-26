@@ -51,7 +51,10 @@
       "observed_high_risk": true,
       "observed_value": 0.55329,
       "source_signal_delta": 0.092087,
-      "split": "train"
+      "split": "train",
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.454619
     },
     {
       "absolute_error_after": 0.022546,
@@ -78,7 +81,10 @@
       "observed_high_risk": true,
       "observed_value": 0.5214,
       "source_signal_delta": 0.080427,
-      "split": "train"
+      "split": "train",
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.454619
     },
     {
       "absolute_error_after": 0.002063,
@@ -105,7 +111,10 @@
       "observed_high_risk": false,
       "observed_value": 0.450089,
       "source_signal_delta": -0.004485,
-      "split": "validation"
+      "split": "validation",
+      "static_prior_missed_observed_high_risk": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.454619
     },
     {
       "absolute_error_after": 0.016561,
@@ -132,7 +141,10 @@
       "observed_high_risk": false,
       "observed_value": 0.433761,
       "source_signal_delta": -0.007813,
-      "split": "validation"
+      "split": "validation",
+      "static_prior_missed_observed_high_risk": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.454619
     },
     {
       "absolute_error_after": 0.001148,
@@ -159,7 +171,10 @@
       "observed_high_risk": false,
       "observed_value": 0.447394,
       "source_signal_delta": -0.015224,
-      "split": "holdout"
+      "split": "holdout",
+      "static_prior_missed_observed_high_risk": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.454619
     },
     {
       "absolute_error_after": 0.007348,
@@ -186,12 +201,98 @@
       "observed_high_risk": false,
       "observed_value": 0.425462,
       "source_signal_delta": -0.039652,
-      "split": "holdout"
+      "split": "holdout",
+      "static_prior_missed_observed_high_risk": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.454619
     }
   ],
   "claim_level": "guarded_public_proxy_transfer_signal",
+  "extended_metric_gates": {
+    "abnormal_segment_recall_holdout_covered": false,
+    "decision_value_non_regression": true,
+    "extended_product_metric_support_level": "guarded_mae_positive_extended_metric_coverage_gap",
+    "risk_ranking_non_regression": true,
+    "static_prior_miss_recovery_holdout_covered": false
+  },
+  "extended_transfer_metrics": {
+    "abnormal_segment_recall": {
+      "holdout": {
+        "after": null,
+        "before": null,
+        "delta": null,
+        "eligible_case_count": 0
+      },
+      "train": {
+        "after": 1.0,
+        "before": 1.0,
+        "delta": 0.0,
+        "eligible_case_count": 2
+      },
+      "validation": {
+        "after": null,
+        "before": null,
+        "delta": null,
+        "eligible_case_count": 0
+      }
+    },
+    "decision_value_score": {
+      "holdout": {
+        "after": 1.0,
+        "before": 1.0,
+        "delta": 0.0
+      },
+      "train": {
+        "after": 1.0,
+        "before": 1.0,
+        "delta": 0.0
+      },
+      "validation": {
+        "after": 1.0,
+        "before": 1.0,
+        "delta": 0.0
+      }
+    },
+    "risk_ranking_quality": {
+      "holdout": {
+        "after": 1.0,
+        "before": 1.0,
+        "delta": 0.0
+      },
+      "train": {
+        "after": 1.0,
+        "before": 1.0,
+        "delta": 0.0
+      },
+      "validation": {
+        "after": 1.0,
+        "before": 1.0,
+        "delta": 0.0
+      }
+    },
+    "static_prior_miss_recovery": {
+      "holdout": {
+        "after": null,
+        "before": null,
+        "delta": null,
+        "eligible_case_count": 0
+      },
+      "train": {
+        "after": 1.0,
+        "before": 1.0,
+        "delta": 0.0,
+        "eligible_case_count": 2
+      },
+      "validation": {
+        "after": null,
+        "before": null,
+        "delta": null,
+        "eligible_case_count": 0
+      }
+    }
+  },
   "next_required_artifact": "r12_product_guarded_report",
-  "run_id": "r12-l3-current",
+  "run_id": "r12-l3-plus-current",
   "schema_version": "r12-transfer-validation-v1",
   "source_refs": [
     "r12-outcome-case-registry-current-001",

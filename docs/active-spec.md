@@ -219,7 +219,9 @@ R12 L2 已输出 `r12-outcome-supervised-update-current-001`：只使用 train s
 
 R12 L3 已输出 `r12-transfer-validation-current-001`：当前 HPS public-use proxy split 上 validation MAE 从 `0.009743` 降至 `0.009312`，holdout MAE 从 `0.005104` 降至 `0.004248`，`update_transfer_gain=0.001287`，且 `interval_coverage_delta=0.0`、`false_alarm_rate_delta=0.0`。当前状态为 `r12_transfer_validation_positive_guarded`，说明 R12 有最小可迁移正向信号；但这仍不是 field/customer outcome validation，也不允许 `runtime_default_allowed=true`。
 
-R12 L4 已输出 `r12-product-support-gate-current-001`，并接入 `r6-product-customer-value-report-current-001`、`r6-product-api-manifest-current-001` 和 `/demo/`。Product 现在可以展示 `r12_transfer_evidence` section、`/r6/product/r12-transfer-evidence` endpoint 和“R12 迁移验证”面板。但 R12 输出角色被固定为 `secondary_transfer_evidence_card_only`，`r12_can_override_primary_decision=false`，主决策仍来自 guarded baseline。
+R12 L3+ 已在同一 artifact 中补齐 Product 扩展指标：risk ranking 和 decision value 在 validation / holdout 上没有回归，但 static-prior miss recovery 与 abnormal segment recall 的 holdout eligible case count 都为 `0`。因此当前扩展支持等级为 `guarded_mae_positive_extended_metric_coverage_gap`：R12 有 MAE 层正向迁移，但还没有覆盖 Product 最关键的静态漏报恢复和异常群体验证。
+
+R12 L4 已输出 `r12-product-support-gate-current-001`，并接入 `r6-product-customer-value-report-current-001`、`r6-product-api-manifest-current-001` 和 `/demo/`。Product 现在可以展示 `r12_transfer_evidence` section、`/r6/product/r12-transfer-evidence` endpoint 和“R12 迁移验证”面板，并展示 L3+ 扩展指标覆盖 gap。但 R12 输出角色被固定为 `secondary_transfer_evidence_card_only`，`r12_can_override_primary_decision=false`，主决策仍来自 guarded baseline。
 
 ## 降权历史材料
 

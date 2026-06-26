@@ -53,7 +53,7 @@
     "secondary_evidence_card_only": true,
     "source_backed_only": true
   },
-  "run_id": "r12-l4-current",
+  "run_id": "r12-l4-plus-current",
   "schema_version": "r12-product-support-gate-v1",
   "source_refs": [
     "r12-transfer-validation-current-001"
@@ -89,6 +89,13 @@
         "update_type": "mechanism_weight"
       },
       "claim_level": "guarded_public_proxy_transfer_signal",
+      "extended_metric_gates": {
+        "abnormal_segment_recall_holdout_covered": false,
+        "decision_value_non_regression": true,
+        "extended_product_metric_support_level": "guarded_mae_positive_extended_metric_coverage_gap",
+        "risk_ranking_non_regression": true,
+        "static_prior_miss_recovery_holdout_covered": false
+      },
       "field_outcome_validated": false,
       "runtime_default_allowed": false,
       "train_metrics_used_for_transfer_decision": false,

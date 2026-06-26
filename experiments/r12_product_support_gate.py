@@ -193,6 +193,7 @@ def _transfer_evidence_card(
             "runtime_default_allowed": transfer_validation["acceptance_gates"][
                 "runtime_default_allowed"
             ],
+            "extended_metric_gates": transfer_validation["extended_metric_gates"],
         },
         "allowed_display_claims": [
             (

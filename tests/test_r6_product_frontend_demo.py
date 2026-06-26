@@ -64,6 +64,8 @@ def test_r6_product_frontend_is_source_backed_and_fail_closed():
     assert "researchNextTasks" in js
     assert "r12_transfer_evidence" in js
     assert "update_transfer_gain" in js
+    assert "extended_product_metric_support_level" in js
+    assert "static_prior_miss_recovery_holdout_covered" in js
     assert "secondary_transfer_evidence_card_only" in js
     assert "/r6/product/r12-transfer-evidence" in js
 

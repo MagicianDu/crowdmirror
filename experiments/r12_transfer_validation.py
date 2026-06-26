@@ -54,6 +54,8 @@ def build_r12_transfer_validation(
         split: _split_metrics(case_replays, split=split)
         for split in ("train", "validation", "holdout")
     }
+    extended_transfer_metrics = _extended_transfer_metrics(case_replays, split_metrics)
+    extended_metric_gates = _extended_metric_gates(extended_transfer_metrics)
     gates = _acceptance_gates(split_metrics)
     decision = (
         "r12_update_transfer_positive_guarded"
@@ -87,6 +89,8 @@ def build_r12_transfer_validation(
         },
         "case_replays": case_replays,
         "split_metrics": split_metrics,
+        "extended_transfer_metrics": extended_transfer_metrics,
+        "extended_metric_gates": extended_metric_gates,
         "update_transfer_gain": _update_transfer_gain(split_metrics),
         "transfer_decision": decision,
         "acceptance_gates": gates,
@@ -185,6 +189,7 @@ def _case_replay(
         "observed_value": _round6(observed),
         "before_prediction": _round6(before),
         "after_prediction": _round6(after),
+        "static_prior_prediction": _round6(static_prior),
         "source_signal_delta": _round6(source_delta),
         "absolute_error_before": _round6(abs(observed - before)),
         "absolute_error_after": _round6(abs(observed - after)),
@@ -194,7 +199,12 @@ def _case_replay(
         "after_interval_hit": _interval_hit(observed, after_interval),
         "before_predicted_high_risk": before >= HIGH_RISK_THRESHOLD,
         "after_predicted_high_risk": after >= HIGH_RISK_THRESHOLD,
+        "static_prior_predicted_high_risk": static_prior >= HIGH_RISK_THRESHOLD,
         "observed_high_risk": case["outcome_proxy"]["observed_high_risk"],
+        "static_prior_missed_observed_high_risk": (
+            case["outcome_proxy"]["observed_high_risk"]
+            and static_prior < HIGH_RISK_THRESHOLD
+        ),
         "before_false_alarm": _false_alarm(
             predicted_high=before >= HIGH_RISK_THRESHOLD,
             observed_high=case["outcome_proxy"]["observed_high_risk"],
@@ -262,6 +272,185 @@ def _acceptance_gates(split_metrics: dict[str, dict[str, Any]]) -> dict[str, boo
         "field_outcome_validated": False,
         "runtime_default_allowed": False,
     }
+
+
+def _extended_transfer_metrics(
+    case_replays: list[dict[str, Any]],
+    split_metrics: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    return {
+        "risk_ranking_quality": {
+            split: _ranking_metric(case_replays, split=split)
+            for split in ("train", "validation", "holdout")
+        },
+        "static_prior_miss_recovery": {
+            split: _static_prior_miss_recovery(case_replays, split=split)
+            for split in ("train", "validation", "holdout")
+        },
+        "abnormal_segment_recall": {
+            split: _abnormal_segment_recall(case_replays, split=split)
+            for split in ("train", "validation", "holdout")
+        },
+        "decision_value_score": {
+            split: _decision_value_metric(
+                case_replays,
+                split_metrics=split_metrics,
+                split=split,
+            )
+            for split in ("train", "validation", "holdout")
+        },
+    }
+
+
+def _extended_metric_gates(extended_metrics: dict[str, Any]) -> dict[str, Any]:
+    risk_ranking = extended_metrics["risk_ranking_quality"]
+    decision_value = extended_metrics["decision_value_score"]
+    static_prior_miss = extended_metrics["static_prior_miss_recovery"]
+    abnormal_recall = extended_metrics["abnormal_segment_recall"]
+    return {
+        "risk_ranking_non_regression": (
+            risk_ranking["validation"]["delta"] >= 0
+            and risk_ranking["holdout"]["delta"] >= 0
+        ),
+        "decision_value_non_regression": (
+            decision_value["validation"]["delta"] >= 0
+            and decision_value["holdout"]["delta"] >= 0
+        ),
+        "static_prior_miss_recovery_holdout_covered": (
+            static_prior_miss["holdout"]["eligible_case_count"] > 0
+        ),
+        "abnormal_segment_recall_holdout_covered": (
+            abnormal_recall["holdout"]["eligible_case_count"] > 0
+        ),
+        "extended_product_metric_support_level": (
+            "guarded_mae_positive_extended_metric_coverage_gap"
+        ),
+    }
+
+
+def _ranking_metric(
+    case_replays: list[dict[str, Any]],
+    *,
+    split: str,
+) -> dict[str, float | None]:
+    rows = [row for row in case_replays if row["split"] == split]
+    before = _pairwise_ranking_quality(rows, prediction_field="before_prediction")
+    after = _pairwise_ranking_quality(rows, prediction_field="after_prediction")
+    return {
+        "before": before,
+        "after": after,
+        "delta": _nullable_delta(after, before),
+    }
+
+
+def _static_prior_miss_recovery(
+    case_replays: list[dict[str, Any]],
+    *,
+    split: str,
+) -> dict[str, Any]:
+    rows = [
+        row
+        for row in case_replays
+        if row["split"] == split and row["static_prior_missed_observed_high_risk"]
+    ]
+    before = _high_risk_recall(rows, prediction_field="before_predicted_high_risk")
+    after = _high_risk_recall(rows, prediction_field="after_predicted_high_risk")
+    return {
+        "eligible_case_count": len(rows),
+        "before": before,
+        "after": after,
+        "delta": _nullable_delta(after, before),
+    }
+
+
+def _abnormal_segment_recall(
+    case_replays: list[dict[str, Any]],
+    *,
+    split: str,
+) -> dict[str, Any]:
+    rows = [
+        row
+        for row in case_replays
+        if row["split"] == split and row["observed_high_risk"]
+    ]
+    before = _high_risk_recall(rows, prediction_field="before_predicted_high_risk")
+    after = _high_risk_recall(rows, prediction_field="after_predicted_high_risk")
+    return {
+        "eligible_case_count": len(rows),
+        "before": before,
+        "after": after,
+        "delta": _nullable_delta(after, before),
+    }
+
+
+def _decision_value_metric(
+    case_replays: list[dict[str, Any]],
+    *,
+    split_metrics: dict[str, dict[str, Any]],
+    split: str,
+) -> dict[str, float | None]:
+    ranking = _ranking_metric(case_replays, split=split)
+    before = _nullable_minus(
+        ranking["before"],
+        split_metrics[split]["false_alarm_rate_before"],
+    )
+    after = _nullable_minus(
+        ranking["after"],
+        split_metrics[split]["false_alarm_rate_after"],
+    )
+    return {
+        "before": before,
+        "after": after,
+        "delta": _nullable_delta(after, before),
+    }
+
+
+def _pairwise_ranking_quality(
+    rows: list[dict[str, Any]],
+    *,
+    prediction_field: str,
+) -> float | None:
+    total = 0
+    correct = Decimal("0")
+    for left_index, left in enumerate(rows):
+        for right in rows[left_index + 1 :]:
+            left_observed = _decimal(left["observed_value"])
+            right_observed = _decimal(right["observed_value"])
+            if left_observed == right_observed:
+                continue
+            total += 1
+            left_prediction = _decimal(left[prediction_field])
+            right_prediction = _decimal(right[prediction_field])
+            if left_prediction == right_prediction:
+                correct += Decimal("0.5")
+            elif (left_observed > right_observed) == (
+                left_prediction > right_prediction
+            ):
+                correct += Decimal("1")
+    if total == 0:
+        return None
+    return _round6(correct / Decimal(total))
+
+
+def _high_risk_recall(
+    rows: list[dict[str, Any]],
+    *,
+    prediction_field: str,
+) -> float | None:
+    if not rows:
+        return None
+    recovered = sum(1 for row in rows if row[prediction_field])
+    return _round6(Decimal(recovered) / Decimal(len(rows)))
+
+
+def _nullable_minus(left: float | None, right: float | None) -> float | None:
+    if left is None or right is None:
+        return None
+    return _round6(_decimal(left) - _decimal(right))
+
+
+def _nullable_delta(after: float | None, before: float | None) -> float | None:
+    return _nullable_minus(after, before)
 
 
 def _update_transfer_gain(split_metrics: dict[str, dict[str, Any]]) -> float:
