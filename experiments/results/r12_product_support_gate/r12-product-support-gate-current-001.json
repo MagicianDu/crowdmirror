@@ -9,6 +9,9 @@
     "r12_high_risk_replay_recall_improved": false,
     "r12_high_risk_research_holdout_candidates_present": true,
     "r12_product_default_high_risk_holdout_present": false,
+    "r12_recall_false_alarm_stress_passed": false,
+    "r12_recall_false_alarm_stress_product_default_allowed": false,
+    "r12_recall_false_alarm_stress_sensitive_concentration": true,
     "r12_recall_oriented_update_false_alarm_non_regression": false,
     "r12_recall_oriented_update_product_default_allowed": false,
     "r12_recall_oriented_update_recall_improved": true,
@@ -20,7 +23,8 @@
     "Product can display R12 as a source-backed guarded transfer evidence card.",
     "R12 transfer evidence is secondary and requires customer or field outcome review before any runtime-default update.",
     "R12 has research-only high-risk holdout candidates, but Product default use remains blocked until low-sensitive or customer-approved holdout validation exists.",
-    "R12 recall-oriented activation margin can be shown as a research-only improvement with explicit false-alarm and precision tradeoff."
+    "R12 recall-oriented activation margin can be shown as a research-only improvement with explicit false-alarm and precision tradeoff.",
+    "R12 recall-oriented update has a source-backed false-alarm stress boundary and remains Product-default blocked."
   ],
   "artifact_id": "r12-product-support-gate-current-001",
   "blocked_claims": [
@@ -37,7 +41,9 @@
     "false_alarm_non_regression=true",
     "precision_non_regression=true",
     "R12 Product core method ready",
-    "customer outcome validated"
+    "customer outcome validated",
+    "r12 recall update false-alarm stress passed",
+    "low_sensitive_recall_evaluable=true"
   ],
   "claim_boundary": "R12 Product support gate artifact. It allows Product to display a source-backed R12 transfer-validation evidence card as secondary evidence, while preserving guarded baseline primary decisions. It is not Product core method validation, not field validation, and not runtime default authorization.",
   "claim_level": "product_secondary_evidence_only",
@@ -69,13 +75,14 @@
     "secondary_evidence_card_only": true,
     "source_backed_only": true
   },
-  "run_id": "r12-l7-product-current",
+  "run_id": "r12-l8-product-current",
   "schema_version": "r12-product-support-gate-v1",
   "source_refs": [
     "r12-transfer-validation-current-001",
     "r12-high-risk-holdout-registry-current-001",
     "r12-high-risk-holdout-transfer-replay-current-001",
-    "r12-recall-oriented-update-current-001"
+    "r12-recall-oriented-update-current-001",
+    "r12-recall-update-false-alarm-stress-test-current-001"
   ],
   "source_registry": [
     {
@@ -93,6 +100,10 @@
     {
       "artifact_id": "r12-recall-oriented-update-current-001",
       "path": "experiments/results/r12_recall_oriented_update/r12-recall-oriented-update-current-001.json"
+    },
+    {
+      "artifact_id": "r12-recall-update-false-alarm-stress-test-current-001",
+      "path": "experiments/results/r12_recall_update_false_alarm_stress_test/r12-recall-update-false-alarm-stress-test-current-001.json"
     }
   ],
   "status": "r12_product_support_gate_ready_guarded",
@@ -144,6 +155,19 @@
         "replay_status": "r12_high_risk_holdout_transfer_replay_partial_research_positive",
         "static_prior_miss_recovery_delta": 0.0,
         "transfer_decision": "r12_high_risk_replay_mae_positive_recall_flat_research_only"
+      },
+      "recall_false_alarm_stress_boundary": {
+        "acceptance_decision": "reject_product_default_keep_research_guarded_candidate",
+        "dominant_false_alarm_segment_column": "TAGE",
+        "global_false_alarm_rate_delta": 0.073171,
+        "global_recall_delta": 0.206897,
+        "low_sensitive_false_alarm_rate_delta": 0.0,
+        "low_sensitive_recall_evaluable": false,
+        "next_required_artifact": "r12_recall_false_alarm_mitigation_candidate",
+        "precision_delta": -0.03,
+        "product_default_allowed": false,
+        "protected_sensitive_false_alarm_rate_delta": 0.096774,
+        "stress_status": "r12_recall_update_false_alarm_stress_blocked_product_default"
       },
       "recall_oriented_update_boundary": {
         "abnormal_segment_recall_delta": 0.206897,

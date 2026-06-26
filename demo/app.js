@@ -200,6 +200,7 @@ function renderR12TransferEvidence(evidence) {
   const highRiskBoundary = summary.high_risk_holdout_boundary || {};
   const highRiskReplay = summary.high_risk_replay_boundary || {};
   const recallUpdate = summary.recall_oriented_update_boundary || {};
+  const recallStress = summary.recall_false_alarm_stress_boundary || {};
   const update = summary.accepted_update || {};
   return `
     <article class="panel panel-wide">
@@ -310,6 +311,30 @@ function renderR12TransferEvidence(evidence) {
           <div>
             <dt>下一验收产物</dt>
             <dd>${escapeHtml(recallUpdate.next_required_artifact || "r12_recall_update_holdout_false_alarm_stress_test")}</dd>
+          </div>
+          <div>
+            <dt>误报压力测试</dt>
+            <dd>${escapeHtml(recallStress.stress_status || "recall_false_alarm_stress_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>压力测试误报变化</dt>
+            <dd>${formatSignedNumber(recallStress.global_false_alarm_rate_delta)}</dd>
+          </div>
+          <div>
+            <dt>敏感轴误报变化</dt>
+            <dd>${formatSignedNumber(recallStress.protected_sensitive_false_alarm_rate_delta)}</dd>
+          </div>
+          <div>
+            <dt>低敏感召回可验</dt>
+            <dd>${formatBooleanGate(recallStress.low_sensitive_recall_evaluable, "low_sensitive_recall_evaluable")}</dd>
+          </div>
+          <div>
+            <dt>误报集中轴</dt>
+            <dd>${escapeHtml(recallStress.dominant_false_alarm_segment_column || "dominant_false_alarm_segment_column 未提供")}</dd>
+          </div>
+          <div>
+            <dt>压力测试下一步</dt>
+            <dd>${escapeHtml(recallStress.next_required_artifact || "r12_recall_false_alarm_mitigation_candidate")}</dd>
           </div>
         </dl>
         <p>R12 当前只能作为次级迁移证据展示，主决策仍来自 guarded baseline，真实客户 outcome 回流前不进入 runtime default。</p>

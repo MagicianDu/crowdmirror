@@ -48,7 +48,9 @@
     "false_alarm_non_regression=true",
     "precision_non_regression=true",
     "R12 Product core method ready",
-    "customer outcome validated"
+    "customer outcome validated",
+    "r12 recall update false-alarm stress passed",
+    "low_sensitive_recall_evaluable=true"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -305,7 +307,9 @@
         "false_alarm_non_regression=true",
         "precision_non_regression=true",
         "R12 Product core method ready",
-        "customer outcome validated"
+        "customer outcome validated",
+        "r12 recall update false-alarm stress passed",
+        "low_sensitive_recall_evaluable=true"
       ],
       "claim_level": "product_secondary_evidence_only",
       "evidence_summary": {
@@ -341,6 +345,19 @@
           "replay_status": "r12_high_risk_holdout_transfer_replay_partial_research_positive",
           "static_prior_miss_recovery_delta": 0.0,
           "transfer_decision": "r12_high_risk_replay_mae_positive_recall_flat_research_only"
+        },
+        "recall_false_alarm_stress_boundary": {
+          "acceptance_decision": "reject_product_default_keep_research_guarded_candidate",
+          "dominant_false_alarm_segment_column": "TAGE",
+          "global_false_alarm_rate_delta": 0.073171,
+          "global_recall_delta": 0.206897,
+          "low_sensitive_false_alarm_rate_delta": 0.0,
+          "low_sensitive_recall_evaluable": false,
+          "next_required_artifact": "r12_recall_false_alarm_mitigation_candidate",
+          "precision_delta": -0.03,
+          "product_default_allowed": false,
+          "protected_sensitive_false_alarm_rate_delta": 0.096774,
+          "stress_status": "r12_recall_update_false_alarm_stress_blocked_product_default"
         },
         "recall_oriented_update_boundary": {
           "abnormal_segment_recall_delta": 0.206897,
@@ -772,7 +789,7 @@
     "source_backed_only": true,
     "static_narrative_fallback_allowed": false
   },
-  "run_id": "r12-l7-product-current",
+  "run_id": "r12-l8-product-current",
   "schema_version": "r6-product-customer-value-report-v1",
   "section_contracts": [
     {
@@ -897,7 +914,9 @@
         "false_alarm_non_regression=true",
         "precision_non_regression=true",
         "R12 Product core method ready",
-        "customer outcome validated"
+        "customer outcome validated",
+        "r12 recall update false-alarm stress passed",
+        "low_sensitive_recall_evaluable=true"
       ],
       "claim_status": "secondary_evidence_only",
       "section_id": "r12_transfer_evidence",
@@ -939,7 +958,8 @@
     "r12-transfer-validation-current-001",
     "r12-high-risk-holdout-registry-current-001",
     "r12-high-risk-holdout-transfer-replay-current-001",
-    "r12-recall-oriented-update-current-001"
+    "r12-recall-oriented-update-current-001",
+    "r12-recall-update-false-alarm-stress-test-current-001"
   ],
   "source_registry": [
     {
@@ -1021,6 +1041,10 @@
     {
       "artifact_id": "r12-recall-oriented-update-current-001",
       "path": "experiments/results/r12_recall_oriented_update/r12-recall-oriented-update-current-001.json"
+    },
+    {
+      "artifact_id": "r12-recall-update-false-alarm-stress-test-current-001",
+      "path": "experiments/results/r12_recall_update_false_alarm_stress_test/r12-recall-update-false-alarm-stress-test-current-001.json"
     }
   ],
   "status": "customer_value_report_ready_guarded"

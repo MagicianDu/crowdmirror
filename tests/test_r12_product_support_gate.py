@@ -16,6 +16,9 @@ from experiments.r12_high_risk_holdout_transfer_replay import (
 from experiments.r12_recall_oriented_update import (
     build_r12_recall_oriented_update,
 )
+from experiments.r12_recall_update_false_alarm_stress_test import (
+    build_r12_recall_update_false_alarm_stress_test,
+)
 
 
 def test_r12_product_support_gate_creates_guarded_transfer_evidence_card():
@@ -286,6 +289,90 @@ def test_r12_product_support_gate_surfaces_l7_recall_oriented_update_boundary():
     }
     assert "false_alarm_non_regression=true" in gate["blocked_claims"]
     assert "precision_non_regression=true" in gate["blocked_claims"]
+    json.dumps(gate, allow_nan=False)
+
+
+def test_r12_product_support_gate_surfaces_l8_false_alarm_stress_boundary():
+    transfer = _load_current_transfer_validation()
+    registry = build_r12_high_risk_holdout_registry(
+        artifact_id="r12-high-risk-holdout-registry-test",
+        run_id="r12-l5-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+    )
+    replay = build_r12_high_risk_holdout_transfer_replay(
+        artifact_id="r12-high-risk-holdout-transfer-replay-test",
+        run_id="r12-l6-test",
+        r12_high_risk_holdout_registry=registry,
+        r12_transfer_validation=transfer,
+    )
+    recall_update = build_r12_recall_oriented_update(
+        artifact_id="r12-recall-oriented-update-test",
+        run_id="r12-l7-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+        r12_high_risk_holdout_transfer_replay=replay,
+    )
+    stress = build_r12_recall_update_false_alarm_stress_test(
+        artifact_id="r12-recall-update-false-alarm-stress-test",
+        run_id="r12-l8-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+        r12_recall_oriented_update=recall_update,
+    )
+
+    gate = build_r12_product_support_gate(
+        artifact_id="r12-product-support-gate-test",
+        run_id="r12-l8-product-test",
+        r12_transfer_validation=transfer,
+        r12_high_risk_holdout_registry=registry,
+        r12_high_risk_holdout_transfer_replay=replay,
+        r12_recall_oriented_update=recall_update,
+        r12_recall_update_false_alarm_stress_test=stress,
+    )
+
+    stress_boundary = gate["transfer_evidence_card"]["evidence_summary"][
+        "recall_false_alarm_stress_boundary"
+    ]
+    assert stress_boundary == {
+        "stress_status": (
+            "r12_recall_update_false_alarm_stress_blocked_product_default"
+        ),
+        "acceptance_decision": (
+            "reject_product_default_keep_research_guarded_candidate"
+        ),
+        "global_recall_delta": 0.206897,
+        "global_false_alarm_rate_delta": 0.073171,
+        "precision_delta": -0.03,
+        "low_sensitive_recall_evaluable": False,
+        "low_sensitive_false_alarm_rate_delta": 0.0,
+        "protected_sensitive_false_alarm_rate_delta": 0.096774,
+        "dominant_false_alarm_segment_column": "TAGE",
+        "product_default_allowed": False,
+        "next_required_artifact": "r12_recall_false_alarm_mitigation_candidate",
+    }
+    assert gate["acceptance_gates"][
+        "r12_recall_false_alarm_stress_passed"
+    ] is False
+    assert gate["acceptance_gates"][
+        "r12_recall_false_alarm_stress_product_default_allowed"
+    ] is False
+    assert gate["acceptance_gates"][
+        "r12_recall_false_alarm_stress_sensitive_concentration"
+    ] is True
+    assert {
+        entry["artifact_id"] for entry in gate["source_registry"]
+    } == {
+        "r12-transfer-validation-current-001",
+        "r12-high-risk-holdout-registry-test",
+        "r12-high-risk-holdout-transfer-replay-test",
+        "r12-recall-oriented-update-test",
+        "r12-recall-update-false-alarm-stress-test",
+    }
+    assert (
+        "r12 recall update false-alarm stress passed"
+        in gate["blocked_claims"]
+    )
     json.dumps(gate, allow_nan=False)
 
 

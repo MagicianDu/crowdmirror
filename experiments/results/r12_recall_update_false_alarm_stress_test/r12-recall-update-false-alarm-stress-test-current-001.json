@@ -1,0 +1,193 @@
+{
+  "acceptance_decision": "reject_product_default_keep_research_guarded_candidate",
+  "acceptance_gates": {
+    "field_outcome_validated": false,
+    "global_false_alarm_non_regression": false,
+    "l7_recall_gain_preserved": true,
+    "low_sensitive_false_alarm_non_regression": true,
+    "low_sensitive_recall_evaluable": false,
+    "new_false_alarms_concentrated_on_sensitive_axis": true,
+    "precision_non_regression": false,
+    "product_default_allowed": false,
+    "protected_sensitive_false_alarm_non_regression": false,
+    "runtime_default_allowed": false,
+    "source_backed_public_proxy_present": true,
+    "stress_test_passed": false
+  },
+  "allowed_claims": [
+    "R12 L7 recall gain survives stress accounting as a research-only guarded signal.",
+    "Product can display the false-alarm stress boundary as a reason why runtime default remains blocked."
+  ],
+  "artifact_id": "r12-recall-update-false-alarm-stress-test-current-001",
+  "blocked_claims": [
+    "r12 recall update false-alarm stress passed",
+    "false_alarm_non_regression=true",
+    "precision_non_regression=true",
+    "low_sensitive_recall_evaluable=true",
+    "R12 Product default high-risk recovery validated",
+    "R12 Product core method ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "customer outcome validated",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "research_only_recall_positive_false_alarm_stress_failed",
+  "evaluation_summary": {
+    "evaluated_case_count": 70,
+    "low_sensitive_case_count": 4,
+    "minimum_valid_response_count": 100,
+    "new_false_alarm_count": 3,
+    "newly_recovered_count": 6,
+    "observed_high_risk_case_count": 29,
+    "observed_low_risk_case_count": 41,
+    "product_default_low_sensitive_high_risk_case_count": 0,
+    "protected_or_high_governance_case_count": 66
+  },
+  "family_stress_table": [
+    {
+      "evaluated_case_count": 2,
+      "false_alarm_rate_delta": 0.0,
+      "new_false_alarm_count": 0,
+      "newly_recovered_count": 1,
+      "observed_high_risk_case_count": 1,
+      "observed_low_risk_case_count": 1,
+      "recall_delta": 1.0,
+      "segment_column": "ESEX",
+      "sensitivity_level": "protected_sensitive"
+    },
+    {
+      "evaluated_case_count": 1,
+      "false_alarm_rate_delta": 0.0,
+      "new_false_alarm_count": 0,
+      "newly_recovered_count": 0,
+      "observed_high_risk_case_count": 0,
+      "observed_low_risk_case_count": 1,
+      "recall_delta": null,
+      "segment_column": "METRO_STATUS",
+      "sensitivity_level": "low"
+    },
+    {
+      "evaluated_case_count": 3,
+      "false_alarm_rate_delta": 0.0,
+      "new_false_alarm_count": 0,
+      "newly_recovered_count": 0,
+      "observed_high_risk_case_count": 0,
+      "observed_low_risk_case_count": 3,
+      "recall_delta": null,
+      "segment_column": "REGION",
+      "sensitivity_level": "low"
+    },
+    {
+      "evaluated_case_count": 7,
+      "false_alarm_rate_delta": 0.0,
+      "new_false_alarm_count": 0,
+      "newly_recovered_count": 0,
+      "observed_high_risk_case_count": 1,
+      "observed_low_risk_case_count": 6,
+      "recall_delta": 0.0,
+      "segment_column": "RHHINCOME",
+      "sensitivity_level": "socioeconomic_sensitive"
+    },
+    {
+      "evaluated_case_count": 5,
+      "false_alarm_rate_delta": 0.0,
+      "new_false_alarm_count": 0,
+      "newly_recovered_count": 1,
+      "observed_high_risk_case_count": 1,
+      "observed_low_risk_case_count": 4,
+      "recall_delta": 1.0,
+      "segment_column": "RRACETH",
+      "sensitivity_level": "protected_sensitive"
+    },
+    {
+      "evaluated_case_count": 52,
+      "false_alarm_rate_delta": 0.115385,
+      "new_false_alarm_count": 3,
+      "newly_recovered_count": 4,
+      "observed_high_risk_case_count": 26,
+      "observed_low_risk_case_count": 26,
+      "recall_delta": 0.153846,
+      "segment_column": "TAGE",
+      "sensitivity_level": "protected_sensitive"
+    }
+  ],
+  "next_required_artifact": "r12_recall_false_alarm_mitigation_candidate",
+  "product_support_level": "blocked_product_default_due_false_alarm_precision_and_low_sensitive_recall_gap",
+  "run_id": "r12-l8-current",
+  "schema_version": "r12-recall-update-false-alarm-stress-test-v1",
+  "source_refs": [
+    "r10-hps-policy-reaction-ingestion-current-001",
+    "r12-transfer-validation-current-001",
+    "r12-recall-oriented-update-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r10-hps-policy-reaction-ingestion-current-001",
+      "path": "experiments/results/r10_hps_policy_reaction_ingestion/r10-hps-policy-reaction-ingestion-current-001.json"
+    },
+    {
+      "artifact_id": "r12-transfer-validation-current-001",
+      "path": "experiments/results/r12_transfer_validation/r12-transfer-validation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-recall-oriented-update-current-001",
+      "path": "experiments/results/r12_recall_oriented_update/r12-recall-oriented-update-current-001.json"
+    }
+  ],
+  "status": "r12_recall_update_false_alarm_stress_blocked_product_default",
+  "stress_contract": {
+    "evaluates_recall_oriented_update": true,
+    "false_alarm_non_regression_required_for_product_default": true,
+    "field_outcome_validated": false,
+    "low_sensitive_product_default_required": true,
+    "outcome_proxy": "PRICESTRESS",
+    "runtime_default_allowed": false,
+    "source_backed_public_proxy": true,
+    "source_signal": "PRICECONCERN"
+  },
+  "stress_metrics": {
+    "false_alarm_concentration": {
+      "dominant_segment_column": "TAGE",
+      "dominant_segment_new_false_alarm_share": 1.0,
+      "new_false_alarm_case_ids": [
+        "hps_TAGE_58",
+        "hps_TAGE_59",
+        "hps_TAGE_62"
+      ],
+      "sensitive_or_high_governance_new_false_alarm_share": 1.0
+    },
+    "global_tradeoff": {
+      "false_alarm_rate_delta": 0.073171,
+      "interval_coverage_delta": 0.0,
+      "precision_delta": -0.03,
+      "recall_delta": 0.206897
+    },
+    "low_sensitive_false_alarm": {
+      "evaluable_case_count": 4,
+      "false_alarm_rate_after": 0.0,
+      "false_alarm_rate_before": 0.0,
+      "false_alarm_rate_delta": 0.0,
+      "new_false_alarm_count": 0,
+      "observed_high_risk_case_count": 0,
+      "recall_evaluable": false
+    },
+    "protected_sensitive_false_alarm": {
+      "evaluable_case_count": 31,
+      "false_alarm_rate_after": 0.225806,
+      "false_alarm_rate_before": 0.129032,
+      "false_alarm_rate_delta": 0.096774,
+      "new_false_alarm_count": 3,
+      "observed_high_risk_case_count": 28
+    },
+    "worst_segment_family": {
+      "evaluated_case_count": 52,
+      "false_alarm_rate_delta": 0.115385,
+      "new_false_alarm_count": 3,
+      "observed_high_risk_case_count": 26,
+      "observed_low_risk_case_count": 26,
+      "recall_delta": 0.153846,
+      "segment_column": "TAGE",
+      "sensitivity_level": "protected_sensitive"
+    }
+  }
+}

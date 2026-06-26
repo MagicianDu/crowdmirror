@@ -80,6 +80,11 @@ def test_r6_product_frontend_is_source_backed_and_fail_closed():
     assert "false_alarm_rate_delta" in js
     assert "precision_delta" in js
     assert "r12_recall_update_holdout_false_alarm_stress_test" in js
+    assert "recall_false_alarm_stress_boundary" in js
+    assert "dominant_false_alarm_segment_column" in js
+    assert "protected_sensitive_false_alarm_rate_delta" in js
+    assert "low_sensitive_recall_evaluable" in js
+    assert "r12_recall_false_alarm_mitigation_candidate" in js
     assert "secondary_transfer_evidence_card_only" in js
     assert "/r6/product/r12-transfer-evidence" in js
 

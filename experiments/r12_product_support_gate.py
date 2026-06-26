@@ -27,6 +27,9 @@ from experiments.r12_high_risk_holdout_transfer_replay import (
 from experiments.r12_recall_oriented_update import (
     R12_RECALL_ORIENTED_UPDATE_SCHEMA_VERSION,
 )
+from experiments.r12_recall_update_false_alarm_stress_test import (
+    R12_RECALL_UPDATE_FALSE_ALARM_STRESS_SCHEMA_VERSION,
+)
 
 
 R12_PRODUCT_SUPPORT_GATE_SCHEMA_VERSION = "r12-product-support-gate-v1"
@@ -47,6 +50,7 @@ def build_r12_product_support_gate(
     r12_high_risk_holdout_registry: dict[str, Any] | None = None,
     r12_high_risk_holdout_transfer_replay: dict[str, Any] | None = None,
     r12_recall_oriented_update: dict[str, Any] | None = None,
+    r12_recall_update_false_alarm_stress_test: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
@@ -57,6 +61,10 @@ def build_r12_product_support_gate(
         _validate_high_risk_replay(r12_high_risk_holdout_transfer_replay)
     if r12_recall_oriented_update is not None:
         _validate_recall_oriented_update(r12_recall_oriented_update)
+    if r12_recall_update_false_alarm_stress_test is not None:
+        _validate_recall_false_alarm_stress(
+            r12_recall_update_false_alarm_stress_test
+        )
     positive_transfer = (
         r12_transfer_validation["acceptance_gates"]["positive_transfer_guarded"]
         is True
@@ -69,6 +77,9 @@ def build_r12_product_support_gate(
     )
     recall_update_boundary = _recall_oriented_update_boundary(
         r12_recall_oriented_update
+    )
+    recall_false_alarm_stress_boundary = _recall_false_alarm_stress_boundary(
+        r12_recall_update_false_alarm_stress_test
     )
     report = {
         "schema_version": R12_PRODUCT_SUPPORT_GATE_SCHEMA_VERSION,
@@ -92,6 +103,9 @@ def build_r12_product_support_gate(
             high_risk_boundary=high_risk_boundary,
             high_risk_replay_boundary=high_risk_replay_boundary,
             recall_update_boundary=recall_update_boundary,
+            recall_false_alarm_stress_boundary=(
+                recall_false_alarm_stress_boundary
+            ),
         ),
         "customer_visible_primary_decision": {
             "primary_decision_source": "guarded_baseline_customer_value_report",
@@ -177,6 +191,29 @@ def build_r12_product_support_gate(
                 if r12_recall_oriented_update is not None
                 else {}
             ),
+            **(
+                {
+                    "r12_recall_false_alarm_stress_passed": (
+                        r12_recall_update_false_alarm_stress_test[
+                            "acceptance_gates"
+                        ]["stress_test_passed"]
+                    ),
+                    "r12_recall_false_alarm_stress_product_default_allowed": (
+                        r12_recall_update_false_alarm_stress_test[
+                            "acceptance_gates"
+                        ]["product_default_allowed"]
+                    ),
+                    "r12_recall_false_alarm_stress_sensitive_concentration": (
+                        r12_recall_update_false_alarm_stress_test[
+                            "acceptance_gates"
+                        ][
+                            "new_false_alarms_concentrated_on_sensitive_axis"
+                        ]
+                    ),
+                }
+                if r12_recall_update_false_alarm_stress_test is not None
+                else {}
+            ),
         },
         "source_registry": _source_registry(
             r12_transfer_validation=r12_transfer_validation,
@@ -185,6 +222,9 @@ def build_r12_product_support_gate(
                 r12_high_risk_holdout_transfer_replay
             ),
             r12_recall_oriented_update=r12_recall_oriented_update,
+            r12_recall_update_false_alarm_stress_test=(
+                r12_recall_update_false_alarm_stress_test
+            ),
         ),
         "source_refs": [
             r12_transfer_validation["artifact_id"],
@@ -201,6 +241,11 @@ def build_r12_product_support_gate(
             *(
                 [r12_recall_oriented_update["artifact_id"]]
                 if r12_recall_oriented_update is not None
+                else []
+            ),
+            *(
+                [r12_recall_update_false_alarm_stress_test["artifact_id"]]
+                if r12_recall_update_false_alarm_stress_test is not None
                 else []
             ),
         ],
@@ -235,20 +280,34 @@ def build_r12_product_support_gate(
                 if r12_recall_oriented_update is not None
                 else []
             ),
+            *(
+                [
+                    (
+                        "R12 recall-oriented update has a source-backed "
+                        "false-alarm stress boundary and remains Product-default "
+                        "blocked."
+                    )
+                ]
+                if r12_recall_update_false_alarm_stress_test is not None
+                else []
+            ),
         ],
         "blocked_claims": _unique_strings(
             [
-            "R12 validated",
-            "R12 supports Product core method by default",
-            "R12 can override guarded baseline primary decision",
-            "R12 Product default high-risk recovery validated",
-            "static-prior miss recovery improved on high-risk replay",
-            "abnormal segment recall improved on high-risk replay",
-            "field_outcome_validated=true",
-            "runtime_default_allowed=true",
-            "runtime default ready",
-            "精准预测系统",
-            *(r12_recall_oriented_update or {}).get("blocked_claims", []),
+                "R12 validated",
+                "R12 supports Product core method by default",
+                "R12 can override guarded baseline primary decision",
+                "R12 Product default high-risk recovery validated",
+                "static-prior miss recovery improved on high-risk replay",
+                "abnormal segment recall improved on high-risk replay",
+                "field_outcome_validated=true",
+                "runtime_default_allowed=true",
+                "runtime default ready",
+                "精准预测系统",
+                *(r12_recall_oriented_update or {}).get("blocked_claims", []),
+                *(r12_recall_update_false_alarm_stress_test or {}).get(
+                    "blocked_claims", []
+                ),
             ]
         ),
     }
@@ -336,6 +395,25 @@ def _validate_recall_oriented_update(artifact: dict[str, Any]) -> None:
         raise ValueError("r12 recall-oriented update must not allow Product default")
 
 
+def _validate_recall_false_alarm_stress(artifact: dict[str, Any]) -> None:
+    if artifact.get("schema_version") != (
+        R12_RECALL_UPDATE_FALSE_ALARM_STRESS_SCHEMA_VERSION
+    ):
+        raise ValueError(
+            "r12_recall_update_false_alarm_stress_test.schema_version must be "
+            f"{R12_RECALL_UPDATE_FALSE_ALARM_STRESS_SCHEMA_VERSION}"
+        )
+    gates = artifact.get("acceptance_gates")
+    if not isinstance(gates, dict):
+        raise ValueError("r12 false-alarm stress acceptance_gates required")
+    if gates.get("field_outcome_validated") is not False:
+        raise ValueError("r12 false-alarm stress must not be field validated")
+    if gates.get("runtime_default_allowed") is not False:
+        raise ValueError("r12 false-alarm stress must not allow runtime default")
+    if gates.get("product_default_allowed") is not False:
+        raise ValueError("r12 false-alarm stress must not allow Product default")
+
+
 def _transfer_evidence_card(
     transfer_validation: dict[str, Any],
     *,
@@ -343,6 +421,7 @@ def _transfer_evidence_card(
     high_risk_boundary: dict[str, Any] | None = None,
     high_risk_replay_boundary: dict[str, Any] | None = None,
     recall_update_boundary: dict[str, Any] | None = None,
+    recall_false_alarm_stress_boundary: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     split_metrics = transfer_validation["split_metrics"]
     validation = split_metrics["validation"]
@@ -368,6 +447,10 @@ def _transfer_evidence_card(
         evidence_summary["high_risk_replay_boundary"] = high_risk_replay_boundary
     if recall_update_boundary is not None:
         evidence_summary["recall_oriented_update_boundary"] = recall_update_boundary
+    if recall_false_alarm_stress_boundary is not None:
+        evidence_summary["recall_false_alarm_stress_boundary"] = (
+            recall_false_alarm_stress_boundary
+        )
     return {
         "card_id": "r12_transfer_validation_evidence_card",
         "title": "R12 guarded transfer validation evidence",
@@ -484,12 +567,49 @@ def _recall_oriented_update_boundary(
     }
 
 
+def _recall_false_alarm_stress_boundary(
+    stress: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    if stress is None:
+        return None
+    global_tradeoff = stress["stress_metrics"]["global_tradeoff"]
+    low_sensitive = stress["stress_metrics"]["low_sensitive_false_alarm"]
+    protected_sensitive = stress["stress_metrics"][
+        "protected_sensitive_false_alarm"
+    ]
+    concentration = stress["stress_metrics"]["false_alarm_concentration"]
+    return {
+        "stress_status": stress["status"],
+        "acceptance_decision": stress["acceptance_decision"],
+        "global_recall_delta": global_tradeoff["recall_delta"],
+        "global_false_alarm_rate_delta": global_tradeoff[
+            "false_alarm_rate_delta"
+        ],
+        "precision_delta": global_tradeoff["precision_delta"],
+        "low_sensitive_recall_evaluable": low_sensitive["recall_evaluable"],
+        "low_sensitive_false_alarm_rate_delta": low_sensitive[
+            "false_alarm_rate_delta"
+        ],
+        "protected_sensitive_false_alarm_rate_delta": protected_sensitive[
+            "false_alarm_rate_delta"
+        ],
+        "dominant_false_alarm_segment_column": concentration[
+            "dominant_segment_column"
+        ],
+        "product_default_allowed": stress["acceptance_gates"][
+            "product_default_allowed"
+        ],
+        "next_required_artifact": stress["next_required_artifact"],
+    }
+
+
 def _source_registry(
     *,
     r12_transfer_validation: dict[str, Any],
     r12_high_risk_holdout_registry: dict[str, Any] | None,
     r12_high_risk_holdout_transfer_replay: dict[str, Any] | None,
     r12_recall_oriented_update: dict[str, Any] | None,
+    r12_recall_update_false_alarm_stress_test: dict[str, Any] | None,
 ) -> list[dict[str, str]]:
     registry = [
         {
@@ -532,6 +652,18 @@ def _source_registry(
                 ),
             }
         )
+    if r12_recall_update_false_alarm_stress_test is not None:
+        registry.append(
+            {
+                "artifact_id": r12_recall_update_false_alarm_stress_test[
+                    "artifact_id"
+                ],
+                "path": (
+                    "experiments/results/r12_recall_update_false_alarm_stress_test/"
+                    "r12-recall-update-false-alarm-stress-test-current-001.json"
+                ),
+            }
+        )
     return registry
 
 
@@ -553,6 +685,7 @@ def main() -> int:
     parser.add_argument("--r12-high-risk-holdout-registry-path")
     parser.add_argument("--r12-high-risk-holdout-transfer-replay-path")
     parser.add_argument("--r12-recall-oriented-update-path")
+    parser.add_argument("--r12-recall-update-false-alarm-stress-test-path")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     output_path = write_r12_product_support_gate(
@@ -573,6 +706,13 @@ def main() -> int:
         r12_recall_oriented_update=(
             load_json_artifact(args.r12_recall_oriented_update_path)
             if args.r12_recall_oriented_update_path
+            else None
+        ),
+        r12_recall_update_false_alarm_stress_test=(
+            load_json_artifact(
+                args.r12_recall_update_false_alarm_stress_test_path
+            )
+            if args.r12_recall_update_false_alarm_stress_test_path
             else None
         ),
     )

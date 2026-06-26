@@ -203,6 +203,7 @@ R11 L3 已把 shadow trial 的 outcome review handoff 转成可计算的 bounded
 6. `r12_high_risk_holdout_registry`
 7. `r12_high_risk_holdout_transfer_replay`
 8. `r12_recall_oriented_update`
+9. `r12_recall_update_false_alarm_stress_test`
 
 R12 不再把 R11 L3 的 bounded update ledger 继续包装成方法突破，而是把下一阶段 Research 目标改为 outcome-supervised causal interaction operator：用 train split outcome residual 监督机制权重、群体敏感度、传播边权和区间不确定性更新，再用 validation / holdout split 验证更新是否可迁移。R12 的关键指标是 `update_transfer_gain`，并继续要求 `interval_coverage_delta >= 0`、`false_alarm_rate_delta <= 0`、`runtime_default_allowed=false`。如果只产生 same-case improvement，必须判定为 `r12_update_transfer_blocked_same_case_only`。
 
@@ -216,6 +217,7 @@ R12 不再把 R11 L3 的 bounded update ledger 继续包装成方法突破，而
 6. `r12_high_risk_holdout_registry`
 7. `r12_high_risk_holdout_transfer_replay`
 8. `r12_recall_oriented_update`
+9. `r12_recall_update_false_alarm_stress_test`
 
 R12 L0 已把 R11 HPS public-use proxy holdout 的 6 个 cases 固定拆分为 train / validation / holdout，并输出 `r12-outcome-case-registry-current-001`。L0 的核心 guard 是 `outcome_leakage_blocked=true`：validation / holdout outcome 不允许进入训练。
 
@@ -234,6 +236,8 @@ R12 L5 已输出 `r12-high-risk-holdout-registry-current-001`，并刷新 `r12-p
 R12 L6 已输出 `r12-high-risk-holdout-transfer-replay-current-001`，并刷新 Product gate、customer value report 和 demo。L6 在 29 个 research-only high-risk 候选上回放 R12 update：MAE 从 `0.087818` 降至 `0.084134`，但 static-prior miss recovery 与 abnormal segment recall 均未提升，false alarm 因候选集全是 observed high-risk 而不可评估。当前边界更新为：Research 有 high-risk replay 的小幅误差正向信号，但还没有证明高风险漏报恢复能力提升，Product default 继续阻断。
 
 R12 L7 已输出 `r12-recall-oriented-update-current-001`，并刷新 Product gate、customer value report、API manifest 和 demo。L7 不继续优化全局 MAE，而是把 high-risk activation margin 从 `0.03` 调整为 `0.01`，选择规则是“在 research false-alarm delta 上限 `0.08` 内最大化召回”。当前 source-backed public proxy replay 结果是：static-prior miss recovery 与 abnormal segment recall 从 `0.413793` 提升到 `0.62069`，`delta=0.206897`；false alarm rate 从 `0.097561` 升至 `0.170732`，`delta=0.073171`；precision 从 `0.75` 降至 `0.72`；interval coverage 保持 `0.8`。因此 L7 是 `research_only_recall_positive_false_alarm_tradeoff`：证明存在能提升静态先验漏报恢复的结构化阈值候选，但它没有通过 false-alarm non-regression 和 precision non-regression，仍不得进入 Product runtime default。
+
+R12 L8 已输出 `r12-recall-update-false-alarm-stress-test-current-001`，并刷新 Product gate、customer value report、API manifest 和 demo。L8 对 L7 的 activation margin 候选做 false-alarm stress：评估 70 个 HPS segment cases，其中 low-sensitive cases 为 4、protected 或高治理 cases 为 66。结论是 `r12_recall_update_false_alarm_stress_blocked_product_default`：L7 的 recall gain `+0.206897` 被保留，但 global false alarm rate `+0.073171`、precision `-0.03`；低敏感轴 false alarm 没有退化但没有 observed high-risk，因此 `low_sensitive_recall_evaluable=false`；新增 3 个 false alarm 全部集中在 `TAGE` 年龄轴，protected-sensitive false alarm delta 为 `+0.096774`。因此 Product default 继续阻断，下一步必须做 `r12_recall_false_alarm_mitigation_candidate`，而不是扩大 L7 claim。
 
 ## 降权历史材料
 
