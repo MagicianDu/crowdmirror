@@ -1,0 +1,186 @@
+{
+  "acceptance_decision": "accept_research_guarded_mitigation_reject_product_default",
+  "acceptance_gates": {
+    "false_alarm_non_regression": true,
+    "field_outcome_validated": false,
+    "l7_new_false_alarms_removed": true,
+    "l7_recall_gain_partially_preserved": true,
+    "low_sensitive_recall_evaluable": false,
+    "mitigation_candidate_selected": true,
+    "overfit_risk_present": true,
+    "precision_non_regression": true,
+    "product_default_allowed": false,
+    "protected_sensitive_false_alarm_non_regression": true,
+    "runtime_default_allowed": false,
+    "source_backed_public_proxy_present": true
+  },
+  "allowed_claims": [
+    "R12 has a research-only mitigation candidate that removes the current L7 false-alarm regressions while preserving most recall gain.",
+    "The mitigation candidate must be validated on independent holdout before any Product default claim."
+  ],
+  "artifact_id": "r12-recall-false-alarm-mitigation-candidate-current-001",
+  "blocked_claims": [
+    "mitigation generalizes beyond current false-alarm band",
+    "low_sensitive_recall_evaluable=true",
+    "R12 Product default high-risk recovery validated",
+    "R12 Product core method ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "customer outcome validated",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "candidate_leaderboard": [
+    {
+      "candidate_id": "r12-tage-58-62-activation-guard-001",
+      "candidate_type": "segment_value_band_activation_margin_guard",
+      "false_alarm_rate_delta": 0.0,
+      "new_false_alarm_count": 0,
+      "newly_recovered_count": 5,
+      "passes_mitigation_gate": true,
+      "precision_delta": 0.059524,
+      "recall_delta": 0.172414
+    },
+    {
+      "candidate_id": "r12-tage-family-conservative-cap-001",
+      "candidate_type": "segment_family_activation_margin_guard",
+      "false_alarm_rate_delta": 0.0,
+      "new_false_alarm_count": 0,
+      "newly_recovered_count": 2,
+      "passes_mitigation_gate": true,
+      "precision_delta": 0.027778,
+      "recall_delta": 0.068966
+    },
+    {
+      "candidate_id": "r12-global-margin-0015-001",
+      "candidate_type": "global_activation_margin",
+      "false_alarm_rate_delta": 0.073171,
+      "new_false_alarm_count": 3,
+      "newly_recovered_count": 4,
+      "passes_mitigation_gate": false,
+      "precision_delta": -0.054348,
+      "recall_delta": 0.137931
+    },
+    {
+      "candidate_id": "r12-global-margin-002-001",
+      "candidate_type": "global_activation_margin",
+      "false_alarm_rate_delta": 0.04878,
+      "new_false_alarm_count": 2,
+      "newly_recovered_count": 1,
+      "passes_mitigation_gate": false,
+      "precision_delta": -0.065789,
+      "recall_delta": 0.034483
+    },
+    {
+      "candidate_id": "r12-protected-sensitive-conservative-cap-001",
+      "candidate_type": "sensitivity_level_activation_margin_guard",
+      "false_alarm_rate_delta": 0.0,
+      "new_false_alarm_count": 0,
+      "newly_recovered_count": 0,
+      "passes_mitigation_gate": false,
+      "precision_delta": 0.0,
+      "recall_delta": 0.0
+    }
+  ],
+  "claim_level": "research_only_false_alarm_mitigated_overfit_risk",
+  "metric_comparison": {
+    "abnormal_segment_recall": {
+      "before": 0.413793,
+      "l7_after": 0.62069,
+      "l7_recall_gain_retained": 0.833333,
+      "mitigated_after": 0.586207,
+      "mitigated_delta": 0.172414
+    },
+    "false_alarm_rate": {
+      "before": 0.097561,
+      "l7_after": 0.170732,
+      "l7_false_alarm_delta_removed": 0.073171,
+      "mitigated_after": 0.097561,
+      "mitigated_delta": 0.0
+    },
+    "interval_coverage": {
+      "before": 0.8,
+      "l7_after": 0.8,
+      "mitigated_after": 0.8,
+      "mitigated_delta": 0.0
+    },
+    "precision": {
+      "before": 0.75,
+      "l7_after": 0.72,
+      "mitigated_after": 0.809524,
+      "mitigated_delta": 0.059524
+    },
+    "static_prior_miss_recovery": {
+      "before": 0.413793,
+      "l7_after": 0.62069,
+      "l7_recall_gain_retained": 0.833333,
+      "mitigated_after": 0.586207,
+      "mitigated_delta": 0.172414
+    }
+  },
+  "mitigation_effect_summary": {
+    "lost_l7_recovered_case_ids": [
+      "hps_TAGE_60"
+    ],
+    "new_false_alarm_case_ids": [],
+    "newly_recovered_case_ids": [
+      "hps_ESEX_1",
+      "hps_RRACETH_1",
+      "hps_TAGE_46",
+      "hps_TAGE_64",
+      "hps_TAGE_73"
+    ],
+    "removed_l7_false_alarm_case_ids": [
+      "hps_TAGE_58",
+      "hps_TAGE_59",
+      "hps_TAGE_62"
+    ]
+  },
+  "next_required_artifact": "r12_recall_mitigation_holdout_validation",
+  "product_support_level": "research_guarded_false_alarm_mitigated_but_overfit_and_low_sensitive_gap",
+  "run_id": "r12-l9-current",
+  "schema_version": "r12-recall-false-alarm-mitigation-candidate-v1",
+  "selected_candidate": {
+    "candidate_id": "r12-tage-58-62-activation-guard-001",
+    "candidate_type": "segment_value_band_activation_margin_guard",
+    "default_activation_margin": 0.01,
+    "guarded_activation_margin": 0.03,
+    "overfit_risk": "high_current_false_alarm_band_derived",
+    "product_default_allowed": false,
+    "status": "accepted_for_research_mitigation_replay",
+    "target_segment_column": "TAGE",
+    "target_segment_value_max": 62,
+    "target_segment_value_min": 58
+  },
+  "selection_policy": {
+    "allows_current_false_alarm_band_guard_for_research_only": true,
+    "product_default_requires_independent_holdout": true,
+    "requires_false_alarm_non_regression": true,
+    "requires_precision_non_regression": true,
+    "selection_rule": "maximize recall retention subject to false-alarm and precision non-regression"
+  },
+  "source_refs": [
+    "r10-hps-policy-reaction-ingestion-current-001",
+    "r12-transfer-validation-current-001",
+    "r12-recall-oriented-update-current-001",
+    "r12-recall-update-false-alarm-stress-test-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r10-hps-policy-reaction-ingestion-current-001",
+      "path": "experiments/results/r10_hps_policy_reaction_ingestion/r10-hps-policy-reaction-ingestion-current-001.json"
+    },
+    {
+      "artifact_id": "r12-transfer-validation-current-001",
+      "path": "experiments/results/r12_transfer_validation/r12-transfer-validation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-recall-oriented-update-current-001",
+      "path": "experiments/results/r12_recall_oriented_update/r12-recall-oriented-update-current-001.json"
+    },
+    {
+      "artifact_id": "r12-recall-update-false-alarm-stress-test-current-001",
+      "path": "experiments/results/r12_recall_update_false_alarm_stress_test/r12-recall-update-false-alarm-stress-test-current-001.json"
+    }
+  ],
+  "status": "r12_recall_false_alarm_mitigation_ready_research_guarded"
+}

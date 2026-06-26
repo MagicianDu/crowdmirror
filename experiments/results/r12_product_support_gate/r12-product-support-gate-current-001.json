@@ -9,6 +9,10 @@
     "r12_high_risk_replay_recall_improved": false,
     "r12_high_risk_research_holdout_candidates_present": true,
     "r12_product_default_high_risk_holdout_present": false,
+    "r12_recall_false_alarm_mitigation_false_alarm_non_regression": true,
+    "r12_recall_false_alarm_mitigation_overfit_risk_present": true,
+    "r12_recall_false_alarm_mitigation_product_default_allowed": false,
+    "r12_recall_false_alarm_mitigation_selected": true,
     "r12_recall_false_alarm_stress_passed": false,
     "r12_recall_false_alarm_stress_product_default_allowed": false,
     "r12_recall_false_alarm_stress_sensitive_concentration": true,
@@ -24,7 +28,8 @@
     "R12 transfer evidence is secondary and requires customer or field outcome review before any runtime-default update.",
     "R12 has research-only high-risk holdout candidates, but Product default use remains blocked until low-sensitive or customer-approved holdout validation exists.",
     "R12 recall-oriented activation margin can be shown as a research-only improvement with explicit false-alarm and precision tradeoff.",
-    "R12 recall-oriented update has a source-backed false-alarm stress boundary and remains Product-default blocked."
+    "R12 recall-oriented update has a source-backed false-alarm stress boundary and remains Product-default blocked.",
+    "R12 false-alarm mitigation can be shown as a research-only candidate, but it needs independent holdout validation."
   ],
   "artifact_id": "r12-product-support-gate-current-001",
   "blocked_claims": [
@@ -43,7 +48,8 @@
     "R12 Product core method ready",
     "customer outcome validated",
     "r12 recall update false-alarm stress passed",
-    "low_sensitive_recall_evaluable=true"
+    "low_sensitive_recall_evaluable=true",
+    "mitigation generalizes beyond current false-alarm band"
   ],
   "claim_boundary": "R12 Product support gate artifact. It allows Product to display a source-backed R12 transfer-validation evidence card as secondary evidence, while preserving guarded baseline primary decisions. It is not Product core method validation, not field validation, and not runtime default authorization.",
   "claim_level": "product_secondary_evidence_only",
@@ -75,14 +81,15 @@
     "secondary_evidence_card_only": true,
     "source_backed_only": true
   },
-  "run_id": "r12-l8-product-current",
+  "run_id": "r12-l9-product-current",
   "schema_version": "r12-product-support-gate-v1",
   "source_refs": [
     "r12-transfer-validation-current-001",
     "r12-high-risk-holdout-registry-current-001",
     "r12-high-risk-holdout-transfer-replay-current-001",
     "r12-recall-oriented-update-current-001",
-    "r12-recall-update-false-alarm-stress-test-current-001"
+    "r12-recall-update-false-alarm-stress-test-current-001",
+    "r12-recall-false-alarm-mitigation-candidate-current-001"
   ],
   "source_registry": [
     {
@@ -104,6 +111,10 @@
     {
       "artifact_id": "r12-recall-update-false-alarm-stress-test-current-001",
       "path": "experiments/results/r12_recall_update_false_alarm_stress_test/r12-recall-update-false-alarm-stress-test-current-001.json"
+    },
+    {
+      "artifact_id": "r12-recall-false-alarm-mitigation-candidate-current-001",
+      "path": "experiments/results/r12_recall_false_alarm_mitigation_candidate/r12-recall-false-alarm-mitigation-candidate-current-001.json"
     }
   ],
   "status": "r12_product_support_gate_ready_guarded",
@@ -155,6 +166,21 @@
         "replay_status": "r12_high_risk_holdout_transfer_replay_partial_research_positive",
         "static_prior_miss_recovery_delta": 0.0,
         "transfer_decision": "r12_high_risk_replay_mae_positive_recall_flat_research_only"
+      },
+      "recall_false_alarm_mitigation_boundary": {
+        "acceptance_decision": "accept_research_guarded_mitigation_reject_product_default",
+        "candidate_id": "r12-tage-58-62-activation-guard-001",
+        "l7_recall_gain_retained": 0.833333,
+        "mitigated_false_alarm_rate_delta": 0.0,
+        "mitigated_precision_delta": 0.059524,
+        "mitigated_recall_delta": 0.172414,
+        "mitigation_status": "r12_recall_false_alarm_mitigation_ready_research_guarded",
+        "next_required_artifact": "r12_recall_mitigation_holdout_validation",
+        "overfit_risk": "high_current_false_alarm_band_derived",
+        "product_default_allowed": false,
+        "target_segment_column": "TAGE",
+        "target_segment_value_max": 62,
+        "target_segment_value_min": 58
       },
       "recall_false_alarm_stress_boundary": {
         "acceptance_decision": "reject_product_default_keep_research_guarded_candidate",

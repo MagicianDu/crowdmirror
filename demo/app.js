@@ -201,6 +201,7 @@ function renderR12TransferEvidence(evidence) {
   const highRiskReplay = summary.high_risk_replay_boundary || {};
   const recallUpdate = summary.recall_oriented_update_boundary || {};
   const recallStress = summary.recall_false_alarm_stress_boundary || {};
+  const recallMitigation = summary.recall_false_alarm_mitigation_boundary || {};
   const update = summary.accepted_update || {};
   return `
     <article class="panel panel-wide">
@@ -335,6 +336,30 @@ function renderR12TransferEvidence(evidence) {
           <div>
             <dt>压力测试下一步</dt>
             <dd>${escapeHtml(recallStress.next_required_artifact || "r12_recall_false_alarm_mitigation_candidate")}</dd>
+          </div>
+          <div>
+            <dt>误报缓解候选</dt>
+            <dd>${escapeHtml(recallMitigation.candidate_id || "recall_false_alarm_mitigation_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>缓解后召回保留</dt>
+            <dd>${formatSignedNumber(recallMitigation.l7_recall_gain_retained)}</dd>
+          </div>
+          <div>
+            <dt>缓解后误报变化</dt>
+            <dd>${formatSignedNumber(recallMitigation.mitigated_false_alarm_rate_delta)}</dd>
+          </div>
+          <div>
+            <dt>缓解后精度变化</dt>
+            <dd>${formatSignedNumber(recallMitigation.mitigated_precision_delta)}</dd>
+          </div>
+          <div>
+            <dt>缓解过拟合风险</dt>
+            <dd>${escapeHtml(recallMitigation.overfit_risk || "high_current_false_alarm_band_derived")}</dd>
+          </div>
+          <div>
+            <dt>缓解下一验收</dt>
+            <dd>${escapeHtml(recallMitigation.next_required_artifact || "r12_recall_mitigation_holdout_validation")}</dd>
           </div>
         </dl>
         <p>R12 当前只能作为次级迁移证据展示，主决策仍来自 guarded baseline，真实客户 outcome 回流前不进入 runtime default。</p>

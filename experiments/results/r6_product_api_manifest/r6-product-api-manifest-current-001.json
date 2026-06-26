@@ -82,7 +82,8 @@
     "R12 Product core method ready",
     "customer outcome validated",
     "r12 recall update false-alarm stress passed",
-    "low_sensitive_recall_evaluable=true"
+    "low_sensitive_recall_evaluable=true",
+    "mitigation generalizes beyond current false-alarm band"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -230,7 +231,7 @@
     "product_api_manifest_ready": true,
     "runtime_default_allowed": false
   },
-  "run_id": "r12-l8-product-current",
+  "run_id": "r12-l9-product-current",
   "schema_version": "r6-product-api-manifest-v1",
   "source_refs": [
     "r6-product-readiness-index-current-001",
@@ -262,7 +263,8 @@
     "r12-high-risk-holdout-registry-current-001",
     "r12-high-risk-holdout-transfer-replay-current-001",
     "r12-recall-oriented-update-current-001",
-    "r12-recall-update-false-alarm-stress-test-current-001"
+    "r12-recall-update-false-alarm-stress-test-current-001",
+    "r12-recall-false-alarm-mitigation-candidate-current-001"
   ],
   "source_registry": [
     {
@@ -400,6 +402,10 @@
     {
       "artifact_id": "r12-recall-update-false-alarm-stress-test-current-001",
       "path": "experiments/results/r12_recall_update_false_alarm_stress_test/r12-recall-update-false-alarm-stress-test-current-001.json"
+    },
+    {
+      "artifact_id": "r12-recall-false-alarm-mitigation-candidate-current-001",
+      "path": "experiments/results/r12_recall_false_alarm_mitigation_candidate/r12-recall-false-alarm-mitigation-candidate-current-001.json"
     }
   ],
   "status": "product_api_manifest_ready_guarded"

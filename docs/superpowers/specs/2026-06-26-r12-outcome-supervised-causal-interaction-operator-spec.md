@@ -677,6 +677,72 @@ L8 后的下一步是 `r12_recall_false_alarm_mitigation_candidate`：
 2. 比较三类 mitigation：segment-specific activation margin、uncertainty-tail guard、protected-sensitive conservative cap。
 3. 验收条件不是单纯降低 false alarm，而是保留一部分 recall gain，同时让 protected-sensitive false alarm delta 和 precision regression 进入可治理边界。
 
+### R12 L9：Recall false-alarm mitigation candidate
+
+目标：在 L8 已经确认 Product default 被 false alarm / precision / low-sensitive recall gap 阻断后，进一步验证是否存在结构化 mitigation 候选，能保留部分 L7 recall gain，同时消除当前新增 false alarm。
+
+当前已实现：
+
+- `experiments/r12_recall_false_alarm_mitigation_candidate.py`
+- `tests/test_r12_recall_false_alarm_mitigation_candidate.py`
+- `experiments/results/r12_recall_false_alarm_mitigation_candidate/r12-recall-false-alarm-mitigation-candidate-current-001.json`
+- `experiments/r12_product_support_gate.py` 已支持消费 L9 mitigation artifact。
+- `experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json` 已刷新 L9 边界。
+- `experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json` 已刷新 R12 evidence summary。
+- `experiments/results/r6_product_api_manifest/r6-product-api-manifest-current-001.json` 已刷新 source registry 与 blocked claims。
+- `demo/app.js` 已展示 mitigation candidate、recall gain retained、mitigated false alarm delta、mitigated precision delta、overfit risk 和下一验收产物。
+
+L9 比较的候选包括：
+
+- `r12-tage-58-62-activation-guard-001`
+- `r12-tage-family-conservative-cap-001`
+- `r12-global-margin-0015-001`
+- `r12-global-margin-002-001`
+- `r12-protected-sensitive-conservative-cap-001`
+
+选择规则：
+
+> maximize recall retention subject to false-alarm and precision non-regression
+
+当前选中的候选是 `r12-tage-58-62-activation-guard-001`。它的规则是：
+
+- 默认 activation margin：`0.01`。
+- 对 `TAGE` 的 `58-62` 年龄带使用 guarded activation margin：`0.03`。
+- 该候选只允许 `accepted_for_research_mitigation_replay`。
+- `product_default_allowed=false`。
+- `overfit_risk=high_current_false_alarm_band_derived`。
+
+关键指标：
+
+- static-prior miss recovery：baseline `0.413793`，L7 `0.62069`，mitigated `0.586207`。
+- mitigated recall delta：`+0.172414`。
+- L7 recall gain retained：`0.833333`。
+- false alarm rate：baseline `0.097561`，L7 `0.170732`，mitigated `0.097561`。
+- L7 false alarm delta removed：`0.073171`。
+- precision：baseline `0.75`，L7 `0.72`，mitigated `0.809524`。
+- precision delta：`+0.059524`。
+- interval coverage delta：`0.0`。
+
+case-level 结果：
+
+- 保留 recovered cases：`hps_ESEX_1`、`hps_RRACETH_1`、`hps_TAGE_46`、`hps_TAGE_64`、`hps_TAGE_73`。
+- 移除 L7 false alarms：`hps_TAGE_58`、`hps_TAGE_59`、`hps_TAGE_62`。
+- 丢失 L7 recovered case：`hps_TAGE_60`。
+- 新 false alarm：0。
+
+L9 结论：
+
+- 当前 false-alarm 代价不是不可缓解；存在一个 research-only mitigation candidate。
+- 但该候选来自当前 false-alarm band，过拟合风险高。
+- 低敏感召回仍不可验，field/customer outcome 仍缺失。
+- 因此 L9 只能支撑 `accept_research_guarded_mitigation_reject_product_default`，不能升级 Product default。
+
+L9 后的下一步是 `r12_recall_mitigation_holdout_validation`：
+
+1. 用独立 holdout 或客户授权切片验证 `TAGE 58-62` guard 是否泛化。
+2. 如果不能泛化，降级为 failure diagnosis rule，而不是 Product method。
+3. 如果能泛化，再比较更稳健的机制解释：是否应该是 uncertainty-tail guard、age-axis conservative cap，还是 segment-value band guard。
+
 ## 当前推荐推进顺序
 
 1. R12 L0/L1 已完成：case registry 和 operator contract 已建立。
@@ -687,7 +753,8 @@ L8 后的下一步是 `r12_recall_false_alarm_mitigation_candidate`：
 6. R12 L6 已完成：high-risk replay 有 MAE 小幅正向，但 static-prior miss recovery 和 abnormal segment recall 没有提升，false alarm 不可评估，Product default 仍阻断。
 7. R12 L7 已完成：activation margin recall-oriented update 让 high-risk recall 相关指标提升 `0.206897`，但引入 false alarm 与 precision 代价，Product default 仍阻断。
 8. R12 L8 已完成：false-alarm stress test 保留 L7 recall gain，但确认 Product default 被 global false alarm、precision regression、low-sensitive recall 不可验和 protected-sensitive 年龄轴误报集中共同阻断。
-9. 下一步推进 `r12_recall_false_alarm_mitigation_candidate`：优先探索 segment-specific activation margin、uncertainty-tail guard 或 protected-sensitive conservative cap，目标是在保留部分 recall gain 的同时降低 false alarm / precision 代价。
+9. R12 L9 已完成：false-alarm mitigation candidate 保留 `0.833333` 的 L7 recall gain，消除当前新增 false alarm，并把 precision delta 改为 `+0.059524`；但候选来自当前 false-alarm band，Product default 仍阻断。
+10. 下一步推进 `r12_recall_mitigation_holdout_validation`：验证 L9 mitigation 是否能在独立 holdout、低敏感或客户授权切片上泛化。
 
 ## 成功信号
 
@@ -701,8 +768,8 @@ R12 的最小成功信号不是“指标全赢”，而是：
 
 ## 当前判断
 
-R12 目前拿到了比 R11 更强的最低正向信号：R11 只能证明 feedback ledger 可审计，R12 L3 已证明一个 train-only 结构化 mechanism update 能在 validation / holdout 上产生小幅正向迁移，且没有牺牲区间覆盖和 false alarm；R12 L5/L6 进一步找到了 high-risk replay 材料，并证明当前 update 在 high-risk research-only replay 上有 MAE 小幅正向；R12 L7 则进一步证明 activation margin 这类结构化阈值候选可以提升 static-prior miss recovery 与 abnormal segment recall；R12 L8 又把该召回增益的 false-alarm 失败边界量化出来。
+R12 目前拿到了比 R11 更强的最低正向信号：R11 只能证明 feedback ledger 可审计，R12 L3 已证明一个 train-only 结构化 mechanism update 能在 validation / holdout 上产生小幅正向迁移，且没有牺牲区间覆盖和 false alarm；R12 L5/L6 进一步找到了 high-risk replay 材料，并证明当前 update 在 high-risk research-only replay 上有 MAE 小幅正向；R12 L7 则进一步证明 activation margin 这类结构化阈值候选可以提升 static-prior miss recovery 与 abnormal segment recall；R12 L8 又把该召回增益的 false-alarm 失败边界量化出来；R12 L9 进一步说明 false-alarm 代价存在可缓解候选，但泛化尚未验证。
 
 但这个结果仍不足以说 Research 已全面支撑 Product。当前最准确的表述是：
 
-> R12 在 HPS public-use proxy split 上形成了 guarded positive transfer signal，在 research-only high-risk replay 上取得 MAE 小幅改善，并通过 activation margin 候选提升了 high-risk recall；但 L8 stress test 已证明该召回增益伴随 global false alarm、precision regression、low-sensitive recall 不可验和 protected-sensitive 年龄轴误报集中，因此它不是 field-validated、customer-validated、低敏感 Product-default-ready 或 runtime-default-ready 的 Product core method。
+> R12 在 HPS public-use proxy split 上形成了 guarded positive transfer signal，在 research-only high-risk replay 上取得 MAE 小幅改善，通过 activation margin 候选提升了 high-risk recall，并找到一个能消除当前新增误报的 research-only mitigation candidate；但 L9 候选来自当前 false-alarm band，尚未通过独立 holdout / low-sensitive / customer-approved validation，因此它不是 field-validated、customer-validated、低敏感 Product-default-ready 或 runtime-default-ready 的 Product core method。

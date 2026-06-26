@@ -19,6 +19,9 @@ from experiments.r12_recall_oriented_update import (
 from experiments.r12_recall_update_false_alarm_stress_test import (
     build_r12_recall_update_false_alarm_stress_test,
 )
+from experiments.r12_recall_false_alarm_mitigation_candidate import (
+    build_r12_recall_false_alarm_mitigation_candidate,
+)
 
 
 def test_r12_product_support_gate_creates_guarded_transfer_evidence_card():
@@ -371,6 +374,105 @@ def test_r12_product_support_gate_surfaces_l8_false_alarm_stress_boundary():
     }
     assert (
         "r12 recall update false-alarm stress passed"
+        in gate["blocked_claims"]
+    )
+    json.dumps(gate, allow_nan=False)
+
+
+def test_r12_product_support_gate_surfaces_l9_false_alarm_mitigation_boundary():
+    transfer = _load_current_transfer_validation()
+    registry = build_r12_high_risk_holdout_registry(
+        artifact_id="r12-high-risk-holdout-registry-test",
+        run_id="r12-l5-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+    )
+    replay = build_r12_high_risk_holdout_transfer_replay(
+        artifact_id="r12-high-risk-holdout-transfer-replay-test",
+        run_id="r12-l6-test",
+        r12_high_risk_holdout_registry=registry,
+        r12_transfer_validation=transfer,
+    )
+    recall_update = build_r12_recall_oriented_update(
+        artifact_id="r12-recall-oriented-update-test",
+        run_id="r12-l7-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+        r12_high_risk_holdout_transfer_replay=replay,
+    )
+    stress = build_r12_recall_update_false_alarm_stress_test(
+        artifact_id="r12-recall-update-false-alarm-stress-test",
+        run_id="r12-l8-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+        r12_recall_oriented_update=recall_update,
+    )
+    mitigation = build_r12_recall_false_alarm_mitigation_candidate(
+        artifact_id="r12-recall-false-alarm-mitigation-candidate-test",
+        run_id="r12-l9-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+        r12_recall_oriented_update=recall_update,
+        r12_recall_update_false_alarm_stress_test=stress,
+    )
+
+    gate = build_r12_product_support_gate(
+        artifact_id="r12-product-support-gate-test",
+        run_id="r12-l9-product-test",
+        r12_transfer_validation=transfer,
+        r12_high_risk_holdout_registry=registry,
+        r12_high_risk_holdout_transfer_replay=replay,
+        r12_recall_oriented_update=recall_update,
+        r12_recall_update_false_alarm_stress_test=stress,
+        r12_recall_false_alarm_mitigation_candidate=mitigation,
+    )
+
+    mitigation_boundary = gate["transfer_evidence_card"]["evidence_summary"][
+        "recall_false_alarm_mitigation_boundary"
+    ]
+    assert mitigation_boundary == {
+        "mitigation_status": (
+            "r12_recall_false_alarm_mitigation_ready_research_guarded"
+        ),
+        "acceptance_decision": (
+            "accept_research_guarded_mitigation_reject_product_default"
+        ),
+        "candidate_id": "r12-tage-58-62-activation-guard-001",
+        "target_segment_column": "TAGE",
+        "target_segment_value_min": 58,
+        "target_segment_value_max": 62,
+        "mitigated_recall_delta": 0.172414,
+        "l7_recall_gain_retained": 0.833333,
+        "mitigated_false_alarm_rate_delta": 0.0,
+        "mitigated_precision_delta": 0.059524,
+        "overfit_risk": "high_current_false_alarm_band_derived",
+        "product_default_allowed": False,
+        "next_required_artifact": "r12_recall_mitigation_holdout_validation",
+    }
+    assert gate["acceptance_gates"][
+        "r12_recall_false_alarm_mitigation_selected"
+    ] is True
+    assert gate["acceptance_gates"][
+        "r12_recall_false_alarm_mitigation_false_alarm_non_regression"
+    ] is True
+    assert gate["acceptance_gates"][
+        "r12_recall_false_alarm_mitigation_product_default_allowed"
+    ] is False
+    assert gate["acceptance_gates"][
+        "r12_recall_false_alarm_mitigation_overfit_risk_present"
+    ] is True
+    assert {
+        entry["artifact_id"] for entry in gate["source_registry"]
+    } == {
+        "r12-transfer-validation-current-001",
+        "r12-high-risk-holdout-registry-test",
+        "r12-high-risk-holdout-transfer-replay-test",
+        "r12-recall-oriented-update-test",
+        "r12-recall-update-false-alarm-stress-test",
+        "r12-recall-false-alarm-mitigation-candidate-test",
+    }
+    assert (
+        "mitigation generalizes beyond current false-alarm band"
         in gate["blocked_claims"]
     )
     json.dumps(gate, allow_nan=False)
