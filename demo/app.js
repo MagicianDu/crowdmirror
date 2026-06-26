@@ -206,6 +206,10 @@ function renderR12TransferEvidence(evidence) {
     summary.recall_mitigation_holdout_validation_boundary || {};
   const recallMitigationIndependentData =
     summary.recall_mitigation_independent_holdout_data_boundary || {};
+  const recallMitigationExternalSlice =
+    summary
+      .recall_mitigation_external_holdout_ingestion_or_customer_slice_boundary
+    || {};
   const update = summary.accepted_update || {};
   return `
     <article class="panel panel-wide">
@@ -412,6 +416,26 @@ function renderR12TransferEvidence(evidence) {
           <div>
             <dt>独立数据下一步</dt>
             <dd>${escapeHtml(recallMitigationIndependentData.next_required_artifact || "r12_recall_mitigation_external_holdout_ingestion_or_customer_slice")}</dd>
+          </div>
+          <div>
+            <dt>外部/客户切片合同</dt>
+            <dd>${escapeHtml(recallMitigationExternalSlice.contract_status || "recall_mitigation_external_holdout_ingestion_or_customer_slice_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>首选外部源</dt>
+            <dd>${escapeHtml(recallMitigationExternalSlice.preferred_external_source_id || "preferred_external_source_id 未提供")}</dd>
+          </div>
+          <div>
+            <dt>raw holdout slice</dt>
+            <dd>${formatBooleanGate(recallMitigationExternalSlice.raw_external_or_customer_slice_present, "raw_external_or_customer_slice_present")}</dd>
+          </div>
+          <div>
+            <dt>客户授权</dt>
+            <dd>${formatBooleanGate(recallMitigationExternalSlice.customer_approval_present, "customer_approval_present")}</dd>
+          </div>
+          <div>
+            <dt>合同下一步</dt>
+            <dd>${escapeHtml(recallMitigationExternalSlice.next_required_artifact || "r12_external_or_customer_holdout_raw_slice")}</dd>
           </div>
         </dl>
         <p>R12 当前只能作为次级迁移证据展示，主决策仍来自 guarded baseline，真实客户 outcome 回流前不进入 runtime default。</p>

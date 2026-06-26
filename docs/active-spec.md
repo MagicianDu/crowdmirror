@@ -207,10 +207,11 @@ R11 L3 已把 shadow trial 的 outcome review handoff 转成可计算的 bounded
 10. `r12_recall_false_alarm_mitigation_candidate`
 11. `r12_recall_mitigation_holdout_validation`
 12. `r12_recall_mitigation_independent_holdout_data`
+13. `r12_recall_mitigation_external_holdout_ingestion_or_customer_slice`
 
 R12 不再把 R11 L3 的 bounded update ledger 继续包装成方法突破，而是把下一阶段 Research 目标改为 outcome-supervised causal interaction operator：用 train split outcome residual 监督机制权重、群体敏感度、传播边权和区间不确定性更新，再用 validation / holdout split 验证更新是否可迁移。R12 的关键指标是 `update_transfer_gain`，并继续要求 `interval_coverage_delta >= 0`、`false_alarm_rate_delta <= 0`、`runtime_default_allowed=false`。如果只产生 same-case improvement，必须判定为 `r12_update_transfer_blocked_same_case_only`。
 
-当前 R12 L0-L11 已完成：
+当前 R12 L0-L12 已完成：
 
 1. `r12_outcome_case_registry`
 2. `r12_causal_interaction_operator`
@@ -224,6 +225,7 @@ R12 不再把 R11 L3 的 bounded update ledger 继续包装成方法突破，而
 10. `r12_recall_false_alarm_mitigation_candidate`
 11. `r12_recall_mitigation_holdout_validation`
 12. `r12_recall_mitigation_independent_holdout_data`
+13. `r12_recall_mitigation_external_holdout_ingestion_or_customer_slice`
 
 R12 L0 已把 R11 HPS public-use proxy holdout 的 6 个 cases 固定拆分为 train / validation / holdout，并输出 `r12-outcome-case-registry-current-001`。L0 的核心 guard 是 `outcome_leakage_blocked=true`：validation / holdout outcome 不允许进入训练。
 
@@ -250,6 +252,8 @@ R12 L9 已输出 `r12-recall-false-alarm-mitigation-candidate-current-001`，并
 R12 L10 已输出 `r12-recall-mitigation-holdout-validation-current-001`，并刷新 Product gate、customer value report、API manifest 和 demo。L10 用 leave-one false-alarm band pseudo-holdout 验证 L9 的 `TAGE 58-62` guard 是否稳定：3 个 trial 中只有 1 个通过，`pass_rate=0.333333`，低于要求的 `0.666667`；两个端点 holdout `hps_TAGE_58` 与 `hps_TAGE_62` 失败，说明当前 band guard 对端点依赖明显。保守的 `TAGE family cap` 虽然稳定且 false alarm delta 为 `0.0`，但只保留 L7 召回增益的 `0.333333`，低于可接受门槛。因此 L10 结论是 `r12_recall_mitigation_holdout_validation_blocked_overfit`：L9 候选只能保留为 failure diagnosis candidate，不能作为 Product default 或 runtime default。独立 holdout / 低敏感切片 / 客户授权 outcome 的数据审计已由 L11 执行。
 
 R12 L11 已输出 `r12-recall-mitigation-independent-holdout-data-current-001`，并刷新 Product gate、customer value report、API manifest 和 demo。L11 不是方法效果验证，而是数据可用性审计：当前 HPS 同源 public proxy 中，排除 `TAGE 58-62` derivation band 后仍有 65 个 segment cases 和 5 个同源召回诊断候选，但这些不是独立数据集；低敏感切片有 4 个 cases，但 observed high-risk 为 0，不能验证低敏感召回；R10 external registry 中有 3 个官方公开候选源，但 ingestion status 都是 `candidate_source_not_ingested`；客户授权 holdout 为 0。因此 L11 状态为 `r12_recall_mitigation_independent_holdout_data_blocked_needs_external_or_customer_slice`，Product default 继续阻断。下一步是 `r12_recall_mitigation_external_holdout_ingestion_or_customer_slice`。
+
+R12 L12 已输出 `r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-current-001`，并刷新 Product gate、customer value report、API manifest 和 demo。L12 不是外部验证通过，而是把下一步变成可执行的数据合同：优先外部公开 holdout，客户授权切片作为 fallback。当前首选外部源是 `dot_air_travel_consumer_report_complaint_candidate`，用于服务变更 complaint-risk holdout；第二优先是 `bts_db1b_route_price_demand_candidate`，用于价格变更 revealed-demand holdout；第三优先是 `census_hps_policy_reaction_public_use_candidate`，用于政策反应 survey holdout。客户切片合同已定义 `csv/jsonl`、最少 10 个 cases、必需字段、可选字段、必须包含低敏感或客户授权轴、不得只用 L9 derivation band 作为证明。当前 `raw_external_or_customer_slice_present=false`，因此 Product default 继续阻断。下一步是 `r12_external_or_customer_holdout_raw_slice`。
 
 ## 降权历史材料
 

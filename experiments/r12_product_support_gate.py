@@ -39,6 +39,9 @@ from experiments.r12_recall_mitigation_holdout_validation import (
 from experiments.r12_recall_mitigation_independent_holdout_data import (
     R12_RECALL_MITIGATION_INDEPENDENT_HOLDOUT_DATA_SCHEMA_VERSION,
 )
+from experiments.r12_recall_mitigation_external_holdout_ingestion_or_customer_slice import (
+    R12_RECALL_MITIGATION_EXTERNAL_HOLDOUT_INGESTION_OR_CUSTOMER_SLICE_SCHEMA_VERSION,
+)
 
 
 R12_PRODUCT_SUPPORT_GATE_SCHEMA_VERSION = "r12-product-support-gate-v1"
@@ -63,6 +66,10 @@ def build_r12_product_support_gate(
     r12_recall_false_alarm_mitigation_candidate: dict[str, Any] | None = None,
     r12_recall_mitigation_holdout_validation: dict[str, Any] | None = None,
     r12_recall_mitigation_independent_holdout_data: dict[str, Any] | None = None,
+    r12_recall_mitigation_external_holdout_ingestion_or_customer_slice: dict[
+        str, Any
+    ]
+    | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
@@ -88,6 +95,13 @@ def build_r12_product_support_gate(
     if r12_recall_mitigation_independent_holdout_data is not None:
         _validate_recall_mitigation_independent_holdout_data(
             r12_recall_mitigation_independent_holdout_data
+        )
+    if (
+        r12_recall_mitigation_external_holdout_ingestion_or_customer_slice
+        is not None
+    ):
+        _validate_recall_mitigation_external_holdout_ingestion_or_customer_slice(
+            r12_recall_mitigation_external_holdout_ingestion_or_customer_slice
         )
     positive_transfer = (
         r12_transfer_validation["acceptance_gates"]["positive_transfer_guarded"]
@@ -118,6 +132,11 @@ def build_r12_product_support_gate(
     recall_mitigation_independent_holdout_data_boundary = (
         _recall_mitigation_independent_holdout_data_boundary(
             r12_recall_mitigation_independent_holdout_data
+        )
+    )
+    recall_mitigation_external_holdout_ingestion_or_customer_slice_boundary = (
+        _recall_mitigation_external_holdout_ingestion_or_customer_slice_boundary(
+            r12_recall_mitigation_external_holdout_ingestion_or_customer_slice
         )
     )
     report = {
@@ -153,6 +172,9 @@ def build_r12_product_support_gate(
             ),
             recall_mitigation_independent_holdout_data_boundary=(
                 recall_mitigation_independent_holdout_data_boundary
+            ),
+            recall_mitigation_external_holdout_ingestion_or_customer_slice_boundary=(
+                recall_mitigation_external_holdout_ingestion_or_customer_slice_boundary
             ),
         ),
         "customer_visible_primary_decision": {
@@ -340,6 +362,36 @@ def build_r12_product_support_gate(
                 if r12_recall_mitigation_independent_holdout_data is not None
                 else {}
             ),
+            **(
+                {
+                    "r12_recall_mitigation_external_or_customer_contract_ready": (
+                        r12_recall_mitigation_external_holdout_ingestion_or_customer_slice[
+                            "acceptance_gates"
+                        ]["ingestion_contract_ready"]
+                        and r12_recall_mitigation_external_holdout_ingestion_or_customer_slice[
+                            "acceptance_gates"
+                        ]["customer_slice_contract_ready"]
+                    ),
+                    "r12_recall_mitigation_external_or_customer_raw_slice_present": (
+                        r12_recall_mitigation_external_holdout_ingestion_or_customer_slice[
+                            "acceptance_gates"
+                        ]["raw_external_or_customer_slice_present"]
+                    ),
+                    "r12_recall_mitigation_external_or_customer_revalidation_ready": (
+                        r12_recall_mitigation_external_holdout_ingestion_or_customer_slice[
+                            "acceptance_gates"
+                        ]["independent_holdout_revalidation_ready"]
+                    ),
+                    "r12_recall_mitigation_external_or_customer_product_default_allowed": (
+                        r12_recall_mitigation_external_holdout_ingestion_or_customer_slice[
+                            "acceptance_gates"
+                        ]["product_default_allowed"]
+                    ),
+                }
+                if r12_recall_mitigation_external_holdout_ingestion_or_customer_slice
+                is not None
+                else {}
+            ),
         },
         "source_registry": _source_registry(
             r12_transfer_validation=r12_transfer_validation,
@@ -359,6 +411,9 @@ def build_r12_product_support_gate(
             ),
             r12_recall_mitigation_independent_holdout_data=(
                 r12_recall_mitigation_independent_holdout_data
+            ),
+            r12_recall_mitigation_external_holdout_ingestion_or_customer_slice=(
+                r12_recall_mitigation_external_holdout_ingestion_or_customer_slice
             ),
         ),
         "source_refs": [
@@ -396,6 +451,16 @@ def build_r12_product_support_gate(
             *(
                 [r12_recall_mitigation_independent_holdout_data["artifact_id"]]
                 if r12_recall_mitigation_independent_holdout_data is not None
+                else []
+            ),
+            *(
+                [
+                    r12_recall_mitigation_external_holdout_ingestion_or_customer_slice[
+                        "artifact_id"
+                    ]
+                ]
+                if r12_recall_mitigation_external_holdout_ingestion_or_customer_slice
+                is not None
                 else []
             ),
         ],
@@ -471,6 +536,17 @@ def build_r12_product_support_gate(
                 if r12_recall_mitigation_independent_holdout_data is not None
                 else []
             ),
+            *(
+                [
+                    (
+                        "R12 external-or-customer holdout ingestion contract is "
+                        "ready, but raw slice and revalidation are still required."
+                    )
+                ]
+                if r12_recall_mitigation_external_holdout_ingestion_or_customer_slice
+                is not None
+                else []
+            ),
         ],
         "blocked_claims": _unique_strings(
             [
@@ -497,6 +573,10 @@ def build_r12_product_support_gate(
                 *(r12_recall_mitigation_independent_holdout_data or {}).get(
                     "blocked_claims", []
                 ),
+                *(
+                    r12_recall_mitigation_external_holdout_ingestion_or_customer_slice
+                    or {}
+                ).get("blocked_claims", []),
             ]
         ),
     }
@@ -664,6 +744,28 @@ def _validate_recall_mitigation_independent_holdout_data(
         raise ValueError("r12 independent holdout data must not allow Product default")
 
 
+def _validate_recall_mitigation_external_holdout_ingestion_or_customer_slice(
+    artifact: dict[str, Any],
+) -> None:
+    if artifact.get("schema_version") != (
+        R12_RECALL_MITIGATION_EXTERNAL_HOLDOUT_INGESTION_OR_CUSTOMER_SLICE_SCHEMA_VERSION
+    ):
+        raise ValueError(
+            "r12_recall_mitigation_external_holdout_ingestion_or_customer_slice."
+            "schema_version must be "
+            f"{R12_RECALL_MITIGATION_EXTERNAL_HOLDOUT_INGESTION_OR_CUSTOMER_SLICE_SCHEMA_VERSION}"
+        )
+    gates = artifact.get("acceptance_gates")
+    if not isinstance(gates, dict):
+        raise ValueError("r12 external/customer slice acceptance_gates required")
+    if gates.get("field_outcome_validated") is not False:
+        raise ValueError("r12 external/customer slice must not be field validated")
+    if gates.get("runtime_default_allowed") is not False:
+        raise ValueError("r12 external/customer slice must not allow runtime default")
+    if gates.get("product_default_allowed") is not False:
+        raise ValueError("r12 external/customer slice must not allow Product default")
+
+
 def _transfer_evidence_card(
     transfer_validation: dict[str, Any],
     *,
@@ -675,6 +777,9 @@ def _transfer_evidence_card(
     recall_false_alarm_mitigation_boundary: dict[str, Any] | None = None,
     recall_mitigation_holdout_validation_boundary: dict[str, Any] | None = None,
     recall_mitigation_independent_holdout_data_boundary: dict[str, Any] | None = None,
+    recall_mitigation_external_holdout_ingestion_or_customer_slice_boundary: (
+        dict[str, Any] | None
+    ) = None,
 ) -> dict[str, Any]:
     split_metrics = transfer_validation["split_metrics"]
     validation = split_metrics["validation"]
@@ -716,6 +821,13 @@ def _transfer_evidence_card(
         evidence_summary[
             "recall_mitigation_independent_holdout_data_boundary"
         ] = recall_mitigation_independent_holdout_data_boundary
+    if (
+        recall_mitigation_external_holdout_ingestion_or_customer_slice_boundary
+        is not None
+    ):
+        evidence_summary[
+            "recall_mitigation_external_holdout_ingestion_or_customer_slice_boundary"
+        ] = recall_mitigation_external_holdout_ingestion_or_customer_slice_boundary
     return {
         "card_id": "r12_transfer_validation_evidence_card",
         "title": "R12 guarded transfer validation evidence",
@@ -956,6 +1068,30 @@ def _recall_mitigation_independent_holdout_data_boundary(
     }
 
 
+def _recall_mitigation_external_holdout_ingestion_or_customer_slice_boundary(
+    contract: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    if contract is None:
+        return None
+    route = contract["route_selection"]
+    gates = contract["acceptance_gates"]
+    return {
+        "contract_status": contract["status"],
+        "selected_route": route["selected_route"],
+        "preferred_external_source_id": route["preferred_external_source_id"],
+        "customer_slice_fallback_enabled": route[
+            "customer_slice_fallback_enabled"
+        ],
+        "raw_external_or_customer_slice_present": gates[
+            "raw_external_or_customer_slice_present"
+        ],
+        "minimum_case_count_met": gates["minimum_case_count_met"],
+        "customer_approval_present": gates["customer_approval_present"],
+        "product_default_allowed": gates["product_default_allowed"],
+        "next_required_artifact": contract["next_required_artifact"],
+    }
+
+
 def _source_registry(
     *,
     r12_transfer_validation: dict[str, Any],
@@ -966,6 +1102,9 @@ def _source_registry(
     r12_recall_false_alarm_mitigation_candidate: dict[str, Any] | None,
     r12_recall_mitigation_holdout_validation: dict[str, Any] | None,
     r12_recall_mitigation_independent_holdout_data: dict[str, Any] | None,
+    r12_recall_mitigation_external_holdout_ingestion_or_customer_slice: (
+        dict[str, Any] | None
+    ),
 ) -> list[dict[str, str]]:
     registry = [
         {
@@ -1056,6 +1195,24 @@ def _source_registry(
                 ),
             }
         )
+    if (
+        r12_recall_mitigation_external_holdout_ingestion_or_customer_slice
+        is not None
+    ):
+        registry.append(
+            {
+                "artifact_id": (
+                    r12_recall_mitigation_external_holdout_ingestion_or_customer_slice[
+                        "artifact_id"
+                    ]
+                ),
+                "path": (
+                    "experiments/results/"
+                    "r12_recall_mitigation_external_holdout_ingestion_or_customer_slice/"
+                    "r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-current-001.json"
+                ),
+            }
+        )
     return registry
 
 
@@ -1081,6 +1238,9 @@ def main() -> int:
     parser.add_argument("--r12-recall-false-alarm-mitigation-candidate-path")
     parser.add_argument("--r12-recall-mitigation-holdout-validation-path")
     parser.add_argument("--r12-recall-mitigation-independent-holdout-data-path")
+    parser.add_argument(
+        "--r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-path"
+    )
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     output_path = write_r12_product_support_gate(
@@ -1129,6 +1289,13 @@ def main() -> int:
                 args.r12_recall_mitigation_independent_holdout_data_path
             )
             if args.r12_recall_mitigation_independent_holdout_data_path
+            else None
+        ),
+        r12_recall_mitigation_external_holdout_ingestion_or_customer_slice=(
+            load_json_artifact(
+                args.r12_recall_mitigation_external_holdout_ingestion_or_customer_slice_path
+            )
+            if args.r12_recall_mitigation_external_holdout_ingestion_or_customer_slice_path
             else None
         ),
     )

@@ -1,0 +1,123 @@
+{
+  "acceptance_decision": "ready_to_ingest_external_or_customer_slice_keep_product_default_blocked",
+  "acceptance_gates": {
+    "customer_approval_present": false,
+    "customer_slice_contract_ready": true,
+    "external_candidate_sources_registered": true,
+    "field_outcome_validated": false,
+    "independent_holdout_revalidation_ready": false,
+    "ingestion_contract_ready": true,
+    "l11_data_gap_confirmed": true,
+    "minimum_case_count_met": false,
+    "product_default_allowed": false,
+    "raw_external_or_customer_slice_present": false,
+    "runtime_default_allowed": false
+  },
+  "allowed_claims": [
+    "R12 now has a concrete external-or-customer holdout ingestion contract for the next validation step.",
+    "The Product workflow can ask for official external data or a customer-approved outcome slice without enabling runtime default."
+  ],
+  "artifact_id": "r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-current-001",
+  "blocked_claims": [
+    "raw external or customer holdout slice present",
+    "external holdout revalidation completed",
+    "customer approved holdout validation completed",
+    "mitigation independent data ready",
+    "R12 Product default high-risk recovery validated",
+    "R12 Product core method ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "customer outcome validated",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "ingestion_or_customer_slice_contract_only",
+  "customer_slice_contract": {
+    "accepted_file_types": [
+      "csv",
+      "jsonl"
+    ],
+    "manual_prompt_or_persona_patch_allowed": false,
+    "minimum_case_count": 10,
+    "must_exclude_l9_derivation_band_as_proof": true,
+    "must_include_low_sensitive_or_customer_approved_axis": true,
+    "optional_columns": [
+      "complaint_count",
+      "exposure_count",
+      "price_change_pct",
+      "policy_change_label",
+      "mechanism_tags",
+      "segment_sensitivity_level"
+    ],
+    "required_columns": [
+      "case_id",
+      "scenario_family",
+      "segment_column",
+      "segment_value",
+      "static_prior_prediction",
+      "interaction_prediction",
+      "observed_outcome",
+      "outcome_window_start",
+      "outcome_window_end",
+      "customer_approval_id",
+      "source_ref"
+    ]
+  },
+  "next_required_artifact": "r12_external_or_customer_holdout_raw_slice",
+  "prioritized_source_handoff": [
+    {
+      "case_id": "dot_air_travel_consumer_report_complaint_candidate",
+      "domain": "air_travel_service_quality",
+      "ingestion_status": "candidate_source_not_ingested",
+      "priority": 1,
+      "product_use": "service_change_complaint_risk_external_holdout",
+      "target_next_artifact": "r12_dot_atcr_complaint_holdout_ingestion"
+    },
+    {
+      "case_id": "bts_db1b_route_price_demand_candidate",
+      "domain": "air_travel_price_and_demand",
+      "ingestion_status": "candidate_source_not_ingested",
+      "priority": 2,
+      "product_use": "price_change_revealed_demand_external_holdout",
+      "target_next_artifact": "r12_bts_db1b_price_demand_holdout_ingestion"
+    },
+    {
+      "case_id": "census_hps_policy_reaction_public_use_candidate",
+      "domain": "public_policy_household_response",
+      "ingestion_status": "candidate_source_not_ingested",
+      "priority": 3,
+      "product_use": "policy_reaction_survey_external_holdout",
+      "target_next_artifact": "r12_hps_independent_wave_holdout_ingestion"
+    }
+  ],
+  "revalidation_contract": {
+    "product_default_allowed_before_revalidation": false,
+    "requires_false_alarm_non_regression": true,
+    "requires_no_l9_derivation_band_as_only_proof": true,
+    "requires_raw_slice_before_revalidation": true,
+    "requires_recall_gain_retention_or_explicit_failure": true,
+    "target_validation_artifact": "r12_recall_mitigation_external_holdout_revalidation"
+  },
+  "route_selection": {
+    "customer_slice_fallback_enabled": true,
+    "preferred_external_source_id": "dot_air_travel_consumer_report_complaint_candidate",
+    "selected_route": "external_public_holdout_first_customer_slice_compatible",
+    "selection_reason": "L11 found no independent dataset, no low-sensitive recall slice, and no customer-approved holdout; use registered official sources or a customer-approved slice before revalidation."
+  },
+  "run_id": "r12-l12-current",
+  "schema_version": "r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-v1",
+  "source_refs": [
+    "r12-recall-mitigation-independent-holdout-data-current-001",
+    "r10-external-evidence-registry-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-recall-mitigation-independent-holdout-data-current-001",
+      "path": "experiments/results/r12_recall_mitigation_independent_holdout_data/r12-recall-mitigation-independent-holdout-data-current-001.json"
+    },
+    {
+      "artifact_id": "r10-external-evidence-registry-current-001",
+      "path": "experiments/results/r10_external_evidence_registry/r10-external-evidence-registry-current-001.json"
+    }
+  ],
+  "status": "r12_recall_mitigation_external_holdout_ingestion_or_customer_slice_ready_contract_blocked_no_raw_slice"
+}

@@ -28,6 +28,9 @@ from experiments.r12_recall_mitigation_holdout_validation import (
 from experiments.r12_recall_mitigation_independent_holdout_data import (
     build_r12_recall_mitigation_independent_holdout_data,
 )
+from experiments.r12_recall_mitigation_external_holdout_ingestion_or_customer_slice import (
+    build_r12_recall_mitigation_external_holdout_ingestion_or_customer_slice,
+)
 
 
 def test_r12_product_support_gate_creates_guarded_transfer_evidence_card():
@@ -698,6 +701,119 @@ def test_r12_product_support_gate_surfaces_l11_independent_holdout_data_boundary
         "r12-recall-mitigation-independent-holdout-data-test",
     }
     assert "independent holdout data exists" in gate["blocked_claims"]
+    json.dumps(gate, allow_nan=False)
+
+
+def test_r12_product_support_gate_surfaces_l12_external_or_customer_slice_contract():
+    transfer = _load_current_transfer_validation()
+    registry = build_r12_high_risk_holdout_registry(
+        artifact_id="r12-high-risk-holdout-registry-test",
+        run_id="r12-l5-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+    )
+    replay = build_r12_high_risk_holdout_transfer_replay(
+        artifact_id="r12-high-risk-holdout-transfer-replay-test",
+        run_id="r12-l6-test",
+        r12_high_risk_holdout_registry=registry,
+        r12_transfer_validation=transfer,
+    )
+    recall_update = build_r12_recall_oriented_update(
+        artifact_id="r12-recall-oriented-update-test",
+        run_id="r12-l7-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+        r12_high_risk_holdout_transfer_replay=replay,
+    )
+    stress = build_r12_recall_update_false_alarm_stress_test(
+        artifact_id="r12-recall-update-false-alarm-stress-test",
+        run_id="r12-l8-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+        r12_recall_oriented_update=recall_update,
+    )
+    mitigation = build_r12_recall_false_alarm_mitigation_candidate(
+        artifact_id="r12-recall-false-alarm-mitigation-candidate-test",
+        run_id="r12-l9-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+        r12_recall_oriented_update=recall_update,
+        r12_recall_update_false_alarm_stress_test=stress,
+    )
+    holdout_validation = build_r12_recall_mitigation_holdout_validation(
+        artifact_id="r12-recall-mitigation-holdout-validation-test",
+        run_id="r12-l10-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+        r12_recall_oriented_update=recall_update,
+        r12_recall_false_alarm_mitigation_candidate=mitigation,
+    )
+    independent_data = build_r12_recall_mitigation_independent_holdout_data(
+        artifact_id="r12-recall-mitigation-independent-holdout-data-test",
+        run_id="r12-l11-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=transfer,
+        r12_recall_mitigation_holdout_validation=holdout_validation,
+        r10_external_evidence_registry=_load_current_external_registry(),
+    )
+    external_or_customer_slice = (
+        build_r12_recall_mitigation_external_holdout_ingestion_or_customer_slice(
+            artifact_id=(
+                "r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-test"
+            ),
+            run_id="r12-l12-test",
+            r12_recall_mitigation_independent_holdout_data=independent_data,
+            r10_external_evidence_registry=_load_current_external_registry(),
+        )
+    )
+
+    gate = build_r12_product_support_gate(
+        artifact_id="r12-product-support-gate-test",
+        run_id="r12-l12-product-test",
+        r12_transfer_validation=transfer,
+        r12_high_risk_holdout_registry=registry,
+        r12_high_risk_holdout_transfer_replay=replay,
+        r12_recall_oriented_update=recall_update,
+        r12_recall_update_false_alarm_stress_test=stress,
+        r12_recall_false_alarm_mitigation_candidate=mitigation,
+        r12_recall_mitigation_holdout_validation=holdout_validation,
+        r12_recall_mitigation_independent_holdout_data=independent_data,
+        r12_recall_mitigation_external_holdout_ingestion_or_customer_slice=(
+            external_or_customer_slice
+        ),
+    )
+
+    boundary = gate["transfer_evidence_card"]["evidence_summary"][
+        "recall_mitigation_external_holdout_ingestion_or_customer_slice_boundary"
+    ]
+    assert boundary == {
+        "contract_status": (
+            "r12_recall_mitigation_external_holdout_ingestion_or_customer_slice_ready_contract_blocked_no_raw_slice"
+        ),
+        "selected_route": "external_public_holdout_first_customer_slice_compatible",
+        "preferred_external_source_id": (
+            "dot_air_travel_consumer_report_complaint_candidate"
+        ),
+        "customer_slice_fallback_enabled": True,
+        "raw_external_or_customer_slice_present": False,
+        "minimum_case_count_met": False,
+        "customer_approval_present": False,
+        "product_default_allowed": False,
+        "next_required_artifact": "r12_external_or_customer_holdout_raw_slice",
+    }
+    assert gate["acceptance_gates"][
+        "r12_recall_mitigation_external_or_customer_contract_ready"
+    ] is True
+    assert gate["acceptance_gates"][
+        "r12_recall_mitigation_external_or_customer_raw_slice_present"
+    ] is False
+    assert gate["acceptance_gates"][
+        "r12_recall_mitigation_external_or_customer_revalidation_ready"
+    ] is False
+    assert gate["acceptance_gates"][
+        "r12_recall_mitigation_external_or_customer_product_default_allowed"
+    ] is False
+    assert "raw external or customer holdout slice present" in gate["blocked_claims"]
     json.dumps(gate, allow_nan=False)
 
 

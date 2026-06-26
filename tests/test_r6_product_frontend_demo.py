@@ -98,6 +98,13 @@ def test_r6_product_frontend_is_source_backed_and_fail_closed():
     assert "same_dataset_non_derivation_recall_candidate_count" in js
     assert "external_registry_candidate_count" in js
     assert "r12_recall_mitigation_external_holdout_ingestion_or_customer_slice" in js
+    assert (
+        "recall_mitigation_external_holdout_ingestion_or_customer_slice_boundary"
+        in js
+    )
+    assert "preferred_external_source_id" in js
+    assert "raw_external_or_customer_slice_present" in js
+    assert "r12_external_or_customer_holdout_raw_slice" in js
     assert "secondary_transfer_evidence_card_only" in js
     assert "/r6/product/r12-transfer-evidence" in js
 
