@@ -205,10 +205,11 @@ R11 L3 已把 shadow trial 的 outcome review handoff 转成可计算的 bounded
 8. `r12_recall_oriented_update`
 9. `r12_recall_update_false_alarm_stress_test`
 10. `r12_recall_false_alarm_mitigation_candidate`
+11. `r12_recall_mitigation_holdout_validation`
 
 R12 不再把 R11 L3 的 bounded update ledger 继续包装成方法突破，而是把下一阶段 Research 目标改为 outcome-supervised causal interaction operator：用 train split outcome residual 监督机制权重、群体敏感度、传播边权和区间不确定性更新，再用 validation / holdout split 验证更新是否可迁移。R12 的关键指标是 `update_transfer_gain`，并继续要求 `interval_coverage_delta >= 0`、`false_alarm_rate_delta <= 0`、`runtime_default_allowed=false`。如果只产生 same-case improvement，必须判定为 `r12_update_transfer_blocked_same_case_only`。
 
-当前 R12 L0-L7 已完成：
+当前 R12 L0-L10 已完成：
 
 1. `r12_outcome_case_registry`
 2. `r12_causal_interaction_operator`
@@ -220,6 +221,7 @@ R12 不再把 R11 L3 的 bounded update ledger 继续包装成方法突破，而
 8. `r12_recall_oriented_update`
 9. `r12_recall_update_false_alarm_stress_test`
 10. `r12_recall_false_alarm_mitigation_candidate`
+11. `r12_recall_mitigation_holdout_validation`
 
 R12 L0 已把 R11 HPS public-use proxy holdout 的 6 个 cases 固定拆分为 train / validation / holdout，并输出 `r12-outcome-case-registry-current-001`。L0 的核心 guard 是 `outcome_leakage_blocked=true`：validation / holdout outcome 不允许进入训练。
 
@@ -241,7 +243,9 @@ R12 L7 已输出 `r12-recall-oriented-update-current-001`，并刷新 Product ga
 
 R12 L8 已输出 `r12-recall-update-false-alarm-stress-test-current-001`，并刷新 Product gate、customer value report、API manifest 和 demo。L8 对 L7 的 activation margin 候选做 false-alarm stress：评估 70 个 HPS segment cases，其中 low-sensitive cases 为 4、protected 或高治理 cases 为 66。结论是 `r12_recall_update_false_alarm_stress_blocked_product_default`：L7 的 recall gain `+0.206897` 被保留，但 global false alarm rate `+0.073171`、precision `-0.03`；低敏感轴 false alarm 没有退化但没有 observed high-risk，因此 `low_sensitive_recall_evaluable=false`；新增 3 个 false alarm 全部集中在 `TAGE` 年龄轴，protected-sensitive false alarm delta 为 `+0.096774`。因此 Product default 继续阻断，下一步必须做 `r12_recall_false_alarm_mitigation_candidate`，而不是扩大 L7 claim。
 
-R12 L9 已输出 `r12-recall-false-alarm-mitigation-candidate-current-001`，并刷新 Product gate、customer value report、API manifest 和 demo。L9 比较多类 mitigation 候选，按“在 false alarm 与 precision 非回归条件下最大化召回保留”选择 `TAGE 58-62 activation guard`：默认 margin 仍为 `0.01`，但对 `TAGE` 的 `58-62` 年龄带回退到 guarded margin `0.03`。当前结果是 `r12_recall_false_alarm_mitigation_ready_research_guarded`：相对 baseline，mitigated recall delta 为 `+0.172414`，保留 L7 召回增益的 `0.833333`；false alarm delta 回到 `0.0`，移除 L7 新增的 3 个 false alarm；precision delta 为 `+0.059524`。代价是丢失 `hps_TAGE_60` 这个 L7 recovered case，且候选明显由当前 false-alarm band 推导，`overfit_risk=high_current_false_alarm_band_derived`。因此 L9 是 Research guarded positive mitigation，不是 Product default；下一步必须做 `r12_recall_mitigation_holdout_validation`。
+R12 L9 已输出 `r12-recall-false-alarm-mitigation-candidate-current-001`，并刷新 Product gate、customer value report、API manifest 和 demo。L9 比较多类 mitigation 候选，按“在 false alarm 与 precision 非回归条件下最大化召回保留”选择 `TAGE 58-62 activation guard`：默认 margin 仍为 `0.01`，但对 `TAGE` 的 `58-62` 年龄带回退到 guarded margin `0.03`。当前结果是 `r12_recall_false_alarm_mitigation_ready_research_guarded`：相对 baseline，mitigated recall delta 为 `+0.172414`，保留 L7 召回增益的 `0.833333`；false alarm delta 回到 `0.0`，移除 L7 新增的 3 个 false alarm；precision delta 为 `+0.059524`。代价是丢失 `hps_TAGE_60` 这个 L7 recovered case，且候选明显由当前 false-alarm band 推导，`overfit_risk=high_current_false_alarm_band_derived`。因此 L9 是 Research guarded positive mitigation，不是 Product default；其泛化验证已由 L10 执行。
+
+R12 L10 已输出 `r12-recall-mitigation-holdout-validation-current-001`，并刷新 Product gate、customer value report、API manifest 和 demo。L10 用 leave-one false-alarm band pseudo-holdout 验证 L9 的 `TAGE 58-62` guard 是否稳定：3 个 trial 中只有 1 个通过，`pass_rate=0.333333`，低于要求的 `0.666667`；两个端点 holdout `hps_TAGE_58` 与 `hps_TAGE_62` 失败，说明当前 band guard 对端点依赖明显。保守的 `TAGE family cap` 虽然稳定且 false alarm delta 为 `0.0`，但只保留 L7 召回增益的 `0.333333`，低于可接受门槛。因此 L10 结论是 `r12_recall_mitigation_holdout_validation_blocked_overfit`：L9 候选只能保留为 failure diagnosis candidate，不能作为 Product default 或 runtime default。下一步必须获取独立 holdout、低敏感可召回切片或客户授权 outcome 切片，生成 `r12_recall_mitigation_independent_holdout_data`。
 
 ## 降权历史材料
 

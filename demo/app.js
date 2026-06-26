@@ -202,6 +202,8 @@ function renderR12TransferEvidence(evidence) {
   const recallUpdate = summary.recall_oriented_update_boundary || {};
   const recallStress = summary.recall_false_alarm_stress_boundary || {};
   const recallMitigation = summary.recall_false_alarm_mitigation_boundary || {};
+  const recallMitigationHoldout =
+    summary.recall_mitigation_holdout_validation_boundary || {};
   const update = summary.accepted_update || {};
   return `
     <article class="panel panel-wide">
@@ -360,6 +362,30 @@ function renderR12TransferEvidence(evidence) {
           <div>
             <dt>缓解下一验收</dt>
             <dd>${escapeHtml(recallMitigation.next_required_artifact || "r12_recall_mitigation_holdout_validation")}</dd>
+          </div>
+          <div>
+            <dt>缓解 holdout 验证</dt>
+            <dd>${escapeHtml(recallMitigationHoldout.validation_status || "recall_mitigation_holdout_validation_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>leave-one 通过率</dt>
+            <dd>${formatSignedNumber(recallMitigationHoldout.leave_one_pass_rate)}</dd>
+          </div>
+          <div>
+            <dt>端点 holdout 失败</dt>
+            <dd>${formatCount(recallMitigationHoldout.endpoint_holdout_failure_count)}</dd>
+          </div>
+          <div>
+            <dt>独立 holdout</dt>
+            <dd>${formatBooleanGate(recallMitigationHoldout.independent_holdout_present, "independent_holdout_present")}</dd>
+          </div>
+          <div>
+            <dt>缓解默认启用</dt>
+            <dd>${formatBooleanGate(recallMitigationHoldout.product_default_allowed, "product_default_allowed")}</dd>
+          </div>
+          <div>
+            <dt>holdout 下一验收</dt>
+            <dd>${escapeHtml(recallMitigationHoldout.next_required_artifact || "r12_recall_mitigation_independent_holdout_data")}</dd>
           </div>
         </dl>
         <p>R12 当前只能作为次级迁移证据展示，主决策仍来自 guarded baseline，真实客户 outcome 回流前不进入 runtime default。</p>

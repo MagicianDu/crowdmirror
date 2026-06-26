@@ -90,6 +90,10 @@ def test_r6_product_frontend_is_source_backed_and_fail_closed():
     assert "l7_recall_gain_retained" in js
     assert "high_current_false_alarm_band_derived" in js
     assert "r12_recall_mitigation_holdout_validation" in js
+    assert "recall_mitigation_holdout_validation_boundary" in js
+    assert "leave_one_pass_rate" in js
+    assert "endpoint_holdout_failure_count" in js
+    assert "r12_recall_mitigation_independent_holdout_data" in js
     assert "secondary_transfer_evidence_card_only" in js
     assert "/r6/product/r12-transfer-evidence" in js
 

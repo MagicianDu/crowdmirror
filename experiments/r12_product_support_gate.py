@@ -33,6 +33,9 @@ from experiments.r12_recall_update_false_alarm_stress_test import (
 from experiments.r12_recall_false_alarm_mitigation_candidate import (
     R12_RECALL_FALSE_ALARM_MITIGATION_SCHEMA_VERSION,
 )
+from experiments.r12_recall_mitigation_holdout_validation import (
+    R12_RECALL_MITIGATION_HOLDOUT_VALIDATION_SCHEMA_VERSION,
+)
 
 
 R12_PRODUCT_SUPPORT_GATE_SCHEMA_VERSION = "r12-product-support-gate-v1"
@@ -55,6 +58,7 @@ def build_r12_product_support_gate(
     r12_recall_oriented_update: dict[str, Any] | None = None,
     r12_recall_update_false_alarm_stress_test: dict[str, Any] | None = None,
     r12_recall_false_alarm_mitigation_candidate: dict[str, Any] | None = None,
+    r12_recall_mitigation_holdout_validation: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
@@ -72,6 +76,10 @@ def build_r12_product_support_gate(
     if r12_recall_false_alarm_mitigation_candidate is not None:
         _validate_recall_false_alarm_mitigation(
             r12_recall_false_alarm_mitigation_candidate
+        )
+    if r12_recall_mitigation_holdout_validation is not None:
+        _validate_recall_mitigation_holdout_validation(
+            r12_recall_mitigation_holdout_validation
         )
     positive_transfer = (
         r12_transfer_validation["acceptance_gates"]["positive_transfer_guarded"]
@@ -92,6 +100,11 @@ def build_r12_product_support_gate(
     recall_false_alarm_mitigation_boundary = (
         _recall_false_alarm_mitigation_boundary(
             r12_recall_false_alarm_mitigation_candidate
+        )
+    )
+    recall_mitigation_holdout_validation_boundary = (
+        _recall_mitigation_holdout_validation_boundary(
+            r12_recall_mitigation_holdout_validation
         )
     )
     report = {
@@ -121,6 +134,9 @@ def build_r12_product_support_gate(
             ),
             recall_false_alarm_mitigation_boundary=(
                 recall_false_alarm_mitigation_boundary
+            ),
+            recall_mitigation_holdout_validation_boundary=(
+                recall_mitigation_holdout_validation_boundary
             ),
         ),
         "customer_visible_primary_decision": {
@@ -256,6 +272,32 @@ def build_r12_product_support_gate(
                 if r12_recall_false_alarm_mitigation_candidate is not None
                 else {}
             ),
+            **(
+                {
+                    "r12_recall_mitigation_holdout_validated": (
+                        r12_recall_mitigation_holdout_validation[
+                            "acceptance_gates"
+                        ]["mitigation_holdout_validated"]
+                    ),
+                    "r12_recall_mitigation_holdout_product_default_allowed": (
+                        r12_recall_mitigation_holdout_validation[
+                            "acceptance_gates"
+                        ]["product_default_allowed"]
+                    ),
+                    "r12_recall_mitigation_holdout_independent_present": (
+                        r12_recall_mitigation_holdout_validation[
+                            "acceptance_gates"
+                        ]["independent_holdout_present"]
+                    ),
+                    "r12_recall_mitigation_holdout_leave_one_stable": (
+                        r12_recall_mitigation_holdout_validation[
+                            "acceptance_gates"
+                        ]["leave_one_false_alarm_band_stable"]
+                    ),
+                }
+                if r12_recall_mitigation_holdout_validation is not None
+                else {}
+            ),
         },
         "source_registry": _source_registry(
             r12_transfer_validation=r12_transfer_validation,
@@ -269,6 +311,9 @@ def build_r12_product_support_gate(
             ),
             r12_recall_false_alarm_mitigation_candidate=(
                 r12_recall_false_alarm_mitigation_candidate
+            ),
+            r12_recall_mitigation_holdout_validation=(
+                r12_recall_mitigation_holdout_validation
             ),
         ),
         "source_refs": [
@@ -296,6 +341,11 @@ def build_r12_product_support_gate(
             *(
                 [r12_recall_false_alarm_mitigation_candidate["artifact_id"]]
                 if r12_recall_false_alarm_mitigation_candidate is not None
+                else []
+            ),
+            *(
+                [r12_recall_mitigation_holdout_validation["artifact_id"]]
+                if r12_recall_mitigation_holdout_validation is not None
                 else []
             ),
         ],
@@ -351,6 +401,16 @@ def build_r12_product_support_gate(
                 if r12_recall_false_alarm_mitigation_candidate is not None
                 else []
             ),
+            *(
+                [
+                    (
+                        "R12 mitigation holdout validation blocks Product default "
+                        "and preserves the candidate as failure diagnosis evidence."
+                    )
+                ]
+                if r12_recall_mitigation_holdout_validation is not None
+                else []
+            ),
         ],
         "blocked_claims": _unique_strings(
             [
@@ -369,6 +429,9 @@ def build_r12_product_support_gate(
                     "blocked_claims", []
                 ),
                 *(r12_recall_false_alarm_mitigation_candidate or {}).get(
+                    "blocked_claims", []
+                ),
+                *(r12_recall_mitigation_holdout_validation or {}).get(
                     "blocked_claims", []
                 ),
             ]
@@ -496,6 +559,27 @@ def _validate_recall_false_alarm_mitigation(artifact: dict[str, Any]) -> None:
         raise ValueError("r12 false-alarm mitigation must not allow Product default")
 
 
+def _validate_recall_mitigation_holdout_validation(
+    artifact: dict[str, Any],
+) -> None:
+    if artifact.get("schema_version") != (
+        R12_RECALL_MITIGATION_HOLDOUT_VALIDATION_SCHEMA_VERSION
+    ):
+        raise ValueError(
+            "r12_recall_mitigation_holdout_validation.schema_version must be "
+            f"{R12_RECALL_MITIGATION_HOLDOUT_VALIDATION_SCHEMA_VERSION}"
+        )
+    gates = artifact.get("acceptance_gates")
+    if not isinstance(gates, dict):
+        raise ValueError("r12 mitigation holdout validation acceptance_gates required")
+    if gates.get("field_outcome_validated") is not False:
+        raise ValueError("r12 mitigation holdout validation must not be field validated")
+    if gates.get("runtime_default_allowed") is not False:
+        raise ValueError("r12 mitigation holdout validation must not allow runtime default")
+    if gates.get("product_default_allowed") is not False:
+        raise ValueError("r12 mitigation holdout validation must not allow Product default")
+
+
 def _transfer_evidence_card(
     transfer_validation: dict[str, Any],
     *,
@@ -505,6 +589,7 @@ def _transfer_evidence_card(
     recall_update_boundary: dict[str, Any] | None = None,
     recall_false_alarm_stress_boundary: dict[str, Any] | None = None,
     recall_false_alarm_mitigation_boundary: dict[str, Any] | None = None,
+    recall_mitigation_holdout_validation_boundary: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     split_metrics = transfer_validation["split_metrics"]
     validation = split_metrics["validation"]
@@ -537,6 +622,10 @@ def _transfer_evidence_card(
     if recall_false_alarm_mitigation_boundary is not None:
         evidence_summary["recall_false_alarm_mitigation_boundary"] = (
             recall_false_alarm_mitigation_boundary
+        )
+    if recall_mitigation_holdout_validation_boundary is not None:
+        evidence_summary["recall_mitigation_holdout_validation_boundary"] = (
+            recall_mitigation_holdout_validation_boundary
         )
     return {
         "card_id": "r12_transfer_validation_evidence_card",
@@ -720,6 +809,34 @@ def _recall_false_alarm_mitigation_boundary(
     }
 
 
+def _recall_mitigation_holdout_validation_boundary(
+    validation: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    if validation is None:
+        return None
+    leave_one = validation["leave_one_false_alarm_band_validation"]
+    gates = validation["acceptance_gates"]
+    stable_alternative = validation["stable_alternative_check"]
+    return {
+        "validation_status": validation["status"],
+        "acceptance_decision": validation["acceptance_decision"],
+        "leave_one_pass_rate": leave_one["pass_rate"],
+        "endpoint_holdout_failure_count": leave_one[
+            "endpoint_holdout_failure_count"
+        ],
+        "independent_holdout_present": gates["independent_holdout_present"],
+        "low_sensitive_recall_evaluable": gates[
+            "low_sensitive_recall_evaluable"
+        ],
+        "stable_alternative_recall_retained": stable_alternative[
+            "l7_recall_gain_retained"
+        ],
+        "mitigation_holdout_validated": gates["mitigation_holdout_validated"],
+        "product_default_allowed": gates["product_default_allowed"],
+        "next_required_artifact": validation["next_required_artifact"],
+    }
+
+
 def _source_registry(
     *,
     r12_transfer_validation: dict[str, Any],
@@ -728,6 +845,7 @@ def _source_registry(
     r12_recall_oriented_update: dict[str, Any] | None,
     r12_recall_update_false_alarm_stress_test: dict[str, Any] | None,
     r12_recall_false_alarm_mitigation_candidate: dict[str, Any] | None,
+    r12_recall_mitigation_holdout_validation: dict[str, Any] | None,
 ) -> list[dict[str, str]]:
     registry = [
         {
@@ -794,6 +912,18 @@ def _source_registry(
                 ),
             }
         )
+    if r12_recall_mitigation_holdout_validation is not None:
+        registry.append(
+            {
+                "artifact_id": r12_recall_mitigation_holdout_validation[
+                    "artifact_id"
+                ],
+                "path": (
+                    "experiments/results/r12_recall_mitigation_holdout_validation/"
+                    "r12-recall-mitigation-holdout-validation-current-001.json"
+                ),
+            }
+        )
     return registry
 
 
@@ -817,6 +947,7 @@ def main() -> int:
     parser.add_argument("--r12-recall-oriented-update-path")
     parser.add_argument("--r12-recall-update-false-alarm-stress-test-path")
     parser.add_argument("--r12-recall-false-alarm-mitigation-candidate-path")
+    parser.add_argument("--r12-recall-mitigation-holdout-validation-path")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     output_path = write_r12_product_support_gate(
@@ -851,6 +982,13 @@ def main() -> int:
                 args.r12_recall_false_alarm_mitigation_candidate_path
             )
             if args.r12_recall_false_alarm_mitigation_candidate_path
+            else None
+        ),
+        r12_recall_mitigation_holdout_validation=(
+            load_json_artifact(
+                args.r12_recall_mitigation_holdout_validation_path
+            )
+            if args.r12_recall_mitigation_holdout_validation_path
             else None
         ),
     )
