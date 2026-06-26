@@ -197,6 +197,7 @@ function renderR12TransferEvidence(evidence) {
   const metrics = evidence.metrics || {};
   const summary = evidence.evidence_summary || {};
   const extended = summary.extended_metric_gates || {};
+  const highRiskBoundary = summary.high_risk_holdout_boundary || {};
   const update = summary.accepted_update || {};
   return `
     <article class="panel panel-wide">
@@ -255,6 +256,18 @@ function renderR12TransferEvidence(evidence) {
           <div>
             <dt>异常群体 holdout 覆盖</dt>
             <dd>${formatBooleanGate(extended.abnormal_segment_recall_holdout_covered, "abnormal_segment_recall_holdout_covered")}</dd>
+          </div>
+          <div>
+            <dt>高风险候选</dt>
+            <dd>${formatCount(highRiskBoundary.research_eligible_case_count)} 个研究候选，${formatCount(highRiskBoundary.research_recoverable_static_prior_miss_count)} 个可测漏报恢复</dd>
+          </div>
+          <div>
+            <dt>Product 默认高风险 holdout</dt>
+            <dd>${formatBooleanGate(highRiskBoundary.product_default_low_sensitive_high_risk_holdout_present, "product_default_low_sensitive_high_risk_holdout_present")}</dd>
+          </div>
+          <div>
+            <dt>高风险边界</dt>
+            <dd>${escapeHtml(highRiskBoundary.product_claim_boundary || "research_only_until_low_sensitive_or_customer_approved_holdout")}</dd>
           </div>
         </dl>
         <p>R12 当前只能作为次级迁移证据展示，主决策仍来自 guarded baseline，真实客户 outcome 回流前不进入 runtime default。</p>
@@ -584,6 +597,13 @@ function formatLedgerGap(value) {
       .join(" / ");
   }
   return value || "未提供";
+}
+
+function formatCount(value) {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) {
+    return "0";
+  }
+  return String(Number(value));
 }
 
 function formatSignedNumber(value) {

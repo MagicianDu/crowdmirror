@@ -223,6 +223,8 @@ R12 L3+ 已在同一 artifact 中补齐 Product 扩展指标：risk ranking 和 
 
 R12 L4 已输出 `r12-product-support-gate-current-001`，并接入 `r6-product-customer-value-report-current-001`、`r6-product-api-manifest-current-001` 和 `/demo/`。Product 现在可以展示 `r12_transfer_evidence` section、`/r6/product/r12-transfer-evidence` endpoint 和“R12 迁移验证”面板，并展示 L3+ 扩展指标覆盖 gap。但 R12 输出角色被固定为 `secondary_transfer_evidence_card_only`，`r12_can_override_primary_decision=false`，主决策仍来自 guarded baseline。
 
+R12 L5 已输出 `r12-high-risk-holdout-registry-current-001`，并刷新 `r12-product-support-gate-current-001` 与 `r6-product-customer-value-report-current-001`。L5 从当前 HPS public-use artifact 中找到了 29 个 source-backed research-only 高风险 holdout 候选，其中 12 个可用于验证 R12 update 是否恢复静态先验漏报；但 Product 默认可用的低敏感高风险 holdout 候选为 0。因此当前边界更新为：Research 可以继续做 high-risk replay / transfer validation，Product 只能展示该边界，不能宣称 `R12 Product default high-risk recovery validated`，也不能开启 runtime default。
+
 ## 降权历史材料
 
 以下材料只作为历史经验或基础设施参考，不再作为当前主线：

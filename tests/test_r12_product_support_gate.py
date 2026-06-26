@@ -7,6 +7,9 @@ from experiments.r12_product_support_gate import (
     R12_PRODUCT_SUPPORT_GATE_SCHEMA_VERSION,
     build_r12_product_support_gate,
 )
+from experiments.r12_high_risk_holdout_registry import (
+    build_r12_high_risk_holdout_registry,
+)
 
 
 def test_r12_product_support_gate_creates_guarded_transfer_evidence_card():
@@ -106,6 +109,52 @@ def test_r12_product_support_gate_preserves_outcome_review_boundary():
     ]
 
 
+def test_r12_product_support_gate_surfaces_l5_high_risk_holdout_boundary():
+    registry = build_r12_high_risk_holdout_registry(
+        artifact_id="r12-high-risk-holdout-registry-test",
+        run_id="r12-l5-test",
+        hps_ingestion=_load_current_hps_ingestion(),
+        r12_transfer_validation=_load_current_transfer_validation(),
+    )
+    gate = build_r12_product_support_gate(
+        artifact_id="r12-product-support-gate-test",
+        run_id="r12-l5-product-test",
+        r12_transfer_validation=_load_current_transfer_validation(),
+        r12_high_risk_holdout_registry=registry,
+    )
+
+    high_risk_boundary = gate["transfer_evidence_card"]["evidence_summary"][
+        "high_risk_holdout_boundary"
+    ]
+    assert high_risk_boundary == {
+        "registry_status": "r12_high_risk_holdout_registry_ready_research_only",
+        "research_eligible_case_count": 29,
+        "research_recoverable_static_prior_miss_count": 12,
+        "product_default_eligible_case_count": 0,
+        "product_default_low_sensitive_high_risk_holdout_present": False,
+        "product_claim_boundary": (
+            "research_only_until_low_sensitive_or_customer_approved_holdout"
+        ),
+    }
+    assert gate["acceptance_gates"][
+        "r12_high_risk_research_holdout_candidates_present"
+    ] is True
+    assert gate["acceptance_gates"][
+        "r12_product_default_high_risk_holdout_present"
+    ] is False
+    assert (
+        "R12 Product default high-risk recovery validated"
+        in gate["blocked_claims"]
+    )
+    assert {
+        entry["artifact_id"] for entry in gate["source_registry"]
+    } == {
+        "r12-transfer-validation-current-001",
+        "r12-high-risk-holdout-registry-test",
+    }
+    json.dumps(gate, allow_nan=False)
+
+
 def test_r12_product_support_gate_cli_writes_artifact(tmp_path):
     transfer_path = tmp_path / "r12-transfer-validation.json"
     output = tmp_path / "r12-product-support-gate.json"
@@ -148,5 +197,16 @@ def _load_current_transfer_validation():
             repo_root
             / "experiments/results/r12_transfer_validation/"
             "r12-transfer-validation-current-001.json"
+        ).read_text()
+    )
+
+
+def _load_current_hps_ingestion():
+    repo_root = Path(__file__).resolve().parents[1]
+    return json.loads(
+        (
+            repo_root
+            / "experiments/results/r10_hps_policy_reaction_ingestion/"
+            "r10-hps-policy-reaction-ingestion-current-001.json"
         ).read_text()
     )

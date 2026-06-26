@@ -66,6 +66,10 @@ def test_r6_product_frontend_is_source_backed_and_fail_closed():
     assert "update_transfer_gain" in js
     assert "extended_product_metric_support_level" in js
     assert "static_prior_miss_recovery_holdout_covered" in js
+    assert "high_risk_holdout_boundary" in js
+    assert "research_recoverable_static_prior_miss_count" in js
+    assert "product_default_low_sensitive_high_risk_holdout_present" in js
+    assert "research_only_until_low_sensitive_or_customer_approved_holdout" in js
     assert "secondary_transfer_evidence_card_only" in js
     assert "/r6/product/r12-transfer-evidence" in js
 

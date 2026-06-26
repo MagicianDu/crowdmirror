@@ -18,6 +18,9 @@ from experiments.r6_contracts import (
 from experiments.r12_transfer_validation import (
     R12_TRANSFER_VALIDATION_SCHEMA_VERSION,
 )
+from experiments.r12_high_risk_holdout_registry import (
+    R12_HIGH_RISK_HOLDOUT_REGISTRY_SCHEMA_VERSION,
+)
 
 
 R12_PRODUCT_SUPPORT_GATE_SCHEMA_VERSION = "r12-product-support-gate-v1"
@@ -35,13 +38,19 @@ def build_r12_product_support_gate(
     artifact_id: str,
     run_id: str,
     r12_transfer_validation: dict[str, Any],
+    r12_high_risk_holdout_registry: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     artifact_id = non_empty_string(artifact_id, field="artifact_id")
     run_id = non_empty_string(run_id, field="run_id")
     _validate_transfer_validation(r12_transfer_validation)
+    if r12_high_risk_holdout_registry is not None:
+        _validate_high_risk_registry(r12_high_risk_holdout_registry)
     positive_transfer = (
         r12_transfer_validation["acceptance_gates"]["positive_transfer_guarded"]
         is True
+    )
+    high_risk_boundary = _high_risk_holdout_boundary(
+        r12_high_risk_holdout_registry
     )
     report = {
         "schema_version": R12_PRODUCT_SUPPORT_GATE_SCHEMA_VERSION,
@@ -62,6 +71,7 @@ def build_r12_product_support_gate(
         "transfer_evidence_card": _transfer_evidence_card(
             r12_transfer_validation,
             positive_transfer=positive_transfer,
+            high_risk_boundary=high_risk_boundary,
         ),
         "customer_visible_primary_decision": {
             "primary_decision_source": "guarded_baseline_customer_value_report",
@@ -91,17 +101,35 @@ def build_r12_product_support_gate(
             "product_core_method_ready": False,
             "field_outcome_validated": False,
             "runtime_default_allowed": False,
+            **(
+                {
+                    "r12_high_risk_research_holdout_candidates_present": (
+                        r12_high_risk_holdout_registry["acceptance_gates"][
+                            "high_risk_research_holdout_candidates_present"
+                        ]
+                    ),
+                    "r12_product_default_high_risk_holdout_present": (
+                        r12_high_risk_holdout_registry["acceptance_gates"][
+                            "product_default_low_sensitive_high_risk_holdout_present"
+                        ]
+                    ),
+                }
+                if r12_high_risk_holdout_registry is not None
+                else {}
+            ),
         },
-        "source_registry": [
-            {
-                "artifact_id": r12_transfer_validation["artifact_id"],
-                "path": (
-                    "experiments/results/r12_transfer_validation/"
-                    "r12-transfer-validation-current-001.json"
-                ),
-            }
+        "source_registry": _source_registry(
+            r12_transfer_validation=r12_transfer_validation,
+            r12_high_risk_holdout_registry=r12_high_risk_holdout_registry,
+        ),
+        "source_refs": [
+            r12_transfer_validation["artifact_id"],
+            *(
+                [r12_high_risk_holdout_registry["artifact_id"]]
+                if r12_high_risk_holdout_registry is not None
+                else []
+            ),
         ],
-        "source_refs": [r12_transfer_validation["artifact_id"]],
         "allowed_claims": [
             (
                 "Product can display R12 as a source-backed guarded transfer "
@@ -111,17 +139,35 @@ def build_r12_product_support_gate(
                 "R12 transfer evidence is secondary and requires customer or "
                 "field outcome review before any runtime-default update."
             ),
+            *(
+                [
+                    (
+                        "R12 has research-only high-risk holdout candidates, but "
+                        "Product default use remains blocked until low-sensitive "
+                        "or customer-approved holdout validation exists."
+                    )
+                ]
+                if r12_high_risk_holdout_registry is not None
+                else []
+            ),
         ],
         "blocked_claims": [
             "R12 validated",
             "R12 supports Product core method by default",
             "R12 can override guarded baseline primary decision",
+            "R12 Product default high-risk recovery validated",
             "field_outcome_validated=true",
             "runtime_default_allowed=true",
             "runtime default ready",
             "精准预测系统",
         ],
     }
+    if r12_high_risk_holdout_registry is None:
+        report["blocked_claims"] = [
+            item
+            for item in report["blocked_claims"]
+            if item != "R12 Product default high-risk recovery validated"
+        ]
     assert_strict_json(report)
     return report
 
@@ -151,14 +197,47 @@ def _validate_transfer_validation(artifact: dict[str, Any]) -> None:
         raise ValueError("r12 transfer validation must not use train metrics as proof")
 
 
+def _validate_high_risk_registry(artifact: dict[str, Any]) -> None:
+    if artifact.get("schema_version") != R12_HIGH_RISK_HOLDOUT_REGISTRY_SCHEMA_VERSION:
+        raise ValueError(
+            "r12_high_risk_holdout_registry.schema_version must be "
+            f"{R12_HIGH_RISK_HOLDOUT_REGISTRY_SCHEMA_VERSION}"
+        )
+    gates = artifact.get("acceptance_gates")
+    if not isinstance(gates, dict):
+        raise ValueError("r12 high-risk holdout registry acceptance_gates required")
+    if gates.get("field_outcome_validated") is not False:
+        raise ValueError("r12 high-risk registry must not be field validated")
+    if gates.get("runtime_default_allowed") is not False:
+        raise ValueError("r12 high-risk registry must not allow runtime default")
+
+
 def _transfer_evidence_card(
     transfer_validation: dict[str, Any],
     *,
     positive_transfer: bool,
+    high_risk_boundary: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     split_metrics = transfer_validation["split_metrics"]
     validation = split_metrics["validation"]
     holdout = split_metrics["holdout"]
+    evidence_summary = {
+        "transfer_decision": transfer_validation["transfer_decision"],
+        "accepted_update": transfer_validation["accepted_update"],
+        "claim_level": transfer_validation["claim_level"],
+        "train_metrics_used_for_transfer_decision": transfer_validation[
+            "transfer_accounting"
+        ]["train_metrics_used_for_transfer_decision"],
+        "field_outcome_validated": transfer_validation["acceptance_gates"][
+            "field_outcome_validated"
+        ],
+        "runtime_default_allowed": transfer_validation["acceptance_gates"][
+            "runtime_default_allowed"
+        ],
+        "extended_metric_gates": transfer_validation["extended_metric_gates"],
+    }
+    if high_risk_boundary is not None:
+        evidence_summary["high_risk_holdout_boundary"] = high_risk_boundary
     return {
         "card_id": "r12_transfer_validation_evidence_card",
         "title": "R12 guarded transfer validation evidence",
@@ -180,21 +259,7 @@ def _transfer_evidence_card(
             "interval_coverage_delta": holdout["interval_coverage_delta"],
             "false_alarm_rate_delta": holdout["false_alarm_rate_delta"],
         },
-        "evidence_summary": {
-            "transfer_decision": transfer_validation["transfer_decision"],
-            "accepted_update": transfer_validation["accepted_update"],
-            "claim_level": transfer_validation["claim_level"],
-            "train_metrics_used_for_transfer_decision": transfer_validation[
-                "transfer_accounting"
-            ]["train_metrics_used_for_transfer_decision"],
-            "field_outcome_validated": transfer_validation["acceptance_gates"][
-                "field_outcome_validated"
-            ],
-            "runtime_default_allowed": transfer_validation["acceptance_gates"][
-                "runtime_default_allowed"
-            ],
-            "extended_metric_gates": transfer_validation["extended_metric_gates"],
-        },
+        "evidence_summary": evidence_summary,
         "allowed_display_claims": [
             (
                 "R12 has a guarded public-proxy transfer signal that can be "
@@ -216,11 +281,64 @@ def _transfer_evidence_card(
     }
 
 
+def _high_risk_holdout_boundary(
+    registry: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    if registry is None:
+        return None
+    summary = registry["candidate_summary"]
+    gates = registry["acceptance_gates"]
+    return {
+        "registry_status": registry["status"],
+        "research_eligible_case_count": summary["research_eligible_case_count"],
+        "research_recoverable_static_prior_miss_count": summary[
+            "research_recoverable_static_prior_miss_count"
+        ],
+        "product_default_eligible_case_count": summary[
+            "product_default_eligible_case_count"
+        ],
+        "product_default_low_sensitive_high_risk_holdout_present": gates[
+            "product_default_low_sensitive_high_risk_holdout_present"
+        ],
+        "product_claim_boundary": (
+            "research_only_until_low_sensitive_or_customer_approved_holdout"
+        ),
+    }
+
+
+def _source_registry(
+    *,
+    r12_transfer_validation: dict[str, Any],
+    r12_high_risk_holdout_registry: dict[str, Any] | None,
+) -> list[dict[str, str]]:
+    registry = [
+        {
+            "artifact_id": r12_transfer_validation["artifact_id"],
+            "path": (
+                "experiments/results/r12_transfer_validation/"
+                "r12-transfer-validation-current-001.json"
+            ),
+        }
+    ]
+    if r12_high_risk_holdout_registry is not None:
+        registry.append(
+            {
+                "artifact_id": r12_high_risk_holdout_registry["artifact_id"],
+                "path": (
+                    "experiments/results/r12_high_risk_holdout_registry/"
+                    "r12-high-risk-holdout-registry-current-001.json"
+                ),
+            }
+        )
+    return registry
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--artifact-id", required=True)
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--r12-transfer-validation-path", required=True)
+    parser.add_argument("--r12-high-risk-holdout-registry-path")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     output_path = write_r12_product_support_gate(
@@ -228,6 +346,11 @@ def main() -> int:
         artifact_id=args.artifact_id,
         run_id=args.run_id,
         r12_transfer_validation=load_json_artifact(args.r12_transfer_validation_path),
+        r12_high_risk_holdout_registry=(
+            load_json_artifact(args.r12_high_risk_holdout_registry_path)
+            if args.r12_high_risk_holdout_registry_path
+            else None
+        ),
     )
     artifact = json.loads(Path(output_path).read_text())
     print(

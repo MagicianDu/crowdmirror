@@ -41,7 +41,8 @@
     "R11 can override guarded baseline primary decision",
     "R12 validated",
     "R12 supports Product core method by default",
-    "R12 can override guarded baseline primary decision"
+    "R12 can override guarded baseline primary decision",
+    "R12 Product default high-risk recovery validated"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -288,6 +289,7 @@
         "R12 validated",
         "R12 supports Product core method by default",
         "R12 can override guarded baseline primary decision",
+        "R12 Product default high-risk recovery validated",
         "field_outcome_validated=true",
         "runtime_default_allowed=true",
         "runtime default ready",
@@ -311,6 +313,14 @@
           "static_prior_miss_recovery_holdout_covered": false
         },
         "field_outcome_validated": false,
+        "high_risk_holdout_boundary": {
+          "product_claim_boundary": "research_only_until_low_sensitive_or_customer_approved_holdout",
+          "product_default_eligible_case_count": 0,
+          "product_default_low_sensitive_high_risk_holdout_present": false,
+          "registry_status": "r12_high_risk_holdout_registry_ready_research_only",
+          "research_eligible_case_count": 29,
+          "research_recoverable_static_prior_miss_count": 12
+        },
         "runtime_default_allowed": false,
         "train_metrics_used_for_transfer_decision": false,
         "transfer_decision": "r12_update_transfer_positive_guarded"
@@ -730,7 +740,7 @@
     "source_backed_only": true,
     "static_narrative_fallback_allowed": false
   },
-  "run_id": "r12-product-l4-plus-current",
+  "run_id": "r12-l5-product-current",
   "schema_version": "r6-product-customer-value-report-v1",
   "section_contracts": [
     {
@@ -845,6 +855,7 @@
         "R12 validated",
         "R12 supports Product core method by default",
         "R12 can override guarded baseline primary decision",
+        "R12 Product default high-risk recovery validated",
         "field_outcome_validated=true",
         "runtime_default_allowed=true",
         "runtime default ready",
@@ -887,7 +898,8 @@
     "r11-product-shadow-trial-current-001",
     "r11-external-holdout-validation-current-001",
     "r12-product-support-gate-current-001",
-    "r12-transfer-validation-current-001"
+    "r12-transfer-validation-current-001",
+    "r12-high-risk-holdout-registry-current-001"
   ],
   "source_registry": [
     {
@@ -957,6 +969,10 @@
     {
       "artifact_id": "r12-transfer-validation-current-001",
       "path": "experiments/results/r12_transfer_validation/r12-transfer-validation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-high-risk-holdout-registry-current-001",
+      "path": "experiments/results/r12_high_risk_holdout_registry/r12-high-risk-holdout-registry-current-001.json"
     }
   ],
   "status": "customer_value_report_ready_guarded"

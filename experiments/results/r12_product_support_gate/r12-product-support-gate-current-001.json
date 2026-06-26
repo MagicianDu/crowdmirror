@@ -5,19 +5,23 @@
     "primary_claims_guarded_baseline_only": true,
     "product_core_method_ready": false,
     "r12_can_override_primary_decision": false,
+    "r12_high_risk_research_holdout_candidates_present": true,
+    "r12_product_default_high_risk_holdout_present": false,
     "r12_transfer_positive_guarded": true,
     "runtime_default_allowed": false,
     "secondary_evidence_card_only": true
   },
   "allowed_claims": [
     "Product can display R12 as a source-backed guarded transfer evidence card.",
-    "R12 transfer evidence is secondary and requires customer or field outcome review before any runtime-default update."
+    "R12 transfer evidence is secondary and requires customer or field outcome review before any runtime-default update.",
+    "R12 has research-only high-risk holdout candidates, but Product default use remains blocked until low-sensitive or customer-approved holdout validation exists."
   ],
   "artifact_id": "r12-product-support-gate-current-001",
   "blocked_claims": [
     "R12 validated",
     "R12 supports Product core method by default",
     "R12 can override guarded baseline primary decision",
+    "R12 Product default high-risk recovery validated",
     "field_outcome_validated=true",
     "runtime_default_allowed=true",
     "runtime default ready",
@@ -53,15 +57,20 @@
     "secondary_evidence_card_only": true,
     "source_backed_only": true
   },
-  "run_id": "r12-l4-plus-current",
+  "run_id": "r12-l5-product-current",
   "schema_version": "r12-product-support-gate-v1",
   "source_refs": [
-    "r12-transfer-validation-current-001"
+    "r12-transfer-validation-current-001",
+    "r12-high-risk-holdout-registry-current-001"
   ],
   "source_registry": [
     {
       "artifact_id": "r12-transfer-validation-current-001",
       "path": "experiments/results/r12_transfer_validation/r12-transfer-validation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-high-risk-holdout-registry-current-001",
+      "path": "experiments/results/r12_high_risk_holdout_registry/r12-high-risk-holdout-registry-current-001.json"
     }
   ],
   "status": "r12_product_support_gate_ready_guarded",
@@ -97,6 +106,14 @@
         "static_prior_miss_recovery_holdout_covered": false
       },
       "field_outcome_validated": false,
+      "high_risk_holdout_boundary": {
+        "product_claim_boundary": "research_only_until_low_sensitive_or_customer_approved_holdout",
+        "product_default_eligible_case_count": 0,
+        "product_default_low_sensitive_high_risk_holdout_present": false,
+        "registry_status": "r12_high_risk_holdout_registry_ready_research_only",
+        "research_eligible_case_count": 29,
+        "research_recoverable_static_prior_miss_count": 12
+      },
       "runtime_default_allowed": false,
       "train_metrics_used_for_transfer_decision": false,
       "transfer_decision": "r12_update_transfer_positive_guarded"

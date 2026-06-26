@@ -505,13 +505,51 @@ L3+ 已新增 Product 扩展指标：
 - blocked claims 完整：已满足。
 - `runtime_default_allowed=false`：已满足。
 
+### R12 L5：High-risk holdout registry
+
+目标：把 L3+ 暴露的两个 Product 关键 gap 转成可审计的数据与治理边界：当前 holdout 缺少 observed high-risk case，因此无法验证 static-prior miss recovery 和 abnormal segment recall。L5 的任务不是直接证明 Product core method ready，而是寻找 source-backed high-risk holdout case family，并区分 Research 可验证材料与 Product 默认可用材料。
+
+当前已实现：
+
+- `experiments/r12_high_risk_holdout_registry.py`
+- `tests/test_r12_high_risk_holdout_registry.py`
+- `experiments/results/r12_high_risk_holdout_registry/r12-high-risk-holdout-registry-current-001.json`
+- `experiments/r12_product_support_gate.py` 已支持消费 L5 registry。
+- `experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json` 已刷新 L5 边界。
+- `experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json` 已刷新 R12 evidence summary。
+
+当前状态为 `r12_high_risk_holdout_registry_ready_research_only`。L5 从当前 Census HPS public-use ingestion artifact 中扫描 `PRICESTRESS` 高风险 segment，使用 `PRICECONCERN` 作为 source signal，并排除已用于 R12 train split 的 `hps_REGION_2` 与 `hps_METRO_STATUS_2`。结果如下：
+
+- scanned segment columns：6。
+- scanned segment cases：84。
+- research eligible high-risk holdout candidates：29。
+- research recoverable static-prior miss candidates：12。
+- product default eligible low-sensitive high-risk holdout candidates：0。
+- current R12 holdout high-risk cases：0。
+
+这给出一个明确结论：
+
+- Research 侧：L5 找到了可以继续做 high-risk replay / transfer validation 的 source-backed public proxy 材料，R12 没有卡死在“无高风险 holdout 可测”的状态。
+- Product 侧：这些新增候选主要来自收入、年龄、种族/族裔、性别等敏感或高治理 segment 轴，只能作为 research-only 或明确授权的审计材料，不能默认进入客户可见主决策。
+
+因此 L5 后的 Product gate 仍保持：
+
+- `product_core_method_ready=false`
+- `field_outcome_validated=false`
+- `runtime_default_allowed=false`
+- `r12_can_override_primary_decision=false`
+- blocked claim 新增或保留：`R12 Product default high-risk recovery validated`
+
+L5 的下一步是 `r12_high_risk_holdout_transfer_replay`：在这 29 个 research-only 高风险候选上复核 R12 update 对 static-prior miss recovery、abnormal segment recall、false alarm 和 interval coverage 的影响，并继续报告敏感 segment 治理边界。
+
 ## 当前推荐推进顺序
 
 1. R12 L0/L1 已完成：case registry 和 operator contract 已建立。
 2. R12 L2 已完成：train residual 已生成可审计结构化更新。
 3. R12 L3 已完成：当前 HPS public-use proxy split 上存在 guarded positive transfer signal。
 4. R12 L4 已完成：只以 guarded evidence card / API manifest source refs / blocked claims 的方式接入 Product，不覆盖主决策，不开启 runtime default。
-5. 下一步推进 R12 L5：优先寻找包含 observed high-risk holdout 的 case family，用来验证 static-prior miss recovery 和 abnormal segment recall，并寻找更接近业务 field outcome 的复核数据。
+5. R12 L5 已完成：已找到 29 个 source-backed research-only 高风险 holdout 候选，其中 12 个可用于验证静态先验漏报恢复；但 Product 默认可用的低敏感高风险 holdout 仍为 0。
+6. 下一步推进 R12 high-risk replay：验证这些 research-only candidate 是否真的改善 static-prior miss recovery、abnormal segment recall、false alarm 和 interval coverage，并寻找低敏感或客户授权的高风险 holdout。
 
 ## 成功信号
 
@@ -525,8 +563,8 @@ R12 的最小成功信号不是“指标全赢”，而是：
 
 ## 当前判断
 
-R12 目前拿到了比 R11 更强的最低正向信号：R11 只能证明 feedback ledger 可审计，R12 L3 已证明一个 train-only 结构化 mechanism update 能在 validation / holdout 上产生小幅正向迁移，且没有牺牲区间覆盖和 false alarm。
+R12 目前拿到了比 R11 更强的最低正向信号：R11 只能证明 feedback ledger 可审计，R12 L3 已证明一个 train-only 结构化 mechanism update 能在 validation / holdout 上产生小幅正向迁移，且没有牺牲区间覆盖和 false alarm；R12 L5 进一步找到了 high-risk replay 所需的 source-backed research-only holdout 材料。
 
 但这个结果仍不足以说 Research 已全面支撑 Product。当前最准确的表述是：
 
-> R12 在 HPS public-use proxy split 上形成了 guarded positive transfer signal，值得进入 Product guarded evidence card 和更大范围 holdout 扩展；但它尚不是 field-validated、customer-validated 或 runtime-default-ready 的 Product core method。
+> R12 在 HPS public-use proxy split 上形成了 guarded positive transfer signal，并找到了 research-only high-risk holdout 扩展材料，值得继续做 high-risk replay；但它尚不是 field-validated、customer-validated、低敏感 Product-default-ready 或 runtime-default-ready 的 Product core method。
