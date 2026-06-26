@@ -105,6 +105,10 @@ def test_r6_product_frontend_is_source_backed_and_fail_closed():
     assert "preferred_external_source_id" in js
     assert "raw_external_or_customer_slice_present" in js
     assert "r12_external_or_customer_holdout_raw_slice" in js
+    assert "external_or_customer_holdout_raw_slice_boundary" in js
+    assert "actual_public_data_ingested" in js
+    assert "total_observed_complaint_cases" in js
+    assert "r12_recall_mitigation_external_holdout_revalidation" in js
     assert "secondary_transfer_evidence_card_only" in js
     assert "/r6/product/r12-transfer-evidence" in js
 

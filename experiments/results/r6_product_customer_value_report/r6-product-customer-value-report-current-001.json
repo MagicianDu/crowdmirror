@@ -56,9 +56,9 @@
     "independent holdout data exists",
     "customer approved holdout slice exists",
     "mitigation independent data ready",
-    "raw external or customer holdout slice present",
     "external holdout revalidation completed",
-    "customer approved holdout validation completed"
+    "customer approved holdout validation completed",
+    "prediction fields present for DOT raw slice"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -323,9 +323,9 @@
         "independent holdout data exists",
         "customer approved holdout slice exists",
         "mitigation independent data ready",
-        "raw external or customer holdout slice present",
         "external holdout revalidation completed",
-        "customer approved holdout validation completed"
+        "customer approved holdout validation completed",
+        "prediction fields present for DOT raw slice"
       ],
       "claim_level": "product_secondary_evidence_only",
       "evidence_summary": {
@@ -343,6 +343,18 @@
           "extended_product_metric_support_level": "guarded_mae_positive_extended_metric_coverage_gap",
           "risk_ranking_non_regression": true,
           "static_prior_miss_recovery_holdout_covered": false
+        },
+        "external_or_customer_holdout_raw_slice_boundary": {
+          "actual_public_data_ingested": true,
+          "case_count": 14,
+          "external_holdout_revalidation_ready": false,
+          "next_required_artifact": "r12_recall_mitigation_external_holdout_revalidation",
+          "prediction_fields_present": false,
+          "product_default_allowed": false,
+          "raw_slice_status": "r12_external_or_customer_holdout_raw_slice_ready_external_dot_atcr_revalidation_pending",
+          "selected_source_id": "dot_air_travel_consumer_report_complaint_candidate",
+          "source_row_count": 15,
+          "total_observed_complaint_cases": 4839
         },
         "field_outcome_validated": false,
         "high_risk_holdout_boundary": {
@@ -394,11 +406,11 @@
           "contract_status": "r12_recall_mitigation_external_holdout_ingestion_or_customer_slice_ready_contract_blocked_no_raw_slice",
           "customer_approval_present": false,
           "customer_slice_fallback_enabled": true,
-          "minimum_case_count_met": false,
-          "next_required_artifact": "r12_external_or_customer_holdout_raw_slice",
+          "minimum_case_count_met": true,
+          "next_required_artifact": "r12_recall_mitigation_external_holdout_revalidation",
           "preferred_external_source_id": "dot_air_travel_consumer_report_complaint_candidate",
           "product_default_allowed": false,
-          "raw_external_or_customer_slice_present": false,
+          "raw_external_or_customer_slice_present": true,
           "selected_route": "external_public_holdout_first_customer_slice_compatible"
         },
         "recall_mitigation_holdout_validation_boundary": {
@@ -854,7 +866,7 @@
     "source_backed_only": true,
     "static_narrative_fallback_allowed": false
   },
-  "run_id": "r12-l12-product-current",
+  "run_id": "r12-l13-product-current",
   "schema_version": "r6-product-customer-value-report-v1",
   "section_contracts": [
     {
@@ -987,9 +999,9 @@
         "independent holdout data exists",
         "customer approved holdout slice exists",
         "mitigation independent data ready",
-        "raw external or customer holdout slice present",
         "external holdout revalidation completed",
-        "customer approved holdout validation completed"
+        "customer approved holdout validation completed",
+        "prediction fields present for DOT raw slice"
       ],
       "claim_status": "secondary_evidence_only",
       "section_id": "r12_transfer_evidence",
@@ -1036,7 +1048,8 @@
     "r12-recall-false-alarm-mitigation-candidate-current-001",
     "r12-recall-mitigation-holdout-validation-current-001",
     "r12-recall-mitigation-independent-holdout-data-current-001",
-    "r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-current-001"
+    "r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-current-001",
+    "r12-external-or-customer-holdout-raw-slice-current-001"
   ],
   "source_registry": [
     {
@@ -1138,6 +1151,10 @@
     {
       "artifact_id": "r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-current-001",
       "path": "experiments/results/r12_recall_mitigation_external_holdout_ingestion_or_customer_slice/r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-current-001.json"
+    },
+    {
+      "artifact_id": "r12-external-or-customer-holdout-raw-slice-current-001",
+      "path": "experiments/results/r12_external_or_customer_holdout_raw_slice/r12-external-or-customer-holdout-raw-slice-current-001.json"
     }
   ],
   "status": "customer_value_report_ready_guarded"

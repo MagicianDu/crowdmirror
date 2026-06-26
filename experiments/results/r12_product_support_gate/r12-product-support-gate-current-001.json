@@ -5,6 +5,10 @@
     "primary_claims_guarded_baseline_only": true,
     "product_core_method_ready": false,
     "r12_can_override_primary_decision": false,
+    "r12_external_or_customer_actual_public_data_ingested": true,
+    "r12_external_or_customer_product_default_allowed": false,
+    "r12_external_or_customer_raw_slice_present": true,
+    "r12_external_or_customer_revalidation_ready": false,
     "r12_high_risk_replay_mae_improved": true,
     "r12_high_risk_replay_recall_improved": false,
     "r12_high_risk_research_holdout_candidates_present": true,
@@ -18,7 +22,7 @@
     "r12_recall_false_alarm_stress_sensitive_concentration": true,
     "r12_recall_mitigation_external_or_customer_contract_ready": true,
     "r12_recall_mitigation_external_or_customer_product_default_allowed": false,
-    "r12_recall_mitigation_external_or_customer_raw_slice_present": false,
+    "r12_recall_mitigation_external_or_customer_raw_slice_present": true,
     "r12_recall_mitigation_external_or_customer_revalidation_ready": false,
     "r12_recall_mitigation_holdout_independent_present": false,
     "r12_recall_mitigation_holdout_leave_one_stable": false,
@@ -44,7 +48,8 @@
     "R12 false-alarm mitigation can be shown as a research-only candidate, but it needs independent holdout validation.",
     "R12 mitigation holdout validation blocks Product default and preserves the candidate as failure diagnosis evidence.",
     "R12 independent holdout data audit can be shown as a Product evidence boundary, while Product default remains blocked.",
-    "R12 external-or-customer holdout ingestion contract is ready, but raw slice and revalidation are still required."
+    "R12 external-or-customer holdout ingestion contract is ready, but raw slice and revalidation are still required.",
+    "R12 has ingested a DOT ATCR official raw complaint slice for external holdout revalidation preparation."
   ],
   "artifact_id": "r12-product-support-gate-current-001",
   "blocked_claims": [
@@ -69,9 +74,9 @@
     "independent holdout data exists",
     "customer approved holdout slice exists",
     "mitigation independent data ready",
-    "raw external or customer holdout slice present",
     "external holdout revalidation completed",
-    "customer approved holdout validation completed"
+    "customer approved holdout validation completed",
+    "prediction fields present for DOT raw slice"
   ],
   "claim_boundary": "R12 Product support gate artifact. It allows Product to display a source-backed R12 transfer-validation evidence card as secondary evidence, while preserving guarded baseline primary decisions. It is not Product core method validation, not field validation, and not runtime default authorization.",
   "claim_level": "product_secondary_evidence_only",
@@ -103,7 +108,7 @@
     "secondary_evidence_card_only": true,
     "source_backed_only": true
   },
-  "run_id": "r12-l12-product-current",
+  "run_id": "r12-l13-product-current",
   "schema_version": "r12-product-support-gate-v1",
   "source_refs": [
     "r12-transfer-validation-current-001",
@@ -114,7 +119,8 @@
     "r12-recall-false-alarm-mitigation-candidate-current-001",
     "r12-recall-mitigation-holdout-validation-current-001",
     "r12-recall-mitigation-independent-holdout-data-current-001",
-    "r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-current-001"
+    "r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-current-001",
+    "r12-external-or-customer-holdout-raw-slice-current-001"
   ],
   "source_registry": [
     {
@@ -152,6 +158,10 @@
     {
       "artifact_id": "r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-current-001",
       "path": "experiments/results/r12_recall_mitigation_external_holdout_ingestion_or_customer_slice/r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-current-001.json"
+    },
+    {
+      "artifact_id": "r12-external-or-customer-holdout-raw-slice-current-001",
+      "path": "experiments/results/r12_external_or_customer_holdout_raw_slice/r12-external-or-customer-holdout-raw-slice-current-001.json"
     }
   ],
   "status": "r12_product_support_gate_ready_guarded",
@@ -185,6 +195,18 @@
         "extended_product_metric_support_level": "guarded_mae_positive_extended_metric_coverage_gap",
         "risk_ranking_non_regression": true,
         "static_prior_miss_recovery_holdout_covered": false
+      },
+      "external_or_customer_holdout_raw_slice_boundary": {
+        "actual_public_data_ingested": true,
+        "case_count": 14,
+        "external_holdout_revalidation_ready": false,
+        "next_required_artifact": "r12_recall_mitigation_external_holdout_revalidation",
+        "prediction_fields_present": false,
+        "product_default_allowed": false,
+        "raw_slice_status": "r12_external_or_customer_holdout_raw_slice_ready_external_dot_atcr_revalidation_pending",
+        "selected_source_id": "dot_air_travel_consumer_report_complaint_candidate",
+        "source_row_count": 15,
+        "total_observed_complaint_cases": 4839
       },
       "field_outcome_validated": false,
       "high_risk_holdout_boundary": {
@@ -236,11 +258,11 @@
         "contract_status": "r12_recall_mitigation_external_holdout_ingestion_or_customer_slice_ready_contract_blocked_no_raw_slice",
         "customer_approval_present": false,
         "customer_slice_fallback_enabled": true,
-        "minimum_case_count_met": false,
-        "next_required_artifact": "r12_external_or_customer_holdout_raw_slice",
+        "minimum_case_count_met": true,
+        "next_required_artifact": "r12_recall_mitigation_external_holdout_revalidation",
         "preferred_external_source_id": "dot_air_travel_consumer_report_complaint_candidate",
         "product_default_allowed": false,
-        "raw_external_or_customer_slice_present": false,
+        "raw_external_or_customer_slice_present": true,
         "selected_route": "external_public_holdout_first_customer_slice_compatible"
       },
       "recall_mitigation_holdout_validation_boundary": {

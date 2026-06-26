@@ -210,6 +210,8 @@ function renderR12TransferEvidence(evidence) {
     summary
       .recall_mitigation_external_holdout_ingestion_or_customer_slice_boundary
     || {};
+  const externalOrCustomerRawSlice =
+    summary.external_or_customer_holdout_raw_slice_boundary || {};
   const update = summary.accepted_update || {};
   return `
     <article class="panel panel-wide">
@@ -436,6 +438,30 @@ function renderR12TransferEvidence(evidence) {
           <div>
             <dt>合同下一步</dt>
             <dd>${escapeHtml(recallMitigationExternalSlice.next_required_artifact || "r12_external_or_customer_holdout_raw_slice")}</dd>
+          </div>
+          <div>
+            <dt>外部 raw slice</dt>
+            <dd>${escapeHtml(externalOrCustomerRawSlice.raw_slice_status || "external_or_customer_holdout_raw_slice_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>官方数据接入</dt>
+            <dd>${formatBooleanGate(externalOrCustomerRawSlice.actual_public_data_ingested, "actual_public_data_ingested")}</dd>
+          </div>
+          <div>
+            <dt>raw slice cases</dt>
+            <dd>${formatCount(externalOrCustomerRawSlice.case_count)} / source rows ${formatCount(externalOrCustomerRawSlice.source_row_count)}</dd>
+          </div>
+          <div>
+            <dt>observed complaints</dt>
+            <dd>${formatCount(externalOrCustomerRawSlice.total_observed_complaint_cases)}</dd>
+          </div>
+          <div>
+            <dt>预测字段</dt>
+            <dd>${formatBooleanGate(externalOrCustomerRawSlice.prediction_fields_present, "prediction_fields_present")}</dd>
+          </div>
+          <div>
+            <dt>raw slice 下一步</dt>
+            <dd>${escapeHtml(externalOrCustomerRawSlice.next_required_artifact || "r12_recall_mitigation_external_holdout_revalidation")}</dd>
           </div>
         </dl>
         <p>R12 当前只能作为次级迁移证据展示，主决策仍来自 guarded baseline，真实客户 outcome 回流前不进入 runtime default。</p>

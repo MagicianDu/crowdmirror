@@ -860,6 +860,57 @@ L12 结论：
 - 因此 L12 仍不能启动 revalidation，Product default 继续阻断。
 - 下一步是 `r12_external_or_customer_holdout_raw_slice`。
 
+### R12 L13：External/customer holdout raw slice
+
+目标：把 L12 的合同推进为真实官方外部 raw outcome slice。L13 只解决“有没有 raw outcome 数据可供下一步 revalidation 使用”，不解决“R12 方法已经通过外部验证”。
+
+当前已实现：
+
+- `experiments/r12_external_or_customer_holdout_raw_slice.py`
+- `tests/test_r12_external_or_customer_holdout_raw_slice.py`
+- `experiments/results/r12_external_or_customer_holdout_raw_slice/r12-external-or-customer-holdout-raw-slice-current-001.json`
+- `experiments/r12_product_support_gate.py` 已支持消费 L13 raw slice artifact。
+- `experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json` 已刷新 L13 边界。
+- `experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json` 已刷新 R12 evidence summary。
+- `experiments/results/r6_product_api_manifest/r6-product-api-manifest-current-001.json` 已刷新 source registry 与 blocked claims。
+- `demo/app.js` 已展示 raw slice 状态、官方数据接入、case count、observed complaint total、预测字段状态和下一步。
+
+当前 raw slice 来源：
+
+- selected source：`dot_air_travel_consumer_report_complaint_candidate`。
+- source route：`external_public_official_report_slice`。
+- source owner：U.S. Department of Transportation。
+- source document：June 2026 Air Travel Consumer Report，April 2026 data。
+- source table：Table 3，Consumer Complaint Cases: U.S. Airlines。
+- source URL：`https://www.transportation.gov/resources/individuals/aviation-consumer-protection/june-2026-air-travel-consumer-report-april-2026`。
+- source PDF：`https://www.transportation.gov/sites/dot.gov/files/2026-06/June%202026%20ATCR.pdf`。
+
+当前 raw slice 结果：
+
+- `source_row_count=15`。
+- `case_count=14`。
+- `total_observed_complaint_cases=4839`。
+- `minimum_case_count_met=true`。
+- `actual_public_data_ingested=true`。
+- `raw_external_or_customer_slice_present=true`。
+- `prediction_fields_present=false`。
+- `external_holdout_revalidation_ready=false`。
+- `product_default_allowed=false`。
+
+Hawaiian Airlines 处理：
+
+- DOT PDF Table 3 的文本抽取中包含 Hawaiian Airlines `total=38`。
+- 但 DOT 脚注说明 Hawaiian Airlines consumer complaint data 已合并并归因到 Alaska Airlines。
+- 为避免双计，L13 将 Hawaiian Airlines 放入 `source_excluded_records`，不进入 `raw_records` 与 `normalized_holdout_cases`。
+- 这样 analytic rows 的总数与 DOT 官方 `TOTAL April 2026 = 4839` 对齐。
+
+L13 结论：
+
+- L13 已解除 L12 的“raw external/customer slice 缺失”阻断。
+- 但 L13 还没有为 DOT raw cases 生成 `static_prior_prediction` 与 `interaction_prediction`。
+- 因此 L13 不能启动 Product default，也不能声明 external holdout revalidation completed。
+- 下一步是 `r12_recall_mitigation_external_holdout_revalidation`：为 DOT raw slice 生成对齐预测字段，并验证 R12 update 是否在官方外部投诉 outcome 上改善 trend/risk ranking/interval/false alarm/recall 或给出失败结论。
+
 ## 当前推荐推进顺序
 
 1. R12 L0/L1 已完成：case registry 和 operator contract 已建立。
@@ -874,7 +925,8 @@ L12 结论：
 10. R12 L10 已完成：mitigation holdout validation 显示 leave-one pass rate 只有 `0.333333`，端点 holdout 失败 2 个，L9 guard 没有通过泛化验证。
 11. R12 L11 已完成：independent holdout data audit 显示当前没有可解除阻断的独立数据、低敏感可召回切片或客户授权 outcome。
 12. R12 L12 已完成：external/customer slice contract 就绪，但 raw external/customer holdout slice 仍缺失。
-13. 下一步推进 `r12_external_or_customer_holdout_raw_slice`：接入外部公开 raw slice，或接收客户授权 raw slice。
+13. R12 L13 已完成：DOT ATCR official raw complaint slice 已接入，raw slice 缺失阻断解除，但预测字段和 revalidation 仍缺失。
+14. 下一步推进 `r12_recall_mitigation_external_holdout_revalidation`：为 DOT raw slice 生成静态先验/交互预测并执行外部 holdout revalidation。
 
 ## 成功信号
 
@@ -888,8 +940,8 @@ R12 的最小成功信号不是“指标全赢”，而是：
 
 ## 当前判断
 
-R12 目前拿到了比 R11 更强的最低正向信号：R11 只能证明 feedback ledger 可审计，R12 L3 已证明一个 train-only 结构化 mechanism update 能在 validation / holdout 上产生小幅正向迁移，且没有牺牲区间覆盖和 false alarm；R12 L5/L6 进一步找到了 high-risk replay 材料，并证明当前 update 在 high-risk research-only replay 上有 MAE 小幅正向；R12 L7 则进一步证明 activation margin 这类结构化阈值候选可以提升 static-prior miss recovery 与 abnormal segment recall；R12 L8 又把该召回增益的 false-alarm 失败边界量化出来；R12 L9 进一步说明 false-alarm 代价存在可缓解候选；R12 L10 则证明该候选没有通过 holdout 稳定性，只能保留为 failure diagnosis candidate；R12 L11 进一步证明当前数据条件不足以解除 Product default 阻断；R12 L12 把外部/客户 holdout 接入条件合同化，但还没有 raw slice。
+R12 目前拿到了比 R11 更强的最低正向信号：R11 只能证明 feedback ledger 可审计，R12 L3 已证明一个 train-only 结构化 mechanism update 能在 validation / holdout 上产生小幅正向迁移，且没有牺牲区间覆盖和 false alarm；R12 L5/L6 进一步找到了 high-risk replay 材料，并证明当前 update 在 high-risk research-only replay 上有 MAE 小幅正向；R12 L7 则进一步证明 activation margin 这类结构化阈值候选可以提升 static-prior miss recovery 与 abnormal segment recall；R12 L8 又把该召回增益的 false-alarm 失败边界量化出来；R12 L9 进一步说明 false-alarm 代价存在可缓解候选；R12 L10 则证明该候选没有通过 holdout 稳定性，只能保留为 failure diagnosis candidate；R12 L11 进一步证明当前数据条件不足以解除 Product default 阻断；R12 L12 把外部/客户 holdout 接入条件合同化；R12 L13 已接入 DOT ATCR official raw complaint slice，但还没有完成预测字段生成和 revalidation。
 
 但这个结果仍不足以说 Research 已全面支撑 Product。当前最准确的表述是：
 
-> R12 在 HPS public-use proxy split 上形成了 guarded positive transfer signal，在 research-only high-risk replay 上取得 MAE 小幅改善，通过 activation margin 候选提升了 high-risk recall，并找到一个能消除当前新增误报的 research-only mitigation candidate；但 L10 已证明该候选未通过 leave-one holdout 稳定性，L11 又证明当前没有可解除阻断的 independent holdout / low-sensitive / customer-approved validation，L12 也只完成外部/客户 holdout 合同而没有 raw slice，因此它不是 field-validated、customer-validated、低敏感 Product-default-ready 或 runtime-default-ready 的 Product core method。
+> R12 在 HPS public-use proxy split 上形成了 guarded positive transfer signal，在 research-only high-risk replay 上取得 MAE 小幅改善，通过 activation margin 候选提升了 high-risk recall，并找到一个能消除当前新增误报的 research-only mitigation candidate；但 L10 已证明该候选未通过 leave-one holdout 稳定性，L11 又证明当前没有可解除阻断的 independent holdout / low-sensitive / customer-approved validation，L13 虽已接入 DOT ATCR official raw complaint slice，却尚未生成预测字段和完成 external holdout revalidation，因此它不是 field-validated、customer-validated、低敏感 Product-default-ready 或 runtime-default-ready 的 Product core method。

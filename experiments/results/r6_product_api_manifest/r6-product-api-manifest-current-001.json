@@ -88,9 +88,9 @@
     "independent holdout data exists",
     "customer approved holdout slice exists",
     "mitigation independent data ready",
-    "raw external or customer holdout slice present",
     "external holdout revalidation completed",
-    "customer approved holdout validation completed"
+    "customer approved holdout validation completed",
+    "prediction fields present for DOT raw slice"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -238,7 +238,7 @@
     "product_api_manifest_ready": true,
     "runtime_default_allowed": false
   },
-  "run_id": "r12-l12-product-current",
+  "run_id": "r12-l13-product-current",
   "schema_version": "r6-product-api-manifest-v1",
   "source_refs": [
     "r6-product-readiness-index-current-001",
@@ -274,7 +274,8 @@
     "r12-recall-false-alarm-mitigation-candidate-current-001",
     "r12-recall-mitigation-holdout-validation-current-001",
     "r12-recall-mitigation-independent-holdout-data-current-001",
-    "r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-current-001"
+    "r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-current-001",
+    "r12-external-or-customer-holdout-raw-slice-current-001"
   ],
   "source_registry": [
     {
@@ -428,6 +429,10 @@
     {
       "artifact_id": "r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-current-001",
       "path": "experiments/results/r12_recall_mitigation_external_holdout_ingestion_or_customer_slice/r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-current-001.json"
+    },
+    {
+      "artifact_id": "r12-external-or-customer-holdout-raw-slice-current-001",
+      "path": "experiments/results/r12_external_or_customer_holdout_raw_slice/r12-external-or-customer-holdout-raw-slice-current-001.json"
     }
   ],
   "status": "product_api_manifest_ready_guarded"
