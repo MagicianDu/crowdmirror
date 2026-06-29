@@ -1,0 +1,153 @@
+{
+  "acceptance_decision": "accept_customer_field_slice_handoff_ready_keep_validation_blocked",
+  "acceptance_gates": {
+    "customer_data_request_ready": true,
+    "customer_field_slice_contract_machine_checkable": true,
+    "customer_field_slice_template_generated": true,
+    "direct_personal_identifiers_allowed": false,
+    "field_outcome_validated": false,
+    "manual_prompt_or_persona_patch_allowed": false,
+    "metrics_computed": false,
+    "outcome_source_arrived": false,
+    "product_default_allowed": false,
+    "runtime_default_allowed": false,
+    "source_arrival_gate_ready": true
+  },
+  "allowed_claims": [
+    "Product can provide a machine-checkable customer field slice template for outcome revalidation.",
+    "Customer field slices must be approved and pseudonymous before they can trigger revalidation."
+  ],
+  "artifact_id": "r12-customer-field-slice-handoff-package-current-001",
+  "blocked_claims": [
+    "metrics_computed=true",
+    "field_or_pre_outcome_revalidation_passed=true",
+    "field_outcome_validated=true",
+    "direct personal identifiers in customer slice",
+    "manual prompt/persona patch from customer slice",
+    "Product default can use customer field slice by default",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "customer_field_slice_handoff_ready_no_validation_claim",
+  "field_slice_contract": {
+    "accepted_formats": [
+      "csv",
+      "jsonl"
+    ],
+    "field_definitions": [
+      {
+        "field": "case_id",
+        "required": true,
+        "type": "string",
+        "validation_rule": "Use a pseudonymous stable id; do not include direct PII."
+      },
+      {
+        "field": "segment_id",
+        "required": true,
+        "type": "string",
+        "validation_rule": "Segment, cohort, route, policy group, or account cohort id."
+      },
+      {
+        "field": "scenario_id",
+        "required": true,
+        "type": "string",
+        "validation_rule": "Must match the scenario being revalidated."
+      },
+      {
+        "field": "prediction_share_or_score",
+        "required": true,
+        "type": "number",
+        "validation_rule": "Locked prediction score used before outcome arrival."
+      },
+      {
+        "field": "observed_outcome",
+        "required": true,
+        "type": "number",
+        "validation_rule": "Observed post-event response or risk outcome."
+      },
+      {
+        "field": "outcome_timestamp",
+        "required": true,
+        "type": "datetime",
+        "validation_rule": "Timestamp must be after the pre-outcome prediction lock."
+      },
+      {
+        "field": "customer_approval_reference",
+        "required": true,
+        "type": "string",
+        "validation_rule": "Reference to customer approval or data-use record."
+      }
+    ],
+    "minimum_case_count": 10,
+    "required_fields": [
+      "case_id",
+      "segment_id",
+      "scenario_id",
+      "prediction_share_or_score",
+      "observed_outcome",
+      "outcome_timestamp",
+      "customer_approval_reference"
+    ],
+    "validation_rules": [
+      "case_count >= 10",
+      "all required fields present",
+      "customer_approval_reference non-empty for every row",
+      "direct personal identifiers are not allowed",
+      "manual prompt/persona patch is not allowed"
+    ]
+  },
+  "handoff_summary": {
+    "generated_at": "2026-06-27T15:45:00Z",
+    "minimum_case_count": 10,
+    "prediction_case_count": 14,
+    "source_arrival_artifact_id": "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+    "target_outcome_period": "May 2026",
+    "template_output_path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv"
+  },
+  "next_required_artifact": "r12_target_outcome_or_customer_field_slice_arrival_with_customer_slice",
+  "privacy_and_approval_contract": {
+    "aggregation_or_pseudonymous_case_id_required": true,
+    "customer_approval_reference_required": true,
+    "direct_personal_identifiers_allowed": false,
+    "manual_prompt_or_persona_patch_allowed": false
+  },
+  "run_id": "r12-l21-current-001",
+  "schema_version": "r12-customer-field-slice-handoff-package-v1",
+  "source_refs": [
+    "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+    "customer_field_slice_template:experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+      "path": "experiments/results/r12_target_outcome_or_customer_field_slice_arrival/r12-target-outcome-or-customer-field-slice-arrival-current-001.json"
+    },
+    {
+      "artifact_id": "customer_field_slice_template:experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv",
+      "path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv"
+    }
+  ],
+  "status": "r12_customer_field_slice_handoff_package_ready_guarded",
+  "template_preview": {
+    "columns": [
+      "case_id",
+      "segment_id",
+      "scenario_id",
+      "prediction_share_or_score",
+      "observed_outcome",
+      "outcome_timestamp",
+      "customer_approval_reference"
+    ],
+    "example_row": {
+      "case_id": "customer_case_001",
+      "customer_approval_reference": "customer_approval_id",
+      "observed_outcome": "0.140",
+      "outcome_timestamp": "2026-07-15T00:00:00Z",
+      "prediction_share_or_score": "0.125",
+      "scenario_id": "customer_scenario_001",
+      "segment_id": "segment_or_cohort_id"
+    },
+    "header_only_template": true,
+    "template_output_path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv"
+  }
+}

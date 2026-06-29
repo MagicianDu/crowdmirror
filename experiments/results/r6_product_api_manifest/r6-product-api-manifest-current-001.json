@@ -88,9 +88,52 @@
     "independent holdout data exists",
     "customer approved holdout slice exists",
     "mitigation independent data ready",
-    "external holdout revalidation completed",
     "customer approved holdout validation completed",
-    "prediction fields present for DOT raw slice"
+    "prediction fields present for DOT raw slice",
+    "external holdout revalidation passed with independent predictions",
+    "prediction source independent of observed outcome",
+    "pre-outcome prediction packet locked before target outcome",
+    "independent hindcast revalidation passed",
+    "pre-outcome validation passed",
+    "Product default can use R12 hindcast by default",
+    "pre-outcome outcome revalidation passed",
+    "customer field outcome validated",
+    "target outcome artifact present",
+    "Product default can use R12 pre-outcome trial by default",
+    "field_or_pre_outcome_revalidation_ready=true",
+    "Product default can use R12 outcome ingestion by default",
+    "metrics_computed=true",
+    "field_or_pre_outcome_revalidation_passed=true",
+    "Product default can use R12 outcome revalidation by default",
+    "outcome_source_arrived=true",
+    "Product default can use R12 outcome source by default",
+    "direct personal identifiers in customer slice",
+    "manual prompt/persona patch from customer slice",
+    "Product default can use customer field slice by default",
+    "ready_for_revalidation=true",
+    "Product default can use customer field validation by default",
+    "metrics_consumed=true",
+    "candidate_updates_generated=true",
+    "manual prompt/persona patch from customer feedback",
+    "Product default can use customer feedback update by default",
+    "shadow_replay_executed=true",
+    "at_least_one_candidate_passed=true",
+    "Product default can use customer feedback shadow replay by default",
+    "accepted_shadow_candidates_present=true",
+    "independent_holdout_present=true",
+    "holdout_review_executed=true",
+    "Product default can use customer feedback holdout review by default",
+    "customer field validation passed",
+    "feedback update is accepted for Product default",
+    "Product default can use customer feedback updates",
+    "customer trial has produced accepted feedback update",
+    "Product default can use customer trial output",
+    "customer trial produced accepted feedback update",
+    "real_customer_field_slice_validated=true",
+    "real_independent_holdout_present=true",
+    "metrics_computed_on_real_customer_slice=true",
+    "Product default can use customer feedback loop by default",
+    "pre_outcome_field_validation_passed=true"
   ],
   "blocking_gaps": [
     "needs_field_outcome_validation",
@@ -238,7 +281,7 @@
     "product_api_manifest_ready": true,
     "runtime_default_allowed": false
   },
-  "run_id": "r12-l13-product-current",
+  "run_id": "r6-product-api-manifest-current-001",
   "schema_version": "r6-product-api-manifest-v1",
   "source_refs": [
     "r6-product-readiness-index-current-001",
@@ -275,7 +318,29 @@
     "r12-recall-mitigation-holdout-validation-current-001",
     "r12-recall-mitigation-independent-holdout-data-current-001",
     "r12-recall-mitigation-external-holdout-ingestion-or-customer-slice-current-001",
-    "r12-external-or-customer-holdout-raw-slice-current-001"
+    "r12-external-or-customer-holdout-raw-slice-current-001",
+    "r12-recall-mitigation-external-holdout-revalidation-current-001",
+    "r12-pre-outcome-or-independent-prediction-packet-current-001",
+    "r12-independent-hindcast-revalidation-current-001",
+    "r12-pre-outcome-prediction-trial-or-customer-field-revalidation-current-001",
+    "r12-pre-outcome-or-customer-field-outcome-ingestion-current-001",
+    "r12-pre-outcome-or-customer-field-outcome-revalidation-current-001",
+    "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+    "r12-customer-field-slice-handoff-package-current-001",
+    "r12-customer-field-slice-intake-validation-current-001",
+    "r12-customer-field-slice-revalidation-current-001",
+    "r12-customer-field-outcome-feedback-update-current-001",
+    "r12-customer-feedback-update-shadow-replay-current-001",
+    "r12-customer-feedback-shadow-replay-holdout-review-current-001",
+    "r12-customer-validation-workflow-status-current-001",
+    "r12-customer-trial-readiness-package-current-001",
+    "r12-customer-trial-operational-check-current-001",
+    "r12-customer-trial-launch-handoff-package-current-001",
+    "r12-customer-trial-launch-packet-export-current-001",
+    "r12-customer-trial-launch-bundle-verification-current-001",
+    "r12-customer-field-slice-operator-rehearsal-current-001",
+    "r12-customer-feedback-loop-operator-rehearsal-current-001",
+    "r12-customer-trial-evidence-ledger-current-001"
   ],
   "source_registry": [
     {
@@ -433,6 +498,94 @@
     {
       "artifact_id": "r12-external-or-customer-holdout-raw-slice-current-001",
       "path": "experiments/results/r12_external_or_customer_holdout_raw_slice/r12-external-or-customer-holdout-raw-slice-current-001.json"
+    },
+    {
+      "artifact_id": "r12-recall-mitigation-external-holdout-revalidation-current-001",
+      "path": "experiments/results/r12_recall_mitigation_external_holdout_revalidation/r12-recall-mitigation-external-holdout-revalidation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-pre-outcome-or-independent-prediction-packet-current-001",
+      "path": "experiments/results/r12_pre_outcome_or_independent_prediction_packet/r12-pre-outcome-or-independent-prediction-packet-current-001.json"
+    },
+    {
+      "artifact_id": "r12-independent-hindcast-revalidation-current-001",
+      "path": "experiments/results/r12_independent_hindcast_revalidation/r12-independent-hindcast-revalidation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-pre-outcome-prediction-trial-or-customer-field-revalidation-current-001",
+      "path": "experiments/results/r12_pre_outcome_prediction_trial_or_customer_field_revalidation/r12-pre-outcome-prediction-trial-or-customer-field-revalidation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-pre-outcome-or-customer-field-outcome-ingestion-current-001",
+      "path": "experiments/results/r12_pre_outcome_or_customer_field_outcome_ingestion/r12-pre-outcome-or-customer-field-outcome-ingestion-current-001.json"
+    },
+    {
+      "artifact_id": "r12-pre-outcome-or-customer-field-outcome-revalidation-current-001",
+      "path": "experiments/results/r12_pre_outcome_or_customer_field_outcome_revalidation/r12-pre-outcome-or-customer-field-outcome-revalidation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+      "path": "experiments/results/r12_target_outcome_or_customer_field_slice_arrival/r12-target-outcome-or-customer-field-slice-arrival-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-field-slice-handoff-package-current-001",
+      "path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-handoff-package-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-field-slice-intake-validation-current-001",
+      "path": "experiments/results/r12_customer_field_slice_intake_validation/r12-customer-field-slice-intake-validation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-field-slice-revalidation-current-001",
+      "path": "experiments/results/r12_customer_field_slice_revalidation/r12-customer-field-slice-revalidation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-field-outcome-feedback-update-current-001",
+      "path": "experiments/results/r12_customer_field_outcome_feedback_update/r12-customer-field-outcome-feedback-update-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-feedback-update-shadow-replay-current-001",
+      "path": "experiments/results/r12_customer_feedback_update_shadow_replay/r12-customer-feedback-update-shadow-replay-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-feedback-shadow-replay-holdout-review-current-001",
+      "path": "experiments/results/r12_customer_feedback_shadow_replay_holdout_review/r12-customer-feedback-shadow-replay-holdout-review-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-validation-workflow-status-current-001",
+      "path": "experiments/results/r12_customer_validation_workflow_status/r12-customer-validation-workflow-status-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-trial-readiness-package-current-001",
+      "path": "experiments/results/r12_customer_trial_readiness_package/r12-customer-trial-readiness-package-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-trial-operational-check-current-001",
+      "path": "experiments/results/r12_customer_trial_operational_check/r12-customer-trial-operational-check-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-trial-launch-handoff-package-current-001",
+      "path": "experiments/results/r12_customer_trial_launch_handoff_package/r12-customer-trial-launch-handoff-package-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-trial-launch-packet-export-current-001",
+      "path": "experiments/results/r12_customer_trial_launch_packet_export/r12-customer-trial-launch-packet-export-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-trial-launch-bundle-verification-current-001",
+      "path": "experiments/results/r12_customer_trial_launch_bundle_verification/r12-customer-trial-launch-bundle-verification-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-field-slice-operator-rehearsal-current-001",
+      "path": "experiments/results/r12_customer_field_slice_operator_rehearsal/r12-customer-field-slice-operator-rehearsal-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-feedback-loop-operator-rehearsal-current-001",
+      "path": "experiments/results/r12_customer_feedback_loop_operator_rehearsal/r12-customer-feedback-loop-operator-rehearsal-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-trial-evidence-ledger-current-001",
+      "path": "experiments/results/r12_customer_trial_evidence_ledger/r12-customer-trial-evidence-ledger-current-001.json"
     }
   ],
   "status": "product_api_manifest_ready_guarded"

@@ -478,6 +478,25 @@ def _display_payload(
             "r12_can_override_primary_decision": primary[
                 "r12_can_override_primary_decision"
             ],
+            **(
+                {
+                    "public_data_validation_scope": r12_product_support_gate[
+                        "public_data_validation_scope"
+                    ],
+                    "public_data_effectiveness_claim_allowed": (
+                        r12_product_support_gate["acceptance_gates"][
+                            "r12_public_data_effectiveness_claim_allowed"
+                        ]
+                    ),
+                    "customer_field_validation_required_for_current_stage": (
+                        r12_product_support_gate["acceptance_gates"][
+                            "customer_field_validation_required_for_current_stage"
+                        ]
+                    ),
+                }
+                if "public_data_validation_scope" in r12_product_support_gate
+                else {}
+            ),
             "field_outcome_validated": r12_product_support_gate["acceptance_gates"][
                 "field_outcome_validated"
             ],

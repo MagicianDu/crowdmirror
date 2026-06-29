@@ -1,0 +1,45 @@
+{
+  "acceptance_decision": "reject_shadow_replay_no_feedback_candidates",
+  "acceptance_gates": {
+    "at_least_one_candidate_passed": false,
+    "false_alarm_non_regression": false,
+    "feedback_candidates_present": false,
+    "product_default_allowed": false,
+    "runtime_default_allowed": false,
+    "shadow_replay_executed": false
+  },
+  "allowed_claims": [
+    "Customer feedback shadow replay harness is ready, but no feedback update candidates are available."
+  ],
+  "artifact_id": "r12-customer-feedback-update-shadow-replay-current-001",
+  "blocked_claims": [
+    "shadow_replay_executed=true",
+    "at_least_one_candidate_passed=true",
+    "Product default can use customer feedback shadow replay by default",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "candidate_replay_results": [],
+  "claim_level": "customer_feedback_shadow_replay_blocked",
+  "next_required_artifact": "validated_customer_field_feedback_update",
+  "run_id": "r12-l25-current-001",
+  "schema_version": "r12-customer-feedback-update-shadow-replay-v1",
+  "shadow_replay_summary": {
+    "accepted_candidate_count": 0,
+    "candidate_count": 0,
+    "feedback_update_artifact_id": "r12-customer-field-outcome-feedback-update-current-001",
+    "rejected_candidate_count": 0,
+    "replay_executed": false,
+    "replay_requested_at": "2026-06-28T10:30:00Z"
+  },
+  "source_refs": [
+    "r12-customer-field-outcome-feedback-update-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-customer-field-outcome-feedback-update-current-001",
+      "path": "experiments/results/r12_customer_field_outcome_feedback_update/r12-customer-field-outcome-feedback-update-current-001.json"
+    }
+  ],
+  "status": "r12_customer_feedback_update_shadow_replay_blocked_no_candidates"
+}

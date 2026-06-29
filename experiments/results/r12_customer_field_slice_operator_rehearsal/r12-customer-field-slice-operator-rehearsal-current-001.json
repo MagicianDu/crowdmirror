@@ -1,0 +1,72 @@
+{
+  "acceptance_decision": "accept_operator_rehearsal_keep_customer_validation_blocked",
+  "acceptance_gates": {
+    "field_outcome_validated": false,
+    "intake_validator_executed": true,
+    "metrics_computed": false,
+    "operator_command_rehearsed": true,
+    "product_default_allowed": false,
+    "real_customer_field_slice_submitted": false,
+    "runtime_default_allowed": false,
+    "sample_slice_intake_ready_for_revalidation": true,
+    "synthetic_rehearsal_fixture_generated": true
+  },
+  "allowed_claims": [
+    "An operator can run the customer field slice intake command shape on a synthetic rehearsal fixture.",
+    "The rehearsal exercises the real L22 intake validator and keeps Product validation and runtime-default claims blocked."
+  ],
+  "artifact_id": "r12-customer-field-slice-operator-rehearsal-current-001",
+  "blocked_claims": [
+    "real_customer_field_slice_validated=true",
+    "metrics_computed=true",
+    "field_outcome_validated=true",
+    "field_or_pre_outcome_revalidation_passed=true",
+    "Product default can use customer field slice by default",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "operator_rehearsal_only_no_customer_validation_claim",
+  "intake_artifact_summary": {
+    "artifact_id": "r12-customer-field-slice-intake-validation-rehearsal",
+    "ready_for_revalidation": true,
+    "status": "r12_customer_field_slice_intake_validation_ready_for_revalidation_guarded",
+    "validation_errors": []
+  },
+  "next_required_artifact": "real_customer_field_slice_intake_validation_or_target_outcome_revalidation",
+  "operator_command_template": ".venv/bin/python experiments/r12_customer_field_slice_intake_validation.py --artifact-id r12-customer-field-slice-intake-validation-customer-001 --run-id r12-customer-field-slice-intake-customer-001 --r12-customer-field-slice-handoff-package-path experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-handoff-package-current-001.json --intake-checked-at CUSTOMER_FIELD_SLICE_INTAKE_TIMESTAMP --customer-field-slice-path CUSTOMER_FIELD_SLICE_PATH --output experiments/results/r12_customer_field_slice_intake_validation/r12-customer-field-slice-intake-validation-customer-001.json",
+  "rehearsal_summary": {
+    "case_count": 10,
+    "handoff_artifact_id": "r12-customer-field-slice-handoff-package-current-001",
+    "intake_output_path": "experiments/results/r12_customer_field_slice_operator_rehearsal/rehearsal-work-current-001/r12-customer-field-slice-intake-validation-rehearsal.json",
+    "intake_status": "r12_customer_field_slice_intake_validation_ready_for_revalidation_guarded",
+    "minimum_case_count": 10,
+    "operator_command_template_matches_demo": true,
+    "rehearsal_started_at": "2026-06-28T11:30:00Z",
+    "required_field_count": 7,
+    "sample_slice_kind": "synthetic_rehearsal_fixture",
+    "sample_slice_path": "experiments/results/r12_customer_field_slice_operator_rehearsal/rehearsal-work-current-001/r12-customer-field-slice-rehearsal-sample.csv",
+    "sample_slice_ready_for_revalidation": true
+  },
+  "run_id": "r12-l34-current-001",
+  "schema_version": "r12-customer-field-slice-operator-rehearsal-v1",
+  "source_refs": [
+    "r12-customer-field-slice-handoff-package-current-001",
+    "r12-customer-field-slice-intake-validation-rehearsal",
+    "synthetic_rehearsal_slice:experiments/results/r12_customer_field_slice_operator_rehearsal/rehearsal-work-current-001/r12-customer-field-slice-rehearsal-sample.csv"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-customer-field-slice-handoff-package-current-001",
+      "path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-handoff-package-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-field-slice-intake-validation-rehearsal",
+      "path": "experiments/results/r12_customer_field_slice_operator_rehearsal/rehearsal-work-current-001/r12-customer-field-slice-intake-validation-rehearsal.json"
+    },
+    {
+      "artifact_id": "synthetic_rehearsal_slice:experiments/results/r12_customer_field_slice_operator_rehearsal/rehearsal-work-current-001/r12-customer-field-slice-rehearsal-sample.csv",
+      "path": "experiments/results/r12_customer_field_slice_operator_rehearsal/rehearsal-work-current-001/r12-customer-field-slice-rehearsal-sample.csv"
+    }
+  ],
+  "status": "r12_customer_field_slice_operator_rehearsal_ready_no_field_claim"
+}

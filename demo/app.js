@@ -16,6 +16,9 @@ const SECTION_LABELS = [
   "异常群体",
   "机制解释",
   "研究支撑",
+  "试运行工作台",
+  "客户 field slice 校验",
+  "客户试运行",
   "R12 迁移验证",
   "证据边界",
   "阻断声明",
@@ -40,6 +43,29 @@ const SUPPORT_LABELS = {
   guarded_transfer_positive_secondary_evidence: "迁移信号有护栏",
   product_secondary_evidence_only: "仅次级证据",
 };
+
+const CUSTOMER_FIELD_SLICE_REQUIRED_FIELDS = [
+  "case_id",
+  "segment_id",
+  "scenario_id",
+  "prediction_share_or_score",
+  "observed_outcome",
+  "outcome_timestamp",
+  "customer_approval_reference",
+];
+
+const CUSTOMER_FIELD_SLICE_MINIMUM_CASE_COUNT = 10;
+const CUSTOMER_FIELD_SLICE_DIRECT_PII_COLUMNS = new Set([
+  "address",
+  "email",
+  "full_name",
+  "id_card",
+  "name",
+  "passport",
+  "phone",
+  "ssn",
+]);
+const CUSTOMER_FIELD_SLICE_EMAIL_PATTERN = /[^@\s]+@[^@\s]+\.[^@\s]+/;
 
 const app = document.getElementById("app");
 
@@ -75,6 +101,15 @@ function validateSourceBackedContract(report) {
   if (contract.precise_point_prediction_allowed !== false) {
     throw new Error("precise_point_prediction_allowed 必须为 false");
   }
+}
+
+function artifactPathToHref(path) {
+  if (typeof path !== "string") return "#";
+  const trimmed = path.trim();
+  if (!trimmed || trimmed.includes("..") || /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(trimmed)) {
+    return "#";
+  }
+  return `/${trimmed.replace(/^\/+/, "")}`;
 }
 
 function renderApp({ customerValueReport, valueSupport, readinessIndex, apiManifest }) {
@@ -163,6 +198,12 @@ function renderApp({ customerValueReport, valueSupport, readinessIndex, apiManif
         ${renderResearchSupport(researchSupport, supportGapLedger, researchNextTasks)}
       </article>
 
+      ${renderCustomerWorkflowWorkbench(r12TransferEvidence, apiManifest)}
+
+      ${renderCustomerFieldSliceIntakePanel(r12TransferEvidence)}
+
+      ${renderCustomerTrialActionPanel(r12TransferEvidence)}
+
       ${renderR12TransferEvidence(r12TransferEvidence)}
 
       <article class="panel panel-wide">
@@ -190,11 +231,726 @@ function renderApp({ customerValueReport, valueSupport, readinessIndex, apiManif
       </article>
     </section>
   `;
+  bindCustomerFieldSliceIntakeControls();
+}
+
+function renderCustomerFieldSliceIntakePanel(evidence) {
+  if (!evidence) return "";
+  const summary = evidence.evidence_summary || {};
+  const handoff = summary.customer_field_slice_handoff_package_boundary || {};
+  const intake = summary.customer_field_slice_intake_validation_boundary || {};
+  const operatorRehearsal =
+    summary.customer_field_slice_operator_rehearsal_boundary || {};
+  const feedbackLoopRehearsal =
+    summary.customer_feedback_loop_operator_rehearsal_boundary || {};
+  const templatePath =
+    handoff.template_output_path || "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv";
+  const templateHref = artifactPathToHref(templatePath);
+  return `
+    <article class="panel panel-wide field-slice-intake-panel">
+      <div class="panel-heading">
+        <p class="eyebrow">Field Slice Intake</p>
+        <h2>客户 field slice 校验</h2>
+      </div>
+      <div class="field-slice-layout">
+        <div class="field-slice-contract">
+          <dl>
+            <div>
+              <dt>minimum_case_count</dt>
+              <dd>${formatCount(handoff.minimum_case_count || intake.minimum_case_count || 10)}</dd>
+            </div>
+            <div>
+              <dt>required_fields</dt>
+              <dd>${escapeHtml(CUSTOMER_FIELD_SLICE_REQUIRED_FIELDS.join(" / "))}</dd>
+            </div>
+            <div>
+              <dt>template_output_path</dt>
+              <dd><a class="artifact-link" href="${escapeHtml(templateHref)}" target="_blank" rel="noopener">打开字段模板</a></dd>
+            </div>
+            <div>
+              <dt>current_intake_status</dt>
+              <dd>${escapeHtml(intake.intake_status || "customer_field_slice_intake_validation_pending_no_slice")}</dd>
+            </div>
+            <div>
+              <dt>operator_rehearsal_status</dt>
+              <dd>${escapeHtml(operatorRehearsal.operator_rehearsal_status || "r12_customer_field_slice_operator_rehearsal 未提供")}</dd>
+            </div>
+            <div>
+              <dt>operator_command_rehearsed</dt>
+              <dd>${formatBooleanGate(operatorRehearsal.operator_command_rehearsed, "operator_command_rehearsed")}</dd>
+            </div>
+            <div>
+              <dt>feedback_loop_rehearsal_status</dt>
+              <dd>${escapeHtml(feedbackLoopRehearsal.feedback_loop_rehearsal_status || "r12_customer_feedback_loop_operator_rehearsal 未提供")}</dd>
+            </div>
+            <div>
+              <dt>l22_to_l26_rehearsed</dt>
+              <dd>${formatBooleanGate(feedbackLoopRehearsal.l26_synthetic_holdout_review_executed, "l26_synthetic_holdout_review_executed")}</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="field-slice-uploader">
+          <label class="file-picker">
+            <input id="customer-field-slice-input" type="file" accept=".csv,.jsonl,text/csv,application/jsonl" />
+            <span>选择客户 field slice</span>
+          </label>
+          <div id="customer-field-slice-intake-output" class="intake-preview">
+            ${renderCustomerFieldSliceIntakePreview(emptyCustomerFieldSlicePreview())}
+          </div>
+          <button id="customer-field-slice-revalidation-handoff" class="handoff-button" type="button" disabled>
+            触发 revalidation handoff
+          </button>
+          <div id="customer-field-slice-handoff-output" class="handoff-preview">
+            ${renderCustomerFieldSliceRevalidationHandoff(emptyCustomerFieldSlicePreview())}
+          </div>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function bindCustomerFieldSliceIntakeControls() {
+  const input = document.getElementById("customer-field-slice-input");
+  const output = document.getElementById("customer-field-slice-intake-output");
+  const handoffButton = document.getElementById("customer-field-slice-revalidation-handoff");
+  const handoffOutput = document.getElementById("customer-field-slice-handoff-output");
+  let latestPreview = emptyCustomerFieldSlicePreview();
+  if (!input || !output || !handoffButton || !handoffOutput) return;
+  input.addEventListener("change", async () => {
+    const file = input.files && input.files[0];
+    if (!file) {
+      latestPreview = emptyCustomerFieldSlicePreview();
+      output.innerHTML = renderCustomerFieldSliceIntakePreview(latestPreview);
+      handoffOutput.innerHTML = renderCustomerFieldSliceRevalidationHandoff(latestPreview);
+      handoffButton.disabled = true;
+      return;
+    }
+    try {
+      latestPreview = validateCustomerFieldSliceText(await file.text(), file.name);
+      output.innerHTML = renderCustomerFieldSliceIntakePreview(latestPreview);
+      handoffOutput.innerHTML = renderCustomerFieldSliceRevalidationHandoff(latestPreview);
+      handoffButton.disabled = latestPreview.acceptance_gates.ready_for_revalidation !== true;
+      handoffButton.dataset.nextRequiredArtifact = latestPreview.next_required_artifact;
+    } catch (error) {
+      latestPreview = customerFieldSlicePreviewError(error);
+      output.innerHTML = renderCustomerFieldSliceIntakePreview(latestPreview);
+      handoffOutput.innerHTML = renderCustomerFieldSliceRevalidationHandoff(latestPreview);
+      handoffButton.disabled = true;
+    }
+  });
+  handoffButton.addEventListener("click", () => {
+    handoffOutput.innerHTML = renderCustomerFieldSliceRevalidationHandoff(latestPreview);
+  });
+}
+
+function renderCustomerFieldSliceIntakePreview(preview) {
+  const gates = preview.acceptance_gates || {};
+  const summary = preview.validation_summary || {};
+  const errors = preview.validation_errors || [];
+  return `
+    <div class="intake-status-row">
+      <strong>${escapeHtml(preview.status)}</strong>
+      <span>${formatBooleanGate(gates.ready_for_revalidation, "ready_for_revalidation")}</span>
+    </div>
+    <div class="intake-gate-grid">
+      ${intakeGate("case_count", `${formatCount(summary.case_count)} / ${formatCount(summary.minimum_case_count || CUSTOMER_FIELD_SLICE_MINIMUM_CASE_COUNT)}`, gates.minimum_case_count_met)}
+      ${intakeGate("schema_valid", formatList(summary.missing_required_fields), gates.schema_valid)}
+      ${intakeGate("customer_approval_present", String(gates.customer_approval_present === true), gates.customer_approval_present)}
+      ${intakeGate("privacy_valid", formatList(summary.direct_pii_columns), gates.privacy_valid)}
+      ${intakeGate("numeric_fields_valid", String(gates.numeric_fields_valid === true), gates.numeric_fields_valid)}
+      ${intakeGate("timestamps_valid", String(gates.timestamps_valid === true), gates.timestamps_valid)}
+      ${intakeGate("duplicate_case_ids_absent", formatList(summary.duplicate_case_ids), gates.duplicate_case_ids_absent)}
+      ${intakeGate("runtime_default_allowed", String(gates.runtime_default_allowed === true), gates.runtime_default_allowed)}
+    </div>
+    <div class="intake-next">
+      <span>next_required_artifact</span>
+      <strong>${escapeHtml(preview.next_required_artifact)}</strong>
+    </div>
+    <ul class="intake-errors">
+      ${errors.map((error) => `<li>${escapeHtml(error.code)}</li>`).join("") || "<li>validation_errors: 无</li>"}
+    </ul>
+  `;
+}
+
+function intakeGate(label, value, gate) {
+  return `
+    <div class="intake-gate ${gate ? "intake-gate-pass" : "intake-gate-blocked"}">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(value)}</strong>
+    </div>
+  `;
+}
+
+function renderCustomerFieldSliceRevalidationHandoff(preview) {
+  const gates = preview.acceptance_gates || {};
+  const ready = gates.ready_for_revalidation === true;
+  const operatorCommand = customerFieldSliceOperatorCommand(preview);
+  return `
+    <div class="handoff-card ${ready ? "handoff-card-ready" : "handoff-card-blocked"}">
+      <div>
+        <span>revalidation_handoff_status</span>
+        <strong>${ready ? "ready_for_operator_review" : "blocked_until_valid_customer_slice"}</strong>
+      </div>
+      <div>
+        <span>next_required_artifact</span>
+        <strong>${escapeHtml(preview.next_required_artifact)}</strong>
+      </div>
+      <div>
+        <span>claim boundary</span>
+        <strong>metrics_computed=false / field_outcome_validated=false / runtime_default_allowed=false</strong>
+      </div>
+      <div class="handoff-command-block">
+        <span>operator_command</span>
+        <code>${escapeHtml(operatorCommand)}</code>
+      </div>
+    </div>
+  `;
+}
+
+function customerFieldSliceOperatorCommand(preview) {
+  if ((preview.acceptance_gates || {}).ready_for_revalidation !== true) {
+    return "blocked_until_valid_customer_slice";
+  }
+  return [
+    ".venv/bin/python",
+    "experiments/r12_customer_field_slice_intake_validation.py",
+    "--artifact-id",
+    "r12-customer-field-slice-intake-validation-customer-001",
+    "--run-id",
+    "r12-customer-field-slice-intake-customer-001",
+    "--r12-customer-field-slice-handoff-package-path",
+    "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-handoff-package-current-001.json",
+    "--intake-checked-at",
+    "CUSTOMER_FIELD_SLICE_INTAKE_TIMESTAMP",
+    "--customer-field-slice-path",
+    "CUSTOMER_FIELD_SLICE_PATH",
+    "--output",
+    "experiments/results/r12_customer_field_slice_intake_validation/r12-customer-field-slice-intake-validation-customer-001.json",
+  ].join(" ");
+}
+
+function validateCustomerFieldSliceText(rawText, fileName) {
+  const rows = parseCustomerFieldSliceText(rawText, fileName);
+  const presentFields = rows.length > 0 ? Object.keys(rows[0]).sort() : [];
+  const presentFieldSet = new Set(presentFields);
+  const missingRequiredFields = CUSTOMER_FIELD_SLICE_REQUIRED_FIELDS.filter(
+    (field) => !presentFieldSet.has(field),
+  );
+  const duplicateCaseIds = duplicateCaseIdsFromRows(rows);
+  const directPiiColumns = presentFields.filter((field) =>
+    CUSTOMER_FIELD_SLICE_DIRECT_PII_COLUMNS.has(field.toLowerCase()),
+  );
+  const directPiiValueHits = directPiiValueHitsFromRows(rows);
+  const numericParseErrors = numericParseErrorsFromRows(rows);
+  const timestampParseErrors = timestampParseErrorsFromRows(rows);
+  const customerApprovalPresent =
+    rows.length > 0
+    && rows.every((row) =>
+      String(row.customer_approval_reference || "").trim().length > 0,
+    );
+  const minimumCaseCountMet =
+    rows.length >= CUSTOMER_FIELD_SLICE_MINIMUM_CASE_COUNT;
+  const validationErrors = customerFieldSliceValidationErrors({
+    caseCount: rows.length,
+    minimumCaseCount: CUSTOMER_FIELD_SLICE_MINIMUM_CASE_COUNT,
+    missingRequiredFields,
+    customerApprovalPresent,
+    directPiiColumns,
+    directPiiValueHits,
+    numericParseErrors,
+    timestampParseErrors,
+    duplicateCaseIds,
+  });
+  const readyForRevalidation =
+    rows.length > 0
+    && missingRequiredFields.length === 0
+    && minimumCaseCountMet
+    && customerApprovalPresent
+    && directPiiColumns.length === 0
+    && directPiiValueHits.length === 0
+    && numericParseErrors.length === 0
+    && timestampParseErrors.length === 0
+    && duplicateCaseIds.length === 0;
+
+  return customerFieldSlicePreview({
+    status: readyForRevalidation
+      ? "customer_field_slice_intake_preview_ready_for_revalidation"
+      : "customer_field_slice_intake_preview_blocked_contract_or_privacy",
+    caseCount: rows.length,
+    presentFields,
+    missingRequiredFields,
+    minimumCaseCountMet,
+    customerApprovalPresent,
+    directPiiColumns,
+    directPiiValueHits,
+    numericParseErrors,
+    timestampParseErrors,
+    duplicateCaseIds,
+    validationErrors,
+    readyForRevalidation,
+    nextRequiredArtifact: readyForRevalidation
+      ? "r12_pre_outcome_or_customer_field_outcome_revalidation_with_customer_slice"
+      : "corrected_customer_field_slice",
+  });
+}
+
+function emptyCustomerFieldSlicePreview() {
+  return customerFieldSlicePreview({
+    status: "customer_field_slice_intake_preview_pending_no_slice",
+    caseCount: 0,
+    presentFields: [],
+    missingRequiredFields: CUSTOMER_FIELD_SLICE_REQUIRED_FIELDS,
+    minimumCaseCountMet: false,
+    customerApprovalPresent: false,
+    directPiiColumns: [],
+    directPiiValueHits: [],
+    numericParseErrors: [],
+    timestampParseErrors: [],
+    duplicateCaseIds: [],
+    validationErrors: [
+      { code: "customer_field_slice_not_submitted" },
+    ],
+    readyForRevalidation: false,
+    nextRequiredArtifact: "customer_field_slice_submission",
+  });
+}
+
+function customerFieldSlicePreviewError(error) {
+  return customerFieldSlicePreview({
+    status: "customer_field_slice_intake_preview_blocked_parse_error",
+    caseCount: 0,
+    presentFields: [],
+    missingRequiredFields: CUSTOMER_FIELD_SLICE_REQUIRED_FIELDS,
+    minimumCaseCountMet: false,
+    customerApprovalPresent: false,
+    directPiiColumns: [],
+    directPiiValueHits: [],
+    numericParseErrors: [],
+    timestampParseErrors: [],
+    duplicateCaseIds: [],
+    validationErrors: [
+      { code: "field_slice_parse_error", message: String(error.message || error) },
+    ],
+    readyForRevalidation: false,
+    nextRequiredArtifact: "corrected_customer_field_slice",
+  });
+}
+
+function customerFieldSlicePreview({
+  status,
+  caseCount,
+  presentFields,
+  missingRequiredFields,
+  minimumCaseCountMet,
+  customerApprovalPresent,
+  directPiiColumns,
+  directPiiValueHits,
+  numericParseErrors,
+  timestampParseErrors,
+  duplicateCaseIds,
+  validationErrors,
+  readyForRevalidation,
+  nextRequiredArtifact,
+}) {
+  return {
+    status,
+    claim_level: readyForRevalidation
+      ? "customer_field_slice_intake_preview_ready_no_metric_claim"
+      : "customer_field_slice_intake_preview_blocked_or_pending",
+    validation_summary: {
+      case_count: caseCount,
+      minimum_case_count: CUSTOMER_FIELD_SLICE_MINIMUM_CASE_COUNT,
+      present_fields: presentFields,
+      missing_required_fields: missingRequiredFields,
+      required_fields_present: missingRequiredFields.length === 0,
+      minimum_case_count_met: minimumCaseCountMet,
+      customer_approval_present: customerApprovalPresent,
+      direct_pii_detected: directPiiColumns.length > 0 || directPiiValueHits.length > 0,
+      direct_pii_columns: directPiiColumns,
+      direct_pii_value_hits: directPiiValueHits,
+      numeric_fields_valid: numericParseErrors.length === 0,
+      numeric_parse_errors: numericParseErrors,
+      timestamps_valid: timestampParseErrors.length === 0,
+      timestamp_parse_errors: timestampParseErrors,
+      duplicate_case_ids: duplicateCaseIds,
+    },
+    validation_errors: validationErrors,
+    acceptance_gates: {
+      customer_field_slice_submitted: caseCount > 0,
+      schema_valid: missingRequiredFields.length === 0,
+      minimum_case_count_met: minimumCaseCountMet,
+      customer_approval_present: customerApprovalPresent,
+      privacy_valid: directPiiColumns.length === 0 && directPiiValueHits.length === 0,
+      numeric_fields_valid: numericParseErrors.length === 0,
+      timestamps_valid: timestampParseErrors.length === 0,
+      duplicate_case_ids_absent: duplicateCaseIds.length === 0,
+      ready_for_revalidation: readyForRevalidation,
+      metrics_computed: false,
+      field_outcome_validated: false,
+      product_default_allowed: false,
+      runtime_default_allowed: false,
+    },
+    next_required_artifact: nextRequiredArtifact,
+    blocked_claims: [
+      "metrics_computed=true",
+      "field_or_pre_outcome_revalidation_passed=true",
+      "field_outcome_validated=true",
+      "Product default can use customer field slice by default",
+      "runtime_default_allowed=true",
+    ],
+  };
+}
+
+function parseCustomerFieldSliceText(rawText, fileName) {
+  const text = String(rawText || "").trim();
+  if (!text) return [];
+  const lowerName = String(fileName || "").toLowerCase();
+  if (lowerName.endsWith(".jsonl")) {
+    return text
+      .split(/\r?\n/)
+      .filter((line) => line.trim())
+      .map((line) => JSON.parse(line));
+  }
+  if (lowerName.endsWith(".csv")) {
+    return parseCustomerFieldSliceCsv(text);
+  }
+  throw new Error("customer field slice must be csv or jsonl");
+}
+
+function parseCustomerFieldSliceCsv(text) {
+  const lines = text.split(/\r?\n/).filter((line) => line.trim().length > 0);
+  if (lines.length === 0) return [];
+  const headers = parseCsvLine(lines[0]);
+  return lines.slice(1).map((line) => {
+    const values = parseCsvLine(line);
+    return Object.fromEntries(
+      headers.map((header, index) => [header, values[index] ?? ""]),
+    );
+  });
+}
+
+function parseCsvLine(line) {
+  const cells = [];
+  let current = "";
+  let inQuotes = false;
+  for (let index = 0; index < line.length; index += 1) {
+    const char = line[index];
+    const next = line[index + 1];
+    if (char === '"' && inQuotes && next === '"') {
+      current += '"';
+      index += 1;
+    } else if (char === '"') {
+      inQuotes = !inQuotes;
+    } else if (char === "," && !inQuotes) {
+      cells.push(current);
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+  cells.push(current);
+  return cells.map((cell) => cell.trim());
+}
+
+function duplicateCaseIdsFromRows(rows) {
+  const seen = new Set();
+  const duplicates = new Set();
+  rows.forEach((row) => {
+    const caseId = String(row.case_id || "").trim();
+    if (!caseId) return;
+    if (seen.has(caseId)) duplicates.add(caseId);
+    seen.add(caseId);
+  });
+  return [...duplicates].sort();
+}
+
+function directPiiValueHitsFromRows(rows) {
+  const hits = [];
+  rows.forEach((row, rowIndex) => {
+    Object.entries(row).forEach(([field, value]) => {
+      if (CUSTOMER_FIELD_SLICE_EMAIL_PATTERN.test(String(value))) {
+        hits.push({ row_index: rowIndex, field, pattern: "email" });
+      }
+    });
+  });
+  return hits;
+}
+
+function numericParseErrorsFromRows(rows) {
+  return parseErrorsFromRows(rows, ["prediction_share_or_score", "observed_outcome"], (value) => {
+    const number = Number(value);
+    return Number.isFinite(number);
+  });
+}
+
+function timestampParseErrorsFromRows(rows) {
+  return parseErrorsFromRows(rows, ["outcome_timestamp"], (value) =>
+    !Number.isNaN(Date.parse(String(value))),
+  );
+}
+
+function parseErrorsFromRows(rows, fields, isValid) {
+  const errors = [];
+  rows.forEach((row, rowIndex) => {
+    fields.forEach((field) => {
+      if (!isValid(row[field])) {
+        errors.push({ row_index: rowIndex, field });
+      }
+    });
+  });
+  return errors;
+}
+
+function customerFieldSliceValidationErrors({
+  caseCount,
+  minimumCaseCount,
+  missingRequiredFields,
+  customerApprovalPresent,
+  directPiiColumns,
+  directPiiValueHits,
+  numericParseErrors,
+  timestampParseErrors,
+  duplicateCaseIds,
+}) {
+  const errors = [];
+  if (caseCount < minimumCaseCount) {
+    errors.push({ code: "minimum_case_count_not_met" });
+  }
+  if (missingRequiredFields.length > 0) {
+    errors.push({ code: "missing_required_fields", fields: missingRequiredFields });
+  }
+  if (!customerApprovalPresent) {
+    errors.push({ code: "customer_approval_reference_missing" });
+  }
+  if (directPiiColumns.length > 0) {
+    errors.push({ code: "direct_pii_columns_present", fields: directPiiColumns });
+  }
+  if (directPiiValueHits.length > 0) {
+    errors.push({ code: "direct_pii_values_present", hits: directPiiValueHits });
+  }
+  if (numericParseErrors.length > 0) {
+    errors.push({ code: "numeric_field_parse_failed", errors: numericParseErrors });
+  }
+  if (timestampParseErrors.length > 0) {
+    errors.push({ code: "timestamp_parse_failed", errors: timestampParseErrors });
+  }
+  if (duplicateCaseIds.length > 0) {
+    errors.push({ code: "duplicate_case_id", case_ids: duplicateCaseIds });
+  }
+  return errors;
+}
+
+function renderCustomerWorkflowWorkbench(evidence, apiManifest) {
+  if (!evidence) return "";
+  const summary = evidence.evidence_summary || {};
+  const workflow = summary.customer_validation_workflow_status_boundary || {};
+  const handoff = summary.customer_field_slice_handoff_package_boundary || {};
+  const readiness = summary.customer_trial_readiness_package_boundary || {};
+  const operational = summary.customer_trial_operational_check_boundary || {};
+  const packet = summary.customer_trial_launch_packet_export_boundary || {};
+  const bundle = summary.customer_trial_launch_bundle_verification_boundary || {};
+  const operatorRehearsal =
+    summary.customer_field_slice_operator_rehearsal_boundary || {};
+  const feedbackLoopRehearsal =
+    summary.customer_feedback_loop_operator_rehearsal_boundary || {};
+  const trialEvidenceLedger =
+    summary.customer_trial_evidence_ledger_boundary || {};
+  const arrival = summary.target_outcome_or_customer_field_slice_arrival_boundary || {};
+  const revalidation =
+    summary.pre_outcome_or_customer_field_outcome_revalidation_boundary || {};
+  const endpoints = endpointMap(apiManifest.endpoints || []);
+  const artifactPaths = apiManifest.artifact_paths || {};
+  const scenarioHref = artifactPathToHref(artifactPaths.scenario_intake);
+  const reportHref = artifactPathToHref(artifactPaths.customer_value_report);
+  const outcomeHref = artifactPathToHref(artifactPaths.outcome_review);
+  const templateHref = artifactPathToHref(
+    readiness.template_output_path || handoff.template_output_path,
+  );
+  const packetHref = artifactPathToHref(packet.markdown_output_path);
+  const launchPacketExportReady =
+    packet.markdown_export_written === true && packet.launch_handoff_ready === true;
+  const simulationGateReady =
+    operational.customer_trial_request_operationally_ready === true
+    && bundle.launch_bundle_verified === true
+    && evidence.runtime_default_allowed === false;
+
+  return `
+    <article class="panel panel-wide customer-workflow-panel">
+      <div class="panel-heading">
+        <p class="eyebrow">Customer Workflow</p>
+        <h2>试运行工作台</h2>
+      </div>
+      <div class="workflow-steps" aria-label="客户试运行工作流">
+        ${workflowStep({
+          label: "场景输入",
+          statusLabel: "scenario_intake_status",
+          status: endpointStatus(endpoints.scenario_intake),
+          detail: endpoints.scenario_intake?.path || "/r6/product/scenario-intake",
+          href: scenarioHref,
+          linkLabel: "打开 scenario artifact",
+          gate: true,
+        })}
+        ${workflowStep({
+          label: "群体与先验",
+          statusLabel: "population_prior_status",
+          status: evidence.primary_decision_source || "guarded_baseline_customer_value_report",
+          detail: `primary_decision_source: ${evidence.primary_decision_source || "guarded_baseline_customer_value_report"}`,
+          href: templateHref,
+          linkLabel: "字段模板",
+          gate: handoff.customer_field_slice_contract_machine_checkable === true
+            || readiness.customer_data_request_ready === true,
+        })}
+        ${workflowStep({
+          label: "运行闸门",
+          statusLabel: "simulation_run_gate_status",
+          status: simulationGateReady
+            ? "customer_trial_ready_runtime_default_blocked"
+            : "customer_trial_not_ready",
+          detail: `runtime_default_allowed=${String(evidence.runtime_default_allowed === true)} / launch_bundle_verified=${String(bundle.launch_bundle_verified === true)}`,
+          href: packetHref,
+          linkLabel: "launch packet",
+          gate: simulationGateReady,
+        })}
+        ${workflowStep({
+          label: "报告导出",
+          statusLabel: "report_export_status",
+          status: launchPacketExportReady
+            ? "launch_packet_export_ready"
+            : "launch_packet_export_pending",
+          detail: packet.packet_export_status || "customer_trial_launch_packet_export_boundary 未提供",
+          href: reportHref,
+          linkLabel: "客户报告 JSON",
+          gate: launchPacketExportReady,
+        })}
+        ${workflowStep({
+          label: "outcome review",
+          statusLabel: "outcome_review_status",
+          status: revalidation.revalidation_status || workflow.workflow_status || "source_arrival_pending",
+          detail: `field_or_pre_outcome_revalidation_ready=${String(arrival.field_or_pre_outcome_revalidation_ready === true)} / source_arrived=${String(workflow.source_arrived === true)}`,
+          href: outcomeHref,
+          linkLabel: "outcome review artifact",
+          gate: arrival.field_or_pre_outcome_revalidation_ready === true,
+        })}
+      </div>
+      <div class="workflow-footer">
+        <span>customer_field_slice_template_generated: ${formatBooleanGate(Boolean(readiness.template_output_path || handoff.template_output_path), "customer_field_slice_template_generated")}</span>
+        <span>operator_command_rehearsed: ${formatBooleanGate(operatorRehearsal.operator_command_rehearsed, "operator_command_rehearsed")}</span>
+        <span>l22_to_l26_rehearsed: ${formatBooleanGate(feedbackLoopRehearsal.l26_synthetic_holdout_review_executed, "l26_synthetic_holdout_review_executed")}</span>
+        <span>customer_trial_evidence_ledger_ready: ${formatBooleanGate(trialEvidenceLedger.launch_bundle_verified && trialEvidenceLedger.operator_rehearsal_executed && trialEvidenceLedger.feedback_loop_rehearsed_l22_to_l26, "customer_trial_evidence_ledger_ready")}</span>
+        <span>field_or_pre_outcome_revalidation_ready: ${formatBooleanGate(arrival.field_or_pre_outcome_revalidation_ready, "field_or_pre_outcome_revalidation_ready")}</span>
+        <span>primary_decision_source: ${escapeHtml(evidence.primary_decision_source || "guarded_baseline_customer_value_report")}</span>
+      </div>
+    </article>
+  `;
+}
+
+function workflowStep({ label, statusLabel, status, detail, href, linkLabel, gate }) {
+  return `
+    <section class="workflow-step ${gate ? "workflow-step-ready" : "workflow-step-blocked"}">
+      <div class="workflow-step-top">
+        <span>${escapeHtml(label)}</span>
+        <strong>${gate ? "可用" : "等待"}</strong>
+      </div>
+      <dl>
+        <div>
+          <dt>${escapeHtml(statusLabel)}</dt>
+          <dd>${escapeHtml(status || "未提供")}</dd>
+        </div>
+        <div>
+          <dt>source-backed detail</dt>
+          <dd>${escapeHtml(detail || "未提供")}</dd>
+        </div>
+      </dl>
+      <a class="artifact-link" href="${escapeHtml(href || "#")}" target="_blank" rel="noopener">${escapeHtml(linkLabel)}</a>
+    </section>
+  `;
+}
+
+function renderCustomerTrialActionPanel(evidence) {
+  if (!evidence) return "";
+  const summary = evidence.evidence_summary || {};
+  const workflow = summary.customer_validation_workflow_status_boundary || {};
+  const readiness = summary.customer_trial_readiness_package_boundary || {};
+  const packet = summary.customer_trial_launch_packet_export_boundary || {};
+  const bundle = summary.customer_trial_launch_bundle_verification_boundary || {};
+  const operatorRehearsal =
+    summary.customer_field_slice_operator_rehearsal_boundary || {};
+  const feedbackLoopRehearsal =
+    summary.customer_feedback_loop_operator_rehearsal_boundary || {};
+  const trialEvidenceLedger =
+    summary.customer_trial_evidence_ledger_boundary || {};
+  const packetHref = artifactPathToHref(packet.markdown_output_path);
+  const nextAction =
+    workflow.next_action || "collect_customer_field_slice_or_wait_for_target_outcome";
+  return `
+    <article class="panel panel-wide customer-trial-action-panel">
+      <div class="panel-heading">
+        <p class="eyebrow">Customer Trial</p>
+        <h2>客户试运行</h2>
+      </div>
+      <div class="trial-action-grid">
+        <div class="trial-action-primary">
+          <span>客户下一步</span>
+          <strong>${escapeHtml(nextAction)}</strong>
+          <p>当前只请求客户 field slice 或等待 target outcome，不声明 validation passed。</p>
+        </div>
+        <div class="trial-action-item">
+          <span>stage</span>
+          <strong>${escapeHtml(workflow.current_stage || bundle.current_stage || "source_arrival_pending")}</strong>
+        </div>
+        <div class="trial-action-item">
+          <span>trial readiness</span>
+          <strong>${escapeHtml(readiness.trial_package_status || "trial_readiness_package_boundary 未提供")}</strong>
+        </div>
+        <div class="trial-action-item">
+          <span>launch packet</span>
+          <strong>${formatBooleanGate(packet.markdown_export_written, "markdown_export_written")}</strong>
+          <a class="artifact-link" href="${escapeHtml(packetHref)}" target="_blank" rel="noopener">打开 launch packet</a>
+        </div>
+        <div class="trial-action-item">
+          <span>bundle verification</span>
+          <strong>${formatBooleanGate(bundle.launch_bundle_verified, "launch_bundle_verified")}</strong>
+          <small>${formatCount(bundle.resolved_required_item_count)} / ${formatCount(bundle.required_item_count)} required items</small>
+        </div>
+        <div class="trial-action-item">
+          <span>operator rehearsal</span>
+          <strong>${formatBooleanGate(operatorRehearsal.operator_command_rehearsed, "operator_command_rehearsed")}</strong>
+          <small>${escapeHtml(operatorRehearsal.sample_slice_kind || "synthetic_rehearsal_fixture")}</small>
+        </div>
+        <div class="trial-action-item">
+          <span>feedback loop rehearsal</span>
+          <strong>${formatBooleanGate(feedbackLoopRehearsal.l26_synthetic_holdout_review_executed, "l26_synthetic_holdout_review_executed")}</strong>
+          <small>L22 intake -> L26 holdout review</small>
+        </div>
+        <div class="trial-action-item">
+          <span>r12_customer_trial_evidence_ledger</span>
+          <strong>${escapeHtml(trialEvidenceLedger.ledger_status || "customer_trial_evidence_ledger_boundary 未提供")}</strong>
+          <small>${formatCount(trialEvidenceLedger.customer_visible_readiness_evidence_count)} customer / ${formatCount(trialEvidenceLedger.operator_only_rehearsal_evidence_count)} operator / ${formatCount(trialEvidenceLedger.blocking_gap_count)} gaps</small>
+        </div>
+        <div class="trial-action-item">
+          <span>blocked claim</span>
+          <strong>${formatBooleanGate(bundle.field_outcome_validated, "field_outcome_validated")}</strong>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function endpointMap(endpoints) {
+  return Object.fromEntries(
+    endpoints.map((endpoint) => [endpoint.endpoint_id, endpoint]),
+  );
+}
+
+function endpointStatus(endpoint) {
+  if (!endpoint) return "endpoint_missing";
+  return `${endpoint.method || "GET"} ${endpoint.response_contract || "source_artifact_json"}`;
 }
 
 function renderR12TransferEvidence(evidence) {
   if (!evidence) return "";
   const metrics = evidence.metrics || {};
+  const publicScope = evidence.public_data_validation_scope || {};
   const summary = evidence.evidence_summary || {};
   const extended = summary.extended_metric_gates || {};
   const highRiskBoundary = summary.high_risk_holdout_boundary || {};
@@ -212,6 +968,53 @@ function renderR12TransferEvidence(evidence) {
     || {};
   const externalOrCustomerRawSlice =
     summary.external_or_customer_holdout_raw_slice_boundary || {};
+  const externalHoldoutRevalidation =
+    summary.recall_mitigation_external_holdout_revalidation_boundary || {};
+  const predictionPacket =
+    summary.pre_outcome_or_independent_prediction_packet_boundary || {};
+  const independentHindcast =
+    summary.independent_hindcast_revalidation_boundary || {};
+  const preOutcomeTrial =
+    summary
+      .pre_outcome_prediction_trial_or_customer_field_revalidation_boundary
+    || {};
+  const outcomeIngestion =
+    summary.pre_outcome_or_customer_field_outcome_ingestion_boundary || {};
+  const outcomeRevalidation =
+    summary.pre_outcome_or_customer_field_outcome_revalidation_boundary || {};
+  const targetOrCustomerArrival =
+    summary.target_outcome_or_customer_field_slice_arrival_boundary || {};
+  const customerFieldHandoff =
+    summary.customer_field_slice_handoff_package_boundary || {};
+  const customerFieldIntake =
+    summary.customer_field_slice_intake_validation_boundary || {};
+  const customerFieldRevalidation =
+    summary.customer_field_slice_revalidation_boundary || {};
+  const customerFieldFeedback =
+    summary.customer_field_outcome_feedback_update_boundary || {};
+  const customerFeedbackShadowReplay =
+    summary.customer_feedback_update_shadow_replay_boundary || {};
+  const customerFeedbackHoldoutReview =
+    summary.customer_feedback_shadow_replay_holdout_review_boundary || {};
+  const customerValidationWorkflow =
+    summary.customer_validation_workflow_status_boundary || {};
+  const customerTrialReadiness =
+    summary.customer_trial_readiness_package_boundary || {};
+  const customerTrialOperational =
+    summary.customer_trial_operational_check_boundary || {};
+  const customerTrialLaunch =
+    summary.customer_trial_launch_handoff_package_boundary || {};
+  const customerTrialPacketExport =
+    summary.customer_trial_launch_packet_export_boundary || {};
+  const customerTrialPacketHref = artifactPathToHref(customerTrialPacketExport.markdown_output_path);
+  const customerTrialBundleVerification =
+    summary.customer_trial_launch_bundle_verification_boundary || {};
+  const customerFieldOperatorRehearsal =
+    summary.customer_field_slice_operator_rehearsal_boundary || {};
+  const customerFeedbackLoopRehearsal =
+    summary.customer_feedback_loop_operator_rehearsal_boundary || {};
+  const customerTrialEvidenceLedger =
+    summary.customer_trial_evidence_ledger_boundary || {};
   const update = summary.accepted_update || {};
   return `
     <article class="panel panel-wide">
@@ -240,6 +1043,26 @@ function renderR12TransferEvidence(evidence) {
           <span>误报变化</span>
           <strong>${formatSignedNumber(metrics.false_alarm_rate_delta)}</strong>
         </div>
+      </div>
+      <div class="mechanism-box public-data-scope">
+        <dl>
+          <div>
+            <dt>本阶段验证范围</dt>
+            <dd>${escapeHtml(publicScope.stage || "public_data_validation_only")}</dd>
+          </div>
+          <div>
+            <dt>公开数据有效声明</dt>
+            <dd>${formatBooleanGate(evidence.public_data_effectiveness_claim_allowed, "public_data_effectiveness_claim_allowed")}</dd>
+          </div>
+          <div>
+            <dt>客户 field 本阶段要求</dt>
+            <dd>${formatBooleanGate(evidence.customer_field_validation_required_for_current_stage, "customer_field_validation_required_for_current_stage")}</dd>
+          </div>
+          <div>
+            <dt>公开数据声明</dt>
+            <dd>${escapeHtml(publicScope.public_data_effectiveness_claim || "tested_effective_on_public_data_guarded")}</dd>
+          </div>
+        </dl>
       </div>
       <div class="mechanism-box">
         <dl>
@@ -462,6 +1285,496 @@ function renderR12TransferEvidence(evidence) {
           <div>
             <dt>raw slice 下一步</dt>
             <dd>${escapeHtml(externalOrCustomerRawSlice.next_required_artifact || "r12_recall_mitigation_external_holdout_revalidation")}</dd>
+          </div>
+          <div>
+            <dt>外部 revalidation</dt>
+            <dd>${escapeHtml(externalHoldoutRevalidation.revalidation_status || "recall_mitigation_external_holdout_revalidation_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>revalidation passed</dt>
+            <dd>${formatBooleanGate(externalHoldoutRevalidation.external_holdout_revalidation_passed, "external_holdout_revalidation_passed")}</dd>
+          </div>
+          <div>
+            <dt>同表泄漏风险</dt>
+            <dd>${formatBooleanGate(externalHoldoutRevalidation.same_table_prediction_leakage_risk, "same_table_prediction_leakage_risk")}</dd>
+          </div>
+          <div>
+            <dt>proxy MAE 变化</dt>
+            <dd>${formatSignedNumber(externalHoldoutRevalidation.mean_absolute_error_delta)}</dd>
+          </div>
+          <div>
+            <dt>风险排序变化</dt>
+            <dd>${formatSignedNumber(externalHoldoutRevalidation.risk_ranking_quality_delta)}</dd>
+          </div>
+          <div>
+            <dt>漏报恢复变化</dt>
+            <dd>${formatSignedNumber(externalHoldoutRevalidation.static_prior_miss_recovery_delta)}</dd>
+          </div>
+          <div>
+            <dt>误报变化</dt>
+            <dd>${formatSignedNumber(externalHoldoutRevalidation.false_alarm_rate_delta)}</dd>
+          </div>
+          <div>
+            <dt>revalidation 下一步</dt>
+            <dd>${escapeHtml(externalHoldoutRevalidation.next_required_artifact || "r12_pre_outcome_or_independent_prediction_packet")}</dd>
+          </div>
+          <div>
+            <dt>prediction packet</dt>
+            <dd>${escapeHtml(predictionPacket.packet_status || "pre_outcome_or_independent_prediction_packet_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>独立特征源</dt>
+            <dd>${formatBooleanGate(predictionPacket.prediction_source_independent_of_target_outcome, "prediction_source_independent_of_target_outcome")}</dd>
+          </div>
+          <div>
+            <dt>事前锁定</dt>
+            <dd>${formatBooleanGate(predictionPacket.prediction_lock_timestamp_pre_target_outcome, "prediction_lock_timestamp_pre_target_outcome")}</dd>
+          </div>
+          <div>
+            <dt>hindcast ready</dt>
+            <dd>${formatBooleanGate(predictionPacket.hindcast_independent_revalidation_ready, "hindcast_independent_revalidation_ready")}</dd>
+          </div>
+          <div>
+            <dt>pre-outcome ready</dt>
+            <dd>${formatBooleanGate(predictionPacket.pre_outcome_revalidation_ready, "pre_outcome_revalidation_ready")}</dd>
+          </div>
+          <div>
+            <dt>prediction cases</dt>
+            <dd>${formatCount(predictionPacket.prediction_case_count)} / matched ${formatCount(predictionPacket.matched_case_count)}</dd>
+          </div>
+          <div>
+            <dt>packet 下一步</dt>
+            <dd>${escapeHtml(predictionPacket.next_required_artifact || "r12_independent_hindcast_revalidation")}</dd>
+          </div>
+          <div>
+            <dt>independent hindcast</dt>
+            <dd>${escapeHtml(independentHindcast.hindcast_status || "independent_hindcast_revalidation_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>hindcast passed</dt>
+            <dd>${formatBooleanGate(independentHindcast.hindcast_independent_revalidation_passed, "hindcast_independent_revalidation_passed")}</dd>
+          </div>
+          <div>
+            <dt>hindcast MAE 变化</dt>
+            <dd>${formatSignedNumber(independentHindcast.mean_absolute_error_delta)}</dd>
+          </div>
+          <div>
+            <dt>hindcast 区间变化</dt>
+            <dd>${formatSignedNumber(independentHindcast.interval_coverage_delta)}</dd>
+          </div>
+          <div>
+            <dt>hindcast 风险排序</dt>
+            <dd>${formatSignedNumber(independentHindcast.risk_ranking_quality_delta)}</dd>
+          </div>
+          <div>
+            <dt>hindcast 漏报恢复</dt>
+            <dd>${formatSignedNumber(independentHindcast.static_prior_miss_recovery_delta)}</dd>
+          </div>
+          <div>
+            <dt>hindcast 误报变化</dt>
+            <dd>${formatSignedNumber(independentHindcast.false_alarm_rate_delta)}</dd>
+          </div>
+          <div>
+            <dt>hindcast 决策价值</dt>
+            <dd>${formatSignedNumber(independentHindcast.decision_value_delta)}</dd>
+          </div>
+          <div>
+            <dt>hindcast pre-outcome</dt>
+            <dd>${formatBooleanGate(independentHindcast.pre_outcome_revalidation_ready, "pre_outcome_revalidation_ready")}</dd>
+          </div>
+          <div>
+            <dt>hindcast 下一验收</dt>
+            <dd>${escapeHtml(independentHindcast.next_required_artifact || "r12_pre_outcome_prediction_trial_or_customer_field_revalidation")}</dd>
+          </div>
+          <div>
+            <dt>pre-outcome trial</dt>
+            <dd>${escapeHtml(preOutcomeTrial.trial_status || "pre_outcome_prediction_trial_or_customer_field_revalidation_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>锁定时间</dt>
+            <dd>${escapeHtml(preOutcomeTrial.prediction_lock_timestamp || "prediction_lock_timestamp 未提供")}</dd>
+          </div>
+          <div>
+            <dt>锁定早于 target</dt>
+            <dd>${formatBooleanGate(preOutcomeTrial.prediction_lock_timestamp_pre_target_outcome, "prediction_lock_timestamp_pre_target_outcome")}</dd>
+          </div>
+          <div>
+            <dt>target period</dt>
+            <dd>${escapeHtml(preOutcomeTrial.target_outcome_period || "target_outcome_period 未提供")}</dd>
+          </div>
+          <div>
+            <dt>target outcome</dt>
+            <dd>${formatBooleanGate(preOutcomeTrial.target_outcome_artifact_present, "target_outcome_artifact_present")}</dd>
+          </div>
+          <div>
+            <dt>trial cases</dt>
+            <dd>${formatCount(preOutcomeTrial.prediction_case_count)}</dd>
+          </div>
+          <div>
+            <dt>客户 field 合同</dt>
+            <dd>${formatBooleanGate(preOutcomeTrial.customer_field_slice_contract_ready, "customer_field_slice_contract_ready")}</dd>
+          </div>
+          <div>
+            <dt>客户 field slice</dt>
+            <dd>${formatBooleanGate(preOutcomeTrial.customer_field_slice_present, "customer_field_slice_present")}</dd>
+          </div>
+          <div>
+            <dt>trial 默认启用</dt>
+            <dd>${formatBooleanGate(preOutcomeTrial.product_default_allowed, "product_default_allowed")}</dd>
+          </div>
+          <div>
+            <dt>trial 下一验收</dt>
+            <dd>${escapeHtml(preOutcomeTrial.next_required_artifact || "r12_pre_outcome_or_customer_field_outcome_ingestion")}</dd>
+          </div>
+          <div>
+            <dt>outcome ingestion</dt>
+            <dd>${escapeHtml(outcomeIngestion.ingestion_status || "pre_outcome_or_customer_field_outcome_ingestion_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>availability checked</dt>
+            <dd>${escapeHtml(outcomeIngestion.availability_checked_at || "availability_checked_at 未提供")}</dd>
+          </div>
+          <div>
+            <dt>latest report</dt>
+            <dd>${escapeHtml(outcomeIngestion.latest_available_report || "latest_available_report 未提供")}</dd>
+          </div>
+          <div>
+            <dt>target public outcome</dt>
+            <dd>${formatBooleanGate(outcomeIngestion.target_public_outcome_available, "target_public_outcome_available")}</dd>
+          </div>
+          <div>
+            <dt>outcome artifact</dt>
+            <dd>${formatBooleanGate(outcomeIngestion.target_outcome_artifact_present, "target_outcome_artifact_present")}</dd>
+          </div>
+          <div>
+            <dt>field slice contract</dt>
+            <dd>${formatBooleanGate(outcomeIngestion.customer_field_slice_contract_ready, "customer_field_slice_contract_ready")}</dd>
+          </div>
+          <div>
+            <dt>field slice present</dt>
+            <dd>${formatBooleanGate(outcomeIngestion.customer_field_slice_present, "customer_field_slice_present")}</dd>
+          </div>
+          <div>
+            <dt>revalidation ready</dt>
+            <dd>${formatBooleanGate(outcomeIngestion.field_or_pre_outcome_revalidation_ready, "field_or_pre_outcome_revalidation_ready")}</dd>
+          </div>
+          <div>
+            <dt>ingestion 下一验收</dt>
+            <dd>${escapeHtml(outcomeIngestion.next_required_artifact || "r12_pre_outcome_or_customer_field_outcome_revalidation")}</dd>
+          </div>
+          <div>
+            <dt>outcome revalidation</dt>
+            <dd>${escapeHtml(outcomeRevalidation.revalidation_status || "pre_outcome_or_customer_field_outcome_revalidation_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>metrics computed</dt>
+            <dd>${formatBooleanGate(outcomeRevalidation.metrics_computed, "metrics_computed")}</dd>
+          </div>
+          <div>
+            <dt>revalidation passed</dt>
+            <dd>${formatBooleanGate(outcomeRevalidation.field_or_pre_outcome_revalidation_passed, "field_or_pre_outcome_revalidation_passed")}</dd>
+          </div>
+          <div>
+            <dt>revalidation 默认启用</dt>
+            <dd>${formatBooleanGate(outcomeRevalidation.product_default_allowed, "product_default_allowed")}</dd>
+          </div>
+          <div>
+            <dt>revalidation 下一验收</dt>
+            <dd>${escapeHtml(outcomeRevalidation.next_required_artifact || "r12_target_outcome_or_customer_field_slice_arrival")}</dd>
+          </div>
+          <div>
+            <dt>target/field arrival</dt>
+            <dd>${escapeHtml(targetOrCustomerArrival.arrival_status || "target_outcome_or_customer_field_slice_arrival_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>outcome source arrived</dt>
+            <dd>${formatBooleanGate(targetOrCustomerArrival.outcome_source_arrived, "outcome_source_arrived")}</dd>
+          </div>
+          <div>
+            <dt>arrival revalidation ready</dt>
+            <dd>${formatBooleanGate(targetOrCustomerArrival.field_or_pre_outcome_revalidation_ready, "field_or_pre_outcome_revalidation_ready")}</dd>
+          </div>
+          <div>
+            <dt>arrival metrics computed</dt>
+            <dd>${formatBooleanGate(targetOrCustomerArrival.metrics_computed, "metrics_computed")}</dd>
+          </div>
+          <div>
+            <dt>arrival 下一验收</dt>
+            <dd>${escapeHtml(targetOrCustomerArrival.next_required_artifact || "r12_target_outcome_or_customer_field_slice_arrival")}</dd>
+          </div>
+          <div>
+            <dt>field handoff package</dt>
+            <dd>${escapeHtml(customerFieldHandoff.handoff_status || "customer_field_slice_handoff_package_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>customer data request</dt>
+            <dd>${formatBooleanGate(customerFieldHandoff.customer_data_request_ready, "customer_data_request_ready")}</dd>
+          </div>
+          <div>
+            <dt>template file</dt>
+            <dd>${escapeHtml(customerFieldHandoff.template_output_path || "r12-customer-field-slice-template-current-001.csv")}</dd>
+          </div>
+          <div>
+            <dt>minimum cases</dt>
+            <dd>${formatCount(customerFieldHandoff.minimum_case_count)}</dd>
+          </div>
+          <div>
+            <dt>handoff 下一验收</dt>
+            <dd>${escapeHtml(customerFieldHandoff.next_required_artifact || "r12_customer_field_slice_handoff_package")}</dd>
+          </div>
+          <div>
+            <dt>field intake validator</dt>
+            <dd>${escapeHtml(customerFieldIntake.intake_status || "customer_field_slice_intake_validation_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>ready for revalidation</dt>
+            <dd>${formatBooleanGate(customerFieldIntake.ready_for_revalidation, "ready_for_revalidation")}</dd>
+          </div>
+          <div>
+            <dt>privacy gate</dt>
+            <dd>${formatBooleanGate(customerFieldIntake.privacy_valid, "privacy_valid")}</dd>
+          </div>
+          <div>
+            <dt>intake quality gates</dt>
+            <dd>${formatBooleanGate(customerFieldIntake.numeric_fields_valid, "numeric_fields_valid")} / ${formatBooleanGate(customerFieldIntake.timestamps_valid, "timestamps_valid")} / ${formatBooleanGate(customerFieldIntake.duplicate_case_ids_absent, "duplicate_case_ids_absent")}</dd>
+          </div>
+          <div>
+            <dt>intake cases</dt>
+            <dd>${formatCount(customerFieldIntake.case_count)} / ${formatCount(customerFieldIntake.minimum_case_count)}</dd>
+          </div>
+          <div>
+            <dt>intake 下一验收</dt>
+            <dd>${escapeHtml(customerFieldIntake.next_required_artifact || "r12_customer_field_slice_intake_validation")}</dd>
+          </div>
+          <div>
+            <dt>field revalidation</dt>
+            <dd>${escapeHtml(customerFieldRevalidation.revalidation_status || "customer_field_slice_revalidation_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>field metrics computed</dt>
+            <dd>${formatBooleanGate(customerFieldRevalidation.metrics_computed, "metrics_computed")}</dd>
+          </div>
+          <div>
+            <dt>field outcome validated</dt>
+            <dd>${formatBooleanGate(customerFieldRevalidation.field_outcome_validated, "field_outcome_validated")}</dd>
+          </div>
+          <div>
+            <dt>field MAE</dt>
+            <dd>${formatNumber(customerFieldRevalidation.mean_absolute_error)} <span>mean_absolute_error</span></dd>
+          </div>
+          <div>
+            <dt>field ranking</dt>
+            <dd>${formatNumber(customerFieldRevalidation.risk_ranking_quality)} <span>risk_ranking_quality</span></dd>
+          </div>
+          <div>
+            <dt>revalidation 下一验收</dt>
+            <dd>${escapeHtml(customerFieldRevalidation.next_required_artifact || "r12_customer_field_slice_revalidation")}</dd>
+          </div>
+          <div>
+            <dt>field feedback update</dt>
+            <dd>${escapeHtml(customerFieldFeedback.feedback_update_status || "customer_field_outcome_feedback_update_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>feedback metrics consumed</dt>
+            <dd>${formatBooleanGate(customerFieldFeedback.metrics_consumed, "metrics_consumed")}</dd>
+          </div>
+          <div>
+            <dt>feedback candidate count</dt>
+            <dd>${formatCount(customerFieldFeedback.candidate_count)} <span>candidate_count</span></dd>
+          </div>
+          <div>
+            <dt>prompt/persona patch</dt>
+            <dd>${formatBooleanGate(customerFieldFeedback.prompt_or_persona_manual_patch_allowed, "prompt_or_persona_manual_patch_allowed")}</dd>
+          </div>
+          <div>
+            <dt>feedback 下一验收</dt>
+            <dd>${escapeHtml(customerFieldFeedback.next_required_artifact || "r12_customer_field_outcome_feedback_update")}</dd>
+          </div>
+          <div>
+            <dt>feedback shadow replay</dt>
+            <dd>${escapeHtml(customerFeedbackShadowReplay.shadow_replay_status || "customer_feedback_update_shadow_replay_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>shadow replay executed</dt>
+            <dd>${formatBooleanGate(customerFeedbackShadowReplay.replay_executed, "shadow_replay_executed")}</dd>
+          </div>
+          <div>
+            <dt>accepted replay candidates</dt>
+            <dd>${formatCount(customerFeedbackShadowReplay.accepted_candidate_count)} <span>accepted_candidate_count</span></dd>
+          </div>
+          <div>
+            <dt>shadow replay 下一验收</dt>
+            <dd>${escapeHtml(customerFeedbackShadowReplay.next_required_artifact || "r12_customer_feedback_update_shadow_replay")}</dd>
+          </div>
+          <div>
+            <dt>feedback holdout review</dt>
+            <dd>${escapeHtml(customerFeedbackHoldoutReview.holdout_review_status || "customer_feedback_shadow_replay_holdout_review_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>holdout review executed</dt>
+            <dd>${formatBooleanGate(customerFeedbackHoldoutReview.holdout_review_executed, "holdout_review_executed")}</dd>
+          </div>
+          <div>
+            <dt>holdout review passed</dt>
+            <dd>${formatBooleanGate(customerFeedbackHoldoutReview.holdout_review_passed, "holdout_review_passed")}</dd>
+          </div>
+          <div>
+            <dt>independent holdout cases</dt>
+            <dd>${formatCount(customerFeedbackHoldoutReview.independent_holdout_case_count)} <span>independent_holdout_case_count</span></dd>
+          </div>
+          <div>
+            <dt>holdout review 下一验收</dt>
+            <dd>${escapeHtml(customerFeedbackHoldoutReview.next_required_artifact || "r12_customer_feedback_shadow_replay_holdout_review")}</dd>
+          </div>
+          <div>
+            <dt>customer validation workflow</dt>
+            <dd>${escapeHtml(customerValidationWorkflow.workflow_status || "customer_validation_workflow_status_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>workflow current_stage</dt>
+            <dd>${escapeHtml(customerValidationWorkflow.current_stage || "r12_customer_validation_workflow_status")}</dd>
+          </div>
+          <div>
+            <dt>workflow next_action</dt>
+            <dd>${escapeHtml(customerValidationWorkflow.next_action || "collect_customer_field_slice_or_wait_for_target_outcome")}</dd>
+          </div>
+          <div>
+            <dt>workflow source_arrived</dt>
+            <dd>${formatBooleanGate(customerValidationWorkflow.source_arrived, "source_arrived")}</dd>
+          </div>
+          <div>
+            <dt>workflow blocking artifact</dt>
+            <dd>${escapeHtml(customerValidationWorkflow.blocking_artifact_id || "customer_field_slice_submission_or_target_outcome_artifact")}</dd>
+          </div>
+          <div>
+            <dt>customer trial readiness</dt>
+            <dd>${escapeHtml(customerTrialReadiness.trial_package_status || "customer_trial_readiness_package_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>trial current_stage</dt>
+            <dd>${escapeHtml(customerTrialReadiness.current_stage || "r12_customer_trial_readiness_package")}</dd>
+          </div>
+          <div>
+            <dt>trial template_output_path</dt>
+            <dd>${escapeHtml(customerTrialReadiness.template_output_path || "r12-customer-field-slice-template-current-001.csv")}</dd>
+          </div>
+          <div>
+            <dt>trial minimum_case_count</dt>
+            <dd>${formatCount(customerTrialReadiness.minimum_case_count)}</dd>
+          </div>
+          <div>
+            <dt>r12_customer_trial_operational_check</dt>
+            <dd>${escapeHtml(customerTrialOperational.operational_check_status || "customer_trial_operational_check_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>trial operational ready</dt>
+            <dd>${formatBooleanGate(customerTrialOperational.customer_trial_request_operationally_ready, "customer_trial_request_operationally_ready")}</dd>
+          </div>
+          <div>
+            <dt>trial source_registry_resolvable</dt>
+            <dd>${formatBooleanGate(customerTrialOperational.source_registry_resolvable, "source_registry_resolvable")}</dd>
+          </div>
+          <div>
+            <dt>trial operator_runbook_declared</dt>
+            <dd>${formatBooleanGate(customerTrialOperational.operator_runbook_declared, "operator_runbook_declared")}</dd>
+          </div>
+          <div>
+            <dt>r12_customer_trial_launch_handoff_package</dt>
+            <dd>${escapeHtml(customerTrialLaunch.launch_package_status || "customer_trial_launch_handoff_package_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>launch handoff ready</dt>
+            <dd>${formatBooleanGate(customerTrialLaunch.launch_handoff_ready, "launch_handoff_ready")}</dd>
+          </div>
+          <div>
+            <dt>r12_customer_trial_launch_packet_export</dt>
+            <dd>${escapeHtml(customerTrialPacketExport.packet_export_status || "customer_trial_launch_packet_export_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>packet markdown_export_written</dt>
+            <dd>${formatBooleanGate(customerTrialPacketExport.markdown_export_written, "markdown_export_written")}</dd>
+          </div>
+          <div>
+            <dt>packet markdown_output_path</dt>
+            <dd>${escapeHtml(customerTrialPacketExport.markdown_output_path || "r12-customer-trial-launch-packet-current-001.md")}</dd>
+          </div>
+          <div>
+            <dt>packet delivery</dt>
+            <dd>
+              <a class="artifact-link" href="${escapeHtml(customerTrialPacketHref)}" target="_blank" rel="noopener">打开 launch packet</a>
+            </dd>
+          </div>
+          <div>
+            <dt>r12_customer_trial_launch_bundle_verification</dt>
+            <dd>${escapeHtml(customerTrialBundleVerification.bundle_verification_status || "customer_trial_launch_bundle_verification_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>launch bundle verified</dt>
+            <dd>${formatBooleanGate(customerTrialBundleVerification.launch_bundle_verified, "launch_bundle_verified")}</dd>
+          </div>
+          <div>
+            <dt>bundle resolved_required_item_count</dt>
+            <dd>${formatCount(customerTrialBundleVerification.resolved_required_item_count)} / ${formatCount(customerTrialBundleVerification.required_item_count)}</dd>
+          </div>
+          <div>
+            <dt>bundle missing_required_item_ids</dt>
+            <dd>${formatList(customerTrialBundleVerification.missing_required_item_ids)}</dd>
+          </div>
+          <div>
+            <dt>r12_customer_field_slice_operator_rehearsal</dt>
+            <dd>${escapeHtml(customerFieldOperatorRehearsal.operator_rehearsal_status || "customer_field_slice_operator_rehearsal_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>operator command rehearsed</dt>
+            <dd>${formatBooleanGate(customerFieldOperatorRehearsal.operator_command_rehearsed, "operator_command_rehearsed")}</dd>
+          </div>
+          <div>
+            <dt>sample slice ready</dt>
+            <dd>${formatBooleanGate(customerFieldOperatorRehearsal.sample_slice_ready_for_revalidation, "sample_slice_ready_for_revalidation")}</dd>
+          </div>
+          <div>
+            <dt>real customer slice</dt>
+            <dd>${formatBooleanGate(customerFieldOperatorRehearsal.real_customer_field_slice_submitted, "real_customer_field_slice_submitted")}</dd>
+          </div>
+          <div>
+            <dt>r12_customer_feedback_loop_operator_rehearsal</dt>
+            <dd>${escapeHtml(customerFeedbackLoopRehearsal.feedback_loop_rehearsal_status || "customer_feedback_loop_operator_rehearsal_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>L22 intake rehearsal</dt>
+            <dd>${formatBooleanGate(customerFeedbackLoopRehearsal.l22_intake_validator_executed, "l22_intake_validator_executed")}</dd>
+          </div>
+          <div>
+            <dt>L23 field metrics rehearsal</dt>
+            <dd>${formatBooleanGate(customerFeedbackLoopRehearsal.l23_field_revalidation_executed, "l23_field_revalidation_executed")}</dd>
+          </div>
+          <div>
+            <dt>L24 feedback candidate rehearsal</dt>
+            <dd>${formatBooleanGate(customerFeedbackLoopRehearsal.l24_feedback_candidates_generated, "l24_feedback_candidates_generated")}</dd>
+          </div>
+          <div>
+            <dt>L25 shadow replay rehearsal</dt>
+            <dd>${formatBooleanGate(customerFeedbackLoopRehearsal.l25_shadow_replay_executed, "l25_shadow_replay_executed")}</dd>
+          </div>
+          <div>
+            <dt>L26 synthetic holdout rehearsal</dt>
+            <dd>${formatBooleanGate(customerFeedbackLoopRehearsal.l26_synthetic_holdout_review_executed, "l26_synthetic_holdout_review_executed")}</dd>
+          </div>
+          <div>
+            <dt>r12_customer_trial_evidence_ledger</dt>
+            <dd>${escapeHtml(customerTrialEvidenceLedger.ledger_status || "customer_trial_evidence_ledger_boundary 未提供")}</dd>
+          </div>
+          <div>
+            <dt>customer visible evidence</dt>
+            <dd>${formatCount(customerTrialEvidenceLedger.customer_visible_readiness_evidence_count)}</dd>
+          </div>
+          <div>
+            <dt>operator rehearsal evidence</dt>
+            <dd>${formatCount(customerTrialEvidenceLedger.operator_only_rehearsal_evidence_count)}</dd>
+          </div>
+          <div>
+            <dt>blocking_gap_count</dt>
+            <dd>${formatCount(customerTrialEvidenceLedger.blocking_gap_count)}</dd>
           </div>
         </dl>
         <p>R12 当前只能作为次级迁移证据展示，主决策仍来自 guarded baseline，真实客户 outcome 回流前不进入 runtime default。</p>
@@ -798,6 +2111,11 @@ function formatCount(value) {
     return "0";
   }
   return String(Number(value));
+}
+
+function formatList(value) {
+  if (!Array.isArray(value) || value.length === 0) return "无";
+  return value.map((item) => String(item)).join(" / ");
 }
 
 function formatSignedNumber(value) {

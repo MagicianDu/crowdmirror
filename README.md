@@ -1,18 +1,54 @@
-# Research Worktree — Active Direction
+# 人群反应趋势与风险区间模拟器
 
-> **当前主线已切换到 R7。**
->
-> 后续开发以 `docs/active-spec.md` 和 `docs/CURRENT_STATE.md` 为准。
-> 本 README 下方原有内容保留为历史背景，不再作为当前实现依据。
+这是一个面向企业试用的公开数据验证版原型，用于在政策、价格、权益或服务规则变更发布前，模拟人群反应趋势、可信数值区间、风险分布、异常群体和机制解释。
 
-当前 active spec：
+项目当前不定位为精准预测系统，而是定位为：
 
-- `docs/superpowers/specs/2026-06-05-r6-outcome-feedback-prior-anchored-interaction-simulation-spec.md`
-- `docs/superpowers/specs/2026-06-25-r7-mechanism-generative-risk-simulation-spec.md`
+> 基于静态人口先验、公开数据验证、虚拟人群反应和交互传播的发布前风险评估工具。
 
-当前目标：
+## 当前能力
 
-> R7 机制生成式交互风险仿真：用强静态先验建立可信底座，用机制状态和交互传播发现静态数据盲区，用分布式 rollout 生成趋势区间和风险排序，并用真实 outcome 回流持续校正方法。
+- 公开数据测试：当前 R12 gate 已允许 `public_data_effectiveness_claim_allowed=true`，表示可对外做“公开数据测试有效”的受限声明。
+- 趋势与区间：输出趋势方向、风险区间、风险排序、静态先验漏报恢复、误报控制和决策价值指标。
+- 离线校准闭环：支持 outcome 反馈后的结构化更新候选、shadow replay、holdout review 和人工确认流程。
+- 证据边界：所有 Product 展示绑定 artifact、source refs、blocked claims 和 runtime guard。
+- 企业试用路径：可先用公开数据版演示价值，再决定是否进入企业 field validation。
+
+## 不能承诺
+
+- 不承诺精确单点预测。
+- 不宣称客户 field validation 已完成。
+- 不把校准更新默认自动上线。
+- 不开启 runtime default；当前 `runtime_default_allowed=false`。
+
+## 本地预览
+
+```bash
+python3 -m http.server 8088 --bind 127.0.0.1
+```
+
+- 宣传页：[http://127.0.0.1:8088/demo/promo.html](http://127.0.0.1:8088/demo/promo.html)
+- 产品 demo：[http://127.0.0.1:8088/demo/](http://127.0.0.1:8088/demo/)
+
+## 关键文档
+
+- `docs/active-spec.md`
+- `docs/CURRENT_STATE.md`
+- `docs/superpowers/specs/2026-06-26-r12-outcome-supervised-causal-interaction-operator-spec.md`
+
+## 关键证据 artifact
+
+- `experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json`
+- `experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json`
+- `experiments/results/r12_real_source_validation_execution_packet/r12-real-source-validation-execution-packet-current-001.json`
+
+## 验证
+
+```bash
+.venv/bin/python -m pytest -q
+node --check demo/app.js
+node --check demo/promo.js
+```
 
 ## Historical Background
 

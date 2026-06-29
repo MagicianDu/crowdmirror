@@ -1,0 +1,273 @@
+{
+  "acceptance_decision": "accept_independent_hindcast_prediction_packet_block_pre_outcome_and_product_default",
+  "acceptance_gates": {
+    "external_holdout_proxy_blocked": true,
+    "field_outcome_validated": false,
+    "hindcast_independent_revalidation_ready": true,
+    "independent_feature_source_ingested": true,
+    "minimum_case_overlap_met": true,
+    "pre_outcome_revalidation_ready": false,
+    "prediction_lock_timestamp_pre_target_outcome": false,
+    "prediction_packet_generated": true,
+    "prediction_source_independent_of_target_outcome": true,
+    "product_default_allowed": false,
+    "runtime_default_allowed": false,
+    "same_table_prediction_leakage_risk": false,
+    "target_outcome_used_for_prediction_generation": false
+  },
+  "allowed_claims": [
+    "R12 has an independent prior-month official prediction packet ready for hindcast revalidation.",
+    "The packet does not use the April target outcome values or same-table category mix to generate predictions."
+  ],
+  "artifact_id": "r12-pre-outcome-or-independent-prediction-packet-current-001",
+  "blocked_claims": [
+    "pre-outcome prediction packet locked before target outcome",
+    "independent hindcast revalidation passed",
+    "R12 Product default high-risk recovery validated",
+    "R12 Product core method ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "customer outcome validated",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "independent_feature_prediction_packet_not_revalidation",
+  "independent_prediction_source": {
+    "feature_period": "March 2026",
+    "report_page_url": "https://www.transportation.gov/resources/individuals/aviation-consumer-protection/may-2026-air-travel-consumer-report-march-and",
+    "source_extraction_note": "DOT PDF text lines 2168-2195 report March 2026 Table 3 U.S. airline consumer complaint cases.",
+    "source_id": "dot_may_2026_atcr_march_2026_table_3",
+    "source_name": "May 2026 Air Travel Consumer Report (March 2026 Data)",
+    "source_owner": "U.S. Department of Transportation",
+    "source_pdf_url": "https://www.transportation.gov/sites/dot.gov/files/2026-05/May%202026%20ATCR.pdf",
+    "source_route": "external_public_official_prior_month_report",
+    "source_table": "Table 3. Consumer Complaint Cases: U.S. Airlines",
+    "target_period": "April 2026"
+  },
+  "locked_predictions": [
+    {
+      "carrier": "American Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_american_airlines",
+      "feature_period": "March 2026",
+      "high_risk_threshold": 0.071429,
+      "predicted_high_risk": true,
+      "prediction_input_total": 1716,
+      "prediction_share": 0.284861,
+      "prediction_source_id": "dot_may_2026_atcr_march_2026_table_3",
+      "target_outcome_used_for_prediction_generation": false,
+      "target_period": "April 2026"
+    },
+    {
+      "carrier": "Alaska Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_alaska_airlines",
+      "feature_period": "March 2026",
+      "high_risk_threshold": 0.071429,
+      "predicted_high_risk": false,
+      "prediction_input_total": 218,
+      "prediction_share": 0.036189,
+      "prediction_source_id": "dot_may_2026_atcr_march_2026_table_3",
+      "target_outcome_used_for_prediction_generation": false,
+      "target_period": "April 2026"
+    },
+    {
+      "carrier": "Allegiant Air",
+      "case_id": "dot_atcr_2026_04_us_airline_allegiant_air",
+      "feature_period": "March 2026",
+      "high_risk_threshold": 0.071429,
+      "predicted_high_risk": false,
+      "prediction_input_total": 84,
+      "prediction_share": 0.013944,
+      "prediction_source_id": "dot_may_2026_atcr_march_2026_table_3",
+      "target_outcome_used_for_prediction_generation": false,
+      "target_period": "April 2026"
+    },
+    {
+      "carrier": "Avelo Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_avelo_airlines",
+      "feature_period": "March 2026",
+      "high_risk_threshold": 0.071429,
+      "predicted_high_risk": false,
+      "prediction_input_total": 53,
+      "prediction_share": 0.008798,
+      "prediction_source_id": "dot_may_2026_atcr_march_2026_table_3",
+      "target_outcome_used_for_prediction_generation": false,
+      "target_period": "April 2026"
+    },
+    {
+      "carrier": "Breeze Airways",
+      "case_id": "dot_atcr_2026_04_us_airline_breeze_airways",
+      "feature_period": "March 2026",
+      "high_risk_threshold": 0.071429,
+      "predicted_high_risk": false,
+      "prediction_input_total": 61,
+      "prediction_share": 0.010126,
+      "prediction_source_id": "dot_may_2026_atcr_march_2026_table_3",
+      "target_outcome_used_for_prediction_generation": false,
+      "target_period": "April 2026"
+    },
+    {
+      "carrier": "Contour Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_contour_airlines",
+      "feature_period": "March 2026",
+      "high_risk_threshold": 0.071429,
+      "predicted_high_risk": false,
+      "prediction_input_total": 5,
+      "prediction_share": 0.00083,
+      "prediction_source_id": "dot_may_2026_atcr_march_2026_table_3",
+      "target_outcome_used_for_prediction_generation": false,
+      "target_period": "April 2026"
+    },
+    {
+      "carrier": "Delta Air Lines",
+      "case_id": "dot_atcr_2026_04_us_airline_delta_air_lines",
+      "feature_period": "March 2026",
+      "high_risk_threshold": 0.071429,
+      "predicted_high_risk": true,
+      "prediction_input_total": 999,
+      "prediction_share": 0.165837,
+      "prediction_source_id": "dot_may_2026_atcr_march_2026_table_3",
+      "target_outcome_used_for_prediction_generation": false,
+      "target_period": "April 2026"
+    },
+    {
+      "carrier": "Frontier Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_frontier_airlines",
+      "feature_period": "March 2026",
+      "high_risk_threshold": 0.071429,
+      "predicted_high_risk": true,
+      "prediction_input_total": 772,
+      "prediction_share": 0.128154,
+      "prediction_source_id": "dot_may_2026_atcr_march_2026_table_3",
+      "target_outcome_used_for_prediction_generation": false,
+      "target_period": "April 2026"
+    },
+    {
+      "carrier": "JetBlue",
+      "case_id": "dot_atcr_2026_04_us_airline_jetblue",
+      "feature_period": "March 2026",
+      "high_risk_threshold": 0.071429,
+      "predicted_high_risk": false,
+      "prediction_input_total": 333,
+      "prediction_share": 0.055279,
+      "prediction_source_id": "dot_may_2026_atcr_march_2026_table_3",
+      "target_outcome_used_for_prediction_generation": false,
+      "target_period": "April 2026"
+    },
+    {
+      "carrier": "Southwest Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_southwest_airlines",
+      "feature_period": "March 2026",
+      "high_risk_threshold": 0.071429,
+      "predicted_high_risk": false,
+      "prediction_input_total": 268,
+      "prediction_share": 0.044489,
+      "prediction_source_id": "dot_may_2026_atcr_march_2026_table_3",
+      "target_outcome_used_for_prediction_generation": false,
+      "target_period": "April 2026"
+    },
+    {
+      "carrier": "Sun Country Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_sun_country_airlines",
+      "feature_period": "March 2026",
+      "high_risk_threshold": 0.071429,
+      "predicted_high_risk": false,
+      "prediction_input_total": 27,
+      "prediction_share": 0.004482,
+      "prediction_source_id": "dot_may_2026_atcr_march_2026_table_3",
+      "target_outcome_used_for_prediction_generation": false,
+      "target_period": "April 2026"
+    },
+    {
+      "carrier": "Spirit Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_spirit_airlines",
+      "feature_period": "March 2026",
+      "high_risk_threshold": 0.071429,
+      "predicted_high_risk": true,
+      "prediction_input_total": 624,
+      "prediction_share": 0.103586,
+      "prediction_source_id": "dot_may_2026_atcr_march_2026_table_3",
+      "target_outcome_used_for_prediction_generation": false,
+      "target_period": "April 2026"
+    },
+    {
+      "carrier": "United Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_united_airlines",
+      "feature_period": "March 2026",
+      "high_risk_threshold": 0.071429,
+      "predicted_high_risk": true,
+      "prediction_input_total": 855,
+      "prediction_share": 0.141932,
+      "prediction_source_id": "dot_may_2026_atcr_march_2026_table_3",
+      "target_outcome_used_for_prediction_generation": false,
+      "target_period": "April 2026"
+    },
+    {
+      "carrier": "Other U.S. Airline",
+      "case_id": "dot_atcr_2026_04_us_airline_other_u.s._airline",
+      "feature_period": "March 2026",
+      "high_risk_threshold": 0.071429,
+      "predicted_high_risk": false,
+      "prediction_input_total": 9,
+      "prediction_share": 0.001494,
+      "prediction_source_id": "dot_may_2026_atcr_march_2026_table_3",
+      "target_outcome_used_for_prediction_generation": false,
+      "target_period": "April 2026"
+    }
+  ],
+  "next_required_artifact": "r12_independent_hindcast_revalidation",
+  "prediction_generation_contract": {
+    "normalization": "share_of_prior_month_total_complaint_cases",
+    "prediction_route": "prior_month_complaint_share_hindcast",
+    "prediction_unit": "complaint_share",
+    "prompt_or_persona_manual_patch_allowed": false,
+    "revalidation_artifact_required": "r12_independent_hindcast_revalidation",
+    "target_case_axis": "carrier",
+    "uses_target_outcome_category_mix": false,
+    "uses_target_outcome_counts": false
+  },
+  "prediction_independence_audit": {
+    "post_hoc_hindcast_risk": true,
+    "pre_registered_before_target_outcome": false,
+    "prediction_source_independent_of_target_outcome": true,
+    "same_table_prediction_leakage_risk": false,
+    "uses_prior_month_official_source": true,
+    "uses_target_outcome_category_mix": false,
+    "uses_target_outcome_counts": false
+  },
+  "prediction_packet_summary": {
+    "hindcast_independent_revalidation_ready": true,
+    "independent_feature_period": "March 2026",
+    "matched_case_count": 14,
+    "pre_outcome_revalidation_ready": false,
+    "prediction_case_count": 14,
+    "prediction_lock_timestamp_pre_target_outcome": false,
+    "prediction_source_independent_of_target_outcome": true,
+    "prior_month_observed_complaint_cases": 6024,
+    "source_revalidation_artifact_id": "r12-recall-mitigation-external-holdout-revalidation-current-001",
+    "source_row_count": 14,
+    "target_outcome_period": "April 2026",
+    "target_outcome_used_for_prediction_generation": false,
+    "target_raw_slice_artifact_id": "r12-external-or-customer-holdout-raw-slice-current-001"
+  },
+  "run_id": "r12-l15-current",
+  "schema_version": "r12-pre-outcome-or-independent-prediction-packet-v1",
+  "source_refs": [
+    "r12-recall-mitigation-external-holdout-revalidation-current-001",
+    "r12-external-or-customer-holdout-raw-slice-current-001",
+    "dot_may_2026_atcr_march_2026_table_3"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-recall-mitigation-external-holdout-revalidation-current-001",
+      "path": "experiments/results/r12_recall_mitigation_external_holdout_revalidation/r12-recall-mitigation-external-holdout-revalidation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-external-or-customer-holdout-raw-slice-current-001",
+      "path": "experiments/results/r12_external_or_customer_holdout_raw_slice/r12-external-or-customer-holdout-raw-slice-current-001.json"
+    },
+    {
+      "artifact_id": "dot_may_2026_atcr_march_2026_table_3",
+      "path": "https://www.transportation.gov/sites/dot.gov/files/2026-05/May%202026%20ATCR.pdf"
+    }
+  ],
+  "status": "r12_pre_outcome_or_independent_prediction_packet_ready_independent_hindcast_not_pre_registered"
+}

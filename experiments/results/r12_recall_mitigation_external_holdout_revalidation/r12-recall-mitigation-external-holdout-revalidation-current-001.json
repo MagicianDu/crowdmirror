@@ -1,0 +1,335 @@
+{
+  "acceptance_decision": "reject_product_default_keep_as_proxy_external_revalidation_diagnostic",
+  "acceptance_gates": {
+    "external_holdout_revalidation_executed": true,
+    "external_holdout_revalidation_passed": false,
+    "false_alarm_non_regression": false,
+    "field_outcome_validated": false,
+    "interval_coverage_non_regression": true,
+    "mean_absolute_error_improved": true,
+    "prediction_fields_generated": true,
+    "prediction_source_independent_of_observed_outcome": false,
+    "product_default_allowed": false,
+    "raw_external_or_customer_slice_present": true,
+    "risk_ranking_quality_improved": true,
+    "runtime_default_allowed": false,
+    "same_table_prediction_leakage_risk": true,
+    "static_prior_miss_recovery_improved": true
+  },
+  "allowed_claims": [
+    "R12 can compute proxy external holdout revalidation metrics on the DOT ATCR raw slice.",
+    "The proxy interaction signal improves recall-oriented metrics but increases false alarms and is not an independent prediction."
+  ],
+  "artifact_id": "r12-recall-mitigation-external-holdout-revalidation-current-001",
+  "blocked_claims": [
+    "external holdout revalidation passed with independent predictions",
+    "prediction source independent of observed outcome",
+    "false_alarm_non_regression=true",
+    "R12 Product default high-risk recovery validated",
+    "R12 Product core method ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "customer outcome validated",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "case_predictions": [
+    {
+      "carrier": "American Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_american_airlines",
+      "interaction_absolute_error": 0.197691,
+      "interaction_false_alarm": false,
+      "interaction_predicted_high_risk": true,
+      "interaction_prediction": 0.079432,
+      "mechanism_pressure_score": 0.182685,
+      "observed_high_risk": true,
+      "observed_outcome": 1341,
+      "observed_share": 0.277123,
+      "static_prior_absolute_error": 0.205695,
+      "static_prior_miss_recovered": true,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Alaska Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_alaska_airlines",
+      "interaction_absolute_error": 0.035217,
+      "interaction_false_alarm": false,
+      "interaction_predicted_high_risk": false,
+      "interaction_prediction": 0.068488,
+      "mechanism_pressure_score": 0.157516,
+      "observed_high_risk": false,
+      "observed_outcome": 161,
+      "observed_share": 0.033271,
+      "static_prior_absolute_error": 0.038157,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Allegiant Air",
+      "case_id": "dot_atcr_2026_04_us_airline_allegiant_air",
+      "interaction_absolute_error": 0.057215,
+      "interaction_false_alarm": false,
+      "interaction_predicted_high_risk": false,
+      "interaction_prediction": 0.066308,
+      "mechanism_pressure_score": 0.1525,
+      "observed_high_risk": false,
+      "observed_outcome": 44,
+      "observed_share": 0.009093,
+      "static_prior_absolute_error": 0.062336,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Avelo Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_avelo_airlines",
+      "interaction_absolute_error": 0.081672,
+      "interaction_false_alarm": true,
+      "interaction_predicted_high_risk": true,
+      "interaction_prediction": 0.092005,
+      "mechanism_pressure_score": 0.2116,
+      "observed_high_risk": false,
+      "observed_outcome": 50,
+      "observed_share": 0.010333,
+      "static_prior_absolute_error": 0.061096,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Breeze Airways",
+      "case_id": "dot_atcr_2026_04_us_airline_breeze_airways",
+      "interaction_absolute_error": 0.058388,
+      "interaction_false_alarm": false,
+      "interaction_predicted_high_risk": false,
+      "interaction_prediction": 0.070994,
+      "mechanism_pressure_score": 0.163279,
+      "observed_high_risk": false,
+      "observed_outcome": 61,
+      "observed_share": 0.012606,
+      "static_prior_absolute_error": 0.058823,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Contour Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_contour_airlines",
+      "interaction_absolute_error": 0.078474,
+      "interaction_false_alarm": true,
+      "interaction_predicted_high_risk": true,
+      "interaction_prediction": 0.079714,
+      "mechanism_pressure_score": 0.183333,
+      "observed_high_risk": false,
+      "observed_outcome": 6,
+      "observed_share": 0.00124,
+      "static_prior_absolute_error": 0.070189,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Delta Air Lines",
+      "case_id": "dot_atcr_2026_04_us_airline_delta_air_lines",
+      "interaction_absolute_error": 0.086451,
+      "interaction_false_alarm": false,
+      "interaction_predicted_high_risk": true,
+      "interaction_prediction": 0.072466,
+      "mechanism_pressure_score": 0.166664,
+      "observed_high_risk": true,
+      "observed_outcome": 769,
+      "observed_share": 0.158917,
+      "static_prior_absolute_error": 0.087489,
+      "static_prior_miss_recovered": true,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Frontier Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_frontier_airlines",
+      "interaction_absolute_error": 0.066145,
+      "interaction_false_alarm": false,
+      "interaction_predicted_high_risk": false,
+      "interaction_prediction": 0.07004,
+      "mechanism_pressure_score": 0.161085,
+      "observed_high_risk": true,
+      "observed_outcome": 659,
+      "observed_share": 0.136185,
+      "static_prior_absolute_error": 0.064757,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "JetBlue",
+      "case_id": "dot_atcr_2026_04_us_airline_jetblue",
+      "interaction_absolute_error": 0.017468,
+      "interaction_false_alarm": true,
+      "interaction_predicted_high_risk": true,
+      "interaction_prediction": 0.073265,
+      "mechanism_pressure_score": 0.1685,
+      "observed_high_risk": false,
+      "observed_outcome": 270,
+      "observed_share": 0.055797,
+      "static_prior_absolute_error": 0.015632,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Southwest Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_southwest_airlines",
+      "interaction_absolute_error": 0.008961,
+      "interaction_false_alarm": false,
+      "interaction_predicted_high_risk": false,
+      "interaction_prediction": 0.054011,
+      "mechanism_pressure_score": 0.12422,
+      "observed_high_risk": false,
+      "observed_outcome": 218,
+      "observed_share": 0.045051,
+      "static_prior_absolute_error": 0.026378,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Sun Country Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_sun_country_airlines",
+      "interaction_absolute_error": 0.045091,
+      "interaction_false_alarm": false,
+      "interaction_predicted_high_risk": false,
+      "interaction_prediction": 0.047984,
+      "mechanism_pressure_score": 0.110357,
+      "observed_high_risk": false,
+      "observed_outcome": 14,
+      "observed_share": 0.002893,
+      "static_prior_absolute_error": 0.068535,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Spirit Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_spirit_airlines",
+      "interaction_absolute_error": 0.010939,
+      "interaction_false_alarm": false,
+      "interaction_predicted_high_risk": true,
+      "interaction_prediction": 0.087222,
+      "mechanism_pressure_score": 0.2006,
+      "observed_high_risk": true,
+      "observed_outcome": 475,
+      "observed_share": 0.098161,
+      "static_prior_absolute_error": 0.026732,
+      "static_prior_miss_recovered": true,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "United Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_united_airlines",
+      "interaction_absolute_error": 0.078566,
+      "interaction_false_alarm": false,
+      "interaction_predicted_high_risk": true,
+      "interaction_prediction": 0.078285,
+      "mechanism_pressure_score": 0.180046,
+      "observed_high_risk": true,
+      "observed_outcome": 759,
+      "observed_share": 0.156851,
+      "static_prior_absolute_error": 0.085422,
+      "static_prior_miss_recovered": true,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Other U.S. Airline",
+      "case_id": "dot_atcr_2026_04_us_airline_other_u.s._airline",
+      "interaction_absolute_error": 0.057306,
+      "interaction_false_alarm": false,
+      "interaction_predicted_high_risk": false,
+      "interaction_prediction": 0.059786,
+      "mechanism_pressure_score": 0.1375,
+      "observed_high_risk": false,
+      "observed_outcome": 12,
+      "observed_share": 0.00248,
+      "static_prior_absolute_error": 0.068949,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    }
+  ],
+  "claim_level": "external_holdout_proxy_revalidation_diagnostic_only",
+  "metric_comparison": {
+    "false_alarm_rate": {
+      "delta": 0.428571,
+      "interaction": 0.428571,
+      "static_prior": 0.0
+    },
+    "interval_coverage": {
+      "delta": 0.071429,
+      "interaction": 0.357143,
+      "static_prior": 0.285714
+    },
+    "mean_absolute_error": {
+      "delta": -0.004329,
+      "interaction": 0.062827,
+      "static_prior": 0.067156
+    },
+    "precision": {
+      "delta": 0.571429,
+      "interaction": 0.571429,
+      "static_prior": 0.0
+    },
+    "risk_ranking_quality": {
+      "delta": 0.25,
+      "interaction": 0.25,
+      "static_prior": 0.0
+    },
+    "static_prior_miss_recovery": {
+      "delta": 0.8,
+      "interaction": 0.8,
+      "static_prior": 0.0
+    }
+  },
+  "next_required_artifact": "r12_pre_outcome_or_independent_prediction_packet",
+  "revalidation_summary": {
+    "case_count": 14,
+    "high_risk_threshold": 0.071429,
+    "interaction_prediction_source": "same_table_mechanism_composition_proxy",
+    "observed_total": 4839,
+    "prediction_source_independent_of_observed_outcome": false,
+    "same_table_prediction_leakage_risk": true,
+    "source_artifact_id": "r12-external-or-customer-holdout-raw-slice-current-001",
+    "static_prior_prediction_source": "uniform_carrier_share_control",
+    "top_k_for_risk_ranking": 4
+  },
+  "run_id": "r12-l14-current",
+  "schema_version": "r12-recall-mitigation-external-holdout-revalidation-v1",
+  "source_refs": [
+    "r12-external-or-customer-holdout-raw-slice-current-001",
+    "dot_air_travel_consumer_report_complaint_candidate"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-external-or-customer-holdout-raw-slice-current-001",
+      "path": "experiments/results/r12_external_or_customer_holdout_raw_slice/r12-external-or-customer-holdout-raw-slice-current-001.json"
+    }
+  ],
+  "status": "r12_recall_mitigation_external_holdout_revalidation_blocked_prediction_proxy_only",
+  "top_k_risk_ranking": {
+    "interaction_top_k_carriers": [
+      "Avelo Airlines",
+      "Spirit Airlines",
+      "Contour Airlines",
+      "American Airlines"
+    ],
+    "observed_top_k_carriers": [
+      "American Airlines",
+      "Delta Air Lines",
+      "United Airlines",
+      "Frontier Airlines"
+    ],
+    "overlap_count": 1,
+    "risk_ranking_quality": 0.25
+  }
+}
