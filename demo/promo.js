@@ -1,8 +1,8 @@
 const PROMO_ARTIFACTS = {
   productSupportGate:
-    "/experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json",
+    "../experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json",
   customerValueReport:
-    "/experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json",
+    "../experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json",
 };
 
 window.addEventListener("DOMContentLoaded", () => {

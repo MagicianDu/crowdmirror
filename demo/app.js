@@ -1,12 +1,12 @@
 const ARTIFACTS = {
   customerValueReport:
-    "/experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json",
+    "../experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json",
   valueSupport:
-    "/experiments/results/r6_research_product_value_support/r6-research-product-value-support-current-001.json",
+    "../experiments/results/r6_research_product_value_support/r6-research-product-value-support-current-001.json",
   readinessIndex:
-    "/experiments/results/r6_product_readiness_index/r6-product-readiness-index-current-001.json",
+    "../experiments/results/r6_product_readiness_index/r6-product-readiness-index-current-001.json",
   apiManifest:
-    "/experiments/results/r6_product_api_manifest/r6-product-api-manifest-current-001.json",
+    "../experiments/results/r6_product_api_manifest/r6-product-api-manifest-current-001.json",
 };
 
 const SECTION_LABELS = [
@@ -109,7 +109,7 @@ function artifactPathToHref(path) {
   if (!trimmed || trimmed.includes("..") || /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(trimmed)) {
     return "#";
   }
-  return `/${trimmed.replace(/^\/+/, "")}`;
+  return `../${trimmed.replace(/^\/+/, "")}`;
 }
 
 function renderApp({ customerValueReport, valueSupport, readinessIndex, apiManifest }) {

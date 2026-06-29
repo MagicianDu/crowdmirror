@@ -16,19 +16,19 @@ def test_r6_product_frontend_assets_exist_and_bind_current_artifacts():
 
     expected_artifact_paths = [
         (
-            "/experiments/results/r6_product_customer_value_report/"
+            "../experiments/results/r6_product_customer_value_report/"
             "r6-product-customer-value-report-current-001.json"
         ),
         (
-            "/experiments/results/r6_research_product_value_support/"
+            "../experiments/results/r6_research_product_value_support/"
             "r6-research-product-value-support-current-001.json"
         ),
         (
-            "/experiments/results/r6_product_readiness_index/"
+            "../experiments/results/r6_product_readiness_index/"
             "r6-product-readiness-index-current-001.json"
         ),
         (
-            "/experiments/results/r6_product_api_manifest/"
+            "../experiments/results/r6_product_api_manifest/"
             "r6-product-api-manifest-current-001.json"
         ),
     ]
@@ -65,8 +65,10 @@ def test_r6_product_promo_page_explains_public_data_trial_scope():
     assert "打开产品 demo" in html
     assert "查看证据 JSON" in html
 
-    assert "/experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json" in js
-    assert "/experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json" in js
+    assert "../experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json" in js
+    assert "../experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json" in js
+    assert 'href="../experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json"' in html
+    assert 'href="../experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json"' in html
     assert "public_data_effectiveness_claim_allowed" in js
     assert "tested_effective_on_public_data_guarded" in js
     assert "离线校准与自优化候选" in js
@@ -80,6 +82,29 @@ def test_r6_product_promo_page_explains_public_data_trial_scope():
 
     assert "精准预测系统" not in html
     assert "自动上线校准更新" not in html
+
+
+def test_github_pages_public_links_and_relative_artifact_paths():
+    readme = (ROOT / "README.md").read_text()
+    root_index = ROOT / "index.html"
+    nojekyll = ROOT / ".nojekyll"
+    app_js = (DEMO / "app.js").read_text()
+    promo_js = (DEMO / "promo.js").read_text()
+    promo_html = (DEMO / "promo.html").read_text()
+
+    assert root_index.exists()
+    assert nojekyll.exists()
+    assert "https://magiciandu.github.io/crowdmirror/demo/promo.html" in readme
+    assert "https://magiciandu.github.io/crowdmirror/demo/" in readme
+    assert not re.search(r"\]\(http://127\.0\.0\.1:8088/demo/promo\.html\)", readme)
+    assert not re.search(r"\]\(http://127\.0\.0\.1:8088/demo/\)", readme)
+
+    assert '"/experiments/' not in app_js
+    assert '"/experiments/' not in promo_js
+    assert 'href="/experiments/' not in promo_html
+    assert "../experiments/results/" in app_js
+    assert "../experiments/results/" in promo_js
+    assert "../experiments/results/" in promo_html
 
 
 def test_r6_product_frontend_is_source_backed_and_fail_closed():

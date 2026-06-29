@@ -21,14 +21,19 @@
 - 不把校准更新默认自动上线。
 - 不开启 runtime default；当前 `runtime_default_allowed=false`。
 
+## 在线预览
+
+- 宣传页：[https://magiciandu.github.io/crowdmirror/demo/promo.html](https://magiciandu.github.io/crowdmirror/demo/promo.html)
+- 产品 demo：[https://magiciandu.github.io/crowdmirror/demo/](https://magiciandu.github.io/crowdmirror/demo/)
+
 ## 本地预览
 
 ```bash
 python3 -m http.server 8088 --bind 127.0.0.1
 ```
 
-- 宣传页：[http://127.0.0.1:8088/demo/promo.html](http://127.0.0.1:8088/demo/promo.html)
-- 产品 demo：[http://127.0.0.1:8088/demo/](http://127.0.0.1:8088/demo/)
+- 宣传页：`http://127.0.0.1:8088/demo/promo.html`
+- 产品 demo：`http://127.0.0.1:8088/demo/`
 
 ## 关键文档
 
