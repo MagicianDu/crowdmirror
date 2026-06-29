@@ -1,10 +1,53 @@
 # 人群反应趋势与风险区间模拟器
 
-这是一个面向企业试用的公开数据验证版原型，用于在政策、价格、权益或服务规则变更发布前，模拟人群反应趋势、可信数值区间、风险分布、异常群体和机制解释。
+CrowdMirror 是一个面向企业试用的公开数据验证版原型，用于在政策、价格、权益或服务规则变更发布前，模拟人群反应趋势、可信数值区间、风险分布、异常群体和机制解释。
 
-项目当前不定位为精准预测系统，而是定位为：
+它不定位为“精准预测系统”，而是定位为：
 
 > 基于静态人口先验、公开数据验证、虚拟人群反应和交互传播的发布前风险评估工具。
+
+## 适合谁用
+
+- 政策研究机构：评估政策发布前后的大众反应方向、风险群体和沟通重点。
+- 企业经营团队：评估价格、权益、服务规则变化可能带来的投诉、流失或舆情风险。
+- 产品和策略团队：在正式上线前比较多个方案，提前识别高风险人群和异常反应。
+- 研究团队：查看公开数据验证、校准门禁、失败边界和可审计 artifact。
+
+## 5 分钟上手
+
+1. 打开宣传页，先理解产品能做什么、不能承诺什么：
+   [https://magiciandu.github.io/crowdmirror/demo/promo.html](https://magiciandu.github.io/crowdmirror/demo/promo.html)
+2. 点击宣传页里的“打开产品 demo”，或直接打开：
+   [https://magiciandu.github.io/crowdmirror/demo/](https://magiciandu.github.io/crowdmirror/demo/)
+3. 先看页面顶部的状态标签，确认报告、研究支撑、产品就绪和 API 合同都处于 guarded 状态。
+4. 再看四个核心指标：趋势方向、风险区间、风险排序、误报率。
+5. 下滑查看异常群体、机制解释、证据边界和阻断声明。
+6. 如果要准备企业试用，打开“客户 field slice 校验”面板，按字段模板准备伪匿名数据。浏览器端只做本地预览校验，不上传客户数据。
+
+更详细的操作说明见 [docs/USER_GUIDE.md](docs/USER_GUIDE.md)。
+
+## 产品 demo 怎么看
+
+产品 demo 不是营销落地页，而是 source-backed report UI。页面会读取仓库里的 JSON artifact，并把可说和不可说的边界展示出来。
+
+建议按这个顺序阅读：
+
+1. **顶部状态**：看报告、研究支撑、产品就绪、API 是否 ready guarded。
+2. **核心指标卡片**：快速判断趋势方向、风险区间、风险排序和误报率。
+3. **异常群体**：查看哪些 segment 可能出现静态先验漏报或高风险反应。
+4. **机制解释**：理解风险是由价格压力、服务不确定性、群体敏感度还是传播机制触发。
+5. **R12 迁移验证**：查看公开数据上的次级证据、正向信号和仍被阻断的结论。
+6. **客户试运行面板**：查看从场景输入、群体先验、运行闸门、报告导出到 outcome review 的闭环。
+7. **阻断声明**：确认系统没有承诺精确单点预测、客户 field validation 或自动上线校准更新。
+
+## 看懂核心指标
+
+- **趋势方向**：判断反应会向上、向下还是保持稳定。适合回答“风险大致会不会变高”。
+- **风险区间**：给出可信数值范围，而不是一个确定点估计。适合回答“最可能落在哪个范围内”。
+- **风险排序**：比较哪些群体或场景更值得优先关注。适合安排灰度、沟通和补偿优先级。
+- **误报率**：衡量系统把低风险错判为高风险的代价。误报高时，只能作为诊断信号，不能默认决策。
+- **异常群体**：指出静态人口先验可能漏掉的群体。它是产品价值重点，但必须和误报边界一起看。
+- **机制解释**：说明为什么某个群体或场景可能产生风险，用于辅助业务讨论，不等同于因果证明。
 
 ## 当前能力
 
@@ -13,6 +56,22 @@
 - 离线校准闭环：支持 outcome 反馈后的结构化更新候选、shadow replay、holdout review 和人工确认流程。
 - 证据边界：所有 Product 展示绑定 artifact、source refs、blocked claims 和 runtime guard。
 - 企业试用路径：可先用公开数据版演示价值，再决定是否进入企业 field validation。
+
+## 一次企业试用需要准备什么
+
+当前公开 demo 可以直接浏览，不需要账号、不需要安装、不上传客户数据。
+
+如果要进入企业试用，需要准备一份伪匿名 field slice，用于后续离线验证：
+
+- 至少 10 个 cases。
+- 必需字段：`case_id`、`segment_id`、`scenario_id`、`prediction_share_or_score`、`observed_outcome`、`outcome_timestamp`、`customer_approval_reference`。
+- 不要包含手机号、邮箱、身份证、姓名、地址等直接个人标识。
+- 每条记录都要有客户审批引用，确保数据回流经过授权。
+- 数据通过 intake 后，只允许进入 revalidation、feedback candidate、shadow replay 和 holdout review，不会自动打开 runtime default。
+
+模板位置：
+
+`experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv`
 
 ## 不能承诺
 
@@ -23,31 +82,27 @@
 
 ## 在线预览
 
+- 首页：[https://magiciandu.github.io/crowdmirror/](https://magiciandu.github.io/crowdmirror/)
 - 宣传页：[https://magiciandu.github.io/crowdmirror/demo/promo.html](https://magiciandu.github.io/crowdmirror/demo/promo.html)
 - 产品 demo：[https://magiciandu.github.io/crowdmirror/demo/](https://magiciandu.github.io/crowdmirror/demo/)
+- 证据 JSON：[r12-product-support-gate-current-001.json](https://magiciandu.github.io/crowdmirror/experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json)
 
-## 本地预览
+## 本地运行
+
+本地只需要一个静态文件服务器：
 
 ```bash
 python3 -m http.server 8088 --bind 127.0.0.1
 ```
 
+然后打开：
+
 - 宣传页：`http://127.0.0.1:8088/demo/promo.html`
 - 产品 demo：`http://127.0.0.1:8088/demo/`
 
-## 关键文档
+如果页面显示 artifact 加载失败，通常是没有从仓库根目录启动 server，或者 `experiments/results/` 下的证据文件没有同步完整。
 
-- `docs/active-spec.md`
-- `docs/CURRENT_STATE.md`
-- `docs/superpowers/specs/2026-06-26-r12-outcome-supervised-causal-interaction-operator-spec.md`
-
-## 关键证据 artifact
-
-- `experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json`
-- `experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json`
-- `experiments/results/r12_real_source_validation_execution_packet/r12-real-source-validation-execution-packet-current-001.json`
-
-## 验证
+## 开发者验证
 
 ```bash
 .venv/bin/python -m pytest -q
@@ -55,40 +110,47 @@ node --check demo/app.js
 node --check demo/promo.js
 ```
 
-## Historical Background
+本次 GitHub Pages 链接和用户指南相关测试：
 
-# Research Worktree — Calibrated Generative Agents for CSS
-
-**学科定位**：计算社会科学 / 社会计算
-
-**核心命题**：把生成式智能体从"看起来像人"提升到"统计上像人群"
-
-## 目标 Venue
-
-- CS 顶会：WWW / KDD / NeurIPS / AAAI / CSCW / ICWSM
-- 社科顶刊：Nature Human Behaviour / PNAS / Science Advances
-
-## 核心贡献
-
-1. **结构化生成式智能体架构**：Persona→Utility→Choice 三层分离
-2. **验收门校准框架**：TextGrad、residual rule、参数搜索共同生成候选 patch，
-   由 held-out loss gate 自动接受或拒绝
-3. **PopulationBench**：首个跨 domain 群体行为模拟基准（消费/道德/政策/健康）
-4. **范式贡献**：推进 CSS 从 ABM 到 GBM 的范式转移
-
-## 文档
-
-- [ROADMAP.md](ROADMAP.md) — 9 月研究路线图
-- [paper/OUTLINE.md](paper/OUTLINE.md) — 论文章节大纲
-
-## 代码结构
-
+```bash
+.venv/bin/python -m pytest tests/test_r6_product_frontend_demo.py tests/test_readme_user_guide.py -q
 ```
-src/
-├── simulator/      # 三层生成式智能体（schema, persona, utility, choice）
-├── calibration/    # 多候选 prompt/persona patch + acceptance gate 校准
-└── evaluation/     # 指标与违例检测器
-experiments/        # 实验脚本（按 domain 组织）
-data/               # 数据加载与预处理（multi-domain adapters）
-paper/              # LaTeX 源、图表、bib
-```
+
+## 关键文档
+
+- [docs/USER_GUIDE.md](docs/USER_GUIDE.md)：面向试用用户的操作指南。
+- [docs/active-spec.md](docs/active-spec.md)：当前研发主线和证据边界。
+- [docs/CURRENT_STATE.md](docs/CURRENT_STATE.md)：当前状态、guard、gap 和历史结论。
+- [docs/superpowers/specs/2026-06-26-r12-outcome-supervised-causal-interaction-operator-spec.md](docs/superpowers/specs/2026-06-26-r12-outcome-supervised-causal-interaction-operator-spec.md)：R12 方法和产品支撑合同。
+
+## 关键证据 artifact
+
+- `experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json`
+- `experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json`
+- `experiments/results/r12_real_source_validation_execution_packet/r12-real-source-validation-execution-packet-current-001.json`
+
+## 常见问题
+
+**它能预测一个准确数字吗？**
+
+不能。系统输出趋势方向、可信数值区间、风险排序和异常群体，不承诺精确单点预测。
+
+**公开 demo 能上传企业数据吗？**
+
+不能。GitHub Pages 是静态页面，当前只做本地浏览器预览和字段校验，不接收、不保存、不上传客户数据。
+
+**为什么页面里有很多 blocked 或 guarded？**
+
+这是刻意保留的证据边界。没有真实客户 field slice 或独立 target outcome 之前，系统不会把离线校准候选自动升级成默认生产方法。
+
+**企业试用的价值在哪里？**
+
+价值在于发布前识别趋势方向、风险区间、异常群体和机制解释，并在真实 outcome 回流后形成可审计的校准闭环，而不是承诺一次性精确预测。
+
+## 研发背景
+
+项目早期从“Calibrated Generative Agents for CSS”出发，探索过 TextGrad、LCDU、DCL-PRS、R6/R7/R12 等路线。当前对外主线已经收敛为 Product-first：
+
+- 产品定位：人群反应趋势与风险区间模拟器。
+- 研究支撑目标：验证交互仿真是否改善趋势判断、区间校准、风险排序、异常群体识别和决策价值。
+- 当前边界：公开数据上有 guarded 正向证据；客户 field validation 与 runtime default 仍需真实 outcome 回流后验证。
