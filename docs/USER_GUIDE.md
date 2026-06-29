@@ -79,6 +79,48 @@
 
 产品 demo 里的“客户 field slice 校验”只在浏览器本地做预览，不上传服务器。预览通过后，系统会给出 operator handoff 命令形状，供离线环境执行正式 intake。
 
+## LLM key 怎么配置
+
+在线 demo 不需要配置 LLM key。
+
+原因是当前公开页面运行在 GitHub Pages 上，只读取已经生成好的公开 artifact。浏览器端不会读取 `OPENROUTER_API_KEY`、`DEEPSEEK_API_KEY` 或任何其他 provider key，也不会把客户数据发给 LLM。
+
+只有在下面这些场景才需要 key：
+
+1. 研发人员要重新跑 LLM 驱动的人群仿真。
+2. operator 要生成新的 feedback update candidate。
+3. operator 要重新跑 TextGrad、prompt optimizer 或跨 provider 诊断。
+4. 企业内部部署要把仿真服务接到自己的后端。
+
+当前支持三类常见配置：
+
+| 场景 | 配置方式 | 是否需要真实 key |
+| --- | --- | --- |
+| 本地 LM Studio | `--base-url http://127.0.0.1:1234/v1 --model openai/gpt-oss-20b` | 不需要，代码使用 `lm-studio` 占位 key |
+| DeepSeek | `DEEPSEEK_API_KEY` + `--base-url https://api.deepseek.com` | 需要 |
+| OpenRouter | `OPENROUTER_API_KEY` + `--base-url https://openrouter.ai/api/v1` | 需要 |
+
+zsh 示例：
+
+```bash
+export DEEPSEEK_API_KEY="替换成你的 DeepSeek key"
+export OPENROUTER_API_KEY="替换成你的 OpenRouter key"
+```
+
+DeepSeek 示例参数：
+
+```bash
+--base-url https://api.deepseek.com --model deepseek-v4-flash
+```
+
+本地 LM Studio 示例参数：
+
+```bash
+--base-url http://127.0.0.1:1234/v1 --model openai/gpt-oss-20b
+```
+
+不要把 key 写进 README、artifact、前端代码或提交记录。真实客户试用如果需要重新仿真，应由部署方或 operator 在受控后端环境配置 key。
+
 ## 第五步：验收一次试用
 
 一次企业试用不能只看页面是否漂亮，应该按下面的验收顺序判断：
