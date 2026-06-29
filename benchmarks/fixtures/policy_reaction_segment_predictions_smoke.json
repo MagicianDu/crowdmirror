@@ -1,0 +1,41 @@
+{
+  "artifact_id": "policy-reaction-segment-predictions-smoke-001",
+  "model": "fixture/official-segment-alignment-smoke",
+  "prediction_scope": "htops_hps_2506_segment_alignment_smoke",
+  "schema_version": "policy-reaction-segment-predictions-v1",
+  "segment_predictions": {
+    "fixed_income_inflation_stressed": {
+      "persona_count": 24,
+      "policy_probabilities": {
+        "baseline_no_new_support": 0.36,
+        "cash_cost_of_living_rebate": 0.46,
+        "food_subsidy_expansion": 0.18
+      }
+    },
+    "general_population_cost_pressure": {
+      "persona_count": 24,
+      "policy_probabilities": {
+        "baseline_no_new_support": 0.5,
+        "cash_cost_of_living_rebate": 0.31,
+        "food_subsidy_expansion": 0.19
+      }
+    },
+    "low_income_food_insecure": {
+      "persona_count": 24,
+      "policy_probabilities": {
+        "baseline_no_new_support": 0.18,
+        "cash_cost_of_living_rebate": 0.28,
+        "food_subsidy_expansion": 0.54
+      }
+    },
+    "working_family_price_stressed": {
+      "persona_count": 24,
+      "policy_probabilities": {
+        "baseline_no_new_support": 0.35,
+        "cash_cost_of_living_rebate": 0.43,
+        "food_subsidy_expansion": 0.22
+      }
+    }
+  },
+  "source_run_id": "cohort-official-alignment-smoke"
+}

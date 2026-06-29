@@ -1,0 +1,41 @@
+{
+  "allowed_claims": [
+    "A bounded update candidate is generated and explicitly rejected for runtime use."
+  ],
+  "artifact_id": "r6-bounded-update-candidate-current-001",
+  "blocked_claims": [
+    "\u5019\u9009\u66f4\u65b0\u5df2\u53ef\u81ea\u52a8\u4e0a\u7ebf",
+    "runtime_default_allowed=true"
+  ],
+  "candidate_accepted": false,
+  "candidate_loss": 0.063,
+  "candidate_rejected_reason": "runtime_guard_or_field_outcome_missing",
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "final_loss": 0.097,
+  "guard_results": {
+    "candidate_loss_improved": true,
+    "field_outcome_validated": false,
+    "holdout_guard_passed": true,
+    "runtime_default_allowed": false
+  },
+  "initial_loss": 0.097,
+  "rollback_policy": {
+    "persist_rejected_candidate_for_audit": true,
+    "rollback_to_previous_runtime_operator": true,
+    "rollback_to_static_prior_on_guard_failure": true
+  },
+  "run_id": "r6-full-product-support-current-001",
+  "schema_version": "r6-bounded-update-candidate-v1",
+  "source_refs": [
+    "r6-outcome-feedback-review-current-001"
+  ],
+  "status": "bounded_update_candidate_rejected_runtime_guard",
+  "updated_components": [
+    "segment_weight_update",
+    "mechanism_strength_update",
+    "scenario_similarity_update",
+    "interval_calibration_update",
+    "false_alarm_discriminator_update",
+    "blocked_claim_policy_update"
+  ]
+}

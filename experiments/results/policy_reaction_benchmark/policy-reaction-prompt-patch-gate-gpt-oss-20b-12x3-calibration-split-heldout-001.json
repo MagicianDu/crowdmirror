@@ -1,0 +1,459 @@
+{
+  "accepted_candidate_id": "policy-reaction-calibration-split-residual-parameter-candidate",
+  "artifact_id": "policy-reaction-prompt-patch-gate-gpt-oss-20b-12x3-calibration-split-heldout-001",
+  "best_loss": 0.00011289095369171064,
+  "calibration_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-initial-001",
+  "candidate_accepted_count": 1,
+  "candidate_evaluated_count": 1,
+  "candidate_heldout_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-heldout-001",
+  "candidate_pending_count": 0,
+  "candidate_prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-calibration-split-001",
+  "candidate_rejected_count": 0,
+  "candidate_update_count": 1,
+  "candidate_update_policy": "select_lowest_heldout_loss_candidate_if_coverage_complete_else_revert",
+  "candidate_updates": [
+    {
+      "candidate_id": "policy-reaction-calibration-split-residual-parameter-candidate",
+      "candidate_index": 0,
+      "candidate_prompt_components": {
+        "calibration_anchor": {
+          "fixed_income_inflation_stressed": "No accepted calibration patch has been applied.\nStructured calibration parameter adjustment for fixed_income_inflation_stressed. Apply these persona-level deltas before producing policy reaction probabilities: baseline_no_new_support_bias += 0.324667; cash_cost_of_living_rebate_bias += 0.111862; food_subsidy_expansion_bias -= 0.436529. Keep the response contract unchanged and do not expose these parameters in the final JSON response.",
+          "general_population_cost_pressure": "No accepted calibration patch has been applied.\nStructured calibration parameter adjustment for general_population_cost_pressure. Apply these persona-level deltas before producing policy reaction probabilities: baseline_no_new_support_bias += 0.440209; cash_cost_of_living_rebate_bias -= 0.070560; food_subsidy_expansion_bias -= 0.369649. Keep the response contract unchanged and do not expose these parameters in the final JSON response.",
+          "low_income_food_insecure": "No accepted calibration patch has been applied.\nStructured calibration parameter adjustment for low_income_food_insecure. Apply these persona-level deltas before producing policy reaction probabilities: baseline_no_new_support_bias += 0.138421; cash_cost_of_living_rebate_bias -= 0.080080; food_subsidy_expansion_bias -= 0.058341. Keep the response contract unchanged and do not expose these parameters in the final JSON response.",
+          "working_family_price_stressed": "No accepted calibration patch has been applied.\nStructured calibration parameter adjustment for working_family_price_stressed. Apply these persona-level deltas before producing policy reaction probabilities: baseline_no_new_support_bias += 0.300413; food_subsidy_expansion_bias -= 0.328900. Keep the response contract unchanged and do not expose these parameters in the final JSON response."
+        },
+        "global_instruction": "Simulate policy reaction probabilities for public-use HPS/HTOPS food-cost segments.",
+        "persona_prompt": {},
+        "policy_interpretation_prompt": {
+          "food_cost_policy": "Compare baseline/no new support, cash cost-of-living rebate, and food subsidy expansion as policy reaction alternatives."
+        },
+        "response_contract": "Return strict JSON probabilities over baseline_no_new_support, cash_cost_of_living_rebate, and food_subsidy_expansion.",
+        "segment_prompt": {
+          "fixed_income_inflation_stressed": "Segment fixed_income_inflation_stressed: use persona-specific policy sensitivities.\nCalibration residual adjustment for fixed_income_inflation_stressed. When persona details are consistent with this segment, adjust policy choice sensitivity as follows: baseline_no_new_support: increase; cash_cost_of_living_rebate: increase; food_subsidy_expansion: decrease. Keep probabilities normalized and preserve the response contract.",
+          "general_population_cost_pressure": "Segment general_population_cost_pressure: use persona-specific policy sensitivities.\nCalibration residual adjustment for general_population_cost_pressure. When persona details are consistent with this segment, adjust policy choice sensitivity as follows: baseline_no_new_support: increase; cash_cost_of_living_rebate: decrease; food_subsidy_expansion: decrease. Keep probabilities normalized and preserve the response contract.",
+          "low_income_food_insecure": "Segment low_income_food_insecure: use persona-specific policy sensitivities.\nCalibration residual adjustment for low_income_food_insecure. When persona details are consistent with this segment, adjust policy choice sensitivity as follows: baseline_no_new_support: increase; cash_cost_of_living_rebate: decrease; food_subsidy_expansion: decrease. Keep probabilities normalized and preserve the response contract.",
+          "working_family_price_stressed": "Segment working_family_price_stressed: use persona-specific policy sensitivities.\nCalibration residual adjustment for working_family_price_stressed. When persona details are consistent with this segment, adjust policy choice sensitivity as follows: baseline_no_new_support: increase; food_subsidy_expansion: decrease. Keep probabilities normalized and preserve the response contract."
+        }
+      },
+      "coverage_rate": 1.0,
+      "evaluation_split": "heldout",
+      "generator": "policy_reaction_residual_parameter",
+      "initial_loss": 0.18814846781521002,
+      "loss": 0.00011289095369171064,
+      "loss_delta": -0.1880355768615183,
+      "metadata": {
+        "calibration_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-initial-001",
+        "calibration_prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-001",
+        "calibration_source_ingestion_artifact_id": "policy-reaction-htops-2506-split-ingestion-001-calibration",
+        "parameter_patch_count": 4,
+        "parameter_threshold": 0.05,
+        "residual_patch_count": 4,
+        "residual_threshold": 0.05
+      },
+      "patches": [
+        {
+          "evidence": {
+            "residuals": {
+              "baseline_no_new_support": 0.32466738519758515,
+              "cash_cost_of_living_rebate": 0.11186194154331291,
+              "food_subsidy_expansion": -0.43652932674089806
+            },
+            "threshold": 0.05
+          },
+          "expected_effect": {
+            "baseline_no_new_support": "increase",
+            "cash_cost_of_living_rebate": "increase",
+            "food_subsidy_expansion": "decrease"
+          },
+          "operation": "tighten",
+          "patch": "Calibration residual adjustment for fixed_income_inflation_stressed. When persona details are consistent with this segment, adjust policy choice sensitivity as follows: baseline_no_new_support: increase; cash_cost_of_living_rebate: increase; food_subsidy_expansion: decrease. Keep probabilities normalized and preserve the response contract.",
+          "reason": "food_subsidy_expansion is over-predicted for fixed_income_inflation_stressed by 0.436529 on calibration residuals",
+          "source_split": "calibration",
+          "target": "segment_prompt.fixed_income_inflation_stressed"
+        },
+        {
+          "evidence": {
+            "residuals": {
+              "baseline_no_new_support": 0.4402090105241319,
+              "cash_cost_of_living_rebate": -0.07056037453377245,
+              "food_subsidy_expansion": -0.36964863599035935
+            },
+            "threshold": 0.05
+          },
+          "expected_effect": {
+            "baseline_no_new_support": "increase",
+            "cash_cost_of_living_rebate": "decrease",
+            "food_subsidy_expansion": "decrease"
+          },
+          "operation": "tighten",
+          "patch": "Calibration residual adjustment for general_population_cost_pressure. When persona details are consistent with this segment, adjust policy choice sensitivity as follows: baseline_no_new_support: increase; cash_cost_of_living_rebate: decrease; food_subsidy_expansion: decrease. Keep probabilities normalized and preserve the response contract.",
+          "reason": "baseline_no_new_support is under-predicted for general_population_cost_pressure by 0.440209 on calibration residuals",
+          "source_split": "calibration",
+          "target": "segment_prompt.general_population_cost_pressure"
+        },
+        {
+          "evidence": {
+            "residuals": {
+              "baseline_no_new_support": 0.13842101146294966,
+              "cash_cost_of_living_rebate": -0.08008023777906226,
+              "food_subsidy_expansion": -0.05834077368388735
+            },
+            "threshold": 0.05
+          },
+          "expected_effect": {
+            "baseline_no_new_support": "increase",
+            "cash_cost_of_living_rebate": "decrease",
+            "food_subsidy_expansion": "decrease"
+          },
+          "operation": "tighten",
+          "patch": "Calibration residual adjustment for low_income_food_insecure. When persona details are consistent with this segment, adjust policy choice sensitivity as follows: baseline_no_new_support: increase; cash_cost_of_living_rebate: decrease; food_subsidy_expansion: decrease. Keep probabilities normalized and preserve the response contract.",
+          "reason": "baseline_no_new_support is under-predicted for low_income_food_insecure by 0.138421 on calibration residuals",
+          "source_split": "calibration",
+          "target": "segment_prompt.low_income_food_insecure"
+        },
+        {
+          "evidence": {
+            "residuals": {
+              "baseline_no_new_support": 0.3004125767895969,
+              "food_subsidy_expansion": -0.32889957858397045
+            },
+            "threshold": 0.05
+          },
+          "expected_effect": {
+            "baseline_no_new_support": "increase",
+            "food_subsidy_expansion": "decrease"
+          },
+          "operation": "tighten",
+          "patch": "Calibration residual adjustment for working_family_price_stressed. When persona details are consistent with this segment, adjust policy choice sensitivity as follows: baseline_no_new_support: increase; food_subsidy_expansion: decrease. Keep probabilities normalized and preserve the response contract.",
+          "reason": "food_subsidy_expansion is over-predicted for working_family_price_stressed by 0.328900 on calibration residuals",
+          "source_split": "calibration",
+          "target": "segment_prompt.working_family_price_stressed"
+        },
+        {
+          "evidence": {
+            "generator": "parameter_search",
+            "parameter_deltas": {
+              "baseline_no_new_support_bias": 0.32466738519758515,
+              "cash_cost_of_living_rebate_bias": 0.11186194154331291,
+              "food_subsidy_expansion_bias": -0.43652932674089806
+            },
+            "threshold": 0.05
+          },
+          "expected_effect": {
+            "baseline_no_new_support_bias": "increase",
+            "cash_cost_of_living_rebate_bias": "increase",
+            "food_subsidy_expansion_bias": "decrease"
+          },
+          "operation": "tighten",
+          "patch": "Structured calibration parameter adjustment for fixed_income_inflation_stressed. Apply these persona-level deltas before producing policy reaction probabilities: baseline_no_new_support_bias += 0.324667; cash_cost_of_living_rebate_bias += 0.111862; food_subsidy_expansion_bias -= 0.436529. Keep the response contract unchanged and do not expose these parameters in the final JSON response.",
+          "reason": "parameter search produced material calibration deltas for fixed_income_inflation_stressed",
+          "source_split": "calibration",
+          "target": "calibration_anchor.fixed_income_inflation_stressed"
+        },
+        {
+          "evidence": {
+            "generator": "parameter_search",
+            "parameter_deltas": {
+              "baseline_no_new_support_bias": 0.4402090105241319,
+              "cash_cost_of_living_rebate_bias": -0.07056037453377245,
+              "food_subsidy_expansion_bias": -0.36964863599035935
+            },
+            "threshold": 0.05
+          },
+          "expected_effect": {
+            "baseline_no_new_support_bias": "increase",
+            "cash_cost_of_living_rebate_bias": "decrease",
+            "food_subsidy_expansion_bias": "decrease"
+          },
+          "operation": "tighten",
+          "patch": "Structured calibration parameter adjustment for general_population_cost_pressure. Apply these persona-level deltas before producing policy reaction probabilities: baseline_no_new_support_bias += 0.440209; cash_cost_of_living_rebate_bias -= 0.070560; food_subsidy_expansion_bias -= 0.369649. Keep the response contract unchanged and do not expose these parameters in the final JSON response.",
+          "reason": "parameter search produced material calibration deltas for general_population_cost_pressure",
+          "source_split": "calibration",
+          "target": "calibration_anchor.general_population_cost_pressure"
+        },
+        {
+          "evidence": {
+            "generator": "parameter_search",
+            "parameter_deltas": {
+              "baseline_no_new_support_bias": 0.13842101146294966,
+              "cash_cost_of_living_rebate_bias": -0.08008023777906226,
+              "food_subsidy_expansion_bias": -0.05834077368388735
+            },
+            "threshold": 0.05
+          },
+          "expected_effect": {
+            "baseline_no_new_support_bias": "increase",
+            "cash_cost_of_living_rebate_bias": "decrease",
+            "food_subsidy_expansion_bias": "decrease"
+          },
+          "operation": "tighten",
+          "patch": "Structured calibration parameter adjustment for low_income_food_insecure. Apply these persona-level deltas before producing policy reaction probabilities: baseline_no_new_support_bias += 0.138421; cash_cost_of_living_rebate_bias -= 0.080080; food_subsidy_expansion_bias -= 0.058341. Keep the response contract unchanged and do not expose these parameters in the final JSON response.",
+          "reason": "parameter search produced material calibration deltas for low_income_food_insecure",
+          "source_split": "calibration",
+          "target": "calibration_anchor.low_income_food_insecure"
+        },
+        {
+          "evidence": {
+            "generator": "parameter_search",
+            "parameter_deltas": {
+              "baseline_no_new_support_bias": 0.3004125767895969,
+              "food_subsidy_expansion_bias": -0.32889957858397045
+            },
+            "threshold": 0.05
+          },
+          "expected_effect": {
+            "baseline_no_new_support_bias": "increase",
+            "food_subsidy_expansion_bias": "decrease"
+          },
+          "operation": "tighten",
+          "patch": "Structured calibration parameter adjustment for working_family_price_stressed. Apply these persona-level deltas before producing policy reaction probabilities: baseline_no_new_support_bias += 0.300413; food_subsidy_expansion_bias -= 0.328900. Keep the response contract unchanged and do not expose these parameters in the final JSON response.",
+          "reason": "parameter search produced material calibration deltas for working_family_price_stressed",
+          "source_split": "calibration",
+          "target": "calibration_anchor.working_family_price_stressed"
+        }
+      ],
+      "reason": "lowest_heldout_loss",
+      "status": "accepted"
+    }
+  ],
+  "candidates": [
+    {
+      "candidate_id": "policy-reaction-calibration-split-residual-parameter-candidate",
+      "generator": "policy_reaction_residual_parameter",
+      "metadata": {
+        "calibration_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-initial-001",
+        "calibration_prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-001",
+        "calibration_source_ingestion_artifact_id": "policy-reaction-htops-2506-split-ingestion-001-calibration",
+        "parameter_patch_count": 4,
+        "parameter_threshold": 0.05,
+        "residual_patch_count": 4,
+        "residual_threshold": 0.05
+      },
+      "patches": [
+        {
+          "evidence": {
+            "residuals": {
+              "baseline_no_new_support": 0.32466738519758515,
+              "cash_cost_of_living_rebate": 0.11186194154331291,
+              "food_subsidy_expansion": -0.43652932674089806
+            },
+            "threshold": 0.05
+          },
+          "expected_effect": {
+            "baseline_no_new_support": "increase",
+            "cash_cost_of_living_rebate": "increase",
+            "food_subsidy_expansion": "decrease"
+          },
+          "operation": "tighten",
+          "patch": "Calibration residual adjustment for fixed_income_inflation_stressed. When persona details are consistent with this segment, adjust policy choice sensitivity as follows: baseline_no_new_support: increase; cash_cost_of_living_rebate: increase; food_subsidy_expansion: decrease. Keep probabilities normalized and preserve the response contract.",
+          "reason": "food_subsidy_expansion is over-predicted for fixed_income_inflation_stressed by 0.436529 on calibration residuals",
+          "source_split": "calibration",
+          "target": "segment_prompt.fixed_income_inflation_stressed"
+        },
+        {
+          "evidence": {
+            "residuals": {
+              "baseline_no_new_support": 0.4402090105241319,
+              "cash_cost_of_living_rebate": -0.07056037453377245,
+              "food_subsidy_expansion": -0.36964863599035935
+            },
+            "threshold": 0.05
+          },
+          "expected_effect": {
+            "baseline_no_new_support": "increase",
+            "cash_cost_of_living_rebate": "decrease",
+            "food_subsidy_expansion": "decrease"
+          },
+          "operation": "tighten",
+          "patch": "Calibration residual adjustment for general_population_cost_pressure. When persona details are consistent with this segment, adjust policy choice sensitivity as follows: baseline_no_new_support: increase; cash_cost_of_living_rebate: decrease; food_subsidy_expansion: decrease. Keep probabilities normalized and preserve the response contract.",
+          "reason": "baseline_no_new_support is under-predicted for general_population_cost_pressure by 0.440209 on calibration residuals",
+          "source_split": "calibration",
+          "target": "segment_prompt.general_population_cost_pressure"
+        },
+        {
+          "evidence": {
+            "residuals": {
+              "baseline_no_new_support": 0.13842101146294966,
+              "cash_cost_of_living_rebate": -0.08008023777906226,
+              "food_subsidy_expansion": -0.05834077368388735
+            },
+            "threshold": 0.05
+          },
+          "expected_effect": {
+            "baseline_no_new_support": "increase",
+            "cash_cost_of_living_rebate": "decrease",
+            "food_subsidy_expansion": "decrease"
+          },
+          "operation": "tighten",
+          "patch": "Calibration residual adjustment for low_income_food_insecure. When persona details are consistent with this segment, adjust policy choice sensitivity as follows: baseline_no_new_support: increase; cash_cost_of_living_rebate: decrease; food_subsidy_expansion: decrease. Keep probabilities normalized and preserve the response contract.",
+          "reason": "baseline_no_new_support is under-predicted for low_income_food_insecure by 0.138421 on calibration residuals",
+          "source_split": "calibration",
+          "target": "segment_prompt.low_income_food_insecure"
+        },
+        {
+          "evidence": {
+            "residuals": {
+              "baseline_no_new_support": 0.3004125767895969,
+              "food_subsidy_expansion": -0.32889957858397045
+            },
+            "threshold": 0.05
+          },
+          "expected_effect": {
+            "baseline_no_new_support": "increase",
+            "food_subsidy_expansion": "decrease"
+          },
+          "operation": "tighten",
+          "patch": "Calibration residual adjustment for working_family_price_stressed. When persona details are consistent with this segment, adjust policy choice sensitivity as follows: baseline_no_new_support: increase; food_subsidy_expansion: decrease. Keep probabilities normalized and preserve the response contract.",
+          "reason": "food_subsidy_expansion is over-predicted for working_family_price_stressed by 0.328900 on calibration residuals",
+          "source_split": "calibration",
+          "target": "segment_prompt.working_family_price_stressed"
+        },
+        {
+          "evidence": {
+            "generator": "parameter_search",
+            "parameter_deltas": {
+              "baseline_no_new_support_bias": 0.32466738519758515,
+              "cash_cost_of_living_rebate_bias": 0.11186194154331291,
+              "food_subsidy_expansion_bias": -0.43652932674089806
+            },
+            "threshold": 0.05
+          },
+          "expected_effect": {
+            "baseline_no_new_support_bias": "increase",
+            "cash_cost_of_living_rebate_bias": "increase",
+            "food_subsidy_expansion_bias": "decrease"
+          },
+          "operation": "tighten",
+          "patch": "Structured calibration parameter adjustment for fixed_income_inflation_stressed. Apply these persona-level deltas before producing policy reaction probabilities: baseline_no_new_support_bias += 0.324667; cash_cost_of_living_rebate_bias += 0.111862; food_subsidy_expansion_bias -= 0.436529. Keep the response contract unchanged and do not expose these parameters in the final JSON response.",
+          "reason": "parameter search produced material calibration deltas for fixed_income_inflation_stressed",
+          "source_split": "calibration",
+          "target": "calibration_anchor.fixed_income_inflation_stressed"
+        },
+        {
+          "evidence": {
+            "generator": "parameter_search",
+            "parameter_deltas": {
+              "baseline_no_new_support_bias": 0.4402090105241319,
+              "cash_cost_of_living_rebate_bias": -0.07056037453377245,
+              "food_subsidy_expansion_bias": -0.36964863599035935
+            },
+            "threshold": 0.05
+          },
+          "expected_effect": {
+            "baseline_no_new_support_bias": "increase",
+            "cash_cost_of_living_rebate_bias": "decrease",
+            "food_subsidy_expansion_bias": "decrease"
+          },
+          "operation": "tighten",
+          "patch": "Structured calibration parameter adjustment for general_population_cost_pressure. Apply these persona-level deltas before producing policy reaction probabilities: baseline_no_new_support_bias += 0.440209; cash_cost_of_living_rebate_bias -= 0.070560; food_subsidy_expansion_bias -= 0.369649. Keep the response contract unchanged and do not expose these parameters in the final JSON response.",
+          "reason": "parameter search produced material calibration deltas for general_population_cost_pressure",
+          "source_split": "calibration",
+          "target": "calibration_anchor.general_population_cost_pressure"
+        },
+        {
+          "evidence": {
+            "generator": "parameter_search",
+            "parameter_deltas": {
+              "baseline_no_new_support_bias": 0.13842101146294966,
+              "cash_cost_of_living_rebate_bias": -0.08008023777906226,
+              "food_subsidy_expansion_bias": -0.05834077368388735
+            },
+            "threshold": 0.05
+          },
+          "expected_effect": {
+            "baseline_no_new_support_bias": "increase",
+            "cash_cost_of_living_rebate_bias": "decrease",
+            "food_subsidy_expansion_bias": "decrease"
+          },
+          "operation": "tighten",
+          "patch": "Structured calibration parameter adjustment for low_income_food_insecure. Apply these persona-level deltas before producing policy reaction probabilities: baseline_no_new_support_bias += 0.138421; cash_cost_of_living_rebate_bias -= 0.080080; food_subsidy_expansion_bias -= 0.058341. Keep the response contract unchanged and do not expose these parameters in the final JSON response.",
+          "reason": "parameter search produced material calibration deltas for low_income_food_insecure",
+          "source_split": "calibration",
+          "target": "calibration_anchor.low_income_food_insecure"
+        },
+        {
+          "evidence": {
+            "generator": "parameter_search",
+            "parameter_deltas": {
+              "baseline_no_new_support_bias": 0.3004125767895969,
+              "food_subsidy_expansion_bias": -0.32889957858397045
+            },
+            "threshold": 0.05
+          },
+          "expected_effect": {
+            "baseline_no_new_support_bias": "increase",
+            "food_subsidy_expansion_bias": "decrease"
+          },
+          "operation": "tighten",
+          "patch": "Structured calibration parameter adjustment for working_family_price_stressed. Apply these persona-level deltas before producing policy reaction probabilities: baseline_no_new_support_bias += 0.300413; food_subsidy_expansion_bias -= 0.328900. Keep the response contract unchanged and do not expose these parameters in the final JSON response.",
+          "reason": "parameter search produced material calibration deltas for working_family_price_stressed",
+          "source_split": "calibration",
+          "target": "calibration_anchor.working_family_price_stressed"
+        }
+      ],
+      "rationale": "HPS/HTOPS calibration split residuals produce segment prompt patches and persona-level calibration anchor deltas.",
+      "source_split": "calibration"
+    }
+  ],
+  "claim_boundaries": [
+    "Policy-reaction prompt/persona patch gate evidence only; candidates are generated from calibration split and accepted only on held-out evaluation.",
+    "Prompt/persona patch candidates are generated only from the HPS/HTOPS calibration projection.",
+    "The acceptance decision uses only the held-out HPS/HTOPS evaluation projection and does not establish field validation."
+  ],
+  "claim_boundary": "Policy-reaction prompt/persona patch gate evidence only; candidates are generated from calibration split and accepted only on held-out evaluation.",
+  "final_loss": 0.00011289095369171064,
+  "final_prompt_components": {
+    "calibration_anchor": {
+      "fixed_income_inflation_stressed": "No accepted calibration patch has been applied.\nStructured calibration parameter adjustment for fixed_income_inflation_stressed. Apply these persona-level deltas before producing policy reaction probabilities: baseline_no_new_support_bias += 0.324667; cash_cost_of_living_rebate_bias += 0.111862; food_subsidy_expansion_bias -= 0.436529. Keep the response contract unchanged and do not expose these parameters in the final JSON response.",
+      "general_population_cost_pressure": "No accepted calibration patch has been applied.\nStructured calibration parameter adjustment for general_population_cost_pressure. Apply these persona-level deltas before producing policy reaction probabilities: baseline_no_new_support_bias += 0.440209; cash_cost_of_living_rebate_bias -= 0.070560; food_subsidy_expansion_bias -= 0.369649. Keep the response contract unchanged and do not expose these parameters in the final JSON response.",
+      "low_income_food_insecure": "No accepted calibration patch has been applied.\nStructured calibration parameter adjustment for low_income_food_insecure. Apply these persona-level deltas before producing policy reaction probabilities: baseline_no_new_support_bias += 0.138421; cash_cost_of_living_rebate_bias -= 0.080080; food_subsidy_expansion_bias -= 0.058341. Keep the response contract unchanged and do not expose these parameters in the final JSON response.",
+      "working_family_price_stressed": "No accepted calibration patch has been applied.\nStructured calibration parameter adjustment for working_family_price_stressed. Apply these persona-level deltas before producing policy reaction probabilities: baseline_no_new_support_bias += 0.300413; food_subsidy_expansion_bias -= 0.328900. Keep the response contract unchanged and do not expose these parameters in the final JSON response."
+    },
+    "global_instruction": "Simulate policy reaction probabilities for public-use HPS/HTOPS food-cost segments.",
+    "persona_prompt": {},
+    "policy_interpretation_prompt": {
+      "food_cost_policy": "Compare baseline/no new support, cash cost-of-living rebate, and food subsidy expansion as policy reaction alternatives."
+    },
+    "response_contract": "Return strict JSON probabilities over baseline_no_new_support, cash_cost_of_living_rebate, and food_subsidy_expansion.",
+    "segment_prompt": {
+      "fixed_income_inflation_stressed": "Segment fixed_income_inflation_stressed: use persona-specific policy sensitivities.\nCalibration residual adjustment for fixed_income_inflation_stressed. When persona details are consistent with this segment, adjust policy choice sensitivity as follows: baseline_no_new_support: increase; cash_cost_of_living_rebate: increase; food_subsidy_expansion: decrease. Keep probabilities normalized and preserve the response contract.",
+      "general_population_cost_pressure": "Segment general_population_cost_pressure: use persona-specific policy sensitivities.\nCalibration residual adjustment for general_population_cost_pressure. When persona details are consistent with this segment, adjust policy choice sensitivity as follows: baseline_no_new_support: increase; cash_cost_of_living_rebate: decrease; food_subsidy_expansion: decrease. Keep probabilities normalized and preserve the response contract.",
+      "low_income_food_insecure": "Segment low_income_food_insecure: use persona-specific policy sensitivities.\nCalibration residual adjustment for low_income_food_insecure. When persona details are consistent with this segment, adjust policy choice sensitivity as follows: baseline_no_new_support: increase; cash_cost_of_living_rebate: decrease; food_subsidy_expansion: decrease. Keep probabilities normalized and preserve the response contract.",
+      "working_family_price_stressed": "Segment working_family_price_stressed: use persona-specific policy sensitivities.\nCalibration residual adjustment for working_family_price_stressed. When persona details are consistent with this segment, adjust policy choice sensitivity as follows: baseline_no_new_support: increase; food_subsidy_expansion: decrease. Keep probabilities normalized and preserve the response contract."
+    }
+  },
+  "generator_counts": {
+    "policy_reaction_residual_parameter": 1
+  },
+  "initial_heldout_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-heldout-001",
+  "initial_loss": 0.18814846781521002,
+  "initial_prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-001",
+  "initial_prompt_components": {
+    "calibration_anchor": {
+      "fixed_income_inflation_stressed": "No accepted calibration patch has been applied.",
+      "general_population_cost_pressure": "No accepted calibration patch has been applied.",
+      "low_income_food_insecure": "No accepted calibration patch has been applied.",
+      "working_family_price_stressed": "No accepted calibration patch has been applied."
+    },
+    "global_instruction": "Simulate policy reaction probabilities for public-use HPS/HTOPS food-cost segments.",
+    "persona_prompt": {},
+    "policy_interpretation_prompt": {
+      "food_cost_policy": "Compare baseline/no new support, cash cost-of-living rebate, and food subsidy expansion as policy reaction alternatives."
+    },
+    "response_contract": "Return strict JSON probabilities over baseline_no_new_support, cash_cost_of_living_rebate, and food_subsidy_expansion.",
+    "segment_prompt": {
+      "fixed_income_inflation_stressed": "Segment fixed_income_inflation_stressed: use persona-specific policy sensitivities.",
+      "general_population_cost_pressure": "Segment general_population_cost_pressure: use persona-specific policy sensitivities.",
+      "low_income_food_insecure": "Segment low_income_food_insecure: use persona-specific policy sensitivities.",
+      "working_family_price_stressed": "Segment working_family_price_stressed: use persona-specific policy sensitivities."
+    }
+  },
+  "loss_metric": "weighted_choice_distribution_jsd",
+  "overall_status": "accepted",
+  "prompt_patch_gate_schema_version": "circe-prompt-patch-multi-candidate-gate-v1",
+  "schema_version": "policy-reaction-prompt-patch-gate-v1",
+  "source_split_contract": {
+    "candidate_acceptance": "heldout",
+    "candidate_generation": "calibration"
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "best_candidate": {
+    "candidate_index": 3,
+    "parameter_patches": [
+      {
+        "expected_effect": {
+          "food_subsidy_expansion": "decrease"
+        },
+        "factor_id": "eligibility_uncertainty",
+        "factor_label": "\u8d44\u683c\u4e0d\u786e\u5b9a\u6027",
+        "parameter_bounds": {
+          "max": 0.2,
+          "min": 0.0
+        },
+        "parameter_name": "eligibility_uncertainty_penalty",
+        "parameter_value": 0.065779915717,
+        "policy_id": "food_subsidy_expansion",
+        "provenance": {
+          "direction": "over_predicted",
+          "magnitude": 0.328899578584,
+          "match_score": 2.828899578584,
+          "residual": -0.328899578584,
+          "source_split": "calibration"
+        },
+        "segment": "working_family_price_stressed"
+      },
+      {
+        "expected_effect": {
+          "food_subsidy_expansion": "decrease"
+        },
+        "factor_id": "eligibility_uncertainty",
+        "factor_label": "\u8d44\u683c\u4e0d\u786e\u5b9a\u6027",
+        "parameter_bounds": {
+          "max": 0.2,
+          "min": 0.0
+        },
+        "parameter_name": "policy_complexity_aversion",
+        "parameter_value": 0.065779915717,
+        "policy_id": "food_subsidy_expansion",
+        "provenance": {
+          "direction": "over_predicted",
+          "magnitude": 0.328899578584,
+          "match_score": 2.828899578584,
+          "residual": -0.328899578584,
+          "source_split": "calibration"
+        },
+        "segment": "working_family_price_stressed"
+      },
+      {
+        "expected_effect": {
+          "food_subsidy_expansion": "decrease"
+        },
+        "factor_id": "policy_complexity_aversion",
+        "factor_label": "\u653f\u7b56\u590d\u6742\u6027\u538c\u6076",
+        "parameter_bounds": {
+          "max": 0.25,
+          "min": 0.0
+        },
+        "parameter_name": "policy_complexity_aversion",
+        "parameter_value": 0.082224894646,
+        "policy_id": "food_subsidy_expansion",
+        "provenance": {
+          "direction": "over_predicted",
+          "magnitude": 0.328899578584,
+          "match_score": 2.828899578584,
+          "residual": -0.328899578584,
+          "source_split": "calibration"
+        },
+        "segment": "working_family_price_stressed"
+      },
+      {
+        "expected_effect": {
+          "food_subsidy_expansion": "decrease"
+        },
+        "factor_id": "policy_complexity_aversion",
+        "factor_label": "\u653f\u7b56\u590d\u6742\u6027\u538c\u6076",
+        "parameter_bounds": {
+          "max": 1.1,
+          "min": 0.75
+        },
+        "parameter_name": "response_temperature",
+        "parameter_value": 0.865114852504,
+        "policy_id": "food_subsidy_expansion",
+        "provenance": {
+          "direction": "over_predicted",
+          "magnitude": 0.328899578584,
+          "match_score": 2.828899578584,
+          "residual": -0.328899578584,
+          "source_split": "calibration"
+        },
+        "segment": "working_family_price_stressed"
+      }
+    ],
+    "policy_id": "food_subsidy_expansion",
+    "proxy_score": 3.721695517011,
+    "segment": "working_family_price_stressed"
+  },
+  "calibration_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-initial-001",
+  "candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c03",
+  "candidate_prompt_components": {
+    "calibration_anchor": {
+      "working_family_price_stressed": "S2PC factors=eligibility_uncertainty,policy_complexity_aversion; primary_policy=food_subsidy_expansion; parameters=eligibility_uncertainty_penalty=0.065779915717;policy_complexity_aversion=0.065779915717;policy_complexity_aversion=0.082224894646;response_temperature=0.865114852504"
+    },
+    "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+    "segment_prompt": {
+      "working_family_price_stressed": "Use the persona's calibrated policy-reaction parameters when estimating support probabilities for this segment."
+    }
+  },
+  "claim_boundary": "This S2PC L1 candidate is extracted from a multi-candidate search set for Product runtime probing. It requires heldout runtime-effect evaluation before any effectiveness claim.",
+  "generator": "s2pc_l1_multi_candidate_runtime_search",
+  "residual_summary": {
+    "parameter_patch_count": 44,
+    "residual_count": 11,
+    "semantic_match_count": 22,
+    "source_residual_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-initial-001"
+  },
+  "schema_version": "policy-reaction-s2pc-candidate-v1",
+  "search_summary": {
+    "beam_width": 6,
+    "candidate_count": 6,
+    "exported_candidate_count": 6,
+    "selected_candidate_rank": 3,
+    "selected_proxy_score": 3.721695517011
+  },
+  "source_prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-001",
+  "source_split_contract": {
+    "candidate_acceptance": "heldout_required",
+    "parameter_search": "calibration",
+    "residual_mining": "calibration",
+    "semantic_factor_retrieval": "calibration"
+  }
+}

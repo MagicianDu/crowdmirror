@@ -1,0 +1,159 @@
+{
+  "acceptance_gates": {
+    "field_outcome_validated": false,
+    "metric_candidates_constructed": true,
+    "precedent_case_constructed": true,
+    "risk_ranking_constructed": true,
+    "runtime_default_allowed": false,
+    "source_ingestion_available": true
+  },
+  "allowed_claims": [
+    "R10 L2 route B can consume real HPS public-use ingestion as a guarded precedent input.",
+    "HPS price-concern segment profiles can produce a source-backed risk ranking proxy."
+  ],
+  "artifact_id": "r10-hps-precedent-retrieval-current-001",
+  "blocked_claims": [
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "runtime default ready",
+    "R10 validated",
+    "R10 supports Product core method by default",
+    "HPS risk ranking is a validated Product decision rule",
+    "accuracy superiority",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_boundary": "R10 HPS precedent retrieval artifact. It turns a real public-use HPS ingestion artifact into guarded route-B precedent and risk-ranking inputs; it is not field validation, not method superiority, and not runtime default authorization.",
+  "metric_candidates": {
+    "decision_value_score": "not_computed_until_policy_action_set",
+    "risk_interval_proxy": {
+      "lower": 0.204271,
+      "median": 0.237774,
+      "upper": 0.33601
+    },
+    "risk_ranking_quality": "computable_after_holdout_or_outcome_mapping",
+    "trend_signal": "price_pressure_risk_watch"
+  },
+  "precedent_cases": [
+    {
+      "case_id": "hps_price_pressure_public_use_precedent",
+      "evidence_strength": "official_public_use_microdata_ingested",
+      "field_outcome_validated": false,
+      "outcome_columns": [
+        "PRICECHANGE",
+        "PRICESTRESS",
+        "PRICECONCERN"
+      ],
+      "row_count": 12521,
+      "runtime_default_allowed": false,
+      "scenario_family": "policy_reaction_survey",
+      "segment_columns": [
+        "REGION",
+        "METRO_STATUS",
+        "RHHINCOME",
+        "RRACETH",
+        "TAGE",
+        "ESEX"
+      ],
+      "source_artifact_id": "r10-hps-policy-reaction-ingestion-current-001",
+      "source_owner": "U.S. Census Bureau",
+      "source_url": "https://www2.census.gov/programs-surveys/demo/datasets/hhp/2026/topical/HTOPS_HPS_2603_CSV.zip"
+    }
+  ],
+  "retrieval_contract": {
+    "customer_visible": false,
+    "field_outcome_validated": false,
+    "runtime_default_allowed": false,
+    "source_backed_only": true,
+    "uses_real_public_data_ingestion": true
+  },
+  "risk_ranking": {
+    "default_ranking_segments": [
+      "REGION",
+      "METRO_STATUS"
+    ],
+    "ranking_basis": "PRICECONCERN.segment_outcome_profiles",
+    "ranking_guard": "Risk ranking is a survey proxy from public-use data; it must be validated against holdout or field/customer outcome before Product escalation.",
+    "top_segments": [
+      {
+        "risk_proxy_share": 0.33601,
+        "segment_column": "METRO_STATUS",
+        "segment_value": "2",
+        "weighted_valid_total": 11633385.576875
+      },
+      {
+        "risk_proxy_share": 0.32435,
+        "segment_column": "REGION",
+        "segment_value": "2",
+        "weighted_valid_total": 51740337.129658
+      },
+      {
+        "risk_proxy_share": 0.239438,
+        "segment_column": "METRO_STATUS",
+        "segment_value": "1",
+        "weighted_valid_total": 238892928.008232
+      },
+      {
+        "risk_proxy_share": 0.23611,
+        "segment_column": "REGION",
+        "segment_value": "1",
+        "weighted_valid_total": 43134232.343914
+      },
+      {
+        "risk_proxy_share": 0.228699,
+        "segment_column": "REGION",
+        "segment_value": "3",
+        "weighted_valid_total": 96098022.842502
+      },
+      {
+        "risk_proxy_share": 0.204271,
+        "segment_column": "REGION",
+        "segment_value": "4",
+        "weighted_valid_total": 59553721.269032
+      }
+    ]
+  },
+  "route_a_input_candidate": {
+    "mechanism_priors": [
+      "economic_stress",
+      "price_sensitivity",
+      "policy_salience"
+    ],
+    "outcome_signal_columns": [
+      "PRICECHANGE",
+      "PRICESTRESS",
+      "PRICECONCERN"
+    ],
+    "segment_risk_profile_source": "r10-hps-policy-reaction-ingestion-current-001"
+  },
+  "route_c_input_candidate": {
+    "affected_segments": [
+      "METRO_STATUS",
+      "REGION",
+      "METRO_STATUS",
+      "REGION",
+      "REGION"
+    ],
+    "risk_observation_window": "March 13, 2026 - March 30, 2026"
+  },
+  "route_id": "route_b_semantic_precedent_retrieval",
+  "run_id": "r10-hps-precedent-retrieval-current",
+  "scenario_query": {
+    "outcome_focus": [
+      "PRICECHANGE",
+      "PRICESTRESS",
+      "PRICECONCERN"
+    ],
+    "query_terms": [
+      "price pressure",
+      "household stress",
+      "policy reaction",
+      "risk segment"
+    ],
+    "scenario_family": "policy_reaction_survey"
+  },
+  "schema_version": "r10-hps-precedent-retrieval-v1",
+  "source_refs": [
+    "r10-hps-policy-reaction-ingestion-current-001"
+  ],
+  "status": "r10_hps_precedent_retrieval_ready_guarded"
+}

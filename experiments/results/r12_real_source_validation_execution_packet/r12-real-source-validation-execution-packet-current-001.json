@@ -1,0 +1,122 @@
+{
+  "acceptance_gates": {
+    "customer_trial_evidence_ledger_ready": true,
+    "execution_chain_declared": true,
+    "field_outcome_validated": false,
+    "metrics_computed_on_real_customer_slice": false,
+    "product_default_allowed": false,
+    "real_source_validation_execution_packet_ready": true,
+    "runtime_default_allowed": false,
+    "source_arrived": false,
+    "workflow_status_package_ready": true
+  },
+  "allowed_claims": [
+    "Operators have a complete source-arrival execution packet for L22-L26 validation.",
+    "The packet is a runbook and does not claim field validation or runtime default readiness."
+  ],
+  "artifact_id": "r12-real-source-validation-execution-packet-current-001",
+  "blocked_claims": [
+    "source_arrived=true",
+    "metrics_computed_on_real_customer_slice=true",
+    "field_outcome_validated=true",
+    "customer field validation passed",
+    "Product default can use customer feedback updates",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "real_source_execution_packet_ready_no_validation_claim",
+  "execution_steps": [
+    {
+      "command_template": ".venv/bin/python experiments/r12_customer_field_slice_intake_validation.py --artifact-id r12-customer-field-slice-intake-validation-customer-001 --run-id r12-customer-field-slice-intake-customer-001 --r12-customer-field-slice-handoff-package-path experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-handoff-package-current-001.json --intake-checked-at CUSTOMER_FIELD_SLICE_INTAKE_TIMESTAMP --customer-field-slice-path CUSTOMER_FIELD_SLICE_PATH --output experiments/results/r12_customer_field_slice_intake_validation/r12-customer-field-slice-intake-validation-customer-001.json",
+      "input_artifact_placeholder": "CUSTOMER_FIELD_SLICE_PATH",
+      "output_artifact_path": "experiments/results/r12_customer_field_slice_intake_validation/r12-customer-field-slice-intake-validation-customer-001.json",
+      "requires_manual_approval": true,
+      "requires_source_arrival": true,
+      "step_id": "l22_intake_validation"
+    },
+    {
+      "command_template": ".venv/bin/python experiments/r12_customer_field_slice_revalidation.py --artifact-id r12-customer-field-slice-revalidation-customer-001 --run-id r12-customer-field-slice-revalidation-customer-001 --r12-customer-field-slice-intake-validation-path experiments/results/r12_customer_field_slice_intake_validation/r12-customer-field-slice-intake-validation-customer-001.json --revalidation-checked-at CUSTOMER_FIELD_REVALIDATION_TIMESTAMP --output experiments/results/r12_customer_field_slice_revalidation/r12-customer-field-slice-revalidation-customer-001.json",
+      "input_artifact_placeholder": "r12-customer-field-slice-intake-validation-customer-001.json",
+      "output_artifact_path": "experiments/results/r12_customer_field_slice_revalidation/r12-customer-field-slice-revalidation-customer-001.json",
+      "requires_manual_approval": false,
+      "requires_source_arrival": true,
+      "step_id": "l23_field_revalidation"
+    },
+    {
+      "command_template": ".venv/bin/python experiments/r12_customer_field_outcome_feedback_update.py --artifact-id r12-customer-field-outcome-feedback-update-customer-001 --run-id r12-customer-field-outcome-feedback-update-customer-001 --r12-customer-field-slice-revalidation-path experiments/results/r12_customer_field_slice_revalidation/r12-customer-field-slice-revalidation-customer-001.json --feedback-generated-at CUSTOMER_FEEDBACK_UPDATE_TIMESTAMP --output experiments/results/r12_customer_field_outcome_feedback_update/r12-customer-field-outcome-feedback-update-customer-001.json",
+      "input_artifact_placeholder": "r12-customer-field-slice-revalidation-customer-001.json",
+      "output_artifact_path": "experiments/results/r12_customer_field_outcome_feedback_update/r12-customer-field-outcome-feedback-update-customer-001.json",
+      "requires_manual_approval": false,
+      "requires_source_arrival": true,
+      "step_id": "l24_feedback_update_candidate"
+    },
+    {
+      "command_template": ".venv/bin/python experiments/r12_customer_feedback_update_shadow_replay.py --artifact-id r12-customer-feedback-update-shadow-replay-customer-001 --run-id r12-customer-feedback-update-shadow-replay-customer-001 --r12-customer-field-outcome-feedback-update-path experiments/results/r12_customer_field_outcome_feedback_update/r12-customer-field-outcome-feedback-update-customer-001.json --replay-requested-at CUSTOMER_SHADOW_REPLAY_TIMESTAMP --output experiments/results/r12_customer_feedback_update_shadow_replay/r12-customer-feedback-update-shadow-replay-customer-001.json",
+      "input_artifact_placeholder": "r12-customer-field-outcome-feedback-update-customer-001.json",
+      "output_artifact_path": "experiments/results/r12_customer_feedback_update_shadow_replay/r12-customer-feedback-update-shadow-replay-customer-001.json",
+      "requires_manual_approval": false,
+      "requires_source_arrival": true,
+      "step_id": "l25_shadow_replay"
+    },
+    {
+      "command_template": ".venv/bin/python experiments/r12_customer_feedback_shadow_replay_holdout_review.py --artifact-id r12-customer-feedback-shadow-replay-holdout-review-customer-001 --run-id r12-customer-feedback-shadow-replay-holdout-review-customer-001 --r12-customer-feedback-update-shadow-replay-path experiments/results/r12_customer_feedback_update_shadow_replay/r12-customer-feedback-update-shadow-replay-customer-001.json --holdout-review-requested-at CUSTOMER_HOLDOUT_REVIEW_TIMESTAMP --output experiments/results/r12_customer_feedback_shadow_replay_holdout_review/r12-customer-feedback-shadow-replay-holdout-review-customer-001.json",
+      "input_artifact_placeholder": "r12-customer-feedback-update-shadow-replay-customer-001.json",
+      "output_artifact_path": "experiments/results/r12_customer_feedback_shadow_replay_holdout_review/r12-customer-feedback-shadow-replay-holdout-review-customer-001.json",
+      "requires_manual_approval": true,
+      "requires_source_arrival": true,
+      "step_id": "l26_holdout_review"
+    }
+  ],
+  "execution_summary": {
+    "blocking_gap_count": 3,
+    "current_stage": "source_arrival_pending",
+    "evidence_ledger_artifact_id": "r12-customer-trial-evidence-ledger-current-001",
+    "executable_step_count": 5,
+    "execution_chain_declared": true,
+    "manual_approval_point_count": 2,
+    "next_action": "collect_customer_field_slice_or_wait_for_target_outcome",
+    "next_required_artifact": "real_customer_field_slice_or_public_target_outcome",
+    "packet_created_at": "2026-06-29T20:40:00+08:00",
+    "source_arrived": false,
+    "workflow_artifact_id": "r12-customer-validation-workflow-status-current-001"
+  },
+  "next_required_artifact": "real_customer_field_slice_or_public_target_outcome",
+  "run_id": "r12-l37-current",
+  "schema_version": "r12-real-source-validation-execution-packet-v1",
+  "source_modes": [
+    {
+      "accepted_formats": [
+        "csv",
+        "jsonl"
+      ],
+      "approval_reference_required": true,
+      "minimum_case_count": 10,
+      "required_placeholder": "CUSTOMER_FIELD_SLICE_PATH",
+      "source_mode": "customer_field_slice"
+    },
+    {
+      "accepted_formats": [
+        "json"
+      ],
+      "approval_reference_required": false,
+      "minimum_case_count": 10,
+      "required_placeholder": "PUBLIC_TARGET_OUTCOME_ARTIFACT_PATH",
+      "source_mode": "public_target_outcome"
+    }
+  ],
+  "source_refs": [
+    "r12-customer-validation-workflow-status-current-001",
+    "r12-customer-trial-evidence-ledger-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-customer-validation-workflow-status-current-001",
+      "path": "experiments/results/r12_customer_validation_workflow_status/r12-customer-validation-workflow-status-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-trial-evidence-ledger-current-001",
+      "path": "experiments/results/r12_customer_trial_evidence_ledger/r12-customer-trial-evidence-ledger-current-001.json"
+    }
+  ],
+  "status": "r12_real_source_validation_execution_packet_ready_source_pending"
+}

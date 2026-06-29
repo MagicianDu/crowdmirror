@@ -1,0 +1,296 @@
+{
+  "acceptance_gates": {
+    "case_registry_ready": true,
+    "field_outcome_validated": false,
+    "minimum_case_count_present": true,
+    "outcome_leakage_blocked": true,
+    "runtime_default_allowed": false,
+    "train_validation_holdout_split_present": true
+  },
+  "artifact_id": "r12-outcome-case-registry-current-001",
+  "blocked_claims": [
+    "R12 field validated",
+    "R12 Product core method ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "validation or holdout outcome used for training",
+    "prompt/persona manual patch as automatic calibration",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "case_registry_contract": {
+    "field_outcome_validated": false,
+    "holdout_outcome_read_allowed_for_training": false,
+    "runtime_default_allowed": false,
+    "source_backed_public_proxy": true,
+    "split_strategy": "fixed_hps_segment_split_v1",
+    "train_outcome_read_allowed": true,
+    "validation_outcome_read_allowed_for_training": false
+  },
+  "cases": [
+    {
+      "case_id": "hps_METRO_STATUS_2",
+      "guard_flags": {
+        "eligible_for_runtime_update": false,
+        "field_outcome_validated": false,
+        "runtime_default_allowed": false
+      },
+      "learning_role": "train_outcome_supervision",
+      "mechanism_labels": [
+        "price_pressure"
+      ],
+      "outcome_proxy": {
+        "name": "PRICESTRESS",
+        "observed_high_risk": true,
+        "observed_value": 0.55329
+      },
+      "prediction_state": {
+        "interaction_prediction": 0.498821,
+        "residual_vs_interaction": 0.054469,
+        "residual_vs_static_prior": 0.098671,
+        "static_prior_prediction": 0.454619
+      },
+      "risk_interval": {
+        "median": 0.498821,
+        "p10": 0.398821,
+        "p90": 0.598821
+      },
+      "scenario_shock": "hps_price_pressure_proxy",
+      "segment_labels": {
+        "segment_column": "METRO_STATUS",
+        "segment_value": "2"
+      },
+      "source_signal": {
+        "delta": 0.092087,
+        "name": "PRICECONCERN",
+        "risk_share": 0.33601
+      },
+      "split": "train"
+    },
+    {
+      "case_id": "hps_REGION_2",
+      "guard_flags": {
+        "eligible_for_runtime_update": false,
+        "field_outcome_validated": false,
+        "runtime_default_allowed": false
+      },
+      "learning_role": "train_outcome_supervision",
+      "mechanism_labels": [
+        "price_pressure"
+      ],
+      "outcome_proxy": {
+        "name": "PRICESTRESS",
+        "observed_high_risk": true,
+        "observed_value": 0.5214
+      },
+      "prediction_state": {
+        "interaction_prediction": 0.493224,
+        "residual_vs_interaction": 0.028176,
+        "residual_vs_static_prior": 0.066781,
+        "static_prior_prediction": 0.454619
+      },
+      "risk_interval": {
+        "median": 0.493224,
+        "p10": 0.393224,
+        "p90": 0.593224
+      },
+      "scenario_shock": "hps_price_pressure_proxy",
+      "segment_labels": {
+        "segment_column": "REGION",
+        "segment_value": "2"
+      },
+      "source_signal": {
+        "delta": 0.080427,
+        "name": "PRICECONCERN",
+        "risk_share": 0.32435
+      },
+      "split": "train"
+    },
+    {
+      "case_id": "hps_METRO_STATUS_1",
+      "guard_flags": {
+        "eligible_for_runtime_update": false,
+        "field_outcome_validated": false,
+        "runtime_default_allowed": false
+      },
+      "learning_role": "validation_transfer_check",
+      "mechanism_labels": [
+        "price_pressure"
+      ],
+      "outcome_proxy": {
+        "name": "PRICESTRESS",
+        "observed_high_risk": false,
+        "observed_value": 0.450089
+      },
+      "prediction_state": {
+        "interaction_prediction": 0.452466,
+        "residual_vs_interaction": -0.002377,
+        "residual_vs_static_prior": -0.00453,
+        "static_prior_prediction": 0.454619
+      },
+      "risk_interval": {
+        "median": 0.452466,
+        "p10": 0.352466,
+        "p90": 0.552466
+      },
+      "scenario_shock": "hps_price_pressure_proxy",
+      "segment_labels": {
+        "segment_column": "METRO_STATUS",
+        "segment_value": "1"
+      },
+      "source_signal": {
+        "delta": -0.004485,
+        "name": "PRICECONCERN",
+        "risk_share": 0.239438
+      },
+      "split": "validation"
+    },
+    {
+      "case_id": "hps_REGION_1",
+      "guard_flags": {
+        "eligible_for_runtime_update": false,
+        "field_outcome_validated": false,
+        "runtime_default_allowed": false
+      },
+      "learning_role": "validation_transfer_check",
+      "mechanism_labels": [
+        "price_pressure"
+      ],
+      "outcome_proxy": {
+        "name": "PRICESTRESS",
+        "observed_high_risk": false,
+        "observed_value": 0.433761
+      },
+      "prediction_state": {
+        "interaction_prediction": 0.450869,
+        "residual_vs_interaction": -0.017108,
+        "residual_vs_static_prior": -0.020858,
+        "static_prior_prediction": 0.454619
+      },
+      "risk_interval": {
+        "median": 0.450869,
+        "p10": 0.350869,
+        "p90": 0.550869
+      },
+      "scenario_shock": "hps_price_pressure_proxy",
+      "segment_labels": {
+        "segment_column": "REGION",
+        "segment_value": "1"
+      },
+      "source_signal": {
+        "delta": -0.007813,
+        "name": "PRICECONCERN",
+        "risk_share": 0.23611
+      },
+      "split": "validation"
+    },
+    {
+      "case_id": "hps_REGION_3",
+      "guard_flags": {
+        "eligible_for_runtime_update": false,
+        "field_outcome_validated": false,
+        "runtime_default_allowed": false
+      },
+      "learning_role": "holdout_transfer_check",
+      "mechanism_labels": [
+        "price_pressure"
+      ],
+      "outcome_proxy": {
+        "name": "PRICESTRESS",
+        "observed_high_risk": false,
+        "observed_value": 0.447394
+      },
+      "prediction_state": {
+        "interaction_prediction": 0.447311,
+        "residual_vs_interaction": 8.3e-05,
+        "residual_vs_static_prior": -0.007225,
+        "static_prior_prediction": 0.454619
+      },
+      "risk_interval": {
+        "median": 0.447311,
+        "p10": 0.347311,
+        "p90": 0.547311
+      },
+      "scenario_shock": "hps_price_pressure_proxy",
+      "segment_labels": {
+        "segment_column": "REGION",
+        "segment_value": "3"
+      },
+      "source_signal": {
+        "delta": -0.015224,
+        "name": "PRICECONCERN",
+        "risk_share": 0.228699
+      },
+      "split": "holdout"
+    },
+    {
+      "case_id": "hps_REGION_4",
+      "guard_flags": {
+        "eligible_for_runtime_update": false,
+        "field_outcome_validated": false,
+        "runtime_default_allowed": false
+      },
+      "learning_role": "holdout_transfer_check",
+      "mechanism_labels": [
+        "price_pressure"
+      ],
+      "outcome_proxy": {
+        "name": "PRICESTRESS",
+        "observed_high_risk": false,
+        "observed_value": 0.425462
+      },
+      "prediction_state": {
+        "interaction_prediction": 0.435586,
+        "residual_vs_interaction": -0.010124,
+        "residual_vs_static_prior": -0.029157,
+        "static_prior_prediction": 0.454619
+      },
+      "risk_interval": {
+        "median": 0.435586,
+        "p10": 0.335586,
+        "p90": 0.535586
+      },
+      "scenario_shock": "hps_price_pressure_proxy",
+      "segment_labels": {
+        "segment_column": "REGION",
+        "segment_value": "4"
+      },
+      "source_signal": {
+        "delta": -0.039652,
+        "name": "PRICECONCERN",
+        "risk_share": 0.204271
+      },
+      "split": "holdout"
+    }
+  ],
+  "claim_level": "outcome_supervised_learning_material_only",
+  "leakage_guard": {
+    "holdout_case_ids_blocked_for_training": [
+      "hps_REGION_3",
+      "hps_REGION_4"
+    ],
+    "outcome_leakage_blocked": true,
+    "train_case_ids_with_observed_outcome_available": [
+      "hps_METRO_STATUS_2",
+      "hps_REGION_2"
+    ],
+    "validation_case_ids_blocked_for_training": [
+      "hps_METRO_STATUS_1",
+      "hps_REGION_1"
+    ]
+  },
+  "run_id": "r12-l0-current",
+  "schema_version": "r12-outcome-case-registry-v1",
+  "source_refs": [
+    "r11-external-holdout-validation-current-001"
+  ],
+  "split_summary": {
+    "case_count": 6,
+    "holdout_count": 2,
+    "observed_high_risk_holdout_count": 0,
+    "observed_high_risk_train_count": 2,
+    "observed_high_risk_validation_count": 0,
+    "train_count": 2,
+    "validation_count": 2
+  },
+  "status": "r12_outcome_case_registry_ready_guarded"
+}

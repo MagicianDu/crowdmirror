@@ -1,0 +1,32 @@
+{
+  "acceptance_gates": {
+    "bounded_update_candidate_present": true,
+    "candidate_has_accept_reject_decision": true,
+    "candidate_loss_improved": true,
+    "feedback_transfer_validation_present": true,
+    "field_outcome_validated": false,
+    "runtime_default_allowed": false
+  },
+  "allowed_claims": [
+    "Product can show what the system learned and why the candidate update was blocked."
+  ],
+  "artifact_id": "r6-feedback-transfer-validation-current-001",
+  "blocked_claims": [
+    "\u5019\u9009\u66f4\u65b0\u5df2\u53ef\u81ea\u52a8\u4e0a\u7ebf",
+    "outcome feedback \u5df2\u7ecf\u5f62\u6210\u901a\u7528\u81ea\u52a8\u6821\u51c6\u5668",
+    "runtime_default_allowed=true"
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "run_id": "r6-full-product-support-current-001",
+  "schema_version": "r6-feedback-transfer-validation-v1",
+  "source_refs": [
+    "r6-bounded-update-candidate-current-001"
+  ],
+  "status": "feedback_transfer_validation_ready_update_blocked",
+  "summary": {
+    "candidate_accepted": false,
+    "candidate_loss": 0.063,
+    "final_loss": 0.097,
+    "initial_loss": 0.097
+  }
+}

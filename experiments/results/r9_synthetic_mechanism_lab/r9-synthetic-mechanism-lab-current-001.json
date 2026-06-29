@@ -1,0 +1,81 @@
+{
+  "allowed_claims": [
+    "R9 A+B+C recovers known mechanism direction in a synthetic sanity-check lab."
+  ],
+  "artifact_id": "r9-synthetic-mechanism-lab-current-001",
+  "blocked_claims": [
+    "field validation completed",
+    "R9 validated",
+    "runtime default ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true"
+  ],
+  "candidate_combination_id": "A+B+C",
+  "claim_boundary": "R9 evidence-constrained interaction world model artifact. It defines source-backed mechanism, retrieval, and constrained-agent rollout routes plus a combination matrix for guarded evaluation only; it is not field validation, not point-prediction evidence, and not runtime default authorization.",
+  "lab_contract": {
+    "field_outcome_validated": false,
+    "known_mechanism_truth_available": true,
+    "runtime_default_allowed": false,
+    "synthetic_only": true
+  },
+  "run_id": "r9-synthetic-mechanism-lab-current",
+  "schema_version": "r9-synthetic-mechanism-lab-v1",
+  "source_refs": [
+    "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md",
+    "synthetic_mechanism_lab_fixture_v1"
+  ],
+  "status": "r9_synthetic_mechanism_lab_passed_guarded",
+  "summary": {
+    "abnormal_segment_recall": 1.0,
+    "mechanism_direction_recovery_rate": 1.0,
+    "propagation_trace_consistency": 0.75,
+    "synthetic_mechanism_recovery_passed": true,
+    "trial_count": 4
+  },
+  "trials": [
+    {
+      "abnormal_segment_recovered": true,
+      "expected_direction": "risk_increase",
+      "known_mechanism_truth": [
+        "price_sensitivity",
+        "substitution_option"
+      ],
+      "propagation_trace_recovered": true,
+      "recovered_mechanism_direction": true,
+      "trial_id": "price_shock_high_substitution"
+    },
+    {
+      "abnormal_segment_recovered": true,
+      "expected_direction": "risk_increase",
+      "known_mechanism_truth": [
+        "trust_loss",
+        "social_diffusion_sensitivity"
+      ],
+      "propagation_trace_recovered": true,
+      "recovered_mechanism_direction": true,
+      "trial_id": "trust_loss_social_diffusion"
+    },
+    {
+      "abnormal_segment_recovered": true,
+      "expected_direction": "risk_stable",
+      "known_mechanism_truth": [
+        "service_access_constraint",
+        "targeted_compensation"
+      ],
+      "propagation_trace_recovered": false,
+      "recovered_mechanism_direction": true,
+      "trial_id": "service_access_constraint_buffered"
+    },
+    {
+      "abnormal_segment_recovered": true,
+      "expected_direction": "risk_increase",
+      "known_mechanism_truth": [
+        "fairness_perception",
+        "identity_alignment"
+      ],
+      "propagation_trace_recovered": true,
+      "recovered_mechanism_direction": true,
+      "trial_id": "fairness_perception_identity_alignment"
+    }
+  ]
+}

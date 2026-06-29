@@ -1,0 +1,332 @@
+{
+  "acceptance_decision": "accept_independent_hindcast_positive_keep_product_default_blocked_until_pre_outcome_or_field_validation",
+  "acceptance_gates": {
+    "decision_value_improved": true,
+    "false_alarm_non_regression": true,
+    "field_outcome_validated": false,
+    "hindcast_independent_revalidation_executed": true,
+    "hindcast_independent_revalidation_passed": true,
+    "interval_coverage_non_regression": true,
+    "mean_absolute_error_improved": true,
+    "pre_outcome_revalidation_ready": false,
+    "prediction_lock_timestamp_pre_target_outcome": false,
+    "prediction_packet_generated": true,
+    "prediction_source_independent_of_target_outcome": true,
+    "product_default_allowed": false,
+    "risk_ranking_quality_improved": true,
+    "runtime_default_allowed": false,
+    "same_table_prediction_leakage_risk": false,
+    "static_prior_miss_recovery_improved": true,
+    "target_outcome_used_for_prediction_generation": false
+  },
+  "allowed_claims": [
+    "R12 independent prior-month hindcast revalidation improves Product-relevant risk metrics on the DOT April 2026 complaint target.",
+    "The hindcast uses predictions independent of the April target outcome, but it is not a pre-outcome locked validation."
+  ],
+  "artifact_id": "r12-independent-hindcast-revalidation-current-001",
+  "blocked_claims": [
+    "pre-outcome validation passed",
+    "Product default can use R12 hindcast by default",
+    "R12 Product core method ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "customer outcome validated",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "case_results": [
+    {
+      "carrier": "American Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_american_airlines",
+      "independent_hindcast_absolute_error": 0.007738,
+      "independent_hindcast_false_alarm": false,
+      "independent_hindcast_predicted_high_risk": true,
+      "independent_hindcast_prediction": 0.284861,
+      "observed_high_risk": true,
+      "observed_outcome": 1341,
+      "observed_share": 0.277123,
+      "static_prior_absolute_error": 0.205695,
+      "static_prior_miss_recovered": true,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Alaska Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_alaska_airlines",
+      "independent_hindcast_absolute_error": 0.002918,
+      "independent_hindcast_false_alarm": false,
+      "independent_hindcast_predicted_high_risk": false,
+      "independent_hindcast_prediction": 0.036189,
+      "observed_high_risk": false,
+      "observed_outcome": 161,
+      "observed_share": 0.033271,
+      "static_prior_absolute_error": 0.038157,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Allegiant Air",
+      "case_id": "dot_atcr_2026_04_us_airline_allegiant_air",
+      "independent_hindcast_absolute_error": 0.004851,
+      "independent_hindcast_false_alarm": false,
+      "independent_hindcast_predicted_high_risk": false,
+      "independent_hindcast_prediction": 0.013944,
+      "observed_high_risk": false,
+      "observed_outcome": 44,
+      "observed_share": 0.009093,
+      "static_prior_absolute_error": 0.062336,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Avelo Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_avelo_airlines",
+      "independent_hindcast_absolute_error": 0.001535,
+      "independent_hindcast_false_alarm": false,
+      "independent_hindcast_predicted_high_risk": false,
+      "independent_hindcast_prediction": 0.008798,
+      "observed_high_risk": false,
+      "observed_outcome": 50,
+      "observed_share": 0.010333,
+      "static_prior_absolute_error": 0.061096,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Breeze Airways",
+      "case_id": "dot_atcr_2026_04_us_airline_breeze_airways",
+      "independent_hindcast_absolute_error": 0.00248,
+      "independent_hindcast_false_alarm": false,
+      "independent_hindcast_predicted_high_risk": false,
+      "independent_hindcast_prediction": 0.010126,
+      "observed_high_risk": false,
+      "observed_outcome": 61,
+      "observed_share": 0.012606,
+      "static_prior_absolute_error": 0.058823,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Contour Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_contour_airlines",
+      "independent_hindcast_absolute_error": 0.00041,
+      "independent_hindcast_false_alarm": false,
+      "independent_hindcast_predicted_high_risk": false,
+      "independent_hindcast_prediction": 0.00083,
+      "observed_high_risk": false,
+      "observed_outcome": 6,
+      "observed_share": 0.00124,
+      "static_prior_absolute_error": 0.070189,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Delta Air Lines",
+      "case_id": "dot_atcr_2026_04_us_airline_delta_air_lines",
+      "independent_hindcast_absolute_error": 0.00692,
+      "independent_hindcast_false_alarm": false,
+      "independent_hindcast_predicted_high_risk": true,
+      "independent_hindcast_prediction": 0.165837,
+      "observed_high_risk": true,
+      "observed_outcome": 769,
+      "observed_share": 0.158917,
+      "static_prior_absolute_error": 0.087489,
+      "static_prior_miss_recovered": true,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Frontier Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_frontier_airlines",
+      "independent_hindcast_absolute_error": 0.008031,
+      "independent_hindcast_false_alarm": false,
+      "independent_hindcast_predicted_high_risk": true,
+      "independent_hindcast_prediction": 0.128154,
+      "observed_high_risk": true,
+      "observed_outcome": 659,
+      "observed_share": 0.136185,
+      "static_prior_absolute_error": 0.064757,
+      "static_prior_miss_recovered": true,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "JetBlue",
+      "case_id": "dot_atcr_2026_04_us_airline_jetblue",
+      "independent_hindcast_absolute_error": 0.000518,
+      "independent_hindcast_false_alarm": false,
+      "independent_hindcast_predicted_high_risk": false,
+      "independent_hindcast_prediction": 0.055279,
+      "observed_high_risk": false,
+      "observed_outcome": 270,
+      "observed_share": 0.055797,
+      "static_prior_absolute_error": 0.015632,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Southwest Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_southwest_airlines",
+      "independent_hindcast_absolute_error": 0.000562,
+      "independent_hindcast_false_alarm": false,
+      "independent_hindcast_predicted_high_risk": false,
+      "independent_hindcast_prediction": 0.044489,
+      "observed_high_risk": false,
+      "observed_outcome": 218,
+      "observed_share": 0.045051,
+      "static_prior_absolute_error": 0.026378,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Sun Country Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_sun_country_airlines",
+      "independent_hindcast_absolute_error": 0.001589,
+      "independent_hindcast_false_alarm": false,
+      "independent_hindcast_predicted_high_risk": false,
+      "independent_hindcast_prediction": 0.004482,
+      "observed_high_risk": false,
+      "observed_outcome": 14,
+      "observed_share": 0.002893,
+      "static_prior_absolute_error": 0.068535,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Spirit Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_spirit_airlines",
+      "independent_hindcast_absolute_error": 0.005425,
+      "independent_hindcast_false_alarm": false,
+      "independent_hindcast_predicted_high_risk": true,
+      "independent_hindcast_prediction": 0.103586,
+      "observed_high_risk": true,
+      "observed_outcome": 475,
+      "observed_share": 0.098161,
+      "static_prior_absolute_error": 0.026732,
+      "static_prior_miss_recovered": true,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "United Airlines",
+      "case_id": "dot_atcr_2026_04_us_airline_united_airlines",
+      "independent_hindcast_absolute_error": 0.014919,
+      "independent_hindcast_false_alarm": false,
+      "independent_hindcast_predicted_high_risk": true,
+      "independent_hindcast_prediction": 0.141932,
+      "observed_high_risk": true,
+      "observed_outcome": 759,
+      "observed_share": 0.156851,
+      "static_prior_absolute_error": 0.085422,
+      "static_prior_miss_recovered": true,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Other U.S. Airline",
+      "case_id": "dot_atcr_2026_04_us_airline_other_u.s._airline",
+      "independent_hindcast_absolute_error": 0.000986,
+      "independent_hindcast_false_alarm": false,
+      "independent_hindcast_predicted_high_risk": false,
+      "independent_hindcast_prediction": 0.001494,
+      "observed_high_risk": false,
+      "observed_outcome": 12,
+      "observed_share": 0.00248,
+      "static_prior_absolute_error": 0.068949,
+      "static_prior_miss_recovered": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.071429
+    }
+  ],
+  "claim_level": "independent_hindcast_positive_guarded_not_pre_outcome_validation",
+  "hindcast_summary": {
+    "case_count": 14,
+    "feature_period": "March 2026",
+    "hindcast_independent_revalidation_ready": true,
+    "observed_total": 4839,
+    "pre_outcome_revalidation_ready": false,
+    "prediction_lock_timestamp_pre_target_outcome": false,
+    "prediction_packet_artifact_id": "r12-pre-outcome-or-independent-prediction-packet-current-001",
+    "prediction_source_independent_of_target_outcome": true,
+    "target_outcome_period": "April 2026",
+    "target_raw_slice_artifact_id": "r12-external-or-customer-holdout-raw-slice-current-001"
+  },
+  "metric_comparison": {
+    "decision_value": {
+      "delta": 0.714286,
+      "independent_hindcast": 0.357143,
+      "static_prior": -0.357143
+    },
+    "false_alarm_rate": {
+      "delta": 0.0,
+      "independent_hindcast": 0.0,
+      "static_prior": 0.0
+    },
+    "interval_coverage": {
+      "delta": 0.714286,
+      "independent_hindcast": 1.0,
+      "static_prior": 0.285714
+    },
+    "mean_absolute_error": {
+      "delta": -0.062951,
+      "independent_hindcast": 0.004206,
+      "static_prior": 0.067156
+    },
+    "precision": {
+      "delta": 1.0,
+      "independent_hindcast": 1.0,
+      "static_prior": 0.0
+    },
+    "risk_ranking_quality": {
+      "delta": 1.0,
+      "independent_hindcast": 1.0,
+      "static_prior": 0.0
+    },
+    "static_prior_miss_recovery": {
+      "delta": 1.0,
+      "independent_hindcast": 1.0,
+      "static_prior": 0.0
+    }
+  },
+  "next_required_artifact": "r12_pre_outcome_prediction_trial_or_customer_field_revalidation",
+  "run_id": "r12-l16-current",
+  "schema_version": "r12-independent-hindcast-revalidation-v1",
+  "source_refs": [
+    "r12-pre-outcome-or-independent-prediction-packet-current-001",
+    "r12-external-or-customer-holdout-raw-slice-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-pre-outcome-or-independent-prediction-packet-current-001",
+      "path": "experiments/results/r12_pre_outcome_or_independent_prediction_packet/r12-pre-outcome-or-independent-prediction-packet-current-001.json"
+    },
+    {
+      "artifact_id": "r12-external-or-customer-holdout-raw-slice-current-001",
+      "path": "experiments/results/r12_external_or_customer_holdout_raw_slice/r12-external-or-customer-holdout-raw-slice-current-001.json"
+    }
+  ],
+  "status": "r12_independent_hindcast_revalidation_passed_guarded_not_pre_outcome",
+  "top_k_risk_ranking": {
+    "independent_hindcast_top_k_carriers": [
+      "American Airlines",
+      "Delta Air Lines",
+      "United Airlines",
+      "Frontier Airlines"
+    ],
+    "observed_top_k_carriers": [
+      "American Airlines",
+      "Delta Air Lines",
+      "United Airlines",
+      "Frontier Airlines"
+    ],
+    "overlap_count": 4,
+    "risk_ranking_quality": 1.0
+  }
+}

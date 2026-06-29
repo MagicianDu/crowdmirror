@@ -1,0 +1,134 @@
+{
+  "best_candidate": {
+    "candidate_index": 5,
+    "parameter_patches": [
+      {
+        "expected_effect": {
+          "cash_cost_of_living_rebate": "increase"
+        },
+        "factor_id": "cash_liquidity_preference",
+        "factor_label": "\u73b0\u91d1\u6d41\u52a8\u6027\u504f\u597d",
+        "parameter_bounds": {
+          "max": 0.2,
+          "min": 0.0
+        },
+        "parameter_name": "benefit_immediacy_weight",
+        "parameter_value": 0.06493347704,
+        "policy_id": "baseline_no_new_support",
+        "provenance": {
+          "direction": "under_predicted",
+          "magnitude": 0.324667385198,
+          "match_score": 1.324667385198,
+          "residual": 0.324667385198,
+          "source_split": "calibration"
+        },
+        "segment": "fixed_income_inflation_stressed"
+      },
+      {
+        "expected_effect": {
+          "cash_cost_of_living_rebate": "increase"
+        },
+        "factor_id": "cash_liquidity_preference",
+        "factor_label": "\u73b0\u91d1\u6d41\u52a8\u6027\u504f\u597d",
+        "parameter_bounds": {
+          "max": 0.25,
+          "min": 0.0
+        },
+        "parameter_name": "cash_cost_of_living_rebate_bias",
+        "parameter_value": 0.081166846299,
+        "policy_id": "baseline_no_new_support",
+        "provenance": {
+          "direction": "under_predicted",
+          "magnitude": 0.324667385198,
+          "match_score": 1.324667385198,
+          "residual": 0.324667385198,
+          "source_split": "calibration"
+        },
+        "segment": "fixed_income_inflation_stressed"
+      },
+      {
+        "expected_effect": {
+          "cash_cost_of_living_rebate": "increase",
+          "food_subsidy_expansion": "increase"
+        },
+        "factor_id": "household_budget_rigidity",
+        "factor_label": "\u5bb6\u5ead\u9884\u7b97\u521a\u6027",
+        "parameter_bounds": {
+          "max": 0.3,
+          "min": 0.0
+        },
+        "parameter_name": "household_budget_rigidity",
+        "parameter_value": 0.097400215559,
+        "policy_id": "baseline_no_new_support",
+        "provenance": {
+          "direction": "under_predicted",
+          "magnitude": 0.324667385198,
+          "match_score": 1.324667385198,
+          "residual": 0.324667385198,
+          "source_split": "calibration"
+        },
+        "segment": "fixed_income_inflation_stressed"
+      },
+      {
+        "expected_effect": {
+          "cash_cost_of_living_rebate": "increase",
+          "food_subsidy_expansion": "increase"
+        },
+        "factor_id": "household_budget_rigidity",
+        "factor_label": "\u5bb6\u5ead\u9884\u7b97\u521a\u6027",
+        "parameter_bounds": {
+          "max": 1.05,
+          "min": 0.7
+        },
+        "parameter_name": "response_temperature",
+        "parameter_value": 0.813633584819,
+        "policy_id": "baseline_no_new_support",
+        "provenance": {
+          "direction": "under_predicted",
+          "magnitude": 0.324667385198,
+          "match_score": 1.324667385198,
+          "residual": 0.324667385198,
+          "source_split": "calibration"
+        },
+        "segment": "fixed_income_inflation_stressed"
+      }
+    ],
+    "policy_id": "baseline_no_new_support",
+    "proxy_score": 1.720305184837,
+    "segment": "fixed_income_inflation_stressed"
+  },
+  "calibration_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-initial-001",
+  "candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c05",
+  "candidate_prompt_components": {
+    "calibration_anchor": {
+      "fixed_income_inflation_stressed": "S2PC factors=cash_liquidity_preference,household_budget_rigidity; primary_policy=baseline_no_new_support; parameters=benefit_immediacy_weight=0.06493347704;cash_cost_of_living_rebate_bias=0.081166846299;household_budget_rigidity=0.097400215559;response_temperature=0.813633584819"
+    },
+    "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+    "segment_prompt": {
+      "fixed_income_inflation_stressed": "Use the persona's calibrated policy-reaction parameters when estimating support probabilities for this segment."
+    }
+  },
+  "claim_boundary": "This S2PC L1 candidate is extracted from a multi-candidate search set for Product runtime probing. It requires heldout runtime-effect evaluation before any effectiveness claim.",
+  "generator": "s2pc_l1_multi_candidate_runtime_search",
+  "residual_summary": {
+    "parameter_patch_count": 44,
+    "residual_count": 11,
+    "semantic_match_count": 22,
+    "source_residual_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-initial-001"
+  },
+  "schema_version": "policy-reaction-s2pc-candidate-v1",
+  "search_summary": {
+    "beam_width": 6,
+    "candidate_count": 6,
+    "exported_candidate_count": 6,
+    "selected_candidate_rank": 5,
+    "selected_proxy_score": 1.720305184837
+  },
+  "source_prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-001",
+  "source_split_contract": {
+    "candidate_acceptance": "heldout_required",
+    "parameter_search": "calibration",
+    "residual_mining": "calibration",
+    "semantic_factor_retrieval": "calibration"
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "baseline_summaries": {
+    "compact": {
+      "best_improvement_ratio": 0.6689965079446321,
+      "candidate_acceptance_rate": 0.9444444444444444,
+      "candidate_accepted_count": 17,
+      "candidate_evaluated_count": 18,
+      "candidate_pending_count": 6,
+      "candidate_rejected_count": 1,
+      "candidate_update_count": 24,
+      "diagnosis_counts": {
+        "candidate_update_rejected": 1,
+        "textgrad_direction_no_measured_gain": 1
+      },
+      "negative_result_count": 1,
+      "run_count": 18
+    },
+    "default": {
+      "best_improvement_ratio": 0.695887945745901,
+      "candidate_acceptance_rate": 0.5555555555555556,
+      "candidate_accepted_count": 10,
+      "candidate_evaluated_count": 18,
+      "candidate_pending_count": 6,
+      "candidate_rejected_count": 8,
+      "candidate_update_count": 24,
+      "diagnosis_counts": {
+        "candidate_update_rejected": 8,
+        "textgrad_direction_no_measured_gain": 8
+      },
+      "negative_result_count": 8,
+      "run_count": 18
+    },
+    "structured": {
+      "best_improvement_ratio": 0.4988517913929381,
+      "candidate_acceptance_rate": 0.3333333333333333,
+      "candidate_accepted_count": 6,
+      "candidate_evaluated_count": 18,
+      "candidate_pending_count": 6,
+      "candidate_rejected_count": 12,
+      "candidate_update_count": 24,
+      "diagnosis_counts": {
+        "candidate_update_rejected": 12,
+        "textgrad_direction_no_measured_gain": 12
+      },
+      "negative_result_count": 12,
+      "run_count": 18
+    }
+  },
+  "claim_boundaries": [
+    "Paper-gate evidence supports bounded TextGrad calibration diagnostics only within the recorded Swissmetro semi-synthetic setup; negative or rejected candidate updates must not be presented as calibration effectiveness.",
+    "Observed rejected candidate updates require acceptance-gated prompt updates; raw TextGrad updates are not stable enough for an unqualified effectiveness claim.",
+    "Some legacy runs contain pending candidate updates from the old loop semantics; they are retained as historical evidence and must be labeled separately."
+  ],
+  "headline_findings": [
+    "Paper-gate coverage is complete: 54/54 required cells observed.",
+    "TextGrad improved 33 cells and failed to improve 21 cells.",
+    "Candidate acceptance rate is 0.611 over evaluated candidates.",
+    "Best observed improvement ratio is 0.696; mean improvement ratio is 0.246.",
+    "Current v2 runs contribute 24 cells and have zero pending candidate updates.",
+    "Legacy runs contribute 18 cells with pending candidate updates and must be labeled as legacy evidence."
+  ],
+  "limitations": [
+    "Negative cells remain after full coverage, so the paper must report instability rather than only mean gains.",
+    "Legacy r1 cells include pending candidate updates from the previous loop semantics.",
+    "The evidence is Swissmetro semi-synthetic and local Gemma-specific, not cross-domain or cross-model evidence.",
+    "Eval size is still 5 per cell, so statistical claims require a later larger-eval or holdout stage."
+  ],
+  "paper_gate": {
+    "candidate_acceptance_rate": 0.6111111111111112,
+    "candidate_accepted_count": 33,
+    "candidate_evaluated_count": 54,
+    "candidate_pending_count": 18,
+    "candidate_rejected_count": 21,
+    "candidate_update_count": 72,
+    "improved_run_count": 33,
+    "missing_cells": [],
+    "negative_result_count": 21,
+    "observed_run_count": 54,
+    "required_run_count": 54,
+    "status": "failed"
+  },
+  "product_transfer_boundaries": [
+    "Product may cite this artifact for bounded method differentiation and auditability.",
+    "Product must not claim customer prediction accuracy, calibration strength, ROI, compliance, or representativeness from this artifact alone.",
+    "Reports must expose rejected candidate updates and the failed paper-gate status when using this evidence."
+  ],
+  "recommended_paper_claim": "The evidence supports an acceptance-gated TextGrad calibration procedure as a diagnostic and method component; it does not support an unqualified claim that raw TextGrad updates reliably improve population calibration.",
+  "research_claim_status": "bounded_method_diagnostic_supported_but_unqualified_effectiveness_failed",
+  "schema_version": "circe-textgrad-paper-gate-evidence-memo-v1",
+  "seed_summaries": {
+    "42": {
+      "best_improvement_ratio": 0.695887945745901,
+      "candidate_acceptance_rate": 0.6666666666666666,
+      "candidate_accepted_count": 12,
+      "candidate_evaluated_count": 18,
+      "candidate_pending_count": 6,
+      "candidate_rejected_count": 6,
+      "candidate_update_count": 24,
+      "diagnosis_counts": {
+        "candidate_update_rejected": 6,
+        "textgrad_direction_no_measured_gain": 6
+      },
+      "negative_result_count": 6,
+      "run_count": 18
+    },
+    "7": {
+      "best_improvement_ratio": 0.6689965079446321,
+      "candidate_acceptance_rate": 0.6111111111111112,
+      "candidate_accepted_count": 11,
+      "candidate_evaluated_count": 18,
+      "candidate_pending_count": 6,
+      "candidate_rejected_count": 7,
+      "candidate_update_count": 24,
+      "diagnosis_counts": {
+        "candidate_update_rejected": 7,
+        "textgrad_direction_no_measured_gain": 7
+      },
+      "negative_result_count": 7,
+      "run_count": 18
+    },
+    "99": {
+      "best_improvement_ratio": 0.6509491990334256,
+      "candidate_acceptance_rate": 0.5555555555555556,
+      "candidate_accepted_count": 10,
+      "candidate_evaluated_count": 18,
+      "candidate_pending_count": 6,
+      "candidate_rejected_count": 8,
+      "candidate_update_count": 24,
+      "diagnosis_counts": {
+        "candidate_update_rejected": 8,
+        "textgrad_direction_no_measured_gain": 8
+      },
+      "negative_result_count": 8,
+      "run_count": 18
+    }
+  },
+  "source_index": "experiments/results/textgrad_matrix/textgrad-paper-gate-v2-001.json",
+  "token_budget_summaries": {
+    "1024": {
+      "best_improvement_ratio": 0.6689965079446321,
+      "candidate_acceptance_rate": 0.5925925925925926,
+      "candidate_accepted_count": 16,
+      "candidate_evaluated_count": 27,
+      "candidate_pending_count": 9,
+      "candidate_rejected_count": 11,
+      "candidate_update_count": 36,
+      "diagnosis_counts": {
+        "candidate_update_rejected": 11,
+        "textgrad_direction_no_measured_gain": 11
+      },
+      "negative_result_count": 11,
+      "run_count": 27
+    },
+    "2048": {
+      "best_improvement_ratio": 0.695887945745901,
+      "candidate_acceptance_rate": 0.6296296296296297,
+      "candidate_accepted_count": 17,
+      "candidate_evaluated_count": 27,
+      "candidate_pending_count": 9,
+      "candidate_rejected_count": 10,
+      "candidate_update_count": 36,
+      "diagnosis_counts": {
+        "candidate_update_rejected": 10,
+        "textgrad_direction_no_measured_gain": 10
+      },
+      "negative_result_count": 10,
+      "run_count": 27
+    }
+  }
+}

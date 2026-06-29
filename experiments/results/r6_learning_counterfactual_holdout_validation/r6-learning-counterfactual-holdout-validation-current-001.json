@@ -1,0 +1,399 @@
+{
+  "acceptance_gates": {
+    "false_alarm_reduction_rate_passed": true,
+    "field_outcome_validated": false,
+    "independent_holdout_passed": true,
+    "leave_one_case_holdout_present": true,
+    "non_regression_rate_passed": true,
+    "runtime_default_allowed": false,
+    "static_prior_miss_recovery_preserved": true
+  },
+  "allowed_claims": [
+    "Learning counterfactual simulator has explicit leave-one-case holdout evidence.",
+    "Mixed holdout evidence can be shown as diagnostic support for Product policy comparison."
+  ],
+  "artifact_id": "r6-learning-counterfactual-holdout-validation-current-001",
+  "blocked_claims": [
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "learned mechanism weights are independently validated",
+    "learned operator can be enabled by default"
+  ],
+  "blocking_gaps": [
+    "needs_field_or_customer_outcome_validation",
+    "needs_runtime_default_guard_review"
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "claim_status": "guarded_supported",
+  "holdout_trials": [
+    {
+      "claim_status": "guarded_supported",
+      "false_alarm_reduced": false,
+      "heldout_source_key": "htops_cost_pressure",
+      "heldout_target_case_id": "generic-public-service-policy-change",
+      "learned_mechanism_weights": [
+        {
+          "evidence_case_count": 2,
+          "evidence_source_keys": [
+            "anes_health_heldout",
+            "anes_climate_heldout"
+          ],
+          "learned_weight": 0.0,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "official_trust_buffer",
+          "update_direction": "attenuate"
+        },
+        {
+          "evidence_case_count": 2,
+          "evidence_source_keys": [
+            "anes_health_heldout",
+            "anes_climate_heldout"
+          ],
+          "learned_weight": 0.143,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "peer_amplification",
+          "update_direction": "attenuate"
+        },
+        {
+          "evidence_case_count": 2,
+          "evidence_source_keys": [
+            "anes_health_heldout",
+            "anes_climate_heldout"
+          ],
+          "learned_weight": 0.143,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "procedural_fairness_discussion",
+          "update_direction": "attenuate"
+        },
+        {
+          "evidence_case_count": 2,
+          "evidence_source_keys": [
+            "anes_health_heldout",
+            "anes_climate_heldout"
+          ],
+          "learned_weight": 0.143,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "rights_loss_salience",
+          "update_direction": "attenuate"
+        },
+        {
+          "evidence_case_count": 2,
+          "evidence_source_keys": [
+            "anes_health_heldout",
+            "anes_climate_heldout"
+          ],
+          "learned_weight": 0.143,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "trust_shock",
+          "update_direction": "attenuate"
+        }
+      ],
+      "learned_operator_absolute_error": 0.11,
+      "learned_operator_false_alarm": false,
+      "learned_operator_flags_new_risk": true,
+      "learned_operator_prediction": 0.36,
+      "non_regression_vs_raw_interaction": true,
+      "observed_reject_proxy": 0.47,
+      "raw_interaction_absolute_error": 0.11,
+      "raw_interaction_false_alarm": false,
+      "raw_interaction_prediction": 0.36,
+      "source_artifact_ids": [
+        "r6-learning-counterfactual-holdout-validation-current-001-trend-interval-risk-htops_cost_pressure-ablation"
+      ],
+      "static_prior_miss_recovered": true,
+      "static_prior_missed_high_risk": true,
+      "train_source_keys": [
+        "anes_health_heldout",
+        "anes_climate_heldout"
+      ],
+      "transfer_diagnostics": {
+        "diagnostic_reasons": [
+          "unseen_high_risk_mechanism_transfer_floor",
+          "calibrated_to_raw_interaction_for_static_miss_recovery"
+        ],
+        "known_mechanism_count": 1,
+        "risk_preserving_calibration_applied": true,
+        "risk_preserving_calibration_target": "raw_interaction_prediction",
+        "unknown_mechanism_weight": 0.65,
+        "unseen_mechanism_count": 4,
+        "unseen_mechanism_floor_applied": true
+      }
+    },
+    {
+      "claim_status": "guarded_supported",
+      "false_alarm_reduced": true,
+      "heldout_source_key": "anes_health_heldout",
+      "heldout_target_case_id": "generic-rights-rule-change",
+      "learned_mechanism_weights": [
+        {
+          "evidence_case_count": 1,
+          "evidence_source_keys": [
+            "htops_cost_pressure"
+          ],
+          "learned_weight": 1.8,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "access_anxiety",
+          "update_direction": "amplify"
+        },
+        {
+          "evidence_case_count": 1,
+          "evidence_source_keys": [
+            "htops_cost_pressure"
+          ],
+          "learned_weight": 1.8,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "community_amplification",
+          "update_direction": "amplify"
+        },
+        {
+          "evidence_case_count": 1,
+          "evidence_source_keys": [
+            "htops_cost_pressure"
+          ],
+          "learned_weight": 1.8,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "equity_concern",
+          "update_direction": "amplify"
+        },
+        {
+          "evidence_case_count": 1,
+          "evidence_source_keys": [
+            "htops_cost_pressure"
+          ],
+          "learned_weight": 1.8,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "equity_concern_discussion",
+          "update_direction": "amplify"
+        },
+        {
+          "evidence_case_count": 2,
+          "evidence_source_keys": [
+            "htops_cost_pressure",
+            "anes_climate_heldout"
+          ],
+          "learned_weight": 0.0,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "official_trust_buffer",
+          "update_direction": "attenuate"
+        },
+        {
+          "evidence_case_count": 1,
+          "evidence_source_keys": [
+            "anes_climate_heldout"
+          ],
+          "learned_weight": 0.0,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "peer_amplification",
+          "update_direction": "attenuate"
+        },
+        {
+          "evidence_case_count": 1,
+          "evidence_source_keys": [
+            "anes_climate_heldout"
+          ],
+          "learned_weight": 0.0,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "procedural_fairness_discussion",
+          "update_direction": "attenuate"
+        },
+        {
+          "evidence_case_count": 1,
+          "evidence_source_keys": [
+            "anes_climate_heldout"
+          ],
+          "learned_weight": 0.0,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "rights_loss_salience",
+          "update_direction": "attenuate"
+        },
+        {
+          "evidence_case_count": 1,
+          "evidence_source_keys": [
+            "anes_climate_heldout"
+          ],
+          "learned_weight": 0.0,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "trust_shock",
+          "update_direction": "attenuate"
+        }
+      ],
+      "learned_operator_absolute_error": 0.02,
+      "learned_operator_false_alarm": false,
+      "learned_operator_flags_new_risk": false,
+      "learned_operator_prediction": 0.31,
+      "non_regression_vs_raw_interaction": true,
+      "observed_reject_proxy": 0.33,
+      "raw_interaction_absolute_error": 0.05,
+      "raw_interaction_false_alarm": true,
+      "raw_interaction_prediction": 0.38,
+      "source_artifact_ids": [
+        "r6-learning-counterfactual-holdout-validation-current-001-trend-interval-risk-anes_health_heldout-ablation"
+      ],
+      "static_prior_miss_recovered": true,
+      "static_prior_missed_high_risk": false,
+      "train_source_keys": [
+        "htops_cost_pressure",
+        "anes_climate_heldout"
+      ],
+      "transfer_diagnostics": {
+        "diagnostic_reasons": [],
+        "known_mechanism_count": 5,
+        "risk_preserving_calibration_applied": false,
+        "unknown_mechanism_weight": 0.65,
+        "unseen_mechanism_count": 0,
+        "unseen_mechanism_floor_applied": false
+      }
+    },
+    {
+      "claim_status": "guarded_supported",
+      "false_alarm_reduced": true,
+      "heldout_source_key": "anes_climate_heldout",
+      "heldout_target_case_id": "generic-rights-rule-change",
+      "learned_mechanism_weights": [
+        {
+          "evidence_case_count": 1,
+          "evidence_source_keys": [
+            "htops_cost_pressure"
+          ],
+          "learned_weight": 1.8,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "access_anxiety",
+          "update_direction": "amplify"
+        },
+        {
+          "evidence_case_count": 1,
+          "evidence_source_keys": [
+            "htops_cost_pressure"
+          ],
+          "learned_weight": 1.8,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "community_amplification",
+          "update_direction": "amplify"
+        },
+        {
+          "evidence_case_count": 1,
+          "evidence_source_keys": [
+            "htops_cost_pressure"
+          ],
+          "learned_weight": 1.8,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "equity_concern",
+          "update_direction": "amplify"
+        },
+        {
+          "evidence_case_count": 1,
+          "evidence_source_keys": [
+            "htops_cost_pressure"
+          ],
+          "learned_weight": 1.8,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "equity_concern_discussion",
+          "update_direction": "amplify"
+        },
+        {
+          "evidence_case_count": 2,
+          "evidence_source_keys": [
+            "htops_cost_pressure",
+            "anes_health_heldout"
+          ],
+          "learned_weight": 0.0,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "official_trust_buffer",
+          "update_direction": "attenuate"
+        },
+        {
+          "evidence_case_count": 1,
+          "evidence_source_keys": [
+            "anes_health_heldout"
+          ],
+          "learned_weight": 0.286,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "peer_amplification",
+          "update_direction": "attenuate"
+        },
+        {
+          "evidence_case_count": 1,
+          "evidence_source_keys": [
+            "anes_health_heldout"
+          ],
+          "learned_weight": 0.286,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "procedural_fairness_discussion",
+          "update_direction": "attenuate"
+        },
+        {
+          "evidence_case_count": 1,
+          "evidence_source_keys": [
+            "anes_health_heldout"
+          ],
+          "learned_weight": 0.286,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "rights_loss_salience",
+          "update_direction": "attenuate"
+        },
+        {
+          "evidence_case_count": 1,
+          "evidence_source_keys": [
+            "anes_health_heldout"
+          ],
+          "learned_weight": 0.286,
+          "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+          "mechanism_id": "trust_shock",
+          "update_direction": "attenuate"
+        }
+      ],
+      "learned_operator_absolute_error": 0.078,
+      "learned_operator_false_alarm": false,
+      "learned_operator_flags_new_risk": false,
+      "learned_operator_prediction": 0.328,
+      "non_regression_vs_raw_interaction": true,
+      "observed_reject_proxy": 0.25,
+      "raw_interaction_absolute_error": 0.13,
+      "raw_interaction_false_alarm": true,
+      "raw_interaction_prediction": 0.38,
+      "source_artifact_ids": [
+        "r6-learning-counterfactual-holdout-validation-current-001-trend-interval-risk-anes_climate_heldout-ablation"
+      ],
+      "static_prior_miss_recovered": true,
+      "static_prior_missed_high_risk": false,
+      "train_source_keys": [
+        "htops_cost_pressure",
+        "anes_health_heldout"
+      ],
+      "transfer_diagnostics": {
+        "diagnostic_reasons": [],
+        "known_mechanism_count": 5,
+        "risk_preserving_calibration_applied": false,
+        "unknown_mechanism_weight": 0.65,
+        "unseen_mechanism_count": 0,
+        "unseen_mechanism_floor_applied": false
+      }
+    }
+  ],
+  "run_id": "r6-learning-counterfactual-current",
+  "schema_version": "r6-learning-counterfactual-holdout-validation-v1",
+  "source_refs": [
+    "r6-learning-counterfactual-holdout-validation-current-001-trend-interval-risk",
+    "r6-learning-counterfactual-simulator-current-001",
+    "r6-learning-counterfactual-holdout-validation-current-001-trend-interval-risk-htops_cost_pressure-ablation",
+    "r6-learning-counterfactual-holdout-validation-current-001-trend-interval-risk-anes_health_heldout-ablation",
+    "r6-learning-counterfactual-holdout-validation-current-001-trend-interval-risk-anes_climate_heldout-ablation"
+  ],
+  "status": "learning_counterfactual_holdout_passed_guarded",
+  "summary": {
+    "diagnostic_blocked_count": 0,
+    "false_alarm_reduction_rate": 1.0,
+    "holdout_trial_count": 3,
+    "mean_error_reduction_vs_raw_interaction": 0.027,
+    "non_regression_rate": 1.0,
+    "static_prior_miss_recovery_rate": 1.0,
+    "supported_holdout_count": 3
+  },
+  "validation_protocol": {
+    "field_outcome_required_for_runtime_default": true,
+    "heldout_unit": "one current proxy case",
+    "protocol_id": "leave_one_case_mechanism_weight_transfer",
+    "train_unit": "all current proxy cases except heldout_source_key",
+    "unseen_mechanism_transfer_floor": 0.65
+  }
+}

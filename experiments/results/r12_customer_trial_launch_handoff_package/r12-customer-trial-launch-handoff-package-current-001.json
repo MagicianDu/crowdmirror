@@ -1,0 +1,136 @@
+{
+  "acceptance_gates": {
+    "customer_field_slice_present": false,
+    "customer_trial_request_operationally_ready": true,
+    "field_outcome_validated": false,
+    "launch_handoff_package_ready": true,
+    "operational_check_ready": true,
+    "product_default_allowed": false,
+    "runtime_default_allowed": false,
+    "trial_readiness_package_ready": true
+  },
+  "allowed_claims": [
+    "Product can hand off a source-backed customer trial launch package with data request, template, approvals, and operator instructions.",
+    "The launch package is ready to request customer field-slice submission, but does not claim field validation."
+  ],
+  "approval_and_governance": {
+    "direct_personal_identifiers_allowed": false,
+    "manual_approval_points": [
+      "customer_approval_reference_required_before_intake",
+      "governed_review_required_after_holdout_review"
+    ],
+    "manual_prompt_or_persona_patch_allowed": false
+  },
+  "artifact_id": "r12-customer-trial-launch-handoff-package-current-001",
+  "blocked_claims": [
+    "field validation \u5df2\u5b8c\u6210",
+    "customer field validation passed",
+    "customer trial produced accepted feedback update",
+    "Product default can use customer trial output",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "customer_trial_launch_ready_no_validation_claim",
+  "customer_data_request": {
+    "approval_reference_required": true,
+    "direct_personal_identifiers_allowed": false,
+    "minimum_case_count": 10,
+    "request_id": "r12_customer_field_slice_submission_request",
+    "required_fields": [
+      "case_id",
+      "segment_id",
+      "scenario_id",
+      "prediction_share_or_score",
+      "observed_outcome",
+      "outcome_timestamp",
+      "customer_approval_reference"
+    ],
+    "template_path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv"
+  },
+  "customer_launch_bundle": [
+    {
+      "bundle_item_id": "data_request_brief",
+      "description": "Customer-facing request for field-slice submission."
+    },
+    {
+      "bundle_item_id": "field_slice_template",
+      "description": "Machine-checkable CSV template with required fields."
+    },
+    {
+      "bundle_item_id": "approval_checklist",
+      "description": "Approval and privacy checks required before intake."
+    },
+    {
+      "bundle_item_id": "submission_and_runbook",
+      "description": "Operator command sequence after source arrival."
+    },
+    {
+      "bundle_item_id": "claim_boundary",
+      "description": "Blocked claims and runtime-default guardrails."
+    }
+  ],
+  "launch_summary": {
+    "current_stage": "source_arrival_pending",
+    "field_outcome_validated": false,
+    "generated_at": "2026-06-28T13:50:00Z",
+    "launch_handoff_ready": true,
+    "manual_approval_point_count": 2,
+    "minimum_case_count": 10,
+    "next_action": "collect_customer_field_slice_or_wait_for_target_outcome",
+    "operational_check_artifact_id": "r12-customer-trial-operational-check-current-001",
+    "operator_command_count": 5,
+    "required_field_count": 7,
+    "template_path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv",
+    "trial_readiness_artifact_id": "r12-customer-trial-readiness-package-current-001"
+  },
+  "next_required_artifact": "customer_field_slice_submission_or_target_outcome_artifact",
+  "run_id": "r12-l30-current-001",
+  "schema_version": "r12-customer-trial-launch-handoff-package-v1",
+  "source_refs": [
+    "r12-customer-trial-readiness-package-current-001",
+    "r12-customer-trial-operational-check-current-001",
+    "r12-customer-field-slice-handoff-package-current-001",
+    "r12-customer-validation-workflow-status-current-001",
+    "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+    "customer_field_slice_template:experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-customer-trial-readiness-package-current-001",
+      "path": "experiments/results/r12_customer_trial_readiness_package/r12-customer-trial-readiness-package-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-trial-operational-check-current-001",
+      "path": "experiments/results/r12_customer_trial_operational_check/r12-customer-trial-operational-check-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-field-slice-handoff-package-current-001",
+      "path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-handoff-package-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-validation-workflow-status-current-001",
+      "path": "experiments/results/r12_customer_validation_workflow_status/r12-customer-validation-workflow-status-current-001.json"
+    },
+    {
+      "artifact_id": "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+      "path": "experiments/results/r12_target_outcome_or_customer_field_slice_arrival/r12-target-outcome-or-customer-field-slice-arrival-current-001.json"
+    },
+    {
+      "artifact_id": "customer_field_slice_template:experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv",
+      "path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv"
+    }
+  ],
+  "status": "r12_customer_trial_launch_handoff_package_ready_source_pending",
+  "submission_instructions": {
+    "first_operator_command": ".venv/bin/python experiments/r12_customer_field_slice_intake_validation.py --customer-field-slice-path <customer-slice.csv>",
+    "first_operator_step": "intake_validation",
+    "next_required_artifact": "customer_field_slice_submission_or_target_outcome_artifact",
+    "operator_step_ids": [
+      "intake_validation",
+      "field_revalidation",
+      "feedback_update_candidate",
+      "shadow_replay",
+      "holdout_review"
+    ]
+  }
+}

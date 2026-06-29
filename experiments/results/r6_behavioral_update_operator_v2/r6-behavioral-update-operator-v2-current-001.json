@@ -1,0 +1,131 @@
+{
+  "acceptance_gates": {
+    "ccf_a_main_contribution_ready": false,
+    "field_outcome_validated": false,
+    "independent_holdout_available": false,
+    "operator_v2_runtime_default_allowed": false,
+    "operator_v2_structured": true,
+    "prompt_patch_absent": true,
+    "real_or_field_outcome_proxy_available": false,
+    "signal_validity_holdout_validated": false
+  },
+  "artifact_id": "r6-behavioral-update-operator-v2-current-001",
+  "blocking_gaps": [
+    "needs_independent_same_family_operator_holdout",
+    "needs_signal_validity_holdout_validation",
+    "needs_real_or_field_outcome_proxy"
+  ],
+  "candidate_updates": [
+    {
+      "acceptance_status": "blocked_missing_independent_holdout",
+      "candidate_scope": "same_case_repair",
+      "error_attribution": {
+        "attribution_status": "structured_needs_independent_holdout",
+        "primary_component": "over_amplification",
+        "secondary_components": [
+          "propagation_direction_error",
+          "outcome_mapping_noise"
+        ]
+      },
+      "operator_family": "over_amplification_damping",
+      "parameter_delta": {
+        "amplification_cap_delta": -0.05,
+        "static_prior_close_guard": 0.03
+      },
+      "prompt_patch_text": "",
+      "runtime_default_allowed": false,
+      "target_segments": [
+        "rights_rule_sensitive_segments",
+        "static_prior_close_segments"
+      ],
+      "transfer_preconditions": [
+        "independent_same_family_in_condition_holdout",
+        "signal_validity_holdout_non_regression",
+        "real_or_field_outcome_proxy"
+      ]
+    },
+    {
+      "acceptance_status": "blocked_missing_independent_holdout",
+      "candidate_scope": "transfer_candidate",
+      "error_attribution": {
+        "attribution_status": "structured_needs_independent_holdout",
+        "primary_component": "under_diffusion",
+        "secondary_components": [
+          "static_prior_miss",
+          "topology_mismatch"
+        ]
+      },
+      "operator_family": "under_diffusion_boost",
+      "parameter_delta": {
+        "diffusion_sensitivity_delta": 0.05,
+        "memory_activation_threshold_delta": -0.1
+      },
+      "prompt_patch_text": "",
+      "runtime_default_allowed": false,
+      "target_segments": [
+        "public_service_access_segments",
+        "memory_threshold_sensitive_segments"
+      ],
+      "transfer_preconditions": [
+        "independent_same_family_in_condition_holdout",
+        "signal_validity_holdout_non_regression",
+        "real_or_field_outcome_proxy"
+      ]
+    },
+    {
+      "acceptance_status": "blocked_missing_independent_holdout",
+      "candidate_scope": "transfer_candidate",
+      "error_attribution": {
+        "attribution_status": "structured_needs_independent_holdout",
+        "primary_component": "propagation_direction_error",
+        "secondary_components": [
+          "topology_mismatch",
+          "outcome_mapping_noise"
+        ]
+      },
+      "operator_family": "trust_modifier_reweighting",
+      "parameter_delta": {
+        "trusted_peer_weight_delta": 0.04,
+        "unsupported_amplifier_weight_delta": -0.04
+      },
+      "prompt_patch_text": "",
+      "runtime_default_allowed": false,
+      "target_segments": [
+        "trust_mediated_peer_segments",
+        "source_credibility_sensitive_segments"
+      ],
+      "transfer_preconditions": [
+        "independent_same_family_in_condition_holdout",
+        "signal_validity_holdout_non_regression",
+        "real_or_field_outcome_proxy"
+      ]
+    }
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Behavioral update operator v2 adds explicit error attribution and transfer preconditions, but remains blocked until independent same-family holdout, signal-validity holdout, and real or field outcome proxy evidence exist.",
+    "These candidates are structured research diagnostics only; they are not prompt patches, field validation, CCF-A readiness, or Product runtime defaults."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "operator_v2_summary": {
+    "candidate_update_count": 3,
+    "prompt_patch_update_count": 0,
+    "runtime_default_allowed_count": 0,
+    "same_case_repair_count": 1,
+    "transfer_candidate_count": 2
+  },
+  "risk_flags": [
+    "operator_v2_blocked_missing_independent_holdout",
+    "signal_validity_holdout_missing",
+    "field_outcome_proxy_missing",
+    "not_runtime_default"
+  ],
+  "run_id": "r6-gap-closure-current-001",
+  "runtime_default_allowed": false,
+  "schema_version": "r6-behavioral-update-operator-v2",
+  "source_refs": [
+    "r6-behavioral-update-operator-v2-current-001-outcome-holdout-registry",
+    "r6-behavioral-update-operator-v2-current-001-theory-framework"
+  ],
+  "status": "operator_v2_structured_blocked_missing_holdout"
+}

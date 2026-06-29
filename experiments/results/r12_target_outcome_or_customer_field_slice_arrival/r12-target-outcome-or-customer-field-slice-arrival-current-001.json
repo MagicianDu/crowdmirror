@@ -1,0 +1,90 @@
+{
+  "acceptance_decision": "keep_waiting_for_target_outcome_or_customer_field_slice",
+  "acceptance_gates": {
+    "customer_approval_present": false,
+    "customer_field_slice_present": false,
+    "field_or_pre_outcome_revalidation_ready": false,
+    "field_outcome_validated": false,
+    "metrics_computed": false,
+    "outcome_source_arrived": false,
+    "product_default_allowed": false,
+    "revalidation_harness_ready": true,
+    "runtime_default_allowed": false,
+    "target_outcome_artifact_present": false
+  },
+  "allowed_claims": [
+    "R12 has a source-arrival gate ready for future target outcome or customer field slice."
+  ],
+  "arrival_summary": {
+    "arrival_checked_at": "2026-06-27T15:30:00Z",
+    "customer_field_slice_path_provided": false,
+    "prediction_case_count": 14,
+    "prediction_lock_timestamp": "2026-06-27T14:45:00Z",
+    "revalidation_artifact_id": "r12-pre-outcome-or-customer-field-outcome-revalidation-current-001",
+    "target_outcome_artifact_path_provided": false,
+    "target_outcome_period": "May 2026",
+    "validated_customer_field_case_count": 0
+  },
+  "artifact_id": "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+  "blocked_claims": [
+    "outcome_source_arrived=true",
+    "metrics_computed=true",
+    "field_or_pre_outcome_revalidation_passed=true",
+    "field_outcome_validated=true",
+    "Product default can use R12 outcome source by default",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "outcome_source_arrival_pending",
+  "customer_field_slice_validation": {
+    "accepted_formats": [
+      "csv",
+      "jsonl"
+    ],
+    "case_count": 0,
+    "customer_approval_present": false,
+    "minimum_case_count": 10,
+    "missing_required_fields": [],
+    "required_fields": [
+      "case_id",
+      "segment_id",
+      "scenario_id",
+      "prediction_share_or_score",
+      "observed_outcome",
+      "outcome_timestamp",
+      "customer_approval_reference"
+    ],
+    "slice_path": null
+  },
+  "next_required_artifact": "r12_target_outcome_or_customer_field_slice_arrival",
+  "public_target_outcome_availability": {
+    "expected_public_report": "July 2026 Air Travel Consumer Report (May 2026 Data)",
+    "latest_available_report": "June 2026 Air Travel Consumer Report (April 2026 Data)",
+    "latest_news_url": "https://www.transportation.gov/airconsumer/latest-news",
+    "official_reports_index_url": "https://www.transportation.gov/individuals/aviation-consumer-protection/air-travel-consumer-reports",
+    "target_outcome_artifact_path": null,
+    "target_report_found": false
+  },
+  "run_id": "r12-l20-current-001",
+  "schema_version": "r12-target-outcome-or-customer-field-slice-arrival-v1",
+  "source_refs": [
+    "r12-pre-outcome-or-customer-field-outcome-revalidation-current-001",
+    "dot_air_travel_consumer_reports_index_current",
+    "dot_airconsumer_latest_news_current"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-pre-outcome-or-customer-field-outcome-revalidation-current-001",
+      "path": "experiments/results/r12_pre_outcome_or_customer_field_outcome_revalidation/r12-pre-outcome-or-customer-field-outcome-revalidation-current-001.json"
+    },
+    {
+      "artifact_id": "dot_air_travel_consumer_reports_index_current",
+      "path": "https://www.transportation.gov/individuals/aviation-consumer-protection/air-travel-consumer-reports"
+    },
+    {
+      "artifact_id": "dot_airconsumer_latest_news_current",
+      "path": "https://www.transportation.gov/airconsumer/latest-news"
+    }
+  ],
+  "status": "r12_target_outcome_or_customer_field_slice_arrival_pending_no_source"
+}

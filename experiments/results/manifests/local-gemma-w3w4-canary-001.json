@@ -1,0 +1,49 @@
+{
+  "artifacts": {
+    "result_json": "experiments/results/w3w4_local-gemma-w3w4-canary-001.json"
+  },
+  "claim_boundary": "local-model calibration evidence; not cross-provider evidence",
+  "command": [
+    "python",
+    "experiments/w3w4_causal_calibration.py",
+    "--max-iter",
+    "1",
+    "--eval-size",
+    "2",
+    "--local",
+    "--base-url",
+    "http://127.0.0.1:1234/v1",
+    "--model",
+    "google/gemma-4-31b",
+    "--run-id",
+    "local-gemma-w3w4-canary-001",
+    "--manifest-dir",
+    "experiments/results/manifests"
+  ],
+  "completed_at": "2026-05-13T03:05:00.091427+00:00",
+  "config": {
+    "eval_size": 2,
+    "local": true,
+    "max_iterations": 1,
+    "model": "google/gemma-4-31b",
+    "provider": "openai"
+  },
+  "lane": "causal",
+  "metrics": {
+    "best_loss": 0.4055871739728345,
+    "final_loss": 0.4055871739728345,
+    "improvement_ratio": 0.0,
+    "initial_loss": 0.4055871739728345,
+    "n_iterations": 1,
+    "total_llm_calls": 4
+  },
+  "mode": "local",
+  "notes": [
+    "Causal calibration compares predicted mode probabilities and Swissmetro ATE.",
+    "Dry-run mode uses mocked LLM responses and only validates execution plumbing."
+  ],
+  "run_id": "local-gemma-w3w4-canary-001",
+  "schema_version": "circe-evidence-v1",
+  "started_at": "2026-05-13T03:05:00.091427+00:00",
+  "status": "completed"
+}

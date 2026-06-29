@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>公开数据验证版企业试用 | 人群反应趋势与风险区间模拟器</title>
+    <link rel="preload" as="image" href="./assets/promo-evidence-map.png">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body class="promo-page">
+    <main id="promo-app">
+      <section class="promo-hero">
+        <nav class="promo-nav" aria-label="宣传页导航">
+          <a class="promo-brand" href="./">人群反应趋势与风险区间模拟器</a>
+          <div class="promo-nav-actions">
+            <a class="promo-link" href="./">产品 demo</a>
+            <a class="promo-link" href="/experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json">证据 JSON</a>
+          </div>
+        </nav>
+        <div class="promo-hero-content">
+          <p class="eyebrow">公开数据验证版企业试用</p>
+          <h1>发布前看趋势、看区间、看风险群体，而不是赌一个单点预测。</h1>
+          <p>
+            基于公开数据验证、静态人口先验和交互仿真，提前评估政策、价格、权益或服务规则变更带来的人群反应方向、可信数值区间和异常群体。
+          </p>
+          <div class="promo-actions">
+            <a class="promo-button promo-button-primary" href="./">打开产品 demo</a>
+            <a class="promo-button" href="/experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json">查看证据 JSON</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="promo-evidence-strip" aria-label="公开数据验证状态">
+        <div>
+          <span>公开数据有效声明</span>
+          <strong id="promo-public-claim">加载中</strong>
+        </div>
+        <div>
+          <span>离线校准与自优化候选</span>
+          <strong id="promo-calibration">加载中</strong>
+        </div>
+        <div>
+          <span>默认上线策略</span>
+          <strong id="promo-runtime">加载中</strong>
+        </div>
+      </section>
+
+      <section class="promo-section">
+        <div class="promo-section-heading">
+          <p class="eyebrow">Product Capability</p>
+          <h2>企业试用时能直接看到什么</h2>
+        </div>
+        <div class="promo-capability-grid">
+          <article>
+            <span>01</span>
+            <h3>趋势方向与风险区间</h3>
+            <p>输出人群反应方向、可信区间、风险排序和误报边界，避免把复杂行为包装成精确单点。</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>异常群体与机制解释</h3>
+            <p>定位静态先验可能漏掉的群体和触发机制，帮助团队在发布前准备沟通、补偿或灰度策略。</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>公开数据证据链</h3>
+            <p>当前宣传只绑定公开数据 benchmark、hindcast、replay 和 source-backed artifact，不偷换成客户 field validated。</p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>离线校准与自优化候选</h3>
+            <p>根据 outcome 反馈生成结构化更新候选，经 holdout、误报和证据门禁后，人工确认后进入试用流程。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="promo-section promo-workflow-section">
+        <div class="promo-section-heading">
+          <p class="eyebrow">Trial Workflow</p>
+          <h2>从场景到报告，路径足够短</h2>
+        </div>
+        <ol class="promo-workflow">
+          <li><span>输入变更场景</span></li>
+          <li><span>选择人群与先验</span></li>
+          <li><span>运行交互仿真</span></li>
+          <li><span>查看区间与风险群体</span></li>
+          <li><span>导出可审计报告</span></li>
+        </ol>
+      </section>
+
+      <section class="promo-section promo-proof-section">
+        <div class="promo-section-heading">
+          <p class="eyebrow">Guarded Claims</p>
+          <h2>能讲清楚，也能讲边界</h2>
+        </div>
+        <div class="promo-proof-grid">
+          <article>
+            <h3>当前可以说</h3>
+            <ul id="promo-allowed-claims">
+              <li>公开数据上测试有效，且指标有 artifact 支撑。</li>
+              <li>离线校准候选可以生成、验证和审计。</li>
+              <li>适合受控企业试用和 design partner 反馈。</li>
+            </ul>
+          </article>
+          <article>
+            <h3>当前不会承诺</h3>
+            <ul id="promo-blocked-claims">
+              <li>不承诺精确预测单点结果。</li>
+              <li>不宣称客户 field validation 已完成。</li>
+              <li>不把校准更新默认自动上线。</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="promo-section promo-cta">
+        <div>
+          <p class="eyebrow">Next Step</p>
+          <h2>先用公开数据版试起来，再决定是否进入企业 field validation。</h2>
+        </div>
+        <div class="promo-actions">
+          <a class="promo-button promo-button-primary" href="./">打开产品 demo</a>
+          <a class="promo-button" href="/experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json">查看客户价值报告</a>
+        </div>
+      </section>
+    </main>
+    <script src="./promo.js" defer></script>
+  </body>
+</html>

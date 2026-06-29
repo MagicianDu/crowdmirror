@@ -1,0 +1,152 @@
+{
+  "acceptance_gates": {
+    "field_outcome_validated": false,
+    "operator_contract_ready": true,
+    "prompt_or_persona_manual_patch_allowed": false,
+    "runtime_default_allowed": false,
+    "structured_parameter_state_present": true,
+    "train_cases_only_used_for_parameter_initialization": true
+  },
+  "artifact_id": "r12-causal-interaction-operator-current-001",
+  "blocked_claims": [
+    "R12 outcome-supervised update already validated",
+    "R12 Product core method ready",
+    "prompt/persona manual patch as automatic calibration",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "operator_contract_only",
+  "interaction_edge_update_guard": {
+    "direct_propagation_evidence_present": false,
+    "edge_update_status": "rejected",
+    "rejection_reason": "r11 feedback packet lacks direct interaction propagation evidence"
+  },
+  "next_required_artifact": "r12_outcome_supervised_update",
+  "operator_contract": {
+    "field_outcome_validated": false,
+    "operator_id": "r12_oscio_l1",
+    "prompt_or_persona_manual_patch_allowed": false,
+    "runtime_default_allowed": false,
+    "updates_are_structured_parameters_only": true
+  },
+  "parameter_state": {
+    "interaction_edge_weights": {
+      "price_pressure_to_segment_reaction": {
+        "lower_bound": 0.3,
+        "prior": 0.5,
+        "source": "r11_external_holdout_transfer",
+        "upper_bound": 0.75,
+        "value": 0.52
+      },
+      "scenario_to_price_pressure": {
+        "lower_bound": 0.3,
+        "prior": 0.55,
+        "source": "hps_price_pressure_proxy",
+        "upper_bound": 0.8,
+        "value": 0.6
+      },
+      "segment_peer_amplification": {
+        "lower_bound": 0.0,
+        "prior": 0.0,
+        "source": "blocked_until_direct_propagation_evidence",
+        "upper_bound": 0.2,
+        "value": 0.0
+      }
+    },
+    "mechanism_weights": {
+      "price_pressure": {
+        "lower_bound": 0.35,
+        "prior": 0.5,
+        "source": "r11_feedback_diagnostic_price_pressure",
+        "upper_bound": 0.75,
+        "value": 0.52
+      },
+      "service_friction": {
+        "lower_bound": 0.05,
+        "prior": 0.25,
+        "source": "r12_prior_contract",
+        "upper_bound": 0.5,
+        "value": 0.25
+      },
+      "trust_loss": {
+        "lower_bound": 0.1,
+        "prior": 0.3,
+        "source": "r12_prior_contract",
+        "upper_bound": 0.55,
+        "value": 0.3
+      }
+    },
+    "segment_sensitivities": {
+      "hps_METRO_STATUS_2": {
+        "lower_bound": 0.8,
+        "prior": 1.0,
+        "source": "r11_segment_sensitivity_shadow_accepted",
+        "upper_bound": 1.25,
+        "value": 1.09
+      },
+      "hps_REGION_2": {
+        "lower_bound": 0.8,
+        "prior": 1.0,
+        "source": "r12_train_high_risk_segment_prior",
+        "upper_bound": 1.25,
+        "value": 1.04
+      }
+    },
+    "uncertainty_parameters": {
+      "interval_half_width": {
+        "lower_bound": 0.08,
+        "prior": 0.1,
+        "source": "r11_external_holdout_interval",
+        "upper_bound": 0.2,
+        "value": 0.1
+      },
+      "posterior_shrinkage_strength": {
+        "lower_bound": 0.5,
+        "prior": 0.65,
+        "source": "r12_prior_protection",
+        "upper_bound": 0.9,
+        "value": 0.65
+      },
+      "tail_risk_margin": {
+        "lower_bound": 0.02,
+        "prior": 0.03,
+        "source": "r11_high_risk_threshold_margin",
+        "upper_bound": 0.08,
+        "value": 0.03
+      }
+    }
+  },
+  "prior_shrinkage_rules": {
+    "interaction_layer_updates_are_bounded": true,
+    "posterior_shrinkage_strength": 0.65,
+    "small_sample_updates_shrink_toward_prior": true,
+    "static_prior_is_base_distribution": true,
+    "validation_or_holdout_outcome_not_used_for_initialization": true
+  },
+  "run_id": "r12-l1-current",
+  "schema_version": "r12-causal-interaction-operator-v1",
+  "source_refs": [
+    "r12-outcome-case-registry-current-001",
+    "r11-outcome-feedback-update-current-001"
+  ],
+  "status": "r12_causal_interaction_operator_ready_guarded",
+  "update_bounds": {
+    "interaction_edge_weight": {
+      "max_abs_delta": 0.05,
+      "requires_direct_propagation_evidence": true
+    },
+    "mechanism_weight": {
+      "max_abs_delta": 0.08,
+      "requires_holdout_before_default": true
+    },
+    "segment_sensitivity": {
+      "max_abs_delta": 0.12,
+      "requires_holdout_before_default": true
+    },
+    "uncertainty_parameter": {
+      "max_abs_delta": 0.05,
+      "requires_interval_miss_or_tail_risk_evidence": true
+    }
+  }
+}

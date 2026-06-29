@@ -1,0 +1,126 @@
+{
+  "artifact_id": "policy-reaction-htops-2506-split-ingestion-001-evaluation",
+  "claim_boundaries": [
+    "Held-out official HPS/HTOPS split for leakage-aware evaluation; not model-quality validation.",
+    "This split projection preserves the public ingestion schema so official segment benchmarks can consume it directly.",
+    "It is separated by hashed public-use row id, not by source, geography, or survey period."
+  ],
+  "claim_boundary": "Held-out official HPS/HTOPS split for leakage-aware evaluation; not model-quality validation.",
+  "data_profile": {
+    "puf_row_count": 3640,
+    "required_field_coverage": {
+      "all_present": true,
+      "missing_fields": []
+    },
+    "segment_counts": {
+      "fixed_income_inflation_stressed": 698,
+      "general_population_cost_pressure": 2293,
+      "low_income_food_insecure": 52,
+      "working_family_price_stressed": 518
+    },
+    "skipped_row_count": 79,
+    "source_fields": [
+      "SCRAMID",
+      "CURFOODSUF",
+      "CHILDFOOD",
+      "EXPNS_DIF",
+      "PRICECHNG",
+      "PRICESTRESS",
+      "WRKLOSSRV",
+      "RFAM_INCOME",
+      "THHLD_NUMKID_TOPICAL",
+      "ANYWORK",
+      "TAGE1",
+      "PWEIGHT",
+      "DIVISION",
+      "METRO_STATUS"
+    ],
+    "usable_row_count": 3561
+  },
+  "observed_policy_reaction_summary": {
+    "by_segment": {
+      "fixed_income_inflation_stressed": {
+        "mean_policy_reaction": {
+          "baseline_no_new_support": 0.38604885962970414,
+          "cash_cost_of_living_rebate": 0.4559942005092134,
+          "food_subsidy_expansion": 0.15795693986108247
+        },
+        "row_count": 698,
+        "weighted_mean_policy_reaction": {
+          "baseline_no_new_support": 0.3795867180094045,
+          "cash_cost_of_living_rebate": 0.448349432986699,
+          "food_subsidy_expansion": 0.17206384900389649
+        },
+        "weighted_row_mass": 20946302.731958125
+      },
+      "general_population_cost_pressure": {
+        "mean_policy_reaction": {
+          "baseline_no_new_support": 0.5636638820838216,
+          "cash_cost_of_living_rebate": 0.26217274791555484,
+          "food_subsidy_expansion": 0.1741633700006236
+        },
+        "row_count": 2293,
+        "weighted_mean_policy_reaction": {
+          "baseline_no_new_support": 0.5509173364653502,
+          "cash_cost_of_living_rebate": 0.2636415118739817,
+          "food_subsidy_expansion": 0.18544115166066807
+        },
+        "weighted_row_mass": 78485660.02449127
+      },
+      "low_income_food_insecure": {
+        "mean_policy_reaction": {
+          "baseline_no_new_support": 0.18382932606694544,
+          "cash_cost_of_living_rebate": 0.2966629196143193,
+          "food_subsidy_expansion": 0.5195077543187352
+        },
+        "row_count": 52,
+        "weighted_mean_policy_reaction": {
+          "baseline_no_new_support": 0.16287372992861077,
+          "cash_cost_of_living_rebate": 0.30732455696004657,
+          "food_subsidy_expansion": 0.5298017131113426
+        },
+        "weighted_row_mass": 4104344.7800838747
+      },
+      "working_family_price_stressed": {
+        "mean_policy_reaction": {
+          "baseline_no_new_support": 0.3664979298829256,
+          "cash_cost_of_living_rebate": 0.43370726788824443,
+          "food_subsidy_expansion": 0.19979480222882998
+        },
+        "row_count": 518,
+        "weighted_mean_policy_reaction": {
+          "baseline_no_new_support": 0.3442600107635518,
+          "cash_cost_of_living_rebate": 0.42247151115990156,
+          "food_subsidy_expansion": 0.2332684780765466
+        },
+        "weighted_row_mass": 20247362.60609469
+      }
+    },
+    "overall": {
+      "mean_policy_reaction": {
+        "baseline_no_new_support": 0.49462185854382834,
+        "cash_cost_of_living_rebate": 0.3256200223285182,
+        "food_subsidy_expansion": 0.17975811912765333
+      },
+      "row_count": 3561,
+      "weighted_mean_policy_reaction": {
+        "baseline_no_new_support": 0.4752557120340783,
+        "cash_cost_of_living_rebate": 0.32232556034816706,
+        "food_subsidy_expansion": 0.20241872761775456
+      },
+      "weighted_row_mass": 123783670.14262795
+    }
+  },
+  "overall_status": "passed",
+  "schema_version": "policy-reaction-public-data-ingestion-v1",
+  "source": {
+    "parent_split_artifact_id": "policy-reaction-htops-2506-split-ingestion-001",
+    "source_file_name": "HTOPS_HPS_2506_CSV.zip",
+    "source_file_sha256": "8d14cf52f5c3bc4fab5e74e3136cb753ab1195a06314725f00761035158172d4",
+    "source_id": "hps_htops_food_cost_core",
+    "source_release_id": "htops_hps_2506",
+    "source_split": "evaluation",
+    "source_url": "https://www2.census.gov/programs-surveys/demo/datasets/hhp/2025/topical/HTOPS_HPS_2506_CSV.zip",
+    "zip_member": "HTOPS_HPS_2506_PUF.csv"
+  }
+}

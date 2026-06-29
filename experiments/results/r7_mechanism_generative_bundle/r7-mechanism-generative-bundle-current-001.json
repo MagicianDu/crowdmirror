@@ -1,0 +1,2228 @@
+{
+  "acceptance_gates": {
+    "artifact_contracts_present": true,
+    "field_outcome_validated": false,
+    "interaction_trace_present": true,
+    "product_six_outputs_source_backed": true,
+    "rollout_distribution_present": true,
+    "runtime_default_allowed": false
+  },
+  "allowed_claims": [
+    "R7 contract-first mechanism process is source-backed and replayable.",
+    "R7 can be shown as guarded trend, interval, segment, and policy sandbox evidence.",
+    "R6 remains a guard and diagnostic baseline, not the active main method."
+  ],
+  "artifact_id": "r7-mechanism-generative-bundle-current-001",
+  "artifacts": {
+    "r7_counterfactual_policy_sandbox": {
+      "artifact_id": "r7-mechanism-generative-bundle-current-001-policy-sandbox",
+      "baseline_interaction_median": 0.3657,
+      "claim_boundary": "R7 contract-first artifact. It supports mechanism-generative interaction risk simulation, trend interval diagnosis, segment anomaly analysis, counterfactual policy sandboxing, and outcome-feedback learning only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+      "claim_status": "guarded_counterfactual_sandbox",
+      "policy_options": [
+        {
+          "description": "\u9ad8\u98ce\u9669\u7fa4\u4f53\u8865\u507f\u6216\u6743\u76ca\u7f13\u91ca",
+          "policy_id": "targeted_compensation",
+          "propagation_multiplier": 0.9,
+          "shock_multiplier": 0.72
+        },
+        {
+          "description": "\u5206\u9636\u6bb5\u53d1\u5e03\uff0c\u964d\u4f4e\u4e00\u6b21\u6027\u51b2\u51fb",
+          "policy_id": "phased_release",
+          "propagation_multiplier": 0.94,
+          "shock_multiplier": 0.82
+        },
+        {
+          "description": "\u5f3a\u5316\u6c9f\u901a\u89e3\u91ca\uff0c\u964d\u4f4e\u4fe1\u4efb\u635f\u5931",
+          "policy_id": "transparent_explanation",
+          "propagation_multiplier": 0.86,
+          "shock_multiplier": 0.88
+        }
+      ],
+      "policy_ranking": [
+        {
+          "description": "\u9ad8\u98ce\u9669\u7fa4\u4f53\u8865\u507f\u6216\u6743\u76ca\u7f13\u91ca",
+          "dominance_status": "dominant_on_risk_reduction",
+          "policy_id": "targeted_compensation",
+          "propagation_multiplier": 0.9,
+          "risk_interval": {
+            "median": 0.3317,
+            "p10": 0.2867,
+            "p90": 0.3867
+          },
+          "risk_reduction_vs_baseline": 0.034,
+          "shock_multiplier": 0.72,
+          "source_refs": [
+            "r7-mechanism-generative-bundle-current-001-risk-interval",
+            "r7-mechanism-generative-bundle-current-001-rollout-distribution"
+          ]
+        },
+        {
+          "description": "\u5206\u9636\u6bb5\u53d1\u5e03\uff0c\u964d\u4f4e\u4e00\u6b21\u6027\u51b2\u51fb",
+          "dominance_status": "trade_off",
+          "policy_id": "phased_release",
+          "propagation_multiplier": 0.94,
+          "risk_interval": {
+            "median": 0.3441,
+            "p10": 0.2991,
+            "p90": 0.3991
+          },
+          "risk_reduction_vs_baseline": 0.0216,
+          "shock_multiplier": 0.82,
+          "source_refs": [
+            "r7-mechanism-generative-bundle-current-001-risk-interval",
+            "r7-mechanism-generative-bundle-current-001-rollout-distribution"
+          ]
+        },
+        {
+          "description": "\u5f3a\u5316\u6c9f\u901a\u89e3\u91ca\uff0c\u964d\u4f4e\u4fe1\u4efb\u635f\u5931",
+          "dominance_status": "trade_off",
+          "policy_id": "transparent_explanation",
+          "propagation_multiplier": 0.86,
+          "risk_interval": {
+            "median": 0.3453,
+            "p10": 0.3003,
+            "p90": 0.4003
+          },
+          "risk_reduction_vs_baseline": 0.0204,
+          "shock_multiplier": 0.88,
+          "source_refs": [
+            "r7-mechanism-generative-bundle-current-001-risk-interval",
+            "r7-mechanism-generative-bundle-current-001-rollout-distribution"
+          ]
+        }
+      ],
+      "policy_results": [
+        {
+          "description": "\u9ad8\u98ce\u9669\u7fa4\u4f53\u8865\u507f\u6216\u6743\u76ca\u7f13\u91ca",
+          "dominance_status": "dominant_on_risk_reduction",
+          "policy_id": "targeted_compensation",
+          "propagation_multiplier": 0.9,
+          "risk_interval": {
+            "median": 0.3317,
+            "p10": 0.2867,
+            "p90": 0.3867
+          },
+          "risk_reduction_vs_baseline": 0.034,
+          "shock_multiplier": 0.72,
+          "source_refs": [
+            "r7-mechanism-generative-bundle-current-001-risk-interval",
+            "r7-mechanism-generative-bundle-current-001-rollout-distribution"
+          ]
+        },
+        {
+          "description": "\u5206\u9636\u6bb5\u53d1\u5e03\uff0c\u964d\u4f4e\u4e00\u6b21\u6027\u51b2\u51fb",
+          "dominance_status": "trade_off",
+          "policy_id": "phased_release",
+          "propagation_multiplier": 0.94,
+          "risk_interval": {
+            "median": 0.3441,
+            "p10": 0.2991,
+            "p90": 0.3991
+          },
+          "risk_reduction_vs_baseline": 0.0216,
+          "shock_multiplier": 0.82,
+          "source_refs": [
+            "r7-mechanism-generative-bundle-current-001-risk-interval",
+            "r7-mechanism-generative-bundle-current-001-rollout-distribution"
+          ]
+        },
+        {
+          "description": "\u5f3a\u5316\u6c9f\u901a\u89e3\u91ca\uff0c\u964d\u4f4e\u4fe1\u4efb\u635f\u5931",
+          "dominance_status": "trade_off",
+          "policy_id": "transparent_explanation",
+          "propagation_multiplier": 0.86,
+          "risk_interval": {
+            "median": 0.3453,
+            "p10": 0.3003,
+            "p90": 0.4003
+          },
+          "risk_reduction_vs_baseline": 0.0204,
+          "shock_multiplier": 0.88,
+          "source_refs": [
+            "r7-mechanism-generative-bundle-current-001-risk-interval",
+            "r7-mechanism-generative-bundle-current-001-rollout-distribution"
+          ]
+        }
+      ],
+      "run_id": "r7-contract-first-current",
+      "schema_version": "r7-counterfactual-policy-sandbox-v1",
+      "source_refs": [
+        "r7-mechanism-generative-bundle-current-001-risk-interval",
+        "r7-mechanism-generative-bundle-current-001-rollout-distribution"
+      ]
+    },
+    "r7_interaction_graph_manifest": {
+      "artifact_id": "r7-mechanism-generative-bundle-current-001-interaction-graph",
+      "case_id": "generic-price-change",
+      "claim_boundary": "R7 contract-first artifact. It supports mechanism-generative interaction risk simulation, trend interval diagnosis, segment anomaly analysis, counterfactual policy sandboxing, and outcome-feedback learning only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+      "controls": {
+        "interaction_on_present": true,
+        "no_interaction_control_present": true
+      },
+      "edges": [
+        {
+          "relationship_type": "mechanism_similarity_and_peer_exposure",
+          "source": "sensitive_low_trust",
+          "source_refs": [
+            "sensitive_low_trust",
+            "stable_high_trust"
+          ],
+          "strength": 0.1329,
+          "target": "stable_high_trust"
+        },
+        {
+          "relationship_type": "mechanism_similarity_and_peer_exposure",
+          "source": "sensitive_low_trust",
+          "source_refs": [
+            "sensitive_low_trust",
+            "pragmatic_switchers"
+          ],
+          "strength": 0.1772,
+          "target": "pragmatic_switchers"
+        },
+        {
+          "relationship_type": "mechanism_similarity_and_peer_exposure",
+          "source": "stable_high_trust",
+          "source_refs": [
+            "stable_high_trust",
+            "sensitive_low_trust"
+          ],
+          "strength": 0.1329,
+          "target": "sensitive_low_trust"
+        },
+        {
+          "relationship_type": "mechanism_similarity_and_peer_exposure",
+          "source": "stable_high_trust",
+          "source_refs": [
+            "stable_high_trust",
+            "pragmatic_switchers"
+          ],
+          "strength": 0.1329,
+          "target": "pragmatic_switchers"
+        },
+        {
+          "relationship_type": "mechanism_similarity_and_peer_exposure",
+          "source": "pragmatic_switchers",
+          "source_refs": [
+            "pragmatic_switchers",
+            "sensitive_low_trust"
+          ],
+          "strength": 0.1772,
+          "target": "sensitive_low_trust"
+        },
+        {
+          "relationship_type": "mechanism_similarity_and_peer_exposure",
+          "source": "pragmatic_switchers",
+          "source_refs": [
+            "pragmatic_switchers",
+            "stable_high_trust"
+          ],
+          "strength": 0.1329,
+          "target": "stable_high_trust"
+        }
+      ],
+      "nodes": [
+        {
+          "diffusion_sensitivity": 0.815,
+          "node_id": "sensitive_low_trust",
+          "prior_reject_probability": 0.47,
+          "source_refs": [
+            "fixture:generic_price_change_prior",
+            "generic_price_change_001"
+          ],
+          "weight": 0.3
+        },
+        {
+          "diffusion_sensitivity": 0.395,
+          "node_id": "stable_high_trust",
+          "prior_reject_probability": 0.1,
+          "source_refs": [
+            "fixture:generic_price_change_prior",
+            "generic_price_change_001"
+          ],
+          "weight": 0.45
+        },
+        {
+          "diffusion_sensitivity": 0.605,
+          "node_id": "pragmatic_switchers",
+          "prior_reject_probability": 0.37,
+          "source_refs": [
+            "fixture:generic_price_change_prior",
+            "generic_price_change_001"
+          ],
+          "weight": 0.25
+        }
+      ],
+      "propagation_steps": [
+        {
+          "operator": "initialize_from_static_prior_and_mechanism_activation",
+          "step": 0
+        },
+        {
+          "operator": "propagate_peer_exposure_by_edge_strength",
+          "step": 1
+        },
+        {
+          "operator": "stabilize_with_prior_anchor_and_guarded_uncertainty",
+          "step": 2
+        }
+      ],
+      "run_id": "r7-contract-first-current",
+      "schema_version": "r7-interaction-graph-manifest-v1",
+      "source_refs": [
+        "r7-mechanism-generative-bundle-current-001-mechanism-state",
+        "generic-price-change"
+      ]
+    },
+    "r7_mechanism_state_manifest": {
+      "artifact_id": "r7-mechanism-generative-bundle-current-001-mechanism-state",
+      "case_id": "generic-price-change",
+      "claim_boundary": "R7 contract-first artifact. It supports mechanism-generative interaction risk simulation, trend interval diagnosis, segment anomaly analysis, counterfactual policy sandboxing, and outcome-feedback learning only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+      "mechanism_dimensions": [
+        "price_sensitivity",
+        "trust_loss",
+        "fairness_perception",
+        "substitution_option",
+        "identity_alignment",
+        "social_diffusion_sensitivity"
+      ],
+      "run_id": "r7-contract-first-current",
+      "schema_version": "r7-mechanism-state-manifest-v1",
+      "segment_mechanism_states": [
+        {
+          "ablation_ready": true,
+          "exposure_state": {
+            "change_type": "price",
+            "impact_dimensions": [
+              "cost_increase",
+              "fairness_concern",
+              "substitution_pressure"
+            ],
+            "shock_intensity": 0.6434
+          },
+          "mechanism_sources": {
+            "fairness_perception": "rule:scenario_impact_x_static_trait",
+            "identity_alignment": "rule:scenario_impact_x_static_trait",
+            "price_sensitivity": "rule:scenario_impact_x_static_trait",
+            "social_diffusion_sensitivity": "rule:scenario_impact_x_static_trait",
+            "substitution_option": "rule:scenario_impact_x_static_trait",
+            "trust_loss": "rule:scenario_impact_x_static_trait"
+          },
+          "mechanism_state": {
+            "fairness_perception": 0.6487,
+            "identity_alignment": 0.2415,
+            "price_sensitivity": 0.72,
+            "social_diffusion_sensitivity": 0.815,
+            "substitution_option": 0.765,
+            "trust_loss": 0.67
+          },
+          "prior_reject_probability": 0.47,
+          "segment_id": "sensitive_low_trust",
+          "source_refs": [
+            "fixture:generic_price_change_prior",
+            "generic_price_change_001"
+          ],
+          "static_traits": {
+            "sensitivity": "high",
+            "substitution": "high",
+            "trust": "low"
+          },
+          "uncertainty_state": {
+            "mechanism_uncertainty": 0.123,
+            "outcome_proxy_uncertainty": 0.08,
+            "prior_uncertainty": 0.18,
+            "propagation_uncertainty": 0.1052
+          },
+          "weight": 0.3
+        },
+        {
+          "ablation_ready": true,
+          "exposure_state": {
+            "change_type": "price",
+            "impact_dimensions": [
+              "cost_increase",
+              "fairness_concern",
+              "substitution_pressure"
+            ],
+            "shock_intensity": 0.2403
+          },
+          "mechanism_sources": {
+            "fairness_perception": "rule:scenario_impact_x_static_trait",
+            "identity_alignment": "rule:scenario_impact_x_static_trait",
+            "price_sensitivity": "rule:scenario_impact_x_static_trait",
+            "social_diffusion_sensitivity": "rule:scenario_impact_x_static_trait",
+            "substitution_option": "rule:scenario_impact_x_static_trait",
+            "trust_loss": "rule:scenario_impact_x_static_trait"
+          },
+          "mechanism_state": {
+            "fairness_perception": 0.465,
+            "identity_alignment": 0.168,
+            "price_sensitivity": 0.16,
+            "social_diffusion_sensitivity": 0.395,
+            "substitution_option": 0.17,
+            "trust_loss": 0.0837
+          },
+          "prior_reject_probability": 0.1,
+          "segment_id": "stable_high_trust",
+          "source_refs": [
+            "fixture:generic_price_change_prior",
+            "generic_price_change_001"
+          ],
+          "static_traits": {
+            "sensitivity": "low",
+            "substitution": "low",
+            "trust": "high"
+          },
+          "uncertainty_state": {
+            "mechanism_uncertainty": 0.095,
+            "outcome_proxy_uncertainty": 0.08,
+            "prior_uncertainty": 0.1,
+            "propagation_uncertainty": 0.0716
+          },
+          "weight": 0.45
+        },
+        {
+          "ablation_ready": true,
+          "exposure_state": {
+            "change_type": "price",
+            "impact_dimensions": [
+              "cost_increase",
+              "fairness_concern",
+              "substitution_pressure"
+            ],
+            "shock_intensity": 0.4418
+          },
+          "mechanism_sources": {
+            "fairness_perception": "rule:scenario_impact_x_static_trait",
+            "identity_alignment": "rule:scenario_impact_x_static_trait",
+            "price_sensitivity": "rule:scenario_impact_x_static_trait",
+            "social_diffusion_sensitivity": "rule:scenario_impact_x_static_trait",
+            "substitution_option": "rule:scenario_impact_x_static_trait",
+            "trust_loss": "rule:scenario_impact_x_static_trait"
+          },
+          "mechanism_state": {
+            "fairness_perception": 0.5569,
+            "identity_alignment": 0.2047,
+            "price_sensitivity": 0.44,
+            "social_diffusion_sensitivity": 0.605,
+            "substitution_option": 0.4675,
+            "trust_loss": 0.3769
+          },
+          "prior_reject_probability": 0.37,
+          "segment_id": "pragmatic_switchers",
+          "source_refs": [
+            "fixture:generic_price_change_prior",
+            "generic_price_change_001"
+          ],
+          "static_traits": {
+            "sensitivity": "medium",
+            "substitution": "medium",
+            "trust": "medium"
+          },
+          "uncertainty_state": {
+            "mechanism_uncertainty": 0.109,
+            "outcome_proxy_uncertainty": 0.08,
+            "prior_uncertainty": 0.14,
+            "propagation_uncertainty": 0.0884
+          },
+          "weight": 0.25
+        }
+      ],
+      "source_refs": [
+        "generic-price-change",
+        "generic_price_change_001"
+      ]
+    },
+    "r7_outcome_feedback_update_candidate": {
+      "artifact_id": "r7-mechanism-generative-bundle-current-001-outcome-feedback-update",
+      "bounded_update_candidate": {
+        "max_single_update_delta": 0.03,
+        "mechanism_learning_rate": 0.15,
+        "propagation_learning_rate": 0.08
+      },
+      "claim_boundary": "R7 contract-first artifact. It supports mechanism-generative interaction risk simulation, trend interval diagnosis, segment anomaly analysis, counterfactual policy sandboxing, and outcome-feedback learning only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+      "error_attribution": {
+        "interval_error": 0.0066,
+        "mechanism_error": 0.0155,
+        "prior_error": 0.0111,
+        "propagation_error": 0.0111
+      },
+      "observed_reject_proxy": 0.41,
+      "predicted_reject_median": 0.3657,
+      "prediction_error": -0.0443,
+      "rollback_conditions": [
+        "holdout_non_regression_failed",
+        "false_alarm_rate_increases",
+        "interval_coverage_decreases_without_width_control"
+      ],
+      "run_id": "r7-contract-first-current",
+      "runtime_default_allowed": false,
+      "schema_version": "r7-outcome-feedback-update-candidate-v1",
+      "source_refs": [
+        "r7-mechanism-generative-bundle-current-001-risk-interval",
+        "r7-mechanism-generative-bundle-current-001-segment-anomaly",
+        "generic_price_change_release_001"
+      ],
+      "update_status": "blocked_until_holdout_and_runtime_guard"
+    },
+    "r7_product_support_report": {
+      "artifact_id": "r7-mechanism-generative-bundle-current-001-product-support",
+      "blocked_claims": [
+        "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf",
+        "field_outcome_validated=true",
+        "runtime_default_allowed=true",
+        "accuracy_superiority_over_static_prior"
+      ],
+      "claim_boundary": "R7 contract-first artifact. It supports mechanism-generative interaction risk simulation, trend interval diagnosis, segment anomaly analysis, counterfactual policy sandboxing, and outcome-feedback learning only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+      "output_support": [
+        {
+          "claim_status": "guarded",
+          "product_output": "trend_direction",
+          "source_artifact_ids": [
+            "r7-mechanism-generative-bundle-current-001-risk-interval",
+            "r7-mechanism-generative-bundle-current-001-rollout-distribution"
+          ]
+        },
+        {
+          "claim_status": "guarded",
+          "product_output": "risk_interval",
+          "source_artifact_ids": [
+            "r7-mechanism-generative-bundle-current-001-risk-interval"
+          ]
+        },
+        {
+          "claim_status": "guarded",
+          "product_output": "risk_distribution",
+          "source_artifact_ids": [
+            "r7-mechanism-generative-bundle-current-001-rollout-distribution"
+          ]
+        },
+        {
+          "claim_status": "diagnostic",
+          "product_output": "abnormal_segments",
+          "source_artifact_ids": [
+            "r7-mechanism-generative-bundle-current-001-segment-anomaly"
+          ]
+        },
+        {
+          "claim_status": "guarded",
+          "product_output": "mechanism_explanation",
+          "source_artifact_ids": [
+            "r7-mechanism-generative-bundle-current-001-mechanism-state",
+            "r7-mechanism-generative-bundle-current-001-interaction-graph"
+          ]
+        },
+        {
+          "claim_status": "guarded",
+          "product_output": "counterfactual_policy_sandbox",
+          "source_artifact_ids": [
+            "r7-mechanism-generative-bundle-current-001-policy-sandbox"
+          ]
+        }
+      ],
+      "product_outputs": [
+        "trend_direction",
+        "risk_interval",
+        "risk_distribution",
+        "abnormal_segments",
+        "mechanism_explanation",
+        "counterfactual_policy_sandbox"
+      ],
+      "product_positioning": "\u4eba\u7fa4\u53cd\u5e94\u8d8b\u52bf\u4e0e\u98ce\u9669\u533a\u95f4\u6a21\u62df\u5668",
+      "run_id": "r7-contract-first-current",
+      "schema_version": "r7-product-support-report-v1",
+      "source_refs": [
+        "r7-mechanism-generative-bundle-current-001-mechanism-state",
+        "r7-mechanism-generative-bundle-current-001-interaction-graph",
+        "r7-mechanism-generative-bundle-current-001-rollout-distribution",
+        "r7-mechanism-generative-bundle-current-001-risk-interval",
+        "r7-mechanism-generative-bundle-current-001-segment-anomaly",
+        "r7-mechanism-generative-bundle-current-001-policy-sandbox",
+        "r7-mechanism-generative-bundle-current-001-outcome-feedback-update"
+      ],
+      "support_status": "r7_contract_first_guarded_support"
+    },
+    "r7_risk_interval_report": {
+      "artifact_id": "r7-mechanism-generative-bundle-current-001-risk-interval",
+      "claim_boundary": "R7 contract-first artifact. It supports mechanism-generative interaction risk simulation, trend interval diagnosis, segment anomaly analysis, counterfactual policy sandboxing, and outcome-feedback learning only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+      "claim_status": "guarded",
+      "coverage_status": "current_proxy_interval_diagnostic",
+      "risk_interval": {
+        "interval_width": 0.0057,
+        "median": 0.3657,
+        "over_wide_penalty": 0.0,
+        "p10": 0.3625,
+        "p90": 0.3682
+      },
+      "run_id": "r7-contract-first-current",
+      "schema_version": "r7-risk-interval-report-v1",
+      "source_refs": [
+        "r7-mechanism-generative-bundle-current-001-rollout-distribution"
+      ],
+      "trend_direction": "risk_increase"
+    },
+    "r7_rollout_distribution": {
+      "artifact_id": "r7-mechanism-generative-bundle-current-001-rollout-distribution",
+      "claim_boundary": "R7 contract-first artifact. It supports mechanism-generative interaction risk simulation, trend interval diagnosis, segment anomaly analysis, counterfactual policy sandboxing, and outcome-feedback learning only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+      "interaction_on": {
+        "mean": 0.3654,
+        "median": 0.3657,
+        "p10": 0.3625,
+        "p90": 0.3682
+      },
+      "no_interaction_control": {
+        "mean": 0.343,
+        "median": 0.3432,
+        "p10": 0.34,
+        "p90": 0.3458
+      },
+      "rollout_count": 50,
+      "rollouts": [
+        {
+          "aggregate": {
+            "interaction_delta": 0.0225,
+            "interaction_on": 0.3678,
+            "no_interaction": 0.3453
+          },
+          "seed": 0,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5873,
+              "no_interaction": 0.5572,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1704,
+              "no_interaction": 0.1537,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4596,
+              "no_interaction": 0.4359,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3667,
+            "no_interaction": 0.3443
+          },
+          "seed": 1,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5787,
+              "no_interaction": 0.5487,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1714,
+              "no_interaction": 0.1548,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4638,
+              "no_interaction": 0.44,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3681,
+            "no_interaction": 0.3457
+          },
+          "seed": 2,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5886,
+              "no_interaction": 0.5586,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1726,
+              "no_interaction": 0.156,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4553,
+              "no_interaction": 0.4315,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3643,
+            "no_interaction": 0.3418
+          },
+          "seed": 3,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.58,
+              "no_interaction": 0.5499,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1678,
+              "no_interaction": 0.1512,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.459,
+              "no_interaction": 0.4353,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3619,
+            "no_interaction": 0.3395
+          },
+          "seed": 4,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.58,
+              "no_interaction": 0.5499,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1625,
+              "no_interaction": 0.1459,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4593,
+              "no_interaction": 0.4356,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.368,
+            "no_interaction": 0.3456
+          },
+          "seed": 5,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5846,
+              "no_interaction": 0.5546,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1702,
+              "no_interaction": 0.1535,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4641,
+              "no_interaction": 0.4404,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3681,
+            "no_interaction": 0.3457
+          },
+          "seed": 6,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5866,
+              "no_interaction": 0.5566,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1711,
+              "no_interaction": 0.1545,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4604,
+              "no_interaction": 0.4367,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3633,
+            "no_interaction": 0.3409
+          },
+          "seed": 7,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.581,
+              "no_interaction": 0.551,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1631,
+              "no_interaction": 0.1464,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4624,
+              "no_interaction": 0.4387,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3657,
+            "no_interaction": 0.3433
+          },
+          "seed": 8,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5798,
+              "no_interaction": 0.5498,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1728,
+              "no_interaction": 0.1562,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4561,
+              "no_interaction": 0.4324,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0225,
+            "interaction_on": 0.3634,
+            "no_interaction": 0.341
+          },
+          "seed": 9,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5827,
+              "no_interaction": 0.5526,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1657,
+              "no_interaction": 0.1491,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4563,
+              "no_interaction": 0.4325,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3655,
+            "no_interaction": 0.343
+          },
+          "seed": 10,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.584,
+              "no_interaction": 0.5539,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1664,
+              "no_interaction": 0.1498,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4615,
+              "no_interaction": 0.4378,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0225,
+            "interaction_on": 0.3668,
+            "no_interaction": 0.3443
+          },
+          "seed": 11,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5826,
+              "no_interaction": 0.5525,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.168,
+              "no_interaction": 0.1513,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4657,
+              "no_interaction": 0.4419,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3666,
+            "no_interaction": 0.3442
+          },
+          "seed": 12,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5828,
+              "no_interaction": 0.5528,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1691,
+              "no_interaction": 0.1525,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4626,
+              "no_interaction": 0.4389,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.366,
+            "no_interaction": 0.3436
+          },
+          "seed": 13,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5802,
+              "no_interaction": 0.5502,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1695,
+              "no_interaction": 0.1528,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4628,
+              "no_interaction": 0.4391,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3655,
+            "no_interaction": 0.3431
+          },
+          "seed": 14,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5784,
+              "no_interaction": 0.5484,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1697,
+              "no_interaction": 0.1531,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4624,
+              "no_interaction": 0.4387,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3651,
+            "no_interaction": 0.3427
+          },
+          "seed": 15,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5887,
+              "no_interaction": 0.5587,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1614,
+              "no_interaction": 0.1448,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4634,
+              "no_interaction": 0.4397,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3645,
+            "no_interaction": 0.3421
+          },
+          "seed": 16,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5815,
+              "no_interaction": 0.5514,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.167,
+              "no_interaction": 0.1504,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4596,
+              "no_interaction": 0.4359,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3684,
+            "no_interaction": 0.3461
+          },
+          "seed": 17,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5834,
+              "no_interaction": 0.5534,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1709,
+              "no_interaction": 0.1543,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4661,
+              "no_interaction": 0.4424,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3646,
+            "no_interaction": 0.3422
+          },
+          "seed": 18,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5793,
+              "no_interaction": 0.5493,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1692,
+              "no_interaction": 0.1526,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4586,
+              "no_interaction": 0.4349,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3676,
+            "no_interaction": 0.3451
+          },
+          "seed": 19,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5852,
+              "no_interaction": 0.5552,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1707,
+              "no_interaction": 0.154,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4608,
+              "no_interaction": 0.4371,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3686,
+            "no_interaction": 0.3462
+          },
+          "seed": 20,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.588,
+              "no_interaction": 0.558,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1695,
+              "no_interaction": 0.1529,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4638,
+              "no_interaction": 0.4401,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3656,
+            "no_interaction": 0.3432
+          },
+          "seed": 21,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5791,
+              "no_interaction": 0.5491,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1695,
+              "no_interaction": 0.1529,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4622,
+              "no_interaction": 0.4385,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3636,
+            "no_interaction": 0.3412
+          },
+          "seed": 22,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5886,
+              "no_interaction": 0.5586,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1629,
+              "no_interaction": 0.1463,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4549,
+              "no_interaction": 0.4311,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3705,
+            "no_interaction": 0.3481
+          },
+          "seed": 23,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5882,
+              "no_interaction": 0.5582,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1726,
+              "no_interaction": 0.156,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4653,
+              "no_interaction": 0.4416,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0225,
+            "interaction_on": 0.367,
+            "no_interaction": 0.3445
+          },
+          "seed": 24,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5857,
+              "no_interaction": 0.5556,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1713,
+              "no_interaction": 0.1547,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4568,
+              "no_interaction": 0.433,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3682,
+            "no_interaction": 0.3458
+          },
+          "seed": 25,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5816,
+              "no_interaction": 0.5516,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1724,
+              "no_interaction": 0.1557,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4647,
+              "no_interaction": 0.441,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3638,
+            "no_interaction": 0.3414
+          },
+          "seed": 26,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5861,
+              "no_interaction": 0.5561,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1637,
+              "no_interaction": 0.1471,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4571,
+              "no_interaction": 0.4333,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0225,
+            "interaction_on": 0.3684,
+            "no_interaction": 0.3459
+          },
+          "seed": 27,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5849,
+              "no_interaction": 0.5549,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1697,
+              "no_interaction": 0.153,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4661,
+              "no_interaction": 0.4423,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0225,
+            "interaction_on": 0.3623,
+            "no_interaction": 0.3398
+          },
+          "seed": 28,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5785,
+              "no_interaction": 0.5484,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1628,
+              "no_interaction": 0.1462,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4618,
+              "no_interaction": 0.438,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3657,
+            "no_interaction": 0.3433
+          },
+          "seed": 29,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5837,
+              "no_interaction": 0.5537,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1654,
+              "no_interaction": 0.1488,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4647,
+              "no_interaction": 0.441,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3629,
+            "no_interaction": 0.3405
+          },
+          "seed": 30,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5836,
+              "no_interaction": 0.5536,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1647,
+              "no_interaction": 0.1481,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4549,
+              "no_interaction": 0.4312,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3612,
+            "no_interaction": 0.3388
+          },
+          "seed": 31,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5773,
+              "no_interaction": 0.5472,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1626,
+              "no_interaction": 0.146,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4593,
+              "no_interaction": 0.4356,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3617,
+            "no_interaction": 0.3393
+          },
+          "seed": 32,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5781,
+              "no_interaction": 0.548,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1638,
+              "no_interaction": 0.1472,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4582,
+              "no_interaction": 0.4345,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3673,
+            "no_interaction": 0.3448
+          },
+          "seed": 33,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.584,
+              "no_interaction": 0.5539,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1688,
+              "no_interaction": 0.1522,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4644,
+              "no_interaction": 0.4407,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.367,
+            "no_interaction": 0.3445
+          },
+          "seed": 34,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5835,
+              "no_interaction": 0.5534,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1683,
+              "no_interaction": 0.1517,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4647,
+              "no_interaction": 0.441,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0225,
+            "interaction_on": 0.3676,
+            "no_interaction": 0.3452
+          },
+          "seed": 35,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5837,
+              "no_interaction": 0.5537,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1703,
+              "no_interaction": 0.1536,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4636,
+              "no_interaction": 0.4398,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0225,
+            "interaction_on": 0.3688,
+            "no_interaction": 0.3463
+          },
+          "seed": 36,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5811,
+              "no_interaction": 0.551,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1731,
+              "no_interaction": 0.1564,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4661,
+              "no_interaction": 0.4424,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3642,
+            "no_interaction": 0.3417
+          },
+          "seed": 37,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5853,
+              "no_interaction": 0.5553,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1624,
+              "no_interaction": 0.1457,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.462,
+              "no_interaction": 0.4383,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3661,
+            "no_interaction": 0.3437
+          },
+          "seed": 38,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5848,
+              "no_interaction": 0.5548,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1664,
+              "no_interaction": 0.1498,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4633,
+              "no_interaction": 0.4395,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3628,
+            "no_interaction": 0.3403
+          },
+          "seed": 39,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5796,
+              "no_interaction": 0.5496,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1659,
+              "no_interaction": 0.1492,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4569,
+              "no_interaction": 0.4332,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3658,
+            "no_interaction": 0.3434
+          },
+          "seed": 40,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5826,
+              "no_interaction": 0.5526,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1718,
+              "no_interaction": 0.1552,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.455,
+              "no_interaction": 0.4312,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3625,
+            "no_interaction": 0.34
+          },
+          "seed": 41,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5817,
+              "no_interaction": 0.5517,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.164,
+              "no_interaction": 0.1474,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4566,
+              "no_interaction": 0.4328,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3626,
+            "no_interaction": 0.3402
+          },
+          "seed": 42,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5848,
+              "no_interaction": 0.5548,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1616,
+              "no_interaction": 0.1449,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4579,
+              "no_interaction": 0.4342,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3637,
+            "no_interaction": 0.3413
+          },
+          "seed": 43,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5776,
+              "no_interaction": 0.5476,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1696,
+              "no_interaction": 0.153,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4563,
+              "no_interaction": 0.4326,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3663,
+            "no_interaction": 0.3439
+          },
+          "seed": 44,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.582,
+              "no_interaction": 0.552,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1678,
+              "no_interaction": 0.1511,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4649,
+              "no_interaction": 0.4412,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3632,
+            "no_interaction": 0.3408
+          },
+          "seed": 45,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5804,
+              "no_interaction": 0.5504,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1671,
+              "no_interaction": 0.1505,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4556,
+              "no_interaction": 0.4318,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0225,
+            "interaction_on": 0.3665,
+            "no_interaction": 0.344
+          },
+          "seed": 46,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5878,
+              "no_interaction": 0.5578,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1661,
+              "no_interaction": 0.1494,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4617,
+              "no_interaction": 0.4379,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3643,
+            "no_interaction": 0.3419
+          },
+          "seed": 47,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5813,
+              "no_interaction": 0.5513,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1664,
+              "no_interaction": 0.1498,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.46,
+              "no_interaction": 0.4363,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3641,
+            "no_interaction": 0.3417
+          },
+          "seed": 48,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5837,
+              "no_interaction": 0.5537,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1628,
+              "no_interaction": 0.1462,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4631,
+              "no_interaction": 0.4394,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        },
+        {
+          "aggregate": {
+            "interaction_delta": 0.0224,
+            "interaction_on": 0.3621,
+            "no_interaction": 0.3397
+          },
+          "seed": 49,
+          "segment_results": [
+            {
+              "interaction_delta": 0.03,
+              "interaction_on": 0.5779,
+              "no_interaction": 0.5479,
+              "segment_id": "sensitive_low_trust",
+              "weight": 0.3
+            },
+            {
+              "interaction_delta": 0.0166,
+              "interaction_on": 0.1662,
+              "no_interaction": 0.1496,
+              "segment_id": "stable_high_trust",
+              "weight": 0.45
+            },
+            {
+              "interaction_delta": 0.0237,
+              "interaction_on": 0.4559,
+              "no_interaction": 0.4322,
+              "segment_id": "pragmatic_switchers",
+              "weight": 0.25
+            }
+          ]
+        }
+      ],
+      "run_id": "r7-contract-first-current",
+      "schema_version": "r7-rollout-distribution-v1",
+      "seeded_reproducible": true,
+      "source_refs": [
+        "r7-mechanism-generative-bundle-current-001-mechanism-state",
+        "r7-mechanism-generative-bundle-current-001-interaction-graph"
+      ],
+      "uncertainty_sources": [
+        "static_prior_uncertainty",
+        "mechanism_activation_uncertainty",
+        "propagation_strength_uncertainty",
+        "outcome_proxy_uncertainty"
+      ]
+    },
+    "r7_segment_anomaly_report": {
+      "artifact_id": "r7-mechanism-generative-bundle-current-001-segment-anomaly",
+      "claim_boundary": "R7 contract-first artifact. It supports mechanism-generative interaction risk simulation, trend interval diagnosis, segment anomaly analysis, counterfactual policy sandboxing, and outcome-feedback learning only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+      "false_alarm_diagnosis": [
+        {
+          "claim_status": "diagnostic",
+          "diagnosis": "aggregate_prediction_near_observed_proxy",
+          "interaction_median": 0.3657,
+          "observed_reject_proxy": 0.41,
+          "source_refs": [
+            "generic_price_change_release_001",
+            "r7-mechanism-generative-bundle-current-001-rollout-distribution"
+          ]
+        }
+      ],
+      "interaction_amplified_risks": [
+        {
+          "amplification": 0.03,
+          "interaction_median": 0.5827,
+          "no_interaction_median": 0.5527,
+          "segment_id": "sensitive_low_trust",
+          "source_refs": [
+            "r7-mechanism-generative-bundle-current-001-rollout-distribution"
+          ]
+        },
+        {
+          "amplification": 0.0167,
+          "interaction_median": 0.1679,
+          "no_interaction_median": 0.1512,
+          "segment_id": "stable_high_trust",
+          "source_refs": [
+            "r7-mechanism-generative-bundle-current-001-rollout-distribution"
+          ]
+        },
+        {
+          "amplification": 0.0237,
+          "interaction_median": 0.4616,
+          "no_interaction_median": 0.4379,
+          "segment_id": "pragmatic_switchers",
+          "source_refs": [
+            "r7-mechanism-generative-bundle-current-001-rollout-distribution"
+          ]
+        }
+      ],
+      "run_id": "r7-contract-first-current",
+      "schema_version": "r7-segment-anomaly-report-v1",
+      "segment_label_status": "proxy_diagnostic_not_field_segment_label",
+      "source_refs": [
+        "r7-mechanism-generative-bundle-current-001-mechanism-state",
+        "r7-mechanism-generative-bundle-current-001-rollout-distribution"
+      ],
+      "static_hidden_risks": [
+        {
+          "interaction_median": 0.4616,
+          "prior_reject_probability": 0.37,
+          "reason": "static_prior_underestimates_interaction_activated_risk",
+          "segment_id": "pragmatic_switchers",
+          "source_refs": [
+            "r7-mechanism-generative-bundle-current-001-mechanism-state",
+            "r7-mechanism-generative-bundle-current-001-rollout-distribution"
+          ]
+        }
+      ]
+    }
+  },
+  "blocked_claims": [
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "interaction simulation is always more accurate than static prior"
+  ],
+  "case_id": "generic-price-change",
+  "claim_boundary": "R7 contract-first artifact. It supports mechanism-generative interaction risk simulation, trend interval diagnosis, segment anomaly analysis, counterfactual policy sandboxing, and outcome-feedback learning only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+  "run_id": "r7-contract-first-current",
+  "schema_version": "r7-mechanism-generative-bundle-v1",
+  "source_refs": [
+    "generic-price-change",
+    "generic_price_change_001",
+    "fixture:generic_price_change_scenario"
+  ],
+  "status": "r7_contract_first_mvp_ready_guarded"
+}

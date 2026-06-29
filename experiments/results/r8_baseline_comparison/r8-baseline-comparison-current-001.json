@@ -1,0 +1,113 @@
+{
+  "acceptance_gates": {
+    "baseline_comparison_present": true,
+    "field_outcome_validated": false,
+    "r7_v2_kept_as_fixed_rule_baseline": true,
+    "runtime_default_allowed": false
+  },
+  "allowed_claims": [
+    "R8 can be compared against fixed R7 v2 and conservative baselines under guard."
+  ],
+  "artifact_id": "r8-baseline-comparison-current-001",
+  "baseline_policy": {
+    "r6_role": "guarded learning counterfactual baseline",
+    "r7_v2_role": "r7-effect-validation-v2 fixed-rule baseline, not main algorithm",
+    "static_prior_role": "strong prior floor"
+  },
+  "blocked_claims": [
+    "R8 validated",
+    "runtime_default_allowed=true",
+    "field_outcome_validated=true",
+    "accuracy superiority"
+  ],
+  "claim_boundary": "R8 learnable mechanism artifact. It supports guarded mechanism-causal interaction simulation, interval/risk diagnosis, attribution, and bounded operator update candidates only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+  "claim_level_by_metric": {
+    "false_alarm_rate": "guarded_current_proxy",
+    "interval_coverage": "guarded_current_proxy",
+    "risk_ranking_quality": "diagnostic_only",
+    "static_prior_miss_recovery_rate": "diagnostic_only",
+    "trend_direction_accuracy": "diagnostic_only"
+  },
+  "method_metrics": {
+    "agent_propagation_baseline": {
+      "false_alarm_rate": 0.333,
+      "interval_coverage": 0.667,
+      "risk_ranking_quality": 0.5,
+      "static_prior_miss_recovery_rate": 1.0,
+      "trend_direction_accuracy": 0.667
+    },
+    "hierarchical_interval_baseline": {
+      "false_alarm_rate": 0.333,
+      "interval_coverage": 1.0,
+      "risk_ranking_quality": 0.333,
+      "static_prior_miss_recovery_rate": 0.0,
+      "trend_direction_accuracy": 0.667
+    },
+    "r6_learning_counterfactual": {
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 0.667,
+      "risk_ranking_quality": 0.333,
+      "static_prior_miss_recovery_rate": 1.0,
+      "trend_direction_accuracy": 0.667
+    },
+    "r7_v2_guarded_mechanism_calibrated": {
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 1.0,
+      "risk_ranking_quality": 0.333,
+      "static_prior_miss_recovery_rate": 1.0,
+      "trend_direction_accuracy": 0.667
+    },
+    "r8_main_learnable_mechanism": {
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 1.0,
+      "risk_ranking_quality": 0.5,
+      "static_prior_miss_recovery_rate": 1.0,
+      "trend_direction_accuracy": 0.667
+    },
+    "static_prior": {
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 0.333,
+      "risk_ranking_quality": 0.333,
+      "static_prior_miss_recovery_rate": 0.0,
+      "trend_direction_accuracy": 0.333
+    }
+  },
+  "methods": [
+    "static_prior",
+    "r6_learning_counterfactual",
+    "r7_v2_guarded_mechanism_calibrated",
+    "r8_main_learnable_mechanism",
+    "hierarchical_interval_baseline",
+    "agent_propagation_baseline"
+  ],
+  "run_id": "r8-baseline-comparison-current",
+  "schema_version": "r8-baseline-comparison-v1",
+  "source_refs": [
+    "r8-baseline-comparison-current-001-r7-v2",
+    "r8-baseline-comparison-current-001-r8-main"
+  ],
+  "status": "r8_baseline_comparison_diagnostic_or_stop_loss",
+  "stop_loss_recommendation": "keep_r8_as_diagnostic_asset",
+  "winner_by_metric": {
+    "false_alarm_rate": {
+      "method": "static_prior",
+      "value": 0.0
+    },
+    "interval_coverage": {
+      "method": "r7_v2_guarded_mechanism_calibrated",
+      "value": 1.0
+    },
+    "risk_ranking_quality": {
+      "method": "r8_main_learnable_mechanism",
+      "value": 0.5
+    },
+    "static_prior_miss_recovery_rate": {
+      "method": "r6_learning_counterfactual",
+      "value": 1.0
+    },
+    "trend_direction_accuracy": {
+      "method": "r6_learning_counterfactual",
+      "value": 0.667
+    }
+  }
+}

@@ -1,0 +1,254 @@
+{
+  "acceptance_gates": {
+    "effect_validation_present": true,
+    "field_outcome_validated": false,
+    "r7_effect_positive_signal": false,
+    "r7_false_alarm_improves_vs_r6_raw": false,
+    "r7_interval_coverage_improves": false,
+    "r7_mean_error_improves_vs_r6_learning": false,
+    "r7_trend_not_worse_than_r6_raw": true,
+    "runtime_default_allowed": false,
+    "strategy_sandbox_present": true
+  },
+  "allowed_claims": [
+    "R7 effect validation can compare mechanism-generative rollout evidence against R6 baselines.",
+    "R7 currently has a replayable process artifact and strategy sandbox, but effect support is diagnostic."
+  ],
+  "artifact_id": "r7-effect-validation-current-001",
+  "blocked_claims": [
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "R7 already fully supports Product core value",
+    "R7 has proven accuracy superiority over static prior or R6"
+  ],
+  "blocking_gaps": [
+    "needs_r7_uncertainty_calibration",
+    "needs_r7_mechanism_sensitivity_rebalance",
+    "needs_r7_false_alarm_reduction_before_product_core_claim",
+    "needs_field_or_customer_outcome_validation"
+  ],
+  "case_results": [
+    {
+      "absolute_errors": {
+        "r6_learning_counterfactual": 0.067,
+        "r6_raw_interaction": 0.11,
+        "r7_interaction": 0.0921,
+        "static_prior": 0.18
+      },
+      "observed_high_risk": true,
+      "observed_reject_proxy": 0.47,
+      "outcome_direction": "risk_up",
+      "r6_learning_counterfactual_prediction": 0.403,
+      "r6_raw_interaction_prediction": 0.36,
+      "r7_candidate_adjustments": [
+        "v1_contract_first_no_effect_calibration"
+      ],
+      "r7_candidate_variant": "v1_contract_first",
+      "r7_false_alarm": false,
+      "r7_flags_high_risk": false,
+      "r7_interaction_median": 0.3779,
+      "r7_interval": {
+        "interval_width": 0.0055,
+        "median": 0.3779,
+        "over_wide_penalty": 0.0,
+        "p10": 0.375,
+        "p90": 0.3805
+      },
+      "r7_interval_contains_observed": false,
+      "r7_no_interaction_median": 0.3548,
+      "r7_source_artifact_id": "r7-effect-validation-current-001-htops_cost_pressure-r7-bundle",
+      "r7_static_prior_miss_recovered": false,
+      "r7_trend_direction": "risk_up",
+      "r7_trend_direction_matches_outcome": true,
+      "r7_v1_interaction_median": 0.3779,
+      "source_key": "htops_cost_pressure",
+      "source_refs": [
+        "r7-effect-validation-current-001-r6-trend-interval-risk-htops_cost_pressure-ablation",
+        "r7-effect-validation-current-001-r6-trend-interval-risk-htops_cost_pressure-ablation",
+        "r7-effect-validation-current-001-htops_cost_pressure-r7-bundle"
+      ],
+      "static_prior_missed_high_risk": true,
+      "static_prior_prediction": 0.29,
+      "strategy_sandbox_top_policy": {
+        "description": "\u9ad8\u98ce\u9669\u7fa4\u4f53\u8865\u507f\u6216\u6743\u76ca\u7f13\u91ca",
+        "dominance_status": "dominant_on_risk_reduction",
+        "policy_id": "targeted_compensation",
+        "propagation_multiplier": 0.9,
+        "risk_interval": {
+          "median": 0.3439,
+          "p10": 0.2989,
+          "p90": 0.3989
+        },
+        "risk_reduction_vs_baseline": 0.034,
+        "shock_multiplier": 0.72,
+        "source_refs": [
+          "r7-effect-validation-current-001-htops_cost_pressure-r7-bundle-risk-interval",
+          "r7-effect-validation-current-001-htops_cost_pressure-r7-bundle-rollout-distribution"
+        ]
+      },
+      "target_case_id": "generic-public-service-policy-change"
+    },
+    {
+      "absolute_errors": {
+        "r6_learning_counterfactual": 0.011,
+        "r6_raw_interaction": 0.05,
+        "r7_interaction": 0.0724,
+        "static_prior": 0.02
+      },
+      "observed_high_risk": false,
+      "observed_reject_proxy": 0.33,
+      "outcome_direction": "risk_up",
+      "r6_learning_counterfactual_prediction": 0.319,
+      "r6_raw_interaction_prediction": 0.38,
+      "r7_candidate_adjustments": [
+        "v1_contract_first_no_effect_calibration"
+      ],
+      "r7_candidate_variant": "v1_contract_first",
+      "r7_false_alarm": true,
+      "r7_flags_high_risk": true,
+      "r7_interaction_median": 0.4024,
+      "r7_interval": {
+        "interval_width": 0.0056,
+        "median": 0.4024,
+        "over_wide_penalty": 0.0,
+        "p10": 0.3994,
+        "p90": 0.405
+      },
+      "r7_interval_contains_observed": false,
+      "r7_no_interaction_median": 0.3793,
+      "r7_source_artifact_id": "r7-effect-validation-current-001-anes_health_heldout-r7-bundle",
+      "r7_static_prior_miss_recovered": false,
+      "r7_trend_direction": "risk_up",
+      "r7_trend_direction_matches_outcome": true,
+      "r7_v1_interaction_median": 0.4024,
+      "source_key": "anes_health_heldout",
+      "source_refs": [
+        "r7-effect-validation-current-001-r6-trend-interval-risk-anes_health_heldout-ablation",
+        "r7-effect-validation-current-001-r6-trend-interval-risk-anes_health_heldout-ablation",
+        "r7-effect-validation-current-001-anes_health_heldout-r7-bundle"
+      ],
+      "static_prior_missed_high_risk": false,
+      "static_prior_prediction": 0.31,
+      "strategy_sandbox_top_policy": {
+        "description": "\u9ad8\u98ce\u9669\u7fa4\u4f53\u8865\u507f\u6216\u6743\u76ca\u7f13\u91ca",
+        "dominance_status": "dominant_on_risk_reduction",
+        "policy_id": "targeted_compensation",
+        "propagation_multiplier": 0.9,
+        "risk_interval": {
+          "median": 0.3684,
+          "p10": 0.3234,
+          "p90": 0.4234
+        },
+        "risk_reduction_vs_baseline": 0.034,
+        "shock_multiplier": 0.72,
+        "source_refs": [
+          "r7-effect-validation-current-001-anes_health_heldout-r7-bundle-risk-interval",
+          "r7-effect-validation-current-001-anes_health_heldout-r7-bundle-rollout-distribution"
+        ]
+      },
+      "target_case_id": "generic-rights-rule-change"
+    },
+    {
+      "absolute_errors": {
+        "r6_learning_counterfactual": 0.069,
+        "r6_raw_interaction": 0.13,
+        "r7_interaction": 0.1524,
+        "static_prior": 0.06
+      },
+      "observed_high_risk": false,
+      "observed_reject_proxy": 0.25,
+      "outcome_direction": "risk_down",
+      "r6_learning_counterfactual_prediction": 0.319,
+      "r6_raw_interaction_prediction": 0.38,
+      "r7_candidate_adjustments": [
+        "v1_contract_first_no_effect_calibration"
+      ],
+      "r7_candidate_variant": "v1_contract_first",
+      "r7_false_alarm": true,
+      "r7_flags_high_risk": true,
+      "r7_interaction_median": 0.4024,
+      "r7_interval": {
+        "interval_width": 0.0056,
+        "median": 0.4024,
+        "over_wide_penalty": 0.0,
+        "p10": 0.3994,
+        "p90": 0.405
+      },
+      "r7_interval_contains_observed": false,
+      "r7_no_interaction_median": 0.3793,
+      "r7_source_artifact_id": "r7-effect-validation-current-001-anes_climate_heldout-r7-bundle",
+      "r7_static_prior_miss_recovered": false,
+      "r7_trend_direction": "risk_up",
+      "r7_trend_direction_matches_outcome": false,
+      "r7_v1_interaction_median": 0.4024,
+      "source_key": "anes_climate_heldout",
+      "source_refs": [
+        "r7-effect-validation-current-001-r6-trend-interval-risk-anes_climate_heldout-ablation",
+        "r7-effect-validation-current-001-r6-trend-interval-risk-anes_climate_heldout-ablation",
+        "r7-effect-validation-current-001-anes_climate_heldout-r7-bundle"
+      ],
+      "static_prior_missed_high_risk": false,
+      "static_prior_prediction": 0.31,
+      "strategy_sandbox_top_policy": {
+        "description": "\u9ad8\u98ce\u9669\u7fa4\u4f53\u8865\u507f\u6216\u6743\u76ca\u7f13\u91ca",
+        "dominance_status": "dominant_on_risk_reduction",
+        "policy_id": "targeted_compensation",
+        "propagation_multiplier": 0.9,
+        "risk_interval": {
+          "median": 0.3684,
+          "p10": 0.3234,
+          "p90": 0.4234
+        },
+        "risk_reduction_vs_baseline": 0.034,
+        "shock_multiplier": 0.72,
+        "source_refs": [
+          "r7-effect-validation-current-001-anes_climate_heldout-r7-bundle-risk-interval",
+          "r7-effect-validation-current-001-anes_climate_heldout-r7-bundle-rollout-distribution"
+        ]
+      },
+      "target_case_id": "generic-rights-rule-change"
+    }
+  ],
+  "claim_boundary": "R7 contract-first artifact. It supports mechanism-generative interaction risk simulation, trend interval diagnosis, segment anomaly analysis, counterfactual policy sandboxing, and outcome-feedback learning only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+  "claim_status": "diagnostic_blocked",
+  "comparison_protocol": {
+    "baselines": [
+      "static_prior",
+      "r6_raw_interaction",
+      "r6_learning_counterfactual"
+    ],
+    "case_source": "current R6 public proxy case set",
+    "field_outcome_required_for_runtime_default": true,
+    "high_risk_threshold": 0.4,
+    "r7_candidate": "r7_mechanism_generative_bundle:v1_contract_first",
+    "rollout_count_per_case": 50
+  },
+  "run_id": "r7-effect-validation-current",
+  "schema_version": "r7-effect-validation-v1",
+  "source_refs": [
+    "r7-effect-validation-current-001-r6-trend-interval-risk",
+    "r7-effect-validation-current-001-r6-learning-counterfactual",
+    "r7-effect-validation-current-001-htops_cost_pressure-r7-bundle",
+    "r7-effect-validation-current-001-anes_health_heldout-r7-bundle",
+    "r7-effect-validation-current-001-anes_climate_heldout-r7-bundle"
+  ],
+  "status": "r7_effect_validation_diagnostic_blocked",
+  "summary": {
+    "case_count": 3,
+    "r6_learning_counterfactual_mean_absolute_error": 0.049,
+    "r6_raw_false_alarm_rate": 0.667,
+    "r6_raw_interval_coverage": 0.667,
+    "r6_raw_mean_absolute_error": 0.097,
+    "r6_raw_risk_ranking_quality": 0.333,
+    "r6_raw_trend_direction_accuracy": 0.667,
+    "r7_candidate_variant": "v1_contract_first",
+    "r7_effect_positive_signal": false,
+    "r7_false_alarm_rate": 1.0,
+    "r7_interval_coverage": 0.0,
+    "r7_mean_absolute_error": 0.1056,
+    "r7_rollout_count_per_case": 50,
+    "r7_static_prior_miss_recovery_rate": 0.0,
+    "r7_trend_direction_accuracy": 0.667
+  }
+}

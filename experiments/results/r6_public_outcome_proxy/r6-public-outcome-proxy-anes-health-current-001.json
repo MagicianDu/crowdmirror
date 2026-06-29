@@ -1,0 +1,308 @@
+{
+  "artifact_id": "r6-public-outcome-proxy-anes-health-current-001",
+  "blocking_gaps": [
+    "public_proxy_is_not_direct_release_outcome",
+    "needs_cross_proxy_mapping_review"
+  ],
+  "by_segment": {
+    "party_or_ideology=conservative|income=lower": {
+      "observed_behavior_change_proxy": 0.49,
+      "observed_reject_proxy": 0.51,
+      "observed_reject_proxy_raw": 0.508196721311,
+      "row_count": 61,
+      "weighted_row_mass": 61
+    },
+    "party_or_ideology=conservative|income=middle": {
+      "observed_behavior_change_proxy": 0.44,
+      "observed_reject_proxy": 0.56,
+      "observed_reject_proxy_raw": 0.559633027523,
+      "row_count": 109,
+      "weighted_row_mass": 109
+    },
+    "party_or_ideology=conservative|income=unknown": {
+      "observed_behavior_change_proxy": 0.22,
+      "observed_reject_proxy": 0.78,
+      "observed_reject_proxy_raw": 0.777777777778,
+      "row_count": 18,
+      "weighted_row_mass": 18
+    },
+    "party_or_ideology=conservative|income=upper": {
+      "observed_behavior_change_proxy": 0.34,
+      "observed_reject_proxy": 0.66,
+      "observed_reject_proxy_raw": 0.655405405405,
+      "row_count": 148,
+      "weighted_row_mass": 148
+    },
+    "party_or_ideology=liberal|income=lower": {
+      "observed_behavior_change_proxy": 0.81,
+      "observed_reject_proxy": 0.19,
+      "observed_reject_proxy_raw": 0.186046511628,
+      "row_count": 43,
+      "weighted_row_mass": 43
+    },
+    "party_or_ideology=liberal|income=middle": {
+      "observed_behavior_change_proxy": 0.95,
+      "observed_reject_proxy": 0.05,
+      "observed_reject_proxy_raw": 0.054794520548,
+      "row_count": 73,
+      "weighted_row_mass": 73
+    },
+    "party_or_ideology=liberal|income=unknown": {
+      "observed_behavior_change_proxy": 0.94,
+      "observed_reject_proxy": 0.06,
+      "observed_reject_proxy_raw": 0.058823529412,
+      "row_count": 17,
+      "weighted_row_mass": 17
+    },
+    "party_or_ideology=liberal|income=upper": {
+      "observed_behavior_change_proxy": 0.94,
+      "observed_reject_proxy": 0.06,
+      "observed_reject_proxy_raw": 0.055555555556,
+      "row_count": 162,
+      "weighted_row_mass": 162
+    },
+    "party_or_ideology=moderate|income=lower": {
+      "observed_behavior_change_proxy": 0.72,
+      "observed_reject_proxy": 0.28,
+      "observed_reject_proxy_raw": 0.282608695652,
+      "row_count": 46,
+      "weighted_row_mass": 46
+    },
+    "party_or_ideology=moderate|income=middle": {
+      "observed_behavior_change_proxy": 0.77,
+      "observed_reject_proxy": 0.23,
+      "observed_reject_proxy_raw": 0.227272727273,
+      "row_count": 66,
+      "weighted_row_mass": 66
+    },
+    "party_or_ideology=moderate|income=unknown": {
+      "observed_behavior_change_proxy": 0.6,
+      "observed_reject_proxy": 0.4,
+      "observed_reject_proxy_raw": 0.4,
+      "row_count": 15,
+      "weighted_row_mass": 15
+    },
+    "party_or_ideology=moderate|income=upper": {
+      "observed_behavior_change_proxy": 0.75,
+      "observed_reject_proxy": 0.25,
+      "observed_reject_proxy_raw": 0.252873563218,
+      "row_count": 87,
+      "weighted_row_mass": 87
+    },
+    "party_or_ideology=unknown|income=lower": {
+      "observed_behavior_change_proxy": 0.73,
+      "observed_reject_proxy": 0.27,
+      "observed_reject_proxy_raw": 0.27027027027,
+      "row_count": 37,
+      "weighted_row_mass": 37
+    },
+    "party_or_ideology=unknown|income=middle": {
+      "observed_behavior_change_proxy": 0.72,
+      "observed_reject_proxy": 0.28,
+      "observed_reject_proxy_raw": 0.282051282051,
+      "row_count": 39,
+      "weighted_row_mass": 39
+    },
+    "party_or_ideology=unknown|income=unknown": {
+      "observed_behavior_change_proxy": 0.71,
+      "observed_reject_proxy": 0.29,
+      "observed_reject_proxy_raw": 0.285714285714,
+      "row_count": 7,
+      "weighted_row_mass": 7
+    },
+    "party_or_ideology=unknown|income=upper": {
+      "observed_behavior_change_proxy": 0.65,
+      "observed_reject_proxy": 0.35,
+      "observed_reject_proxy_raw": 0.346153846154,
+      "row_count": 26,
+      "weighted_row_mass": 26
+    }
+  },
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "This artifact adapts ANES public-use LCDU microdata distributions into the policy-reaction benchmark schema. It is a split ingestion artifact only, not model quality or field validation evidence."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "data_quality_flags": [
+    "public_heldout_proxy_not_field_outcome",
+    "proxy_metric_not_direct_attitude_truth",
+    "heldout_split_not_customer_release"
+  ],
+  "mapping_review": {
+    "claim_boundary": "Proxy mapping only; not field outcome or direct customer behavior.",
+    "mapping_rationale": "For a rights/rule change case framed around public coverage, private-insurance preference is treated as a reject proxy.",
+    "proxy_family": "public_health_insurance_preference",
+    "target_response_option": "private_insurance_plan"
+  },
+  "metrics": {
+    "observed_reject_proxy": 0.33,
+    "observed_reject_proxy_raw": 0.328092243186544,
+    "row_count": 954,
+    "weighted_row_mass": 954
+  },
+  "outcome_override": {
+    "by_segment": {
+      "party_or_ideology=conservative|income=lower": {
+        "observed_behavior_change_proxy": 0.49,
+        "observed_reject_proxy": 0.51,
+        "observed_reject_proxy_raw": 0.508196721311,
+        "row_count": 61,
+        "weighted_row_mass": 61
+      },
+      "party_or_ideology=conservative|income=middle": {
+        "observed_behavior_change_proxy": 0.44,
+        "observed_reject_proxy": 0.56,
+        "observed_reject_proxy_raw": 0.559633027523,
+        "row_count": 109,
+        "weighted_row_mass": 109
+      },
+      "party_or_ideology=conservative|income=unknown": {
+        "observed_behavior_change_proxy": 0.22,
+        "observed_reject_proxy": 0.78,
+        "observed_reject_proxy_raw": 0.777777777778,
+        "row_count": 18,
+        "weighted_row_mass": 18
+      },
+      "party_or_ideology=conservative|income=upper": {
+        "observed_behavior_change_proxy": 0.34,
+        "observed_reject_proxy": 0.66,
+        "observed_reject_proxy_raw": 0.655405405405,
+        "row_count": 148,
+        "weighted_row_mass": 148
+      },
+      "party_or_ideology=liberal|income=lower": {
+        "observed_behavior_change_proxy": 0.81,
+        "observed_reject_proxy": 0.19,
+        "observed_reject_proxy_raw": 0.186046511628,
+        "row_count": 43,
+        "weighted_row_mass": 43
+      },
+      "party_or_ideology=liberal|income=middle": {
+        "observed_behavior_change_proxy": 0.95,
+        "observed_reject_proxy": 0.05,
+        "observed_reject_proxy_raw": 0.054794520548,
+        "row_count": 73,
+        "weighted_row_mass": 73
+      },
+      "party_or_ideology=liberal|income=unknown": {
+        "observed_behavior_change_proxy": 0.94,
+        "observed_reject_proxy": 0.06,
+        "observed_reject_proxy_raw": 0.058823529412,
+        "row_count": 17,
+        "weighted_row_mass": 17
+      },
+      "party_or_ideology=liberal|income=upper": {
+        "observed_behavior_change_proxy": 0.94,
+        "observed_reject_proxy": 0.06,
+        "observed_reject_proxy_raw": 0.055555555556,
+        "row_count": 162,
+        "weighted_row_mass": 162
+      },
+      "party_or_ideology=moderate|income=lower": {
+        "observed_behavior_change_proxy": 0.72,
+        "observed_reject_proxy": 0.28,
+        "observed_reject_proxy_raw": 0.282608695652,
+        "row_count": 46,
+        "weighted_row_mass": 46
+      },
+      "party_or_ideology=moderate|income=middle": {
+        "observed_behavior_change_proxy": 0.77,
+        "observed_reject_proxy": 0.23,
+        "observed_reject_proxy_raw": 0.227272727273,
+        "row_count": 66,
+        "weighted_row_mass": 66
+      },
+      "party_or_ideology=moderate|income=unknown": {
+        "observed_behavior_change_proxy": 0.6,
+        "observed_reject_proxy": 0.4,
+        "observed_reject_proxy_raw": 0.4,
+        "row_count": 15,
+        "weighted_row_mass": 15
+      },
+      "party_or_ideology=moderate|income=upper": {
+        "observed_behavior_change_proxy": 0.75,
+        "observed_reject_proxy": 0.25,
+        "observed_reject_proxy_raw": 0.252873563218,
+        "row_count": 87,
+        "weighted_row_mass": 87
+      },
+      "party_or_ideology=unknown|income=lower": {
+        "observed_behavior_change_proxy": 0.73,
+        "observed_reject_proxy": 0.27,
+        "observed_reject_proxy_raw": 0.27027027027,
+        "row_count": 37,
+        "weighted_row_mass": 37
+      },
+      "party_or_ideology=unknown|income=middle": {
+        "observed_behavior_change_proxy": 0.72,
+        "observed_reject_proxy": 0.28,
+        "observed_reject_proxy_raw": 0.282051282051,
+        "row_count": 39,
+        "weighted_row_mass": 39
+      },
+      "party_or_ideology=unknown|income=unknown": {
+        "observed_behavior_change_proxy": 0.71,
+        "observed_reject_proxy": 0.29,
+        "observed_reject_proxy_raw": 0.285714285714,
+        "row_count": 7,
+        "weighted_row_mass": 7
+      },
+      "party_or_ideology=unknown|income=upper": {
+        "observed_behavior_change_proxy": 0.65,
+        "observed_reject_proxy": 0.35,
+        "observed_reject_proxy_raw": 0.346153846154,
+        "row_count": 26,
+        "weighted_row_mass": 26
+      }
+    },
+    "data_quality_flags": [
+      "public_heldout_proxy_not_field_outcome",
+      "proxy_metric_not_direct_attitude_truth",
+      "heldout_split_not_customer_release"
+    ],
+    "metrics": {
+      "complaint_rate": 0.0,
+      "conversion_delta": -0.49,
+      "negative_sentiment_rate": 0.18,
+      "observed_reject_proxy": 0.33
+    },
+    "observation_window": "anes_2024_public_use_heldout_split",
+    "outcome_source_level": "public_proxy",
+    "release_id": "anes_2024_health_heldout_proxy",
+    "risk_flags": [
+      "heldout_public_proxy_not_global_validation",
+      "not_field_validation",
+      "not_accuracy_superiority_evidence"
+    ],
+    "source_refs": [
+      "policy-reaction-anes-health-001-heldout",
+      "experiments/results/policy_reaction_benchmark/policy-reaction-anes-health-001-heldout.json"
+    ]
+  },
+  "public_source": {
+    "dataset_access_mode": "public_use_heldout_split",
+    "puf_row_count": 1108,
+    "skipped_row_count": 154,
+    "source_artifact_id": "policy-reaction-anes-health-001-heldout",
+    "source_name": "ANES 2024 public-use health heldout",
+    "source_schema_version": "policy-reaction-public-data-ingestion-v1",
+    "source_url": "https://sda.berkeley.edu/sdaweb/analysis/?dataset=anes2024full",
+    "split_role": "heldout",
+    "usable_row_count": 954
+  },
+  "risk_flags": [
+    "heldout_public_proxy_not_global_validation",
+    "not_field_validation",
+    "not_accuracy_superiority_evidence"
+  ],
+  "run_id": "r6-public-outcome-proxy-anes-health-current-001",
+  "schema_version": "r6-public-outcome-proxy-v1",
+  "source_key": "anes_health_heldout",
+  "source_refs": [
+    "policy-reaction-anes-health-001-heldout",
+    "experiments/results/policy_reaction_benchmark/policy-reaction-anes-health-001-heldout.json"
+  ],
+  "status": "public_proxy_ready",
+  "target_case_id": "generic-rights-rule-change",
+  "target_case_type": "rights_rule_change"
+}

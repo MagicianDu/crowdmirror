@@ -1,0 +1,281 @@
+{
+  "all_observed_summary_after_this_batch": {
+    "best_improvement_ratio": 0.6159959325690528,
+    "diagnosis_counts": {
+      "textgrad_direction_no_measured_gain": 2
+    },
+    "negative_result_count": 2,
+    "run_count": 10
+  },
+  "analysis_id": "textgrad-seed7-baseline-failure-analysis-001",
+  "baseline_summary": {
+    "compact": {
+      "best_improvement_ratio": 0.6159959325690528,
+      "best_loss_min": 0.13046485514592812,
+      "budgets": [
+        1024,
+        2048
+      ],
+      "cell_count": 2,
+      "improved_count": 2,
+      "initial_loss_mean": 0.3397486282339671,
+      "negative_count": 0
+    },
+    "default": {
+      "best_improvement_ratio": 0.0,
+      "best_loss_min": 0.24355583627790764,
+      "budgets": [
+        1024,
+        2048
+      ],
+      "cell_count": 2,
+      "improved_count": 0,
+      "initial_loss_mean": 0.24355583627790764,
+      "negative_count": 2
+    },
+    "structured": {
+      "best_improvement_ratio": 0.4988517913929381,
+      "best_loss_min": 0.10876563277967326,
+      "budgets": [
+        1024,
+        2048
+      ],
+      "cell_count": 2,
+      "improved_count": 2,
+      "initial_loss_mean": 0.2170328675462826,
+      "negative_count": 0
+    }
+  },
+  "case_summaries": [
+    {
+      "best_loss": 0.13046485514592812,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "final_ate_mae": 0.015060730746938266,
+      "final_ece": 0.10034339365205158,
+      "final_loss": 0.13046485514592812,
+      "final_prompt_chars": 1322,
+      "first_feedback_summary": "The current prompt is too generic, acting as a set of guidelines rather than a behavioral model.",
+      "improvement_ratio": 0.6159959325690528,
+      "initial_ate_mae": 0.1224818413677152,
+      "initial_ece": 0.09478494549853671,
+      "initial_loss": 0.3397486282339671,
+      "loss_delta_final_minus_initial": -0.209283773088039,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-compact-tg1024-r1.json",
+      "prompt_baseline": "compact",
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-compact-tg1024-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed7-eval5-compact-tg1024-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-compact-tg1024-r1_textgrad_steps.json",
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 1024
+    },
+    {
+      "best_loss": 0.21725798236646401,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "final_ate_mae": 0.0551239610238729,
+      "final_ece": 0.10701006031871821,
+      "final_loss": 0.21725798236646401,
+      "final_prompt_chars": 1407,
+      "first_feedback_summary": "The current prompt is too generic, acting as a set of guidelines rather than a behavioral model.",
+      "improvement_ratio": 0.36053315801219427,
+      "initial_ate_mae": 0.1224818413677152,
+      "initial_ece": 0.09478494549853671,
+      "initial_loss": 0.3397486282339671,
+      "loss_delta_final_minus_initial": -0.1224906458675031,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-compact-tg2048-r1.json",
+      "prompt_baseline": "compact",
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-compact-tg2048-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed7-eval5-compact-tg2048-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-compact-tg2048-r1_textgrad_steps.json",
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 2048
+    },
+    {
+      "best_loss": 0.24355583627790764,
+      "diagnosis": {
+        "flags": [
+          "textgrad_direction_no_measured_gain"
+        ],
+        "primary_hypothesis": "textgrad_direction_no_measured_gain"
+      },
+      "final_ate_mae": 0.14448184136771525,
+      "final_ece": 0.0944415518464851,
+      "final_loss": 0.3834052345819156,
+      "final_prompt_chars": 479,
+      "first_feedback_summary": "The current prompt is too generic, treating \"cost, time, and convenience\" as equal weights without providing a framework for how they interact.",
+      "improvement_ratio": 0.0,
+      "initial_ate_mae": 0.08438544538968547,
+      "initial_ece": 0.0747849454985367,
+      "initial_loss": 0.24355583627790764,
+      "loss_delta_final_minus_initial": 0.13984939830400797,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-default-tg1024-r1.json",
+      "prompt_baseline": "default",
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-default-tg1024-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed7-eval5-default-tg1024-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-default-tg1024-r1_textgrad_steps.json",
+      "textgrad_effect_status": "updated_no_improvement",
+      "textgrad_max_tokens": 1024
+    },
+    {
+      "best_loss": 0.24355583627790764,
+      "diagnosis": {
+        "flags": [
+          "textgrad_direction_no_measured_gain"
+        ],
+        "primary_hypothesis": "textgrad_direction_no_measured_gain"
+      },
+      "final_ate_mae": 0.15312396102387288,
+      "final_ece": 0.12145161216520338,
+      "final_loss": 0.42769953421294915,
+      "final_prompt_chars": 479,
+      "first_feedback_summary": "The current prompt is too generic, treating \"cost, time, and convenience\" as equal weights without providing a framework for how to calculate trade-offs (Value of Time).",
+      "improvement_ratio": 0.0,
+      "initial_ate_mae": 0.08438544538968547,
+      "initial_ece": 0.0747849454985367,
+      "initial_loss": 0.24355583627790764,
+      "loss_delta_final_minus_initial": 0.1841436979350415,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-default-tg2048-r1.json",
+      "prompt_baseline": "default",
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-default-tg2048-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed7-eval5-default-tg2048-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-default-tg2048-r1_textgrad_steps.json",
+      "textgrad_effect_status": "updated_no_improvement",
+      "textgrad_max_tokens": 2048
+    },
+    {
+      "best_loss": 0.19936301334036166,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "final_ate_mae": 0.04346073074693828,
+      "final_ece": 0.1124415518464851,
+      "final_loss": 0.19936301334036166,
+      "final_prompt_chars": 1465,
+      "first_feedback_summary": "The current prompt is too generic, treating all attributes as equal weights without providing a behavioral framework.",
+      "improvement_ratio": 0.08141556809202094,
+      "initial_ate_mae": 0.06112396102387295,
+      "initial_ece": 0.09478494549853668,
+      "initial_loss": 0.2170328675462826,
+      "loss_delta_final_minus_initial": -0.017669854205920932,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-structured-tg1024-r1.json",
+      "prompt_baseline": "structured",
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-structured-tg1024-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed7-eval5-structured-tg1024-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-structured-tg1024-r1_textgrad_steps.json",
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 1024
+    },
+    {
+      "best_loss": 0.10876563277967326,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "final_ate_mae": 0.037221179882529064,
+      "final_ece": 0.03432327301461513,
+      "final_loss": 0.10876563277967326,
+      "final_prompt_chars": 1556,
+      "first_feedback_summary": "The current prompt is too generic, acting as a general \"simulator\" rather than a structured utility-maximization model.",
+      "improvement_ratio": 0.4988517913929381,
+      "initial_ate_mae": 0.06112396102387295,
+      "initial_ece": 0.09478494549853668,
+      "initial_loss": 0.2170328675462826,
+      "loss_delta_final_minus_initial": -0.10826723476660934,
+      "manifest_ref": "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-structured-tg2048-r1.json",
+      "prompt_baseline": "structured",
+      "result_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-structured-tg2048-r1.json",
+      "run_id": "textgrad-paper-gate-local-seed7-eval5-structured-tg2048-r1",
+      "steps_ref": "experiments/results/w3w4_textgrad-paper-gate-local-seed7-eval5-structured-tg2048-r1_textgrad_steps.json",
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 2048
+    }
+  ],
+  "claim_boundary": "seed7 failure analysis only; not a complete TextGrad effectiveness claim",
+  "diagnostic_conclusion": [
+    "The earlier seed7 failure does not generalize across prompt baselines.",
+    "Initial prompt family materially changes both starting loss and TextGrad update direction.",
+    "The next matrix expansion should prioritize compact/structured r1 across seed42 and seed99 before spending full repeats on the default baseline."
+  ],
+  "manifest_refs": [
+    "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-compact-tg1024-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-compact-tg2048-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-default-tg1024-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-default-tg2048-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-structured-tg1024-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed7-eval5-structured-tg2048-r1.json"
+  ],
+  "paper_gate_after_this_batch": {
+    "improved_run_count": 8,
+    "missing_cells": [
+      "missing_cell:seed7:compact:tg1024:r2",
+      "missing_cell:seed7:compact:tg1024:r3",
+      "missing_cell:seed7:compact:tg2048:r2",
+      "missing_cell:seed7:compact:tg2048:r3",
+      "missing_cell:seed7:default:tg1024:r2",
+      "missing_cell:seed7:default:tg1024:r3",
+      "missing_cell:seed7:default:tg2048:r2",
+      "missing_cell:seed7:default:tg2048:r3",
+      "missing_cell:seed7:structured:tg1024:r2",
+      "missing_cell:seed7:structured:tg1024:r3",
+      "missing_cell:seed7:structured:tg2048:r2",
+      "missing_cell:seed7:structured:tg2048:r3",
+      "missing_cell:seed42:compact:tg1024:r1",
+      "missing_cell:seed42:compact:tg1024:r2",
+      "missing_cell:seed42:compact:tg1024:r3",
+      "missing_cell:seed42:compact:tg2048:r1",
+      "missing_cell:seed42:compact:tg2048:r2",
+      "missing_cell:seed42:compact:tg2048:r3",
+      "missing_cell:seed42:default:tg1024:r2",
+      "missing_cell:seed42:default:tg1024:r3",
+      "missing_cell:seed42:default:tg2048:r2",
+      "missing_cell:seed42:default:tg2048:r3",
+      "missing_cell:seed42:structured:tg1024:r1",
+      "missing_cell:seed42:structured:tg1024:r2",
+      "missing_cell:seed42:structured:tg1024:r3",
+      "missing_cell:seed42:structured:tg2048:r1",
+      "missing_cell:seed42:structured:tg2048:r2",
+      "missing_cell:seed42:structured:tg2048:r3",
+      "missing_cell:seed99:compact:tg1024:r1",
+      "missing_cell:seed99:compact:tg1024:r2",
+      "missing_cell:seed99:compact:tg1024:r3",
+      "missing_cell:seed99:compact:tg2048:r1",
+      "missing_cell:seed99:compact:tg2048:r2",
+      "missing_cell:seed99:compact:tg2048:r3",
+      "missing_cell:seed99:default:tg1024:r2",
+      "missing_cell:seed99:default:tg1024:r3",
+      "missing_cell:seed99:default:tg2048:r2",
+      "missing_cell:seed99:default:tg2048:r3",
+      "missing_cell:seed99:structured:tg1024:r1",
+      "missing_cell:seed99:structured:tg1024:r2",
+      "missing_cell:seed99:structured:tg1024:r3",
+      "missing_cell:seed99:structured:tg2048:r1",
+      "missing_cell:seed99:structured:tg2048:r2",
+      "missing_cell:seed99:structured:tg2048:r3"
+    ],
+    "negative_result_count": 2,
+    "observed_run_count": 10,
+    "required_run_count": 54,
+    "status": "insufficient_evidence"
+  },
+  "root_cause_hypothesis": {
+    "evidence": [
+      "default baseline has two updated_no_improvement cells at tg1024 and tg2048",
+      "compact baseline improves at both budgets, including 61.6 percent at tg1024",
+      "structured baseline improves at both budgets, including 49.9 percent at tg2048",
+      "no seed7 cell reports suspected prompt truncation or output budget saturation"
+    ],
+    "primary": "seed7 negative default runs are baseline/update-interaction failures rather than TextGrad being uniformly ineffective for seed7",
+    "remaining_uncertainty": [
+      "only repeat1 is observed, so stochastic repeat stability is still unknown",
+      "compact/structured are observed only for seed7 so cross-seed baseline superiority is not yet established"
+    ]
+  },
+  "schema_version": "circe-textgrad-matrix-v1",
+  "scope": "seed7 eval5 repeat1 prompt-baseline comparison"
+}

@@ -1,0 +1,39 @@
+{
+  "artifact_id": "policy-reaction-hps-smoke-001",
+  "benchmark_data": {
+    "provenance": [
+      "hps_htops_public_data_shaped_smoke_fixture"
+    ],
+    "record_count": 4,
+    "source_ids": [
+      "hps_htops_food_cost_core"
+    ]
+  },
+  "benchmark_metrics": {
+    "ate_direction_accuracy": 1.0,
+    "ate_direction_counts": {
+      "correct": 4,
+      "total": 4
+    },
+    "choice_distribution_jsd": 0.001478641375608338,
+    "choice_distribution_jsd_record_count": 4,
+    "segment_count": 3,
+    "segment_rank_correlation": 1.0,
+    "segment_rank_correlation_by_segment": {
+      "fixed_income_inflation_stressed": 1.0,
+      "low_income_food_insecure": 1.0,
+      "working_family_price_stressed": 1.0
+    },
+    "worst_segment_rank_correlation": 1.0
+  },
+  "calibration_status": "public_data_smoke",
+  "claim_boundaries": [
+    "Policy-reaction public-data smoke benchmark only; not field validation.",
+    "HPS/HTOPS-shaped smoke records are not paper-grade field validation.",
+    "This artifact is not a calibrated China policy forecast."
+  ],
+  "claim_boundary": "Policy-reaction public-data smoke benchmark only; not field validation.",
+  "overall_status": "passed",
+  "schema_version": "policy-reaction-benchmark-v0",
+  "source_manifest_path": "experiments/results/policy_data_intake/hps-htops-food-cost-intake.json"
+}

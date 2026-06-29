@@ -1,0 +1,129 @@
+{
+  "acceptance_gates": {
+    "field_outcome_validated": false,
+    "frozen_score_rule_has_no_holdout_label_leakage": true,
+    "independent_holdout_available": true,
+    "interaction_signal_validity_holdout_passed": false,
+    "interaction_signal_validity_holdout_validation_present": true,
+    "passed_independent_holdout_count_positive": false,
+    "source_supported_signal_available": true
+  },
+  "artifact_id": "r6-interaction-signal-validity-holdout-validation-current-001",
+  "blocking_gaps": [
+    "needs_independent_supported_signal_holdout",
+    "needs_signal_validity_holdout_validation",
+    "needs_field_outcome_validation"
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "This validates Interaction Signal Validity on current public proxies only; failed holdout means the score must remain diagnostic."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "decision": {
+    "decision": "do_not_generalize_interaction_signal_validity_yet",
+    "interaction_signal_validity_holdout_passed": false,
+    "recommended_next_step": "add_independent_supported_holdout_or_field_outcome"
+  },
+  "holdout_trials": [
+    {
+      "frozen_rule": {
+        "forbidden_label_features_used": false,
+        "requires_supported_holdout_consistency": true,
+        "score_threshold": 0.75
+      },
+      "holdout_case": {
+        "classification": "reject_as_likely_false_alarm",
+        "component_scores": {
+          "counterfactual_sensitivity_score": 0.8,
+          "holdout_consistency_score": 0.0,
+          "mechanism_alignment_score": 1.0,
+          "prior_uncertainty_score": 0.8,
+          "segment_pattern_score": 1.0
+        },
+        "holdout_outcome_support": "contradicted",
+        "source_key": "anes_health_heldout",
+        "validity_score": 0.68
+      },
+      "holdout_outcome_used_for_source_rule_derivation": false,
+      "source_case": {
+        "classification": "diagnostic_only",
+        "component_scores": {
+          "counterfactual_sensitivity_score": 0.8,
+          "holdout_consistency_score": 1.0,
+          "mechanism_alignment_score": 1.0,
+          "prior_uncertainty_score": 0.8,
+          "segment_pattern_score": 1.0
+        },
+        "holdout_outcome_support": "supported",
+        "source_key": "htops_cost_pressure",
+        "validity_score": 0.93
+      },
+      "trial_id": "signal-validity:htops_cost_pressure->anes_health_heldout",
+      "validation_status": "failed_holdout_contradicts_signal"
+    },
+    {
+      "frozen_rule": {
+        "forbidden_label_features_used": false,
+        "requires_supported_holdout_consistency": true,
+        "score_threshold": 0.75
+      },
+      "holdout_case": {
+        "classification": "reject_as_likely_false_alarm",
+        "component_scores": {
+          "counterfactual_sensitivity_score": 0.8,
+          "holdout_consistency_score": 0.0,
+          "mechanism_alignment_score": 1.0,
+          "prior_uncertainty_score": 0.8,
+          "segment_pattern_score": 1.0
+        },
+        "holdout_outcome_support": "contradicted",
+        "source_key": "anes_climate_heldout",
+        "validity_score": 0.68
+      },
+      "holdout_outcome_used_for_source_rule_derivation": false,
+      "source_case": {
+        "classification": "diagnostic_only",
+        "component_scores": {
+          "counterfactual_sensitivity_score": 0.8,
+          "holdout_consistency_score": 1.0,
+          "mechanism_alignment_score": 1.0,
+          "prior_uncertainty_score": 0.8,
+          "segment_pattern_score": 1.0
+        },
+        "holdout_outcome_support": "supported",
+        "source_key": "htops_cost_pressure",
+        "validity_score": 0.93
+      },
+      "trial_id": "signal-validity:htops_cost_pressure->anes_climate_heldout",
+      "validation_status": "failed_holdout_contradicts_signal"
+    }
+  ],
+  "risk_flags": [
+    "interaction_signal_validity_holdout_not_field_validation",
+    "current_holdouts_contradict_supported_signal",
+    "interaction_signal_validity_holdout_failed"
+  ],
+  "run_id": "r6-interaction-signal-validity-holdout-validation-current-001",
+  "schema_version": "r6-interaction-signal-validity-holdout-validation-v1",
+  "source_refs": [
+    "r6-interaction-signal-validity-holdout-validation-current-001-interaction-signal-validity"
+  ],
+  "status": "interaction_signal_validity_holdout_failed_current_public_proxies",
+  "summary": {
+    "case_count": 3,
+    "contradicted_holdout_count": 2,
+    "eligible_independent_holdout_count": 2,
+    "generalized_signal_count": 0,
+    "passed_holdout_count": 0,
+    "source_supported_count": 1
+  },
+  "validation_protocol": {
+    "forbidden_generalization_features": [
+      "source_key",
+      "target_case_id",
+      "target_case_type"
+    ],
+    "holdout_label_used_for_source_rule_derivation": false,
+    "source_rule": "Freeze a supported diagnostic interaction-signal validity pattern; evaluate independent holdout cases using only score components and holdout outcome support."
+  }
+}

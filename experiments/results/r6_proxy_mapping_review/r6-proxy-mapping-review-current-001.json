@@ -1,0 +1,73 @@
+{
+  "artifact_id": "r6-proxy-mapping-review-current-001",
+  "blocking_gaps": [
+    "needs_human_mapping_review_before_paper_claim",
+    "needs_real_release_outcome_before_customer_validation_claim"
+  ],
+  "claim_boundaries": [
+    "R6 proxy mapping review only; proxy labels are not direct field outcomes or direct attitude truth."
+  ],
+  "claim_boundary": "R6 proxy mapping review only; proxy labels are not direct field outcomes or direct attitude truth.",
+  "mappings": [
+    {
+      "invalid_claims": [
+        "not_direct_attitude_truth",
+        "not_field_validation",
+        "not_customer_behavior_outcome",
+        "not_global_update_acceptance"
+      ],
+      "mapped_case_id": "generic-public-service-policy-change",
+      "mapping_direction": "reject_proxy",
+      "mapping_rationale": "For a public service or policy support scenario, continued baseline without new support is treated as the observable reject proxy.",
+      "mapping_status": "proxy_usable_with_boundary",
+      "observed_reject_proxy": 0.47,
+      "required_boundary": "Proxy mapping only; not direct attitude truth.",
+      "source_artifact_id": "policy-reaction-htops-2506-public-ingestion-001",
+      "source_key": "htops_cost_pressure",
+      "source_name": "HTOPS/HPS public-use cost pressure",
+      "split_role": "public_use_slice",
+      "target_response_option": "baseline_no_new_support",
+      "usable_row_count": 7317
+    },
+    {
+      "invalid_claims": [
+        "not_direct_attitude_truth",
+        "not_field_validation",
+        "not_customer_behavior_outcome",
+        "not_global_update_acceptance"
+      ],
+      "mapped_case_id": "generic-rights-rule-change",
+      "mapping_direction": "reject_proxy",
+      "mapping_rationale": "For a rights/rule change case framed around public coverage, private-insurance preference is treated as a reject proxy.",
+      "mapping_status": "proxy_usable_with_boundary",
+      "observed_reject_proxy": 0.33,
+      "required_boundary": "Proxy mapping only; not field outcome or direct customer behavior.",
+      "source_artifact_id": "policy-reaction-anes-health-001-heldout",
+      "source_key": "anes_health_heldout",
+      "source_name": "ANES 2024 public-use health heldout",
+      "split_role": "heldout",
+      "target_response_option": "private_insurance_plan",
+      "usable_row_count": 954
+    }
+  ],
+  "overall_mapping_status": "proxy_usable_with_boundary",
+  "public_proxy_count": 2,
+  "required_report_wording": [
+    "Use public proxy as bounded outcome signal, not as field validation.",
+    "Report mapping rationale before using proxy error as model evidence.",
+    "Do not accept global updates from same-case proxy feedback."
+  ],
+  "risk_flags": [
+    "proxy_mapping_not_direct_truth",
+    "public_proxy_not_field_validation",
+    "same_case_feedback_not_global_acceptance"
+  ],
+  "run_id": "r6-proxy-mapping-review-current-001",
+  "schema_version": "r6-proxy-mapping-review-v1",
+  "source_count": 2,
+  "source_refs": [
+    "r6-proxy-mapping-review-current-001-htops-proxy",
+    "r6-proxy-mapping-review-current-001-anes-health-proxy"
+  ],
+  "status": "mapping_review_ready"
+}

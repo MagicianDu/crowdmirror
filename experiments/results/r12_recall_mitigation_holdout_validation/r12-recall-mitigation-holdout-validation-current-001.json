@@ -1,0 +1,135 @@
+{
+  "acceptance_decision": "reject_product_default_retain_as_failure_diagnosis_candidate",
+  "acceptance_gates": {
+    "current_replay_positive": true,
+    "field_outcome_validated": false,
+    "holdout_pass_rate_sufficient": false,
+    "independent_holdout_present": false,
+    "leave_one_false_alarm_band_stable": false,
+    "low_sensitive_recall_evaluable": false,
+    "mitigation_holdout_validated": false,
+    "product_default_allowed": false,
+    "runtime_default_allowed": false,
+    "source_backed_public_proxy_present": true,
+    "stable_alternative_retains_required_recall": false
+  },
+  "allowed_claims": [
+    "R12 mitigation candidate remains useful as a failure diagnosis candidate for the current public proxy replay.",
+    "The current evidence explicitly blocks Product default until independent or customer-approved holdout data exists."
+  ],
+  "artifact_id": "r12-recall-mitigation-holdout-validation-current-001",
+  "blocked_claims": [
+    "mitigation holdout validated",
+    "mitigation generalizes beyond current false-alarm band",
+    "low_sensitive_recall_evaluable=true",
+    "R12 Product default high-risk recovery validated",
+    "R12 Product core method ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "customer outcome validated",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "mitigation_candidate_not_holdout_validated",
+  "current_replay_metrics": {
+    "candidate_id": "r12-tage-58-62-activation-guard-001",
+    "false_alarm_rate_delta": 0.0,
+    "l7_recall_gain_retained": 0.833333,
+    "new_false_alarm_count": 0,
+    "precision_delta": 0.059524,
+    "recall_delta": 0.172414
+  },
+  "leave_one_false_alarm_band_validation": {
+    "endpoint_holdout_failure_count": 2,
+    "pass_count": 1,
+    "pass_rate": 0.333333,
+    "required_pass_rate": 0.666667,
+    "trial_count": 3,
+    "trials": [
+      {
+        "derived_guard_max": 62,
+        "derived_guard_min": 59,
+        "false_alarm_rate_delta": 0.02439,
+        "held_out_false_alarm_case_id": "hps_TAGE_58",
+        "holdout_false_alarm_removed": false,
+        "passes_trial": false,
+        "precision_delta": 0.022727,
+        "recall_delta": 0.172414
+      },
+      {
+        "derived_guard_max": 62,
+        "derived_guard_min": 58,
+        "false_alarm_rate_delta": 0.0,
+        "held_out_false_alarm_case_id": "hps_TAGE_59",
+        "holdout_false_alarm_removed": true,
+        "passes_trial": true,
+        "precision_delta": 0.059524,
+        "recall_delta": 0.172414
+      },
+      {
+        "derived_guard_max": 59,
+        "derived_guard_min": 58,
+        "false_alarm_rate_delta": 0.02439,
+        "held_out_false_alarm_case_id": "hps_TAGE_62",
+        "holdout_false_alarm_removed": false,
+        "passes_trial": false,
+        "precision_delta": 0.032609,
+        "recall_delta": 0.206897
+      }
+    ]
+  },
+  "next_required_artifact": "r12_recall_mitigation_independent_holdout_data",
+  "product_support_level": "failure_diagnosis_candidate_only_until_independent_holdout",
+  "run_id": "r12-l10-current",
+  "schema_version": "r12-recall-mitigation-holdout-validation-v1",
+  "source_refs": [
+    "r10-hps-policy-reaction-ingestion-current-001",
+    "r12-transfer-validation-current-001",
+    "r12-recall-oriented-update-current-001",
+    "r12-recall-false-alarm-mitigation-candidate-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r10-hps-policy-reaction-ingestion-current-001",
+      "path": "experiments/results/r10_hps_policy_reaction_ingestion/r10-hps-policy-reaction-ingestion-current-001.json"
+    },
+    {
+      "artifact_id": "r12-transfer-validation-current-001",
+      "path": "experiments/results/r12_transfer_validation/r12-transfer-validation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-recall-oriented-update-current-001",
+      "path": "experiments/results/r12_recall_oriented_update/r12-recall-oriented-update-current-001.json"
+    },
+    {
+      "artifact_id": "r12-recall-false-alarm-mitigation-candidate-current-001",
+      "path": "experiments/results/r12_recall_false_alarm_mitigation_candidate/r12-recall-false-alarm-mitigation-candidate-current-001.json"
+    }
+  ],
+  "stable_alternative_check": {
+    "candidate_id": "r12-tage-family-conservative-cap-001",
+    "false_alarm_rate_delta": 0.0,
+    "l7_recall_gain_retained": 0.333333,
+    "new_false_alarm_count": 0,
+    "precision_delta": 0.027778,
+    "recall_delta": 0.068966,
+    "stable_but_recall_retention_too_low": true
+  },
+  "status": "r12_recall_mitigation_holdout_validation_blocked_overfit",
+  "validation_contract": {
+    "field_outcome_validated": false,
+    "requires_independent_holdout_for_product_default": true,
+    "requires_leave_one_false_alarm_stability": true,
+    "requires_low_sensitive_or_customer_approved_slice": true,
+    "runtime_default_allowed": false,
+    "validates_mitigation_candidate": true
+  },
+  "validation_summary": {
+    "customer_approved_holdout_case_count": 0,
+    "evaluated_case_count": 70,
+    "false_alarm_band_derivation_case_count": 3,
+    "independent_dataset_present": false,
+    "independent_holdout_case_count": 0,
+    "leave_one_false_alarm_trial_count": 3,
+    "low_sensitive_recall_evaluable": false
+  }
+}

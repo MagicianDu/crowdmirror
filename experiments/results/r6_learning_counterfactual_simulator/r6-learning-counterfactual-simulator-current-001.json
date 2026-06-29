@@ -1,0 +1,484 @@
+{
+  "acceptance_gates": {
+    "counterfactual_policy_rankings_present": true,
+    "current_proxy_positive_signal": true,
+    "field_outcome_validated": false,
+    "learned_mechanism_weights_present": true,
+    "learned_operator_reduces_false_alarm_vs_raw_interaction": true,
+    "runtime_default_allowed": false,
+    "static_prior_miss_recovery_preserved": true
+  },
+  "allowed_claims": [
+    "Research can report a guarded current-proxy positive signal for false-alarm reduction.",
+    "Product can compare counterfactual mitigation policies as diagnostic decision support.",
+    "Mechanism weights can be inspected as outcome-residual learning evidence."
+  ],
+  "artifact_id": "r6-learning-counterfactual-simulator-current-001",
+  "blocked_claims": [
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf",
+    "\u7cfb\u7edf\u53ef\u4ee5\u7cbe\u786e\u9884\u6d4b\u5355\u70b9\u7ed3\u679c",
+    "learned operator is field validated",
+    "learned operator can be enabled by default"
+  ],
+  "blocking_gaps": [
+    "needs_independent_holdout_for_learned_mechanism_weights",
+    "needs_customer_or_field_outcome_feedback",
+    "needs_runtime_default_guard_review"
+  ],
+  "case_results": [
+    {
+      "claim_status": "guarded_diagnostic",
+      "counterfactual_policy_results": [
+        {
+          "decision_value_score": 0.67,
+          "mechanism_action": "reduce loss salience and substitution pressure for high-risk segments",
+          "policy_id": "targeted_mitigation",
+          "predicted_reject_proxy": 0.352,
+          "rank": 1,
+          "risk_reduction_vs_no_mitigation": 0.051
+        },
+        {
+          "decision_value_score": 0.64,
+          "mechanism_action": "spread shock over time and allow early feedback",
+          "policy_id": "phased_release",
+          "predicted_reject_proxy": 0.369,
+          "rank": 2,
+          "risk_reduction_vs_no_mitigation": 0.034
+        },
+        {
+          "decision_value_score": 0.615,
+          "mechanism_action": "reduce trust-shock propagation through explanation and appeal channels",
+          "policy_id": "trust_repair_message",
+          "predicted_reject_proxy": 0.383,
+          "rank": 3,
+          "risk_reduction_vs_no_mitigation": 0.02
+        },
+        {
+          "decision_value_score": 0.58,
+          "mechanism_action": "keep the original scenario unchanged",
+          "policy_id": "no_mitigation",
+          "predicted_reject_proxy": 0.403,
+          "rank": 4,
+          "risk_reduction_vs_no_mitigation": 0.0
+        }
+      ],
+      "learned_mechanism_contributions": [
+        {
+          "learned_weight": 1.8,
+          "mechanism_id": "access_anxiety",
+          "raw_segment_delta": 0.12,
+          "segment_id": "service_dependent_low_trust",
+          "weight_source": "learned",
+          "weighted_segment_delta": 0.216
+        },
+        {
+          "learned_weight": 1.8,
+          "mechanism_id": "community_amplification",
+          "raw_segment_delta": 0.12,
+          "segment_id": "service_dependent_low_trust",
+          "weight_source": "learned",
+          "weighted_segment_delta": 0.216
+        },
+        {
+          "learned_weight": 1.8,
+          "mechanism_id": "equity_concern",
+          "raw_segment_delta": 0.12,
+          "segment_id": "service_dependent_low_trust",
+          "weight_source": "learned",
+          "weighted_segment_delta": 0.216
+        },
+        {
+          "learned_weight": 1.8,
+          "mechanism_id": "equity_concern_discussion",
+          "raw_segment_delta": 0.06,
+          "segment_id": "community_watchers",
+          "weight_source": "learned",
+          "weighted_segment_delta": 0.108
+        },
+        {
+          "learned_weight": 0.0,
+          "mechanism_id": "official_trust_buffer",
+          "raw_segment_delta": 0.02,
+          "segment_id": "low_dependency_high_trust",
+          "weight_source": "learned",
+          "weighted_segment_delta": 0.0
+        }
+      ],
+      "learned_operator_delta": 0.113,
+      "learned_operator_false_alarm": false,
+      "learned_operator_flags_new_risk": true,
+      "learned_operator_prediction": 0.403,
+      "observed_high_risk": true,
+      "observed_reject_proxy": 0.47,
+      "raw_interaction_delta": 0.07,
+      "raw_interaction_false_alarm": false,
+      "raw_interaction_flags_new_risk": true,
+      "raw_interaction_prediction": 0.36,
+      "source_artifact_ids": [
+        "r6-learning-counterfactual-simulator-current-001-trend-interval-risk-htops_cost_pressure-ablation"
+      ],
+      "source_key": "htops_cost_pressure",
+      "static_prior_missed_high_risk": true,
+      "static_prior_prediction": 0.29,
+      "target_case_id": "generic-public-service-policy-change",
+      "transfer_diagnostics": {
+        "diagnostic_reasons": [],
+        "known_mechanism_count": 5,
+        "unknown_mechanism_weight": 0.0,
+        "unseen_mechanism_count": 0,
+        "unseen_mechanism_floor_applied": false
+      }
+    },
+    {
+      "claim_status": "guarded_diagnostic",
+      "counterfactual_policy_results": [
+        {
+          "decision_value_score": 0.685,
+          "mechanism_action": "reduce loss salience and substitution pressure for high-risk segments",
+          "policy_id": "targeted_mitigation",
+          "predicted_reject_proxy": 0.315,
+          "rank": 1,
+          "risk_reduction_vs_no_mitigation": 0.004
+        },
+        {
+          "decision_value_score": 0.683,
+          "mechanism_action": "spread shock over time and allow early feedback",
+          "policy_id": "phased_release",
+          "predicted_reject_proxy": 0.316,
+          "rank": 2,
+          "risk_reduction_vs_no_mitigation": 0.003
+        },
+        {
+          "decision_value_score": 0.682,
+          "mechanism_action": "reduce trust-shock propagation through explanation and appeal channels",
+          "policy_id": "trust_repair_message",
+          "predicted_reject_proxy": 0.317,
+          "rank": 3,
+          "risk_reduction_vs_no_mitigation": 0.002
+        },
+        {
+          "decision_value_score": 0.678,
+          "mechanism_action": "keep the original scenario unchanged",
+          "policy_id": "no_mitigation",
+          "predicted_reject_proxy": 0.319,
+          "rank": 4,
+          "risk_reduction_vs_no_mitigation": 0.0
+        }
+      ],
+      "learned_mechanism_contributions": [
+        {
+          "learned_weight": 0.143,
+          "mechanism_id": "rights_loss_salience",
+          "raw_segment_delta": 0.12,
+          "segment_id": "rights_dependent_low_trust",
+          "weight_source": "learned",
+          "weighted_segment_delta": 0.017
+        },
+        {
+          "learned_weight": 0.143,
+          "mechanism_id": "peer_amplification",
+          "raw_segment_delta": 0.12,
+          "segment_id": "rights_dependent_low_trust",
+          "weight_source": "learned",
+          "weighted_segment_delta": 0.017
+        },
+        {
+          "learned_weight": 0.143,
+          "mechanism_id": "trust_shock",
+          "raw_segment_delta": 0.12,
+          "segment_id": "rights_dependent_low_trust",
+          "weight_source": "learned",
+          "weighted_segment_delta": 0.017
+        },
+        {
+          "learned_weight": 0.143,
+          "mechanism_id": "procedural_fairness_discussion",
+          "raw_segment_delta": 0.06,
+          "segment_id": "rule_watchers",
+          "weight_source": "learned",
+          "weighted_segment_delta": 0.009
+        },
+        {
+          "learned_weight": 0.0,
+          "mechanism_id": "official_trust_buffer",
+          "raw_segment_delta": 0.02,
+          "segment_id": "low_usage_high_trust",
+          "weight_source": "learned",
+          "weighted_segment_delta": 0.0
+        }
+      ],
+      "learned_operator_delta": 0.009,
+      "learned_operator_false_alarm": false,
+      "learned_operator_flags_new_risk": false,
+      "learned_operator_prediction": 0.319,
+      "observed_high_risk": false,
+      "observed_reject_proxy": 0.33,
+      "raw_interaction_delta": 0.07,
+      "raw_interaction_false_alarm": true,
+      "raw_interaction_flags_new_risk": true,
+      "raw_interaction_prediction": 0.38,
+      "source_artifact_ids": [
+        "r6-learning-counterfactual-simulator-current-001-trend-interval-risk-anes_health_heldout-ablation"
+      ],
+      "source_key": "anes_health_heldout",
+      "static_prior_missed_high_risk": false,
+      "static_prior_prediction": 0.31,
+      "target_case_id": "generic-rights-rule-change",
+      "transfer_diagnostics": {
+        "diagnostic_reasons": [],
+        "known_mechanism_count": 5,
+        "unknown_mechanism_weight": 0.0,
+        "unseen_mechanism_count": 0,
+        "unseen_mechanism_floor_applied": false
+      }
+    },
+    {
+      "claim_status": "guarded_diagnostic",
+      "counterfactual_policy_results": [
+        {
+          "decision_value_score": 0.673,
+          "mechanism_action": "reduce loss salience and substitution pressure for high-risk segments",
+          "policy_id": "targeted_mitigation",
+          "predicted_reject_proxy": 0.315,
+          "rank": 1,
+          "risk_reduction_vs_no_mitigation": 0.004
+        },
+        {
+          "decision_value_score": 0.67,
+          "mechanism_action": "spread shock over time and allow early feedback",
+          "policy_id": "phased_release",
+          "predicted_reject_proxy": 0.316,
+          "rank": 2,
+          "risk_reduction_vs_no_mitigation": 0.003
+        },
+        {
+          "decision_value_score": 0.668,
+          "mechanism_action": "reduce trust-shock propagation through explanation and appeal channels",
+          "policy_id": "trust_repair_message",
+          "predicted_reject_proxy": 0.317,
+          "rank": 3,
+          "risk_reduction_vs_no_mitigation": 0.002
+        },
+        {
+          "decision_value_score": 0.664,
+          "mechanism_action": "keep the original scenario unchanged",
+          "policy_id": "no_mitigation",
+          "predicted_reject_proxy": 0.319,
+          "rank": 4,
+          "risk_reduction_vs_no_mitigation": 0.0
+        }
+      ],
+      "learned_mechanism_contributions": [
+        {
+          "learned_weight": 0.143,
+          "mechanism_id": "rights_loss_salience",
+          "raw_segment_delta": 0.12,
+          "segment_id": "rights_dependent_low_trust",
+          "weight_source": "learned",
+          "weighted_segment_delta": 0.017
+        },
+        {
+          "learned_weight": 0.143,
+          "mechanism_id": "peer_amplification",
+          "raw_segment_delta": 0.12,
+          "segment_id": "rights_dependent_low_trust",
+          "weight_source": "learned",
+          "weighted_segment_delta": 0.017
+        },
+        {
+          "learned_weight": 0.143,
+          "mechanism_id": "trust_shock",
+          "raw_segment_delta": 0.12,
+          "segment_id": "rights_dependent_low_trust",
+          "weight_source": "learned",
+          "weighted_segment_delta": 0.017
+        },
+        {
+          "learned_weight": 0.143,
+          "mechanism_id": "procedural_fairness_discussion",
+          "raw_segment_delta": 0.06,
+          "segment_id": "rule_watchers",
+          "weight_source": "learned",
+          "weighted_segment_delta": 0.009
+        },
+        {
+          "learned_weight": 0.0,
+          "mechanism_id": "official_trust_buffer",
+          "raw_segment_delta": 0.02,
+          "segment_id": "low_usage_high_trust",
+          "weight_source": "learned",
+          "weighted_segment_delta": 0.0
+        }
+      ],
+      "learned_operator_delta": 0.009,
+      "learned_operator_false_alarm": false,
+      "learned_operator_flags_new_risk": false,
+      "learned_operator_prediction": 0.319,
+      "observed_high_risk": false,
+      "observed_reject_proxy": 0.25,
+      "raw_interaction_delta": 0.07,
+      "raw_interaction_false_alarm": true,
+      "raw_interaction_flags_new_risk": true,
+      "raw_interaction_prediction": 0.38,
+      "source_artifact_ids": [
+        "r6-learning-counterfactual-simulator-current-001-trend-interval-risk-anes_climate_heldout-ablation"
+      ],
+      "source_key": "anes_climate_heldout",
+      "static_prior_missed_high_risk": false,
+      "static_prior_prediction": 0.31,
+      "target_case_id": "generic-rights-rule-change",
+      "transfer_diagnostics": {
+        "diagnostic_reasons": [],
+        "known_mechanism_count": 5,
+        "unknown_mechanism_weight": 0.0,
+        "unseen_mechanism_count": 0,
+        "unseen_mechanism_floor_applied": false
+      }
+    }
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "claim_status": "guarded_diagnostic",
+  "learned_mechanism_weights": [
+    {
+      "evidence_case_count": 1,
+      "evidence_source_keys": [
+        "htops_cost_pressure"
+      ],
+      "learned_weight": 1.8,
+      "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+      "mechanism_id": "access_anxiety",
+      "update_direction": "amplify"
+    },
+    {
+      "evidence_case_count": 1,
+      "evidence_source_keys": [
+        "htops_cost_pressure"
+      ],
+      "learned_weight": 1.8,
+      "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+      "mechanism_id": "community_amplification",
+      "update_direction": "amplify"
+    },
+    {
+      "evidence_case_count": 1,
+      "evidence_source_keys": [
+        "htops_cost_pressure"
+      ],
+      "learned_weight": 1.8,
+      "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+      "mechanism_id": "equity_concern",
+      "update_direction": "amplify"
+    },
+    {
+      "evidence_case_count": 1,
+      "evidence_source_keys": [
+        "htops_cost_pressure"
+      ],
+      "learned_weight": 1.8,
+      "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+      "mechanism_id": "equity_concern_discussion",
+      "update_direction": "amplify"
+    },
+    {
+      "evidence_case_count": 3,
+      "evidence_source_keys": [
+        "htops_cost_pressure",
+        "anes_health_heldout",
+        "anes_climate_heldout"
+      ],
+      "learned_weight": 0.0,
+      "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+      "mechanism_id": "official_trust_buffer",
+      "update_direction": "attenuate"
+    },
+    {
+      "evidence_case_count": 2,
+      "evidence_source_keys": [
+        "anes_health_heldout",
+        "anes_climate_heldout"
+      ],
+      "learned_weight": 0.143,
+      "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+      "mechanism_id": "peer_amplification",
+      "update_direction": "attenuate"
+    },
+    {
+      "evidence_case_count": 2,
+      "evidence_source_keys": [
+        "anes_health_heldout",
+        "anes_climate_heldout"
+      ],
+      "learned_weight": 0.143,
+      "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+      "mechanism_id": "procedural_fairness_discussion",
+      "update_direction": "attenuate"
+    },
+    {
+      "evidence_case_count": 2,
+      "evidence_source_keys": [
+        "anes_health_heldout",
+        "anes_climate_heldout"
+      ],
+      "learned_weight": 0.143,
+      "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+      "mechanism_id": "rights_loss_salience",
+      "update_direction": "attenuate"
+    },
+    {
+      "evidence_case_count": 2,
+      "evidence_source_keys": [
+        "anes_health_heldout",
+        "anes_climate_heldout"
+      ],
+      "learned_weight": 0.143,
+      "learning_rule": "clipped_outcome_residual_to_interaction_delta_ratio",
+      "mechanism_id": "trust_shock",
+      "update_direction": "attenuate"
+    }
+  ],
+  "method_definition": {
+    "counterfactual_role": "Rank scenario mitigation policies by expected reject-risk reduction under the learned mechanism weights.",
+    "field_outcome_required_for_runtime_default": true,
+    "learning_signal": "Estimate mechanism-level amplification weights from observed/proxy residuals relative to static prior and raw interaction deltas.",
+    "method_name": "outcome_residual_weighted_counterfactual_simulator",
+    "static_prior_role": "foundation_not_opponent"
+  },
+  "product_support_delta": {
+    "support_boundary": "This artifact strengthens Product risk discovery and policy comparison claims only at current-proxy diagnostic level.",
+    "supports_product_values": [
+      "risk_distribution",
+      "abnormal_segments",
+      "mechanism_explanation",
+      "counterfactual_policy_comparison",
+      "false_alarm_control"
+    ],
+    "unsupported_product_values": [
+      "field_validated_trend_direction",
+      "runtime_default_update"
+    ]
+  },
+  "run_id": "r6-learning-counterfactual-current",
+  "schema_version": "r6-learning-counterfactual-simulator-v1",
+  "source_refs": [
+    "r6-learning-counterfactual-simulator-current-001-trend-interval-risk",
+    "r6-learning-counterfactual-simulator-current-001-trend-interval-risk-htops_cost_pressure-ablation",
+    "r6-learning-counterfactual-simulator-current-001-trend-interval-risk-anes_health_heldout-ablation",
+    "r6-learning-counterfactual-simulator-current-001-trend-interval-risk-anes_climate_heldout-ablation"
+  ],
+  "status": "learning_counterfactual_simulator_guarded_positive_signal",
+  "summary": {
+    "case_count": 3,
+    "counterfactual_policy_count": 4,
+    "learned_operator_false_alarm_rate": 0.0,
+    "learned_operator_flagged_case_count": 1,
+    "learned_operator_top_k_hit_rate": 1.0,
+    "mean_error_reduction_vs_raw_interaction": 0.048,
+    "mean_learned_operator_absolute_error": 0.049,
+    "mean_raw_interaction_absolute_error": 0.097,
+    "raw_interaction_false_alarm_rate": 0.667,
+    "raw_interaction_flagged_case_count": 3,
+    "static_prior_miss_recovery_rate": 1.0
+  }
+}

@@ -1,0 +1,927 @@
+{
+  "acceptance_gates": {
+    "field_outcome_validated": false,
+    "local_proxy_robustness_passed": false,
+    "perturbation_scenarios_present": true,
+    "runtime_default_allowed": false
+  },
+  "allowed_claims": [
+    "Selected counterfactual calibration is robust to small current-proxy outcome perturbations.",
+    "Robustness validation can be shown as guarded diagnostic evidence only."
+  ],
+  "artifact_id": "r6-counterfactual-robustness-validation-current-001",
+  "blocked_claims": [
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "robustness under real customer outcome drift is proven"
+  ],
+  "blocking_gaps": [
+    "needs_field_or_customer_outcome_validation",
+    "needs_external_outcome_robustness_validation",
+    "needs_near_threshold_false_alarm_calibration",
+    "needs_runtime_default_guard_review"
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "claim_status": "diagnostic",
+  "perturbation_scenarios": [
+    {
+      "holdout_trials": [
+        {
+          "false_alarm_reduced": false,
+          "heldout_source_key": "htops_cost_pressure",
+          "learned_operator_absolute_error": 0.08,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.36,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.44,
+          "raw_interaction_absolute_error": 0.08,
+          "raw_interaction_false_alarm": false,
+          "raw_interaction_prediction": 0.36,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": true,
+          "train_source_keys": [
+            "anes_health_heldout",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [
+              "unseen_high_risk_mechanism_transfer_floor",
+              "calibrated_to_raw_interaction_for_static_miss_recovery"
+            ],
+            "known_mechanism_count": 1,
+            "risk_preserving_calibration_applied": true,
+            "risk_preserving_calibration_target": "raw_interaction_prediction",
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 4,
+            "unseen_mechanism_floor_applied": true
+          }
+        },
+        {
+          "false_alarm_reduced": true,
+          "heldout_source_key": "anes_health_heldout",
+          "learned_operator_absolute_error": 0.02,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.31,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.33,
+          "raw_interaction_absolute_error": 0.05,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        },
+        {
+          "false_alarm_reduced": true,
+          "heldout_source_key": "anes_climate_heldout",
+          "learned_operator_absolute_error": 0.078,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.328,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.25,
+          "raw_interaction_absolute_error": 0.13,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_health_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        }
+      ],
+      "passes_current_proxy_holdout_gate": true,
+      "perturbation_delta": -0.03,
+      "perturbed_source_key": "htops_cost_pressure",
+      "scenario_id": "htops_cost_pressure:-0.03",
+      "summary": {
+        "false_alarm_reduction_rate": 1.0,
+        "holdout_trial_count": 3,
+        "mean_error_reduction_vs_raw_interaction": 0.027,
+        "non_regression_rate": 1.0,
+        "static_prior_miss_recovery_rate": 1.0
+      }
+    },
+    {
+      "holdout_trials": [
+        {
+          "false_alarm_reduced": false,
+          "heldout_source_key": "htops_cost_pressure",
+          "learned_operator_absolute_error": 0.11,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.36,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.47,
+          "raw_interaction_absolute_error": 0.11,
+          "raw_interaction_false_alarm": false,
+          "raw_interaction_prediction": 0.36,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": true,
+          "train_source_keys": [
+            "anes_health_heldout",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [
+              "unseen_high_risk_mechanism_transfer_floor",
+              "calibrated_to_raw_interaction_for_static_miss_recovery"
+            ],
+            "known_mechanism_count": 1,
+            "risk_preserving_calibration_applied": true,
+            "risk_preserving_calibration_target": "raw_interaction_prediction",
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 4,
+            "unseen_mechanism_floor_applied": true
+          }
+        },
+        {
+          "false_alarm_reduced": true,
+          "heldout_source_key": "anes_health_heldout",
+          "learned_operator_absolute_error": 0.02,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.31,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.33,
+          "raw_interaction_absolute_error": 0.05,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        },
+        {
+          "false_alarm_reduced": true,
+          "heldout_source_key": "anes_climate_heldout",
+          "learned_operator_absolute_error": 0.078,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.328,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.25,
+          "raw_interaction_absolute_error": 0.13,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_health_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        }
+      ],
+      "passes_current_proxy_holdout_gate": true,
+      "perturbation_delta": 0.0,
+      "perturbed_source_key": "htops_cost_pressure",
+      "scenario_id": "htops_cost_pressure:+0.00",
+      "summary": {
+        "false_alarm_reduction_rate": 1.0,
+        "holdout_trial_count": 3,
+        "mean_error_reduction_vs_raw_interaction": 0.027,
+        "non_regression_rate": 1.0,
+        "static_prior_miss_recovery_rate": 1.0
+      }
+    },
+    {
+      "holdout_trials": [
+        {
+          "false_alarm_reduced": false,
+          "heldout_source_key": "htops_cost_pressure",
+          "learned_operator_absolute_error": 0.14,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.36,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.5,
+          "raw_interaction_absolute_error": 0.14,
+          "raw_interaction_false_alarm": false,
+          "raw_interaction_prediction": 0.36,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": true,
+          "train_source_keys": [
+            "anes_health_heldout",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [
+              "unseen_high_risk_mechanism_transfer_floor",
+              "calibrated_to_raw_interaction_for_static_miss_recovery"
+            ],
+            "known_mechanism_count": 1,
+            "risk_preserving_calibration_applied": true,
+            "risk_preserving_calibration_target": "raw_interaction_prediction",
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 4,
+            "unseen_mechanism_floor_applied": true
+          }
+        },
+        {
+          "false_alarm_reduced": true,
+          "heldout_source_key": "anes_health_heldout",
+          "learned_operator_absolute_error": 0.02,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.31,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.33,
+          "raw_interaction_absolute_error": 0.05,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        },
+        {
+          "false_alarm_reduced": true,
+          "heldout_source_key": "anes_climate_heldout",
+          "learned_operator_absolute_error": 0.078,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.328,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.25,
+          "raw_interaction_absolute_error": 0.13,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_health_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        }
+      ],
+      "passes_current_proxy_holdout_gate": true,
+      "perturbation_delta": 0.03,
+      "perturbed_source_key": "htops_cost_pressure",
+      "scenario_id": "htops_cost_pressure:+0.03",
+      "summary": {
+        "false_alarm_reduction_rate": 1.0,
+        "holdout_trial_count": 3,
+        "mean_error_reduction_vs_raw_interaction": 0.027,
+        "non_regression_rate": 1.0,
+        "static_prior_miss_recovery_rate": 1.0
+      }
+    },
+    {
+      "holdout_trials": [
+        {
+          "false_alarm_reduced": false,
+          "heldout_source_key": "htops_cost_pressure",
+          "learned_operator_absolute_error": 0.11,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.36,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.47,
+          "raw_interaction_absolute_error": 0.11,
+          "raw_interaction_false_alarm": false,
+          "raw_interaction_prediction": 0.36,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": true,
+          "train_source_keys": [
+            "anes_health_heldout",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [
+              "unseen_high_risk_mechanism_transfer_floor",
+              "calibrated_to_raw_interaction_for_static_miss_recovery"
+            ],
+            "known_mechanism_count": 1,
+            "risk_preserving_calibration_applied": true,
+            "risk_preserving_calibration_target": "raw_interaction_prediction",
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 4,
+            "unseen_mechanism_floor_applied": true
+          }
+        },
+        {
+          "false_alarm_reduced": true,
+          "heldout_source_key": "anes_health_heldout",
+          "learned_operator_absolute_error": 0.01,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.31,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.3,
+          "raw_interaction_absolute_error": 0.08,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        },
+        {
+          "false_alarm_reduced": true,
+          "heldout_source_key": "anes_climate_heldout",
+          "learned_operator_absolute_error": 0.06,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.31,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.25,
+          "raw_interaction_absolute_error": 0.13,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_health_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        }
+      ],
+      "passes_current_proxy_holdout_gate": true,
+      "perturbation_delta": -0.03,
+      "perturbed_source_key": "anes_health_heldout",
+      "scenario_id": "anes_health_heldout:-0.03",
+      "summary": {
+        "false_alarm_reduction_rate": 1.0,
+        "holdout_trial_count": 3,
+        "mean_error_reduction_vs_raw_interaction": 0.047,
+        "non_regression_rate": 1.0,
+        "static_prior_miss_recovery_rate": 1.0
+      }
+    },
+    {
+      "holdout_trials": [
+        {
+          "false_alarm_reduced": false,
+          "heldout_source_key": "htops_cost_pressure",
+          "learned_operator_absolute_error": 0.11,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.36,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.47,
+          "raw_interaction_absolute_error": 0.11,
+          "raw_interaction_false_alarm": false,
+          "raw_interaction_prediction": 0.36,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": true,
+          "train_source_keys": [
+            "anes_health_heldout",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [
+              "unseen_high_risk_mechanism_transfer_floor",
+              "calibrated_to_raw_interaction_for_static_miss_recovery"
+            ],
+            "known_mechanism_count": 1,
+            "risk_preserving_calibration_applied": true,
+            "risk_preserving_calibration_target": "raw_interaction_prediction",
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 4,
+            "unseen_mechanism_floor_applied": true
+          }
+        },
+        {
+          "false_alarm_reduced": true,
+          "heldout_source_key": "anes_health_heldout",
+          "learned_operator_absolute_error": 0.02,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.31,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.33,
+          "raw_interaction_absolute_error": 0.05,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        },
+        {
+          "false_alarm_reduced": true,
+          "heldout_source_key": "anes_climate_heldout",
+          "learned_operator_absolute_error": 0.078,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.328,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.25,
+          "raw_interaction_absolute_error": 0.13,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_health_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        }
+      ],
+      "passes_current_proxy_holdout_gate": true,
+      "perturbation_delta": 0.0,
+      "perturbed_source_key": "anes_health_heldout",
+      "scenario_id": "anes_health_heldout:+0.00",
+      "summary": {
+        "false_alarm_reduction_rate": 1.0,
+        "holdout_trial_count": 3,
+        "mean_error_reduction_vs_raw_interaction": 0.027,
+        "non_regression_rate": 1.0,
+        "static_prior_miss_recovery_rate": 1.0
+      }
+    },
+    {
+      "holdout_trials": [
+        {
+          "false_alarm_reduced": false,
+          "heldout_source_key": "htops_cost_pressure",
+          "learned_operator_absolute_error": 0.11,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.36,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.47,
+          "raw_interaction_absolute_error": 0.11,
+          "raw_interaction_false_alarm": false,
+          "raw_interaction_prediction": 0.36,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": true,
+          "train_source_keys": [
+            "anes_health_heldout",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [
+              "unseen_high_risk_mechanism_transfer_floor",
+              "calibrated_to_raw_interaction_for_static_miss_recovery"
+            ],
+            "known_mechanism_count": 1,
+            "risk_preserving_calibration_applied": true,
+            "risk_preserving_calibration_target": "raw_interaction_prediction",
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 4,
+            "unseen_mechanism_floor_applied": true
+          }
+        },
+        {
+          "false_alarm_reduced": true,
+          "heldout_source_key": "anes_health_heldout",
+          "learned_operator_absolute_error": 0.05,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.31,
+          "non_regression_vs_raw_interaction": false,
+          "observed_reject_proxy": 0.36,
+          "raw_interaction_absolute_error": 0.02,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        },
+        {
+          "false_alarm_reduced": false,
+          "heldout_source_key": "anes_climate_heldout",
+          "learned_operator_absolute_error": 0.105,
+          "learned_operator_false_alarm": true,
+          "learned_operator_prediction": 0.355,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.25,
+          "raw_interaction_absolute_error": 0.13,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_health_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        }
+      ],
+      "passes_current_proxy_holdout_gate": false,
+      "perturbation_delta": 0.03,
+      "perturbed_source_key": "anes_health_heldout",
+      "scenario_id": "anes_health_heldout:+0.03",
+      "summary": {
+        "false_alarm_reduction_rate": 0.5,
+        "holdout_trial_count": 3,
+        "mean_error_reduction_vs_raw_interaction": -0.002,
+        "non_regression_rate": 0.667,
+        "static_prior_miss_recovery_rate": 1.0
+      }
+    },
+    {
+      "holdout_trials": [
+        {
+          "false_alarm_reduced": false,
+          "heldout_source_key": "htops_cost_pressure",
+          "learned_operator_absolute_error": 0.11,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.36,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.47,
+          "raw_interaction_absolute_error": 0.11,
+          "raw_interaction_false_alarm": false,
+          "raw_interaction_prediction": 0.36,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": true,
+          "train_source_keys": [
+            "anes_health_heldout",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [
+              "unseen_high_risk_mechanism_transfer_floor",
+              "calibrated_to_raw_interaction_for_static_miss_recovery"
+            ],
+            "known_mechanism_count": 1,
+            "risk_preserving_calibration_applied": true,
+            "risk_preserving_calibration_target": "raw_interaction_prediction",
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 4,
+            "unseen_mechanism_floor_applied": true
+          }
+        },
+        {
+          "false_alarm_reduced": true,
+          "heldout_source_key": "anes_health_heldout",
+          "learned_operator_absolute_error": 0.02,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.31,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.33,
+          "raw_interaction_absolute_error": 0.05,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        },
+        {
+          "false_alarm_reduced": true,
+          "heldout_source_key": "anes_climate_heldout",
+          "learned_operator_absolute_error": 0.108,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.328,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.22,
+          "raw_interaction_absolute_error": 0.16,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_health_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        }
+      ],
+      "passes_current_proxy_holdout_gate": true,
+      "perturbation_delta": -0.03,
+      "perturbed_source_key": "anes_climate_heldout",
+      "scenario_id": "anes_climate_heldout:-0.03",
+      "summary": {
+        "false_alarm_reduction_rate": 1.0,
+        "holdout_trial_count": 3,
+        "mean_error_reduction_vs_raw_interaction": 0.027,
+        "non_regression_rate": 1.0,
+        "static_prior_miss_recovery_rate": 1.0
+      }
+    },
+    {
+      "holdout_trials": [
+        {
+          "false_alarm_reduced": false,
+          "heldout_source_key": "htops_cost_pressure",
+          "learned_operator_absolute_error": 0.11,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.36,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.47,
+          "raw_interaction_absolute_error": 0.11,
+          "raw_interaction_false_alarm": false,
+          "raw_interaction_prediction": 0.36,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": true,
+          "train_source_keys": [
+            "anes_health_heldout",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [
+              "unseen_high_risk_mechanism_transfer_floor",
+              "calibrated_to_raw_interaction_for_static_miss_recovery"
+            ],
+            "known_mechanism_count": 1,
+            "risk_preserving_calibration_applied": true,
+            "risk_preserving_calibration_target": "raw_interaction_prediction",
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 4,
+            "unseen_mechanism_floor_applied": true
+          }
+        },
+        {
+          "false_alarm_reduced": true,
+          "heldout_source_key": "anes_health_heldout",
+          "learned_operator_absolute_error": 0.02,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.31,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.33,
+          "raw_interaction_absolute_error": 0.05,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        },
+        {
+          "false_alarm_reduced": true,
+          "heldout_source_key": "anes_climate_heldout",
+          "learned_operator_absolute_error": 0.078,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.328,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.25,
+          "raw_interaction_absolute_error": 0.13,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_health_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        }
+      ],
+      "passes_current_proxy_holdout_gate": true,
+      "perturbation_delta": 0.0,
+      "perturbed_source_key": "anes_climate_heldout",
+      "scenario_id": "anes_climate_heldout:+0.00",
+      "summary": {
+        "false_alarm_reduction_rate": 1.0,
+        "holdout_trial_count": 3,
+        "mean_error_reduction_vs_raw_interaction": 0.027,
+        "non_regression_rate": 1.0,
+        "static_prior_miss_recovery_rate": 1.0
+      }
+    },
+    {
+      "holdout_trials": [
+        {
+          "false_alarm_reduced": false,
+          "heldout_source_key": "htops_cost_pressure",
+          "learned_operator_absolute_error": 0.11,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.36,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.47,
+          "raw_interaction_absolute_error": 0.11,
+          "raw_interaction_false_alarm": false,
+          "raw_interaction_prediction": 0.36,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": true,
+          "train_source_keys": [
+            "anes_health_heldout",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [
+              "unseen_high_risk_mechanism_transfer_floor",
+              "calibrated_to_raw_interaction_for_static_miss_recovery"
+            ],
+            "known_mechanism_count": 1,
+            "risk_preserving_calibration_applied": true,
+            "risk_preserving_calibration_target": "raw_interaction_prediction",
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 4,
+            "unseen_mechanism_floor_applied": true
+          }
+        },
+        {
+          "false_alarm_reduced": true,
+          "heldout_source_key": "anes_health_heldout",
+          "learned_operator_absolute_error": 0.02,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.31,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.33,
+          "raw_interaction_absolute_error": 0.05,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_climate_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        },
+        {
+          "false_alarm_reduced": true,
+          "heldout_source_key": "anes_climate_heldout",
+          "learned_operator_absolute_error": 0.048,
+          "learned_operator_false_alarm": false,
+          "learned_operator_prediction": 0.328,
+          "non_regression_vs_raw_interaction": true,
+          "observed_reject_proxy": 0.28,
+          "raw_interaction_absolute_error": 0.1,
+          "raw_interaction_false_alarm": true,
+          "raw_interaction_prediction": 0.38,
+          "static_prior_miss_recovered": true,
+          "static_prior_missed_high_risk": false,
+          "train_source_keys": [
+            "htops_cost_pressure",
+            "anes_health_heldout"
+          ],
+          "transfer_diagnostics": {
+            "diagnostic_reasons": [],
+            "known_mechanism_count": 5,
+            "risk_preserving_calibration_applied": false,
+            "unknown_mechanism_weight": 0.65,
+            "unseen_mechanism_count": 0,
+            "unseen_mechanism_floor_applied": false
+          }
+        }
+      ],
+      "passes_current_proxy_holdout_gate": true,
+      "perturbation_delta": 0.03,
+      "perturbed_source_key": "anes_climate_heldout",
+      "scenario_id": "anes_climate_heldout:+0.03",
+      "summary": {
+        "false_alarm_reduction_rate": 1.0,
+        "holdout_trial_count": 3,
+        "mean_error_reduction_vs_raw_interaction": 0.027,
+        "non_regression_rate": 1.0,
+        "static_prior_miss_recovery_rate": 1.0
+      }
+    }
+  ],
+  "robustness_protocol": {
+    "field_outcome_required_for_runtime_default": true,
+    "perturbation_deltas": [
+      -0.03,
+      0.0,
+      0.03
+    ],
+    "protocol_id": "local_proxy_outcome_perturbation",
+    "risk_preserving_calibration_enabled": true,
+    "selected_variant_id": "floor_plus_non_regression_calibration",
+    "unknown_mechanism_weight": 0.65
+  },
+  "run_id": "r6-counterfactual-robustness-current",
+  "schema_version": "r6-counterfactual-robustness-validation-v1",
+  "source_refs": [
+    "r6-counterfactual-robustness-validation-current-001-trend-interval-risk"
+  ],
+  "status": "counterfactual_robustness_diagnostic_blocked",
+  "summary": {
+    "min_false_alarm_reduction_rate": 0.5,
+    "min_non_regression_rate": 0.667,
+    "min_static_prior_miss_recovery_rate": 1.0,
+    "passed_scenario_count": 8,
+    "perturbation_scenario_count": 9,
+    "robustness_pass_rate": 0.889
+  }
+}

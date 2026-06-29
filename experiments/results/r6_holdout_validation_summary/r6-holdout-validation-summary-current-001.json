@@ -1,0 +1,53 @@
+{
+  "acceptance_gates": {
+    "all_metrics_source_backed": true,
+    "at_least_two_domains_present": true,
+    "field_outcome_validated": false,
+    "holdout_validation_summary_present": true,
+    "runtime_default_allowed": false
+  },
+  "artifact_id": "r6-holdout-validation-summary-current-001",
+  "blocked_claims": [
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "accuracy_superiority_established=true"
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "claim_level": "proxy_diagnostic",
+  "holdout_summary": {
+    "blocked_count": 0,
+    "dataset_count": 3,
+    "domain_count": 3,
+    "field_outcome_count": 0,
+    "proxy_diagnostic_count": 3,
+    "validation_count": 0
+  },
+  "metric_source_map": {
+    "interval_coverage": [
+      "htops_cost_pressure",
+      "anes_health_heldout",
+      "anes_climate_heldout"
+    ],
+    "risk_ranking_quality": [
+      "htops_cost_pressure",
+      "anes_health_heldout",
+      "anes_climate_heldout"
+    ],
+    "segment_precision_recall": [
+      "htops_cost_pressure",
+      "anes_health_heldout",
+      "anes_climate_heldout"
+    ],
+    "trend_direction_accuracy": [
+      "htops_cost_pressure",
+      "anes_health_heldout",
+      "anes_climate_heldout"
+    ]
+  },
+  "run_id": "r6-full-product-support-current-001",
+  "schema_version": "r6-holdout-validation-summary-v1",
+  "source_refs": [
+    "r6-external-outcome-dataset-manifest-current-001"
+  ],
+  "status": "holdout_validation_summary_proxy_diagnostic"
+}

@@ -1,0 +1,118 @@
+{
+  "acceptance_decision": "accept_feedback_loop_rehearsal_keep_customer_validation_blocked",
+  "acceptance_gates": {
+    "field_outcome_validated": false,
+    "l22_intake_validator_executed": true,
+    "l23_field_revalidation_executed": true,
+    "l24_feedback_candidates_generated": true,
+    "l25_shadow_replay_executed": true,
+    "l26_synthetic_holdout_review_executed": true,
+    "metrics_computed_on_real_customer_slice": false,
+    "product_default_allowed": false,
+    "real_customer_field_slice_submitted": false,
+    "real_independent_holdout_present": false,
+    "runtime_default_allowed": false,
+    "synthetic_rehearsal_fixture_generated": true
+  },
+  "allowed_claims": [
+    "The L22-L26 customer feedback loop can be rehearsed locally on a synthetic field-slice fixture.",
+    "The rehearsal exercises intake, field metrics, feedback candidate generation, shadow replay, and synthetic holdout review without changing Product defaults."
+  ],
+  "artifact_id": "r12-customer-feedback-loop-operator-rehearsal-current-001",
+  "blocked_claims": [
+    "real_customer_field_slice_validated=true",
+    "real_independent_holdout_present=true",
+    "metrics_computed_on_real_customer_slice=true",
+    "field_outcome_validated=true",
+    "Product default can use customer feedback loop by default",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "synthetic_feedback_loop_rehearsal_only_no_customer_validation_claim",
+  "next_required_artifact": "real_customer_field_slice_or_public_target_outcome",
+  "pipeline_artifacts": {
+    "feedback_update": {
+      "artifact_id": "r12-customer-field-outcome-feedback-update-feedback-loop-rehearsal",
+      "output_path": "experiments/results/r12_customer_feedback_loop_operator_rehearsal/rehearsal-work-current-001/r12-customer-field-outcome-feedback-update-feedback-loop-rehearsal.json",
+      "status": "r12_customer_field_outcome_feedback_update_candidates_ready_guarded"
+    },
+    "field_revalidation": {
+      "artifact_id": "r12-customer-field-slice-revalidation-feedback-loop-rehearsal",
+      "output_path": "experiments/results/r12_customer_feedback_loop_operator_rehearsal/rehearsal-work-current-001/r12-customer-field-slice-revalidation-feedback-loop-rehearsal.json",
+      "status": "r12_customer_field_slice_revalidation_metrics_ready_guarded"
+    },
+    "holdout_review": {
+      "artifact_id": "r12-customer-feedback-shadow-replay-holdout-review-feedback-loop-rehearsal",
+      "output_path": "experiments/results/r12_customer_feedback_loop_operator_rehearsal/rehearsal-work-current-001/r12-customer-feedback-shadow-replay-holdout-review-feedback-loop-rehearsal.json",
+      "status": "r12_customer_feedback_shadow_replay_holdout_review_ready_guarded"
+    },
+    "intake_validation": {
+      "artifact_id": "r12-customer-field-slice-intake-validation-feedback-loop-rehearsal",
+      "output_path": "experiments/results/r12_customer_feedback_loop_operator_rehearsal/rehearsal-work-current-001/r12-customer-field-slice-intake-validation-feedback-loop-rehearsal.json",
+      "status": "r12_customer_field_slice_intake_validation_ready_for_revalidation_guarded"
+    },
+    "shadow_replay": {
+      "artifact_id": "r12-customer-feedback-update-shadow-replay-feedback-loop-rehearsal",
+      "output_path": "experiments/results/r12_customer_feedback_loop_operator_rehearsal/rehearsal-work-current-001/r12-customer-feedback-update-shadow-replay-feedback-loop-rehearsal.json",
+      "status": "r12_customer_feedback_update_shadow_replay_ready_guarded"
+    }
+  },
+  "rehearsal_summary": {
+    "accepted_shadow_candidate_count": 2,
+    "case_count": 10,
+    "feedback_candidate_count": 2,
+    "handoff_artifact_id": "r12-customer-field-slice-handoff-package-current-001",
+    "intake_ready_for_revalidation": true,
+    "rehearsal_started_at": "2026-06-28T12:20:00Z",
+    "required_field_count": 7,
+    "sample_slice_kind": "synthetic_feedback_loop_rehearsal_fixture",
+    "sample_slice_path": "experiments/results/r12_customer_feedback_loop_operator_rehearsal/rehearsal-work-current-001/r12-customer-feedback-loop-rehearsal-sample.csv",
+    "shadow_replay_executed": true,
+    "synthetic_field_metrics_passed": true,
+    "synthetic_holdout_review_executed": true,
+    "synthetic_holdout_review_passed": true,
+    "synthetic_metrics_computed": true
+  },
+  "run_id": "r12-l35-current-001",
+  "schema_version": "r12-customer-feedback-loop-operator-rehearsal-v1",
+  "source_refs": [
+    "r12-customer-field-slice-handoff-package-current-001",
+    "r12-customer-field-slice-intake-validation-feedback-loop-rehearsal",
+    "r12-customer-field-slice-revalidation-feedback-loop-rehearsal",
+    "r12-customer-field-outcome-feedback-update-feedback-loop-rehearsal",
+    "r12-customer-feedback-update-shadow-replay-feedback-loop-rehearsal",
+    "r12-customer-feedback-shadow-replay-holdout-review-feedback-loop-rehearsal",
+    "synthetic_feedback_loop_rehearsal_slice:experiments/results/r12_customer_feedback_loop_operator_rehearsal/rehearsal-work-current-001/r12-customer-feedback-loop-rehearsal-sample.csv"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-customer-field-slice-handoff-package-current-001",
+      "path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-handoff-package-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-field-slice-intake-validation-feedback-loop-rehearsal",
+      "path": "experiments/results/r12_customer_feedback_loop_operator_rehearsal/rehearsal-work-current-001/r12-customer-field-slice-intake-validation-feedback-loop-rehearsal.json"
+    },
+    {
+      "artifact_id": "r12-customer-field-slice-revalidation-feedback-loop-rehearsal",
+      "path": "experiments/results/r12_customer_feedback_loop_operator_rehearsal/rehearsal-work-current-001/r12-customer-field-slice-revalidation-feedback-loop-rehearsal.json"
+    },
+    {
+      "artifact_id": "r12-customer-field-outcome-feedback-update-feedback-loop-rehearsal",
+      "path": "experiments/results/r12_customer_feedback_loop_operator_rehearsal/rehearsal-work-current-001/r12-customer-field-outcome-feedback-update-feedback-loop-rehearsal.json"
+    },
+    {
+      "artifact_id": "r12-customer-feedback-update-shadow-replay-feedback-loop-rehearsal",
+      "path": "experiments/results/r12_customer_feedback_loop_operator_rehearsal/rehearsal-work-current-001/r12-customer-feedback-update-shadow-replay-feedback-loop-rehearsal.json"
+    },
+    {
+      "artifact_id": "r12-customer-feedback-shadow-replay-holdout-review-feedback-loop-rehearsal",
+      "path": "experiments/results/r12_customer_feedback_loop_operator_rehearsal/rehearsal-work-current-001/r12-customer-feedback-shadow-replay-holdout-review-feedback-loop-rehearsal.json"
+    },
+    {
+      "artifact_id": "synthetic_feedback_loop_rehearsal_slice:experiments/results/r12_customer_feedback_loop_operator_rehearsal/rehearsal-work-current-001/r12-customer-feedback-loop-rehearsal-sample.csv",
+      "path": "experiments/results/r12_customer_feedback_loop_operator_rehearsal/rehearsal-work-current-001/r12-customer-feedback-loop-rehearsal-sample.csv"
+    }
+  ],
+  "status": "r12_customer_feedback_loop_operator_rehearsal_ready_no_field_claim"
+}

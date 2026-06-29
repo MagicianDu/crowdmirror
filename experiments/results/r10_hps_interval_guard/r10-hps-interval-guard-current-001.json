@@ -1,0 +1,74 @@
+{
+  "acceptance_gates": {
+    "field_outcome_validated": false,
+    "post_guard_interval_non_regression_passed": true,
+    "pre_guard_interval_regression_detected": true,
+    "risk_ranking_gain_preserved": true,
+    "runtime_default_allowed": false,
+    "source_comparison_present": true
+  },
+  "allowed_claims": [
+    "R10 L4 preserves HPS source-backed risk-ranking signal while blocking interval regression through a conservative R9 interval floor.",
+    "The guarded overlay can proceed to holdout/outcome mapping; it is not a Product core method."
+  ],
+  "artifact_id": "r10-hps-interval-guard-current-001",
+  "blocked_claims": [
+    "R10 validated",
+    "R10 supports Product core method by default",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "runtime default ready",
+    "HPS interval guard proves decision value",
+    "accuracy superiority",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_boundary": "R10 HPS interval guard artifact. It applies a conservative interval non-regression floor to a real-public-data HPS route-B overlay while preserving source-backed risk-ranking signal; it is not holdout validation, not field validation, and not runtime default authorization.",
+  "guard_action": {
+    "action_id": "apply_r9_interval_floor_to_hps_overlay",
+    "blocked_effect": "interval_coverage_regression",
+    "preserved_signal": "risk_ranking_quality_delta",
+    "reason": "hps_overlay_interval_regressed_without_holdout_mapping"
+  },
+  "guard_contract": {
+    "field_outcome_validated": false,
+    "preserves_risk_ranking_candidate": true,
+    "runtime_default_allowed": false,
+    "source_backed_only": true,
+    "uses_real_public_data_ingestion": true
+  },
+  "post_guard_metrics": {
+    "r10_A+B_hps+C_guarded_overlay": {
+      "decision_value_score": 0.78,
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 1.0,
+      "risk_ranking_quality": 0.75,
+      "static_prior_miss_recovery_rate": 1.0,
+      "trend_direction_accuracy": 0.667
+    },
+    "r9_A+B+C_guarded_current_fixture": {
+      "decision_value_score": 0.78,
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 1.0,
+      "risk_ranking_quality": 0.667,
+      "static_prior_miss_recovery_rate": 1.0,
+      "trend_direction_accuracy": 0.667
+    }
+  },
+  "post_guard_summary": {
+    "decision_value_delta": 0.0,
+    "interval_coverage_delta": 0.0,
+    "net_decision": "continue_guarded_holdout_mapping_with_interval_floor",
+    "risk_ranking_quality_delta": 0.083
+  },
+  "pre_guard_summary": {
+    "interval_coverage_delta": -0.333,
+    "interval_non_regression_passed": false,
+    "risk_ranking_quality_delta": 0.083
+  },
+  "run_id": "r10-hps-interval-guard-current",
+  "schema_version": "r10-hps-interval-guard-v1",
+  "source_refs": [
+    "r10-hps-combination-comparison-current-001"
+  ],
+  "status": "r10_hps_interval_guard_ready_guarded"
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "ablation": "joint",
+    "baselines": [
+      "mnl",
+      "uncalibrated_llm",
+      "prompt_only"
+    ],
+    "domain": "semi_synthetic_choice",
+    "manifest_dir": "experiments/results/manifests",
+    "mode": "local",
+    "run_id": "paper-local-semi_synthetic_choice-joint",
+    "scope": "smoke"
+  },
+  {
+    "ablation": "joint",
+    "baselines": [
+      "mnl",
+      "uncalibrated_llm",
+      "prompt_only"
+    ],
+    "domain": "swissmetro_choice",
+    "manifest_dir": "experiments/results/manifests",
+    "mode": "local",
+    "run_id": "paper-local-swissmetro_choice-joint",
+    "scope": "smoke"
+  },
+  {
+    "ablation": "joint",
+    "baselines": [
+      "abm_ground_truth",
+      "mnl",
+      "uncalibrated_llm",
+      "prompt_only"
+    ],
+    "domain": "voter_emergence",
+    "manifest_dir": "experiments/results/manifests",
+    "mode": "local",
+    "run_id": "paper-local-voter_emergence-joint",
+    "scope": "smoke"
+  }
+]

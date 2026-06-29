@@ -1,0 +1,47 @@
+{
+  "acceptance_decision": "reject_customer_field_revalidation_no_validated_intake",
+  "acceptance_gates": {
+    "customer_field_slice_present": false,
+    "field_outcome_validated": false,
+    "mae_threshold_passed": false,
+    "metrics_computed": false,
+    "product_default_allowed": false,
+    "risk_ranking_quality_threshold_passed": false,
+    "runtime_default_allowed": false,
+    "validated_intake_ready": false
+  },
+  "allowed_claims": [
+    "Customer field slice revalidation harness is ready, but no validated intake is available."
+  ],
+  "artifact_id": "r12-customer-field-slice-revalidation-current-001",
+  "blocked_claims": [
+    "metrics_computed=true",
+    "field_outcome_validated=true",
+    "Product default can use customer field validation by default",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "customer_field_revalidation_blocked",
+  "metric_results": {},
+  "next_required_artifact": "validated_customer_field_slice_intake",
+  "revalidation_summary": {
+    "case_count": 0,
+    "field_outcome_validated": false,
+    "intake_artifact_id": "r12-customer-field-slice-intake-validation-current-001",
+    "metrics_computed": false,
+    "revalidation_checked_at": "2026-06-28T09:15:00Z",
+    "slice_path": null
+  },
+  "run_id": "r12-l23-current-001",
+  "schema_version": "r12-customer-field-slice-revalidation-v1",
+  "source_refs": [
+    "r12-customer-field-slice-intake-validation-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-customer-field-slice-intake-validation-current-001",
+      "path": "experiments/results/r12_customer_field_slice_intake_validation/r12-customer-field-slice-intake-validation-current-001.json"
+    }
+  ],
+  "status": "r12_customer_field_slice_revalidation_blocked_no_validated_intake"
+}

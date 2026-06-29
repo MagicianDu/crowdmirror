@@ -1,0 +1,46 @@
+{
+  "acceptance_decision": "reject_feedback_update_no_validated_field_outcome",
+  "acceptance_gates": {
+    "candidate_updates_generated": false,
+    "field_outcome_validated": false,
+    "metrics_consumed": false,
+    "product_default_allowed": false,
+    "prompt_or_persona_manual_patch_allowed": false,
+    "runtime_default_allowed": false
+  },
+  "allowed_claims": [
+    "Customer field outcome feedback update harness is ready, but no validated field outcome is available."
+  ],
+  "artifact_id": "r12-customer-field-outcome-feedback-update-current-001",
+  "blocked_claims": [
+    "metrics_consumed=true",
+    "candidate_updates_generated=true",
+    "manual prompt/persona patch from customer feedback",
+    "Product default can use customer feedback update by default",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "candidate_updates": [],
+  "claim_level": "customer_field_feedback_update_blocked",
+  "feedback_summary": {
+    "candidate_count": 0,
+    "feedback_generated_at": "2026-06-28T10:00:00Z",
+    "field_outcome_validated": false,
+    "metrics_consumed": false,
+    "revalidation_artifact_id": "r12-customer-field-slice-revalidation-current-001"
+  },
+  "metric_inputs": {},
+  "next_required_artifact": "validated_customer_field_slice_revalidation",
+  "run_id": "r12-l24-current-001",
+  "schema_version": "r12-customer-field-outcome-feedback-update-v1",
+  "source_refs": [
+    "r12-customer-field-slice-revalidation-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-customer-field-slice-revalidation-current-001",
+      "path": "experiments/results/r12_customer_field_slice_revalidation/r12-customer-field-slice-revalidation-current-001.json"
+    }
+  ],
+  "status": "r12_customer_field_outcome_feedback_update_blocked_no_field_validation"
+}

@@ -1,0 +1,157 @@
+{
+  "allowed_claims": [
+    "R11 can generate bounded update candidates from shadow-trial feedback.",
+    "Update candidates are auditable and separated from runtime default."
+  ],
+  "artifact_id": "r11-outcome-feedback-update-current-001",
+  "blocked_claims": [
+    "R11 runtime default update",
+    "R11 field validated",
+    "R11 supports Product core method by default",
+    "prompt/persona manual patch is an automatic calibration method",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "case_residuals": [
+    {
+      "absolute_residual": 0.045,
+      "case_id": "hps_REGION_2",
+      "evidence_note": "public proxy replay indicates stronger high-risk reaction",
+      "interval_contains_feedback": true,
+      "observed_outcome_proxy": 0.538224,
+      "r11_prediction": 0.493224,
+      "segment_column": "REGION",
+      "segment_value": "2",
+      "signed_residual": 0.045
+    },
+    {
+      "absolute_residual": 0.094517,
+      "case_id": "hps_METRO_STATUS_2",
+      "evidence_note": "public proxy replay indicates strongest metro risk",
+      "interval_contains_feedback": true,
+      "observed_outcome_proxy": 0.593338,
+      "r11_prediction": 0.498821,
+      "segment_column": "METRO_STATUS",
+      "segment_value": "2",
+      "signed_residual": 0.094517
+    },
+    {
+      "absolute_residual": 0.02,
+      "case_id": "hps_REGION_1",
+      "evidence_note": "public proxy replay indicates lower low-risk reaction",
+      "interval_contains_feedback": true,
+      "observed_outcome_proxy": 0.430869,
+      "r11_prediction": 0.450869,
+      "segment_column": "REGION",
+      "segment_value": "1",
+      "signed_residual": -0.02
+    }
+  ],
+  "claim_boundary": "R11 outcome feedback update artifact. It converts R11 shadow-trial outcome feedback into bounded update candidates for mechanism weights, segment sensitivity, propagation edges, and interval uncertainty. It does not permit prompt/persona manual patches, field-validation claims, or runtime default updates.",
+  "claim_level": "bounded_update_candidate_only",
+  "error_attribution": {
+    "interval_uncertainty_update_needed": false,
+    "mechanism_weight_update_needed": true,
+    "primary_error_mode": "segment_specific_under_reaction",
+    "propagation_edge_update_supported": false,
+    "segment_sensitivity_update_needed": true
+  },
+  "feedback_contract": {
+    "feedback_source_level": "public_proxy_replay",
+    "field_outcome_validated": false,
+    "prompt_or_persona_manual_patch_allowed": false,
+    "runtime_default_allowed": false,
+    "source_backed_only": true,
+    "updates_are_bounded_candidates": true
+  },
+  "observed_feedback": {
+    "case_measurements": [
+      {
+        "case_id": "hps_REGION_2",
+        "evidence_note": "public proxy replay indicates stronger high-risk reaction",
+        "observed_outcome_proxy": 0.538224
+      },
+      {
+        "case_id": "hps_METRO_STATUS_2",
+        "evidence_note": "public proxy replay indicates strongest metro risk",
+        "observed_outcome_proxy": 0.593338
+      },
+      {
+        "case_id": "hps_REGION_1",
+        "evidence_note": "public proxy replay indicates lower low-risk reaction",
+        "observed_outcome_proxy": 0.430869
+      }
+    ],
+    "feedback_id": "r11-shadow-feedback-public-proxy-replay-current-001",
+    "measurement_window": "hps_public_proxy_replay",
+    "source_level": "public_proxy_replay"
+  },
+  "residual_summary": {
+    "feedback_case_count": 3,
+    "interval_miss_count": 0,
+    "mean_absolute_residual": 0.053,
+    "mean_signed_residual": 0.04,
+    "negative_residual_count": 1,
+    "positive_residual_count": 2
+  },
+  "run_id": "r11-l3-current",
+  "schema_version": "r11-outcome-feedback-update-v1",
+  "source_refs": [
+    "r11-product-shadow-trial-current-001",
+    "r11-external-holdout-validation-current-001",
+    "r11-shadow-feedback-public-proxy-replay-current-001"
+  ],
+  "status": "r11_outcome_feedback_update_ready_guarded",
+  "update_candidates": [
+    {
+      "default_runtime_enabled": false,
+      "recommended_delta": 0.02,
+      "requires_human_review": true,
+      "status": "diagnostic_only",
+      "status_reason": "public_proxy_replay residual suggests price-pressure weight review, but evidence is not sufficient for runtime default",
+      "target": "price_pressure",
+      "update_id": "r11-mechanism-weight-diagnostic-001",
+      "update_type": "mechanism_weight"
+    },
+    {
+      "default_runtime_enabled": false,
+      "recommended_delta": 0.09,
+      "requires_human_review": true,
+      "status": "accepted",
+      "status_reason": "largest residual segment can be replayed in shadow mode only",
+      "target": "hps_METRO_STATUS_2",
+      "update_id": "r11-segment-sensitivity-shadow-accepted-001",
+      "update_type": "segment_sensitivity"
+    },
+    {
+      "default_runtime_enabled": false,
+      "recommended_delta": 0.0,
+      "requires_human_review": true,
+      "status": "rejected",
+      "status_reason": "feedback packet lacks direct interaction propagation evidence",
+      "target": "social_amplification_edge",
+      "update_id": "r11-propagation-edge-rejected-001",
+      "update_type": "propagation_edge"
+    },
+    {
+      "default_runtime_enabled": false,
+      "recommended_delta": 0.0,
+      "requires_human_review": true,
+      "status": "diagnostic_only",
+      "status_reason": "feedback remains inside interval; keep interval review diagnostic",
+      "target": "r11_shadow_interval_margin",
+      "update_id": "r11-interval-uncertainty-diagnostic-001",
+      "update_type": "interval_uncertainty"
+    }
+  ],
+  "update_gate": {
+    "accepted_shadow_only_count": 1,
+    "candidate_update_generated": true,
+    "diagnostic_only_count": 2,
+    "prompt_or_persona_manual_patch_allowed": false,
+    "rejected_count": 1,
+    "requires_holdout_before_default": true,
+    "runtime_default_allowed": false
+  }
+}

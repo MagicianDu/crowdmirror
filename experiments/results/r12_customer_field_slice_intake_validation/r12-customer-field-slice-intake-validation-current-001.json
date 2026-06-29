@@ -1,0 +1,93 @@
+{
+  "acceptance_decision": "keep_waiting_for_customer_field_slice_submission",
+  "acceptance_gates": {
+    "customer_approval_present": false,
+    "customer_field_slice_submitted": false,
+    "duplicate_case_ids_absent": true,
+    "field_outcome_validated": false,
+    "metrics_computed": false,
+    "minimum_case_count_met": false,
+    "numeric_fields_valid": false,
+    "privacy_valid": true,
+    "product_default_allowed": false,
+    "ready_for_revalidation": false,
+    "runtime_default_allowed": false,
+    "schema_valid": false,
+    "timestamps_valid": false
+  },
+  "allowed_claims": [
+    "Customer field slice intake validator is ready, but no slice has been submitted."
+  ],
+  "artifact_id": "r12-customer-field-slice-intake-validation-current-001",
+  "blocked_claims": [
+    "ready_for_revalidation=true",
+    "metrics_computed=true",
+    "field_or_pre_outcome_revalidation_passed=true",
+    "field_outcome_validated=true",
+    "direct personal identifiers in customer slice",
+    "manual prompt/persona patch from customer slice",
+    "Product default can use customer field slice by default",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "customer_field_slice_intake_pending",
+  "intake_summary": {
+    "case_count": 0,
+    "handoff_artifact_id": "r12-customer-field-slice-handoff-package-current-001",
+    "intake_checked_at": "2026-06-27T16:05:00Z",
+    "minimum_case_count": 10,
+    "ready_for_revalidation": false,
+    "slice_path": null
+  },
+  "next_required_artifact": "customer_field_slice_submission",
+  "run_id": "r12-l22-current-001",
+  "schema_version": "r12-customer-field-slice-intake-validation-v1",
+  "source_refs": [
+    "r12-customer-field-slice-handoff-package-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-customer-field-slice-handoff-package-current-001",
+      "path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-handoff-package-current-001.json"
+    }
+  ],
+  "status": "r12_customer_field_slice_intake_validation_pending_no_slice",
+  "validation_errors": [
+    {
+      "code": "customer_field_slice_not_submitted",
+      "message": "No customer field slice path was provided."
+    }
+  ],
+  "validation_summary": {
+    "customer_approval_present": false,
+    "direct_pii_columns": [],
+    "direct_pii_detected": false,
+    "direct_pii_value_hits": [],
+    "duplicate_case_ids": [],
+    "minimum_case_count_met": false,
+    "missing_required_fields": [
+      "case_id",
+      "segment_id",
+      "scenario_id",
+      "prediction_share_or_score",
+      "observed_outcome",
+      "outcome_timestamp",
+      "customer_approval_reference"
+    ],
+    "numeric_fields_valid": false,
+    "numeric_parse_errors": [],
+    "present_fields": [],
+    "required_fields": [
+      "case_id",
+      "segment_id",
+      "scenario_id",
+      "prediction_share_or_score",
+      "observed_outcome",
+      "outcome_timestamp",
+      "customer_approval_reference"
+    ],
+    "required_fields_present": false,
+    "timestamp_parse_errors": [],
+    "timestamps_valid": false
+  }
+}

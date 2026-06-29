@@ -1,0 +1,727 @@
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+from typing import Any
+
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from experiments.r6_behavioral_update_operator import (
+    build_r6_behavioral_update_operator,
+)
+from experiments.r6_contracts import (
+    R6_CLAIM_BOUNDARY,
+    assert_strict_json,
+    non_empty_string,
+    write_json_artifact,
+)
+from experiments.r6_mechanism_ablation_report import (
+    build_r6_mechanism_ablation_report,
+)
+from experiments.r6_mechanism_propagation_trace import (
+    build_r6_mechanism_propagation_trace,
+)
+from experiments.r6_operator_holdout_validation import (
+    EXPECTED_OPERATOR_IDS,
+    OUT_OF_FAMILY_NON_REGRESSION_SOURCE_KEY,
+    SAME_FAMILY_HOLDOUT_SOURCE_KEYS,
+    build_r6_operator_holdout_validation,
+)
+
+
+R6_MECHANISM_RESEARCH_READINESS_REPORT_SCHEMA_VERSION = (
+    "r6-mechanism-research-readiness-report-v1"
+)
+R6_MECHANISM_PROPAGATION_TRACE_SCHEMA_VERSION = (
+    "r6-mechanism-propagation-trace-v1"
+)
+R6_BEHAVIORAL_UPDATE_OPERATOR_SCHEMA_VERSION = (
+    "r6-behavioral-update-operator-v1"
+)
+R6_MECHANISM_ABLATION_REPORT_SCHEMA_VERSION = "r6-mechanism-ablation-report-v1"
+R6_OPERATOR_HOLDOUT_VALIDATION_SCHEMA_VERSION = (
+    "r6-operator-holdout-validation-v1"
+)
+EXPECTED_HOLDOUT_RESULT_CASES = {
+    "anes_health_heldout": {
+        "case_id": "generic-rights-rule-change",
+        "case_type": "rights_rule_change",
+        "target_case_type": "rights_rule_change",
+    },
+    "anes_climate_heldout": {
+        "case_id": "generic-rights-rule-change",
+        "case_type": "rights_rule_change",
+        "target_case_type": "rights_rule_change",
+    },
+    "htops_cost_pressure": {
+        "case_id": "generic-public-service-policy-change",
+        "case_type": "public_service_policy_change",
+        "target_case_type": "public_service_policy_change",
+    },
+}
+
+
+def build_r6_mechanism_research_readiness_report(
+    artifact_id: str,
+    run_id: str,
+    propagation_trace: dict[str, Any] | None = None,
+    behavioral_update_operator: dict[str, Any] | None = None,
+    mechanism_ablation_report: dict[str, Any] | None = None,
+    operator_holdout_validation: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    artifact_id = non_empty_string(artifact_id, field="artifact_id")
+    run_id = non_empty_string(run_id, field="run_id")
+    if propagation_trace is None:
+        propagation_trace = build_r6_mechanism_propagation_trace(
+            artifact_id=f"{artifact_id}-mechanism-propagation-trace",
+            run_id=run_id,
+        )
+    if behavioral_update_operator is None:
+        behavioral_update_operator = build_r6_behavioral_update_operator(
+            artifact_id=f"{artifact_id}-behavioral-update-operator",
+            run_id=run_id,
+            propagation_trace=propagation_trace,
+        )
+    if mechanism_ablation_report is None:
+        mechanism_ablation_report = build_r6_mechanism_ablation_report(
+            artifact_id=f"{artifact_id}-mechanism-ablation-report",
+            run_id=run_id,
+            propagation_trace=propagation_trace,
+            behavioral_update_operator=behavioral_update_operator,
+        )
+    if operator_holdout_validation is None:
+        operator_holdout_validation = build_r6_operator_holdout_validation(
+            artifact_id=f"{artifact_id}-operator-holdout-validation",
+            run_id=run_id,
+            behavioral_update_operator=behavioral_update_operator,
+            mechanism_ablation_report=mechanism_ablation_report,
+        )
+
+    for field, artifact in [
+        ("propagation_trace", propagation_trace),
+        ("behavioral_update_operator", behavioral_update_operator),
+        ("mechanism_ablation_report", mechanism_ablation_report),
+        ("operator_holdout_validation", operator_holdout_validation),
+    ]:
+        if not isinstance(artifact, dict):
+            raise ValueError(f"{field} must be a JSON object")
+
+    readiness_gates = _readiness_gates(
+        propagation_trace=propagation_trace,
+        behavioral_update_operator=behavioral_update_operator,
+        mechanism_ablation_report=mechanism_ablation_report,
+        operator_holdout_validation=operator_holdout_validation,
+    )
+    report = {
+        "schema_version": R6_MECHANISM_RESEARCH_READINESS_REPORT_SCHEMA_VERSION,
+        "artifact_id": artifact_id,
+        "run_id": run_id,
+        "status": "mechanism_research_diagnostic_only",
+        "decision": {
+            "mechanism_mvp_result": "diagnostic_only",
+            "continue_research_with_constraints": True,
+            "ccf_a_main_contribution_ready": False,
+            "runtime_default_allowed": False,
+        },
+        "readiness_gates": readiness_gates,
+        "readiness_summary": {
+            "mechanism_trace_present": readiness_gates["mechanism_trace_present"],
+            "operator_candidate_count": behavioral_update_operator[
+                "operator_summary"
+            ]["candidate_update_count"],
+            "mechanism_positive_case_count": mechanism_ablation_report[
+                "method_summary"
+            ]["mechanism_positive_case_count"],
+            "mechanism_regression_case_count": mechanism_ablation_report[
+                "method_summary"
+            ]["mechanism_regression_case_count"],
+            "operator_holdout_trial_count": operator_holdout_validation[
+                "validation_summary"
+            ]["holdout_trial_count"],
+            "operator_holdout_passed_trial_count": operator_holdout_validation[
+                "validation_summary"
+            ]["passed_trial_count"],
+            "runtime_default_allowed": False,
+            "field_outcome_validated": False,
+        },
+        "research_boundary": {
+            "allowed_claim": (
+                "R6 mechanism MVP is a diagnostic research artifact with "
+                "auditable dynamic-path traces, blocked structured operator "
+                "candidates, visible ablation regressions, and explicit Product "
+                "guards."
+            ),
+            "blocked_claim": (
+                "R6 mechanism MVP is not CCF-A main-contribution ready, not "
+                "field outcome validated, and not allowed as Product runtime "
+                "default behavior."
+            ),
+        },
+        "recommended_next_research_steps": [
+            "add_independent_same_family_operator_holdout",
+            "validate_operator_against_field_or_real_release_outcome",
+            "separate_generalizable_operator_evidence_from_public_proxy_diagnostics",
+            "keep_product_runtime_guard_fail_closed_until_holdout_passes",
+        ],
+        "source_refs": _source_refs(
+            propagation_trace,
+            behavioral_update_operator,
+            mechanism_ablation_report,
+            operator_holdout_validation,
+        ),
+        "claim_boundaries": [
+            R6_CLAIM_BOUNDARY,
+            (
+                "Readiness is diagnostic-only because a mechanism trace exists "
+                "but operator holdout validation fails on current public proxies."
+            ),
+            (
+                "Research can continue under constraints; CCF-A main contribution "
+                "and Product runtime defaults remain blocked."
+            ),
+        ],
+        "claim_boundary": R6_CLAIM_BOUNDARY,
+        "risk_flags": _risk_flags(
+            mechanism_ablation_report=mechanism_ablation_report,
+            operator_holdout_validation=operator_holdout_validation,
+        ),
+        "blocking_gaps": _blocking_gaps(
+            mechanism_ablation_report=mechanism_ablation_report,
+            operator_holdout_validation=operator_holdout_validation,
+        ),
+    }
+    assert_strict_json(report)
+    return report
+
+
+def write_r6_mechanism_research_readiness_report(
+    output: str | Path,
+    **kwargs: Any,
+) -> Path:
+    return write_json_artifact(
+        output,
+        build_r6_mechanism_research_readiness_report(**kwargs),
+    )
+
+
+def _readiness_gates(
+    *,
+    propagation_trace: dict[str, Any],
+    behavioral_update_operator: dict[str, Any],
+    mechanism_ablation_report: dict[str, Any],
+    operator_holdout_validation: dict[str, Any],
+) -> dict[str, bool]:
+    _validate_propagation_trace(propagation_trace)
+    _validate_behavioral_update_operator(behavioral_update_operator)
+    _validate_mechanism_ablation_report(mechanism_ablation_report)
+    _validate_operator_holdout_validation(operator_holdout_validation)
+    return {
+        "mechanism_trace_present": (
+            propagation_trace["acceptance_gates"]["mechanism_trace_present"]
+        ),
+        "dynamic_path_distinct_from_static_prior": propagation_trace[
+            "acceptance_gates"
+        ]["dynamic_path_distinct_from_static_prior"],
+        "behavioral_update_operator_structured": behavioral_update_operator[
+            "acceptance_gates"
+        ]["operator_update_structured"],
+        "mechanism_ablation_positive": mechanism_ablation_report[
+            "acceptance_gates"
+        ]["mechanism_ablation_positive"],
+        "false_alarm_not_hidden": mechanism_ablation_report["acceptance_gates"][
+            "false_alarm_not_hidden"
+        ],
+        "operator_holdout_non_regression": operator_holdout_validation[
+            "acceptance_gates"
+        ]["operator_holdout_non_regression"],
+        "product_guard_preserved": (
+            mechanism_ablation_report["acceptance_gates"][
+                "product_guard_preserved"
+            ]
+            and operator_holdout_validation["acceptance_gates"][
+                "product_guard_required"
+            ]
+        ),
+        "runtime_default_allowed": False,
+        "field_outcome_validated": False,
+    }
+
+
+def _validate_propagation_trace(propagation_trace: dict[str, Any]) -> None:
+    if (
+        propagation_trace.get("schema_version")
+        != R6_MECHANISM_PROPAGATION_TRACE_SCHEMA_VERSION
+    ):
+        raise ValueError(
+            "propagation_trace.schema_version must be "
+            f"{R6_MECHANISM_PROPAGATION_TRACE_SCHEMA_VERSION}"
+        )
+    if propagation_trace.get("status") != "mechanism_propagation_trace_ready":
+        raise ValueError(
+            "propagation_trace.status must be mechanism_propagation_trace_ready"
+        )
+    acceptance_gates = propagation_trace.get("acceptance_gates")
+    if not isinstance(acceptance_gates, dict):
+        raise ValueError("propagation_trace.acceptance_gates must be a JSON object")
+    if acceptance_gates.get("mechanism_trace_present") is not True:
+        raise ValueError(
+            "propagation_trace.acceptance_gates.mechanism_trace_present "
+            "must be True"
+        )
+    if acceptance_gates.get("dynamic_path_distinct_from_static_prior") is not True:
+        raise ValueError(
+            "propagation_trace.acceptance_gates."
+            "dynamic_path_distinct_from_static_prior must be True"
+        )
+
+
+def _validate_behavioral_update_operator(
+    behavioral_update_operator: dict[str, Any],
+) -> None:
+    if (
+        behavioral_update_operator.get("schema_version")
+        != R6_BEHAVIORAL_UPDATE_OPERATOR_SCHEMA_VERSION
+    ):
+        raise ValueError(
+            "behavioral_update_operator.schema_version must be "
+            f"{R6_BEHAVIORAL_UPDATE_OPERATOR_SCHEMA_VERSION}"
+        )
+    if (
+        behavioral_update_operator.get("status")
+        != "behavioral_update_candidate_blocked_pending_holdout"
+    ):
+        raise ValueError(
+            "behavioral_update_operator.status must be "
+            "behavioral_update_candidate_blocked_pending_holdout"
+        )
+    if behavioral_update_operator.get("runtime_default_allowed") is not False:
+        raise ValueError(
+            "behavioral_update_operator.runtime_default_allowed must be False"
+        )
+    acceptance_gates = behavioral_update_operator.get("acceptance_gates")
+    if not isinstance(acceptance_gates, dict):
+        raise ValueError(
+            "behavioral_update_operator.acceptance_gates must be a JSON object"
+        )
+    if acceptance_gates.get("operator_update_structured") is not True:
+        raise ValueError(
+            "behavioral_update_operator.acceptance_gates."
+            "operator_update_structured must be True"
+        )
+    if acceptance_gates.get("runtime_default_allowed") is not False:
+        raise ValueError(
+            "behavioral_update_operator.acceptance_gates."
+            "runtime_default_allowed must be False"
+        )
+
+
+def _validate_mechanism_ablation_report(
+    mechanism_ablation_report: dict[str, Any],
+) -> None:
+    if (
+        mechanism_ablation_report.get("schema_version")
+        != R6_MECHANISM_ABLATION_REPORT_SCHEMA_VERSION
+    ):
+        raise ValueError(
+            "mechanism_ablation_report.schema_version must be "
+            f"{R6_MECHANISM_ABLATION_REPORT_SCHEMA_VERSION}"
+        )
+    if mechanism_ablation_report.get("status") != "mechanism_ablation_diagnostic_only":
+        raise ValueError(
+            "mechanism_ablation_report.status must be "
+            "mechanism_ablation_diagnostic_only"
+        )
+    acceptance_gates = mechanism_ablation_report.get("acceptance_gates")
+    if not isinstance(acceptance_gates, dict):
+        raise ValueError(
+            "mechanism_ablation_report.acceptance_gates must be a JSON object"
+        )
+    if acceptance_gates.get("product_guard_preserved") is not True:
+        raise ValueError(
+            "mechanism_ablation_report.acceptance_gates."
+            "product_guard_preserved must be True"
+        )
+
+
+def _validate_operator_holdout_validation(
+    operator_holdout_validation: dict[str, Any],
+) -> None:
+    if (
+        operator_holdout_validation.get("schema_version")
+        != R6_OPERATOR_HOLDOUT_VALIDATION_SCHEMA_VERSION
+    ):
+        raise ValueError(
+            "operator_holdout_validation.schema_version must be "
+            f"{R6_OPERATOR_HOLDOUT_VALIDATION_SCHEMA_VERSION}"
+        )
+    if (
+        operator_holdout_validation.get("status")
+        != "operator_holdout_validation_failed_current_public_proxies"
+    ):
+        raise ValueError(
+            "operator_holdout_validation.status must be "
+            "operator_holdout_validation_failed_current_public_proxies"
+        )
+    acceptance_gates = operator_holdout_validation.get("acceptance_gates")
+    if not isinstance(acceptance_gates, dict):
+        raise ValueError(
+            "operator_holdout_validation.acceptance_gates must be a JSON object"
+        )
+    if acceptance_gates.get("operator_holdout_non_regression") is not False:
+        raise ValueError(
+            "operator_holdout_validation.acceptance_gates."
+            "operator_holdout_non_regression must be False"
+        )
+    if acceptance_gates.get("runtime_default_allowed") is not False:
+        raise ValueError(
+            "operator_holdout_validation.acceptance_gates."
+            "runtime_default_allowed must be False"
+        )
+    if acceptance_gates.get("field_outcome_validated") is not False:
+        raise ValueError(
+            "operator_holdout_validation.acceptance_gates."
+            "field_outcome_validated must be False"
+        )
+    validation_summary = operator_holdout_validation.get("validation_summary")
+    if not isinstance(validation_summary, dict):
+        raise ValueError(
+            "operator_holdout_validation.validation_summary must be a JSON object"
+        )
+    expected_summary_values = {
+        "passed_trial_count": 0,
+        "non_regression_trial_count": 2,
+        "failed_trial_count": 2,
+        "runtime_default_allowed": False,
+    }
+    for field, expected_value in expected_summary_values.items():
+        if validation_summary.get(field) != expected_value:
+            raise ValueError(
+                "operator_holdout_validation.validation_summary."
+                f"{field} must be {expected_value}"
+            )
+    if (
+        "candidate_update_count" in validation_summary
+        and validation_summary.get("candidate_update_count") != 2
+    ):
+        raise ValueError(
+            "operator_holdout_validation.validation_summary."
+            "candidate_update_count must be 2"
+        )
+    decision = operator_holdout_validation.get("decision")
+    if not isinstance(decision, dict):
+        raise ValueError("operator_holdout_validation.decision must be a JSON object")
+    if decision.get("operator_holdout_passed") is not False:
+        raise ValueError(
+            "operator_holdout_validation.decision.operator_holdout_passed "
+            "must be False"
+        )
+    if decision.get("runtime_default_allowed") is not False:
+        raise ValueError(
+            "operator_holdout_validation.decision.runtime_default_allowed "
+            "must be False"
+        )
+    _validate_holdout_trials_against_summary(
+        operator_holdout_validation=operator_holdout_validation,
+        validation_summary=validation_summary,
+    )
+
+
+def _validate_holdout_trials_against_summary(
+    *,
+    operator_holdout_validation: dict[str, Any],
+    validation_summary: dict[str, Any],
+) -> None:
+    holdout_trials = operator_holdout_validation.get("holdout_trials")
+    if not isinstance(holdout_trials, list) or not holdout_trials:
+        raise ValueError(
+            "operator_holdout_validation.holdout_trials must be a non-empty list"
+        )
+    if len(holdout_trials) != 4:
+        raise ValueError(
+            "operator_holdout_validation.holdout_trials must contain 4 trials"
+        )
+    if validation_summary.get("holdout_trial_count") != len(holdout_trials):
+        raise ValueError(
+            "operator_holdout_validation.validation_summary."
+            "holdout_trial_count must match holdout_trials"
+        )
+    passed_trial_count = 0
+    non_regression_trial_count = 0
+    failed_same_family_status_count = 0
+    seen_trial_identities: set[tuple[str, str]] = set()
+    for trial_index, trial in enumerate(holdout_trials):
+        if not isinstance(trial, dict):
+            raise ValueError(
+                "operator_holdout_validation.holdout_trials"
+                f"[{trial_index}] must be a JSON object"
+            )
+        candidate_update_id = trial.get("candidate_update_id")
+        if candidate_update_id not in EXPECTED_OPERATOR_IDS:
+            raise ValueError(
+                "operator_holdout_validation.holdout_trials"
+                f"[{trial_index}].candidate_update_id must match current MVP"
+            )
+        trial_type = trial.get("trial_type")
+        _validate_holdout_trial_identity(
+            trial=trial,
+            trial_index=trial_index,
+            candidate_update_id=candidate_update_id,
+            trial_type=trial_type,
+        )
+        seen_trial_identities.add((candidate_update_id, trial_type))
+        validation_status = trial.get("validation_status")
+        passed = trial.get("passed")
+        non_regression_only = trial.get("non_regression_only")
+        if passed is True:
+            passed_trial_count += 1
+        if non_regression_only is True:
+            if validation_status != "non_regression_out_of_family_only":
+                raise ValueError(
+                    "operator_holdout_validation.validation_summary."
+                    "non_regression_trial_count must match holdout_trials"
+                )
+            non_regression_trial_count += 1
+        elif validation_status == "non_regression_out_of_family_only":
+            raise ValueError(
+                "operator_holdout_validation.validation_summary."
+                "non_regression_trial_count must match holdout_trials"
+            )
+        if validation_status == "failed_same_family_holdout_regression":
+            if passed is not False:
+                raise ValueError(
+                    "operator_holdout_validation.validation_summary."
+                    "passed_trial_count must match holdout_trials"
+                )
+            if non_regression_only is not False:
+                raise ValueError(
+                    "operator_holdout_validation.validation_summary."
+                    "failed_trial_count must match holdout_trials"
+                )
+            failed_same_family_status_count += 1
+        elif validation_status == "non_regression_out_of_family_only":
+            if passed is not False:
+                raise ValueError(
+                    "operator_holdout_validation.validation_summary."
+                    "passed_trial_count must match holdout_trials"
+                )
+        else:
+            raise ValueError(
+                "operator_holdout_validation.holdout_trials"
+                f"[{trial_index}].validation_status is unsupported"
+            )
+        if trial.get("runtime_default_allowed") is not False:
+            raise ValueError(
+                "operator_holdout_validation.holdout_trials"
+                f"[{trial_index}].runtime_default_allowed must be False"
+            )
+        holdout_results = trial.get("holdout_results")
+        if not isinstance(holdout_results, list) or not holdout_results:
+            raise ValueError(
+                "operator_holdout_validation.holdout_trials"
+                f"[{trial_index}].holdout_results must be a non-empty list"
+            )
+        _validate_holdout_results_identity(
+            holdout_results=holdout_results,
+            expected_source_keys=trial["holdout_source_keys"],
+            trial_index=trial_index,
+        )
+        for result_index, result in enumerate(holdout_results):
+            if not isinstance(result, dict):
+                raise ValueError(
+                    "operator_holdout_validation.holdout_trials"
+                    f"[{trial_index}].holdout_results"
+                    f"[{result_index}] must be a JSON object"
+                )
+            if result.get("runtime_default_allowed") is not False:
+                raise ValueError(
+                    "operator_holdout_validation.holdout_trials"
+                    f"[{trial_index}].holdout_results"
+                    f"[{result_index}].runtime_default_allowed must be False"
+                )
+    expected_trial_identities = {
+        (operator_id, "same_family_current_public_proxy_holdout")
+        for operator_id in EXPECTED_OPERATOR_IDS
+    } | {
+        (operator_id, "out_of_family_non_regression")
+        for operator_id in EXPECTED_OPERATOR_IDS
+    }
+    if seen_trial_identities != expected_trial_identities:
+        raise ValueError(
+            "operator_holdout_validation.holdout_trials trial identity set "
+            "must match current MVP"
+        )
+    if passed_trial_count != validation_summary["passed_trial_count"]:
+        raise ValueError(
+            "operator_holdout_validation.validation_summary."
+            "passed_trial_count must match holdout_trials"
+        )
+    if (
+        non_regression_trial_count
+        != validation_summary["non_regression_trial_count"]
+    ):
+        raise ValueError(
+            "operator_holdout_validation.validation_summary."
+            "non_regression_trial_count must match holdout_trials"
+        )
+    if failed_same_family_status_count != validation_summary["failed_trial_count"]:
+        raise ValueError(
+            "operator_holdout_validation.validation_summary."
+            "failed_trial_count must match holdout_trials"
+        )
+
+
+def _validate_holdout_trial_identity(
+    *,
+    trial: dict[str, Any],
+    trial_index: int,
+    candidate_update_id: str,
+    trial_type: Any,
+) -> None:
+    if trial_type == "same_family_current_public_proxy_holdout":
+        expected_trial_id = f"operator-holdout:{candidate_update_id}:anes"
+        expected_source_keys = SAME_FAMILY_HOLDOUT_SOURCE_KEYS
+    elif trial_type == "out_of_family_non_regression":
+        expected_trial_id = (
+            f"operator-holdout:{candidate_update_id}:"
+            "htops-non-regression"
+        )
+        expected_source_keys = [OUT_OF_FAMILY_NON_REGRESSION_SOURCE_KEY]
+    else:
+        raise ValueError(
+            "operator_holdout_validation.holdout_trials"
+            f"[{trial_index}].trial_type must match current MVP"
+        )
+    if trial.get("trial_id") != expected_trial_id:
+        raise ValueError(
+            "operator_holdout_validation.holdout_trials"
+            f"[{trial_index}].trial_id must match current MVP"
+        )
+    if trial.get("holdout_source_keys") != expected_source_keys:
+        raise ValueError(
+            "operator_holdout_validation.holdout_trials"
+            f"[{trial_index}].holdout_source_keys must match current MVP"
+        )
+
+
+def _validate_holdout_results_identity(
+    *,
+    holdout_results: list[Any],
+    expected_source_keys: list[str],
+    trial_index: int,
+) -> None:
+    if len(holdout_results) != len(expected_source_keys):
+        raise ValueError(
+            "operator_holdout_validation.holdout_trials"
+            f"[{trial_index}].holdout_results source set must match current MVP"
+        )
+    for result_index, result in enumerate(holdout_results):
+        if not isinstance(result, dict):
+            continue
+        expected_source_key = expected_source_keys[result_index]
+        if result.get("source_key") != expected_source_key:
+            raise ValueError(
+                "operator_holdout_validation.holdout_trials"
+                f"[{trial_index}].holdout_results"
+                f"[{result_index}].source_key must match current MVP"
+            )
+        expected_case = EXPECTED_HOLDOUT_RESULT_CASES[expected_source_key]
+        for case_field, expected_value in expected_case.items():
+            if result.get(case_field) != expected_value:
+                raise ValueError(
+                    "operator_holdout_validation.holdout_trials"
+                    f"[{trial_index}].holdout_results"
+                    f"[{result_index}].{case_field} must match current MVP"
+                )
+        if result.get("method") != "mechanism_propagation":
+            raise ValueError(
+                "operator_holdout_validation.holdout_trials"
+                f"[{trial_index}].holdout_results"
+                f"[{result_index}].method must be mechanism_propagation"
+            )
+
+
+def _risk_flags(
+    *,
+    mechanism_ablation_report: dict[str, Any],
+    operator_holdout_validation: dict[str, Any],
+) -> list[str]:
+    return _merge_lists(
+        mechanism_ablation_report.get("risk_flags", []),
+        operator_holdout_validation.get("risk_flags", []),
+        [
+            "mechanism_research_diagnostic_only",
+            "not_ccf_a_ready",
+            "runtime_default_blocked",
+        ],
+    )
+
+
+def _blocking_gaps(
+    *,
+    mechanism_ablation_report: dict[str, Any],
+    operator_holdout_validation: dict[str, Any],
+) -> list[str]:
+    return _merge_lists(
+        mechanism_ablation_report.get("blocking_gaps", []),
+        operator_holdout_validation.get("blocking_gaps", []),
+    )
+
+
+def _source_refs(*artifacts: dict[str, Any]) -> list[str]:
+    refs = []
+    for artifact in artifacts:
+        artifact_id = artifact.get("artifact_id")
+        if artifact_id:
+            refs.append(str(artifact_id))
+        refs.extend(str(ref) for ref in artifact.get("source_refs", []))
+    return list(dict.fromkeys(refs))
+
+
+def _merge_lists(*values: list[Any]) -> list[str]:
+    merged = []
+    for value in values:
+        if not isinstance(value, list):
+            continue
+        for item in value:
+            if not isinstance(item, str) or not item:
+                continue
+            if item not in merged:
+                merged.append(item)
+    return merged
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--artifact-id", required=True)
+    parser.add_argument("--run-id", required=True)
+    parser.add_argument("--output", required=True)
+    args = parser.parse_args()
+
+    output_path = write_r6_mechanism_research_readiness_report(
+        args.output,
+        artifact_id=args.artifact_id,
+        run_id=args.run_id,
+    )
+    report = json.loads(Path(output_path).read_text())
+    print(
+        json.dumps(
+            {
+                "artifact_id": report["artifact_id"],
+                "mechanism_mvp_result": report["decision"][
+                    "mechanism_mvp_result"
+                ],
+                "output": str(output_path),
+                "status": report["status"],
+            },
+            sort_keys=True,
+            allow_nan=False,
+        )
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

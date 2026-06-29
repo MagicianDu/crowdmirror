@@ -1,0 +1,132 @@
+{
+  "acceptance_gates": {
+    "all_product_visible_claims_source_backed": true,
+    "claim_evidence_registry_present": true,
+    "counterfactual_policy_comparison_source_backed": true,
+    "field_outcome_validated": false,
+    "no_source_claim_rejected": true,
+    "runtime_default_allowed": false,
+    "supported_value_count_gt_zero": true
+  },
+  "allowed_claims": [
+    "Risk interval can be presented as a guarded supported interval when coverage and width gates pass.",
+    "Risk distribution and false-alarm control can be presented as guarded current-proxy supported claims.",
+    "Abnormal segments can be presented as guarded proxy/audit supported claims.",
+    "Counterfactual policy comparison can be presented as diagnostic current-proxy decision support."
+  ],
+  "artifact_id": "r6-product-claim-evidence-registry-current-001",
+  "blocked_claims": [
+    "Research \u5df2\u5b8c\u6574\u652f\u6491 Product \u5168\u90e8\u6838\u5fc3\u4ef7\u503c",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "\u5019\u9009\u66f4\u65b0\u5df2\u53ef\u81ea\u52a8\u4e0a\u7ebf"
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "claim_results": [
+    {
+      "blocked_reason": "trend_direction_accuracy_below_validation_threshold",
+      "claim_status": "diagnostic",
+      "product_section": "trend_direction",
+      "source_artifact_ids": [
+        "r6-product-claim-evidence-registry-current-001-trend-interval-calibration"
+      ],
+      "support_status": "partial_current_proxy"
+    },
+    {
+      "blocked_reason": "",
+      "claim_status": "guarded",
+      "product_section": "risk_interval",
+      "source_artifact_ids": [
+        "r6-product-claim-evidence-registry-current-001-trend-interval-calibration"
+      ],
+      "support_status": "guarded_interval_supported"
+    },
+    {
+      "blocked_reason": "field_holdout_missing",
+      "claim_status": "guarded",
+      "product_section": "risk_distribution",
+      "source_artifact_ids": [
+        "r6-product-claim-evidence-registry-current-001-segment-risk-ranking",
+        "r6-product-claim-evidence-registry-current-001-false-alarm-control"
+      ],
+      "support_status": "supported_current_proxy_guarded"
+    },
+    {
+      "blocked_reason": "field_segment_labels_missing",
+      "claim_status": "guarded",
+      "product_section": "abnormal_segments",
+      "source_artifact_ids": [
+        "r6-product-claim-evidence-registry-current-001-abnormal-segment-validation",
+        "r6-product-claim-evidence-registry-current-001-segment-risk-ranking"
+      ],
+      "support_status": "guarded_proxy_supported"
+    },
+    {
+      "blocked_reason": "operator_holdout_not_runtime_default",
+      "claim_status": "diagnostic",
+      "product_section": "mechanism_explanation",
+      "source_artifact_ids": [
+        "r6-product-claim-evidence-registry-current-001-mechanism-ablation"
+      ],
+      "support_status": "diagnostic_only"
+    },
+    {
+      "blocked_reason": "holdout_validation_missing",
+      "claim_status": "guarded",
+      "product_section": "false_alarm_control",
+      "source_artifact_ids": [
+        "r6-product-claim-evidence-registry-current-001-false-alarm-control"
+      ],
+      "support_status": "supported_current_proxy_guarded"
+    },
+    {
+      "blocked_reason": "independent_holdout_not_passed",
+      "claim_status": "diagnostic",
+      "product_section": "counterfactual_policy_comparison",
+      "source_artifact_ids": [
+        "r6-learning-counterfactual-simulator-current-001",
+        "r6-learning-counterfactual-holdout-validation-current-001"
+      ],
+      "support_status": "guarded_current_proxy_positive_signal"
+    },
+    {
+      "blocked_reason": "bounded_feedback_protocol_not_yet_available",
+      "claim_status": "blocked",
+      "product_section": "outcome_feedback",
+      "source_artifact_ids": [
+        "r6-product-claim-evidence-registry-current-001-cross-case-transfer"
+      ],
+      "support_status": "blocked_until_feedback_protocol"
+    },
+    {
+      "blocked_reason": "accepted_rejected_candidate_contract_missing",
+      "claim_status": "blocked",
+      "product_section": "bounded_update_candidate",
+      "source_artifact_ids": [
+        "r6-product-claim-evidence-registry-current-001-cross-case-transfer"
+      ],
+      "support_status": "blocked_until_feedback_protocol"
+    }
+  ],
+  "run_id": "r6-learning-counterfactual-current",
+  "schema_version": "r6-product-claim-evidence-registry-v1",
+  "source_refs": [
+    "r6-product-claim-evidence-registry-current-001-trend-interval-calibration",
+    "r6-product-claim-evidence-registry-current-001-segment-risk-ranking",
+    "r6-product-claim-evidence-registry-current-001-false-alarm-control",
+    "r6-product-claim-evidence-registry-current-001-abnormal-segment-validation",
+    "r6-product-claim-evidence-registry-current-001-mechanism-ablation",
+    "r6-learning-counterfactual-simulator-current-001",
+    "r6-learning-counterfactual-holdout-validation-current-001",
+    "r6-product-claim-evidence-registry-current-001-cross-case-transfer"
+  ],
+  "status": "product_claim_evidence_registry_ready_guarded",
+  "summary": {
+    "blocked_claim_count": 2,
+    "claim_count": 9,
+    "diagnostic_claim_count": 3,
+    "guarded_claim_count": 4,
+    "supported_value_count": 5,
+    "validated_claim_count": 0
+  }
+}

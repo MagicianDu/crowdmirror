@@ -1,0 +1,46 @@
+{
+  "acceptance_decision": "reject_holdout_review_no_shadow_candidates",
+  "acceptance_gates": {
+    "accepted_shadow_candidates_present": false,
+    "holdout_review_executed": false,
+    "holdout_review_passed": false,
+    "independent_holdout_present": false,
+    "product_default_allowed": false,
+    "runtime_default_allowed": false
+  },
+  "allowed_claims": [
+    "Customer feedback holdout review harness is ready, but no accepted shadow replay candidates are available."
+  ],
+  "artifact_id": "r12-customer-feedback-shadow-replay-holdout-review-current-001",
+  "blocked_claims": [
+    "accepted_shadow_candidates_present=true",
+    "independent_holdout_present=true",
+    "holdout_review_executed=true",
+    "Product default can use customer feedback holdout review by default",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "candidate_holdout_results": [],
+  "claim_level": "customer_feedback_holdout_review_blocked",
+  "holdout_review_summary": {
+    "accepted_shadow_candidate_count": 0,
+    "holdout_review_executed": false,
+    "holdout_review_passed": false,
+    "holdout_review_requested_at": "2026-06-28T11:00:00Z",
+    "independent_holdout_case_count": 0,
+    "shadow_replay_artifact_id": "r12-customer-feedback-update-shadow-replay-current-001"
+  },
+  "next_required_artifact": "customer_feedback_shadow_replay_holdout_review",
+  "run_id": "r12-l26-current-001",
+  "schema_version": "r12-customer-feedback-shadow-replay-holdout-review-v1",
+  "source_refs": [
+    "r12-customer-feedback-update-shadow-replay-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-customer-feedback-update-shadow-replay-current-001",
+      "path": "experiments/results/r12_customer_feedback_update_shadow_replay/r12-customer-feedback-update-shadow-replay-current-001.json"
+    }
+  ],
+  "status": "r12_customer_feedback_shadow_replay_holdout_review_blocked_no_shadow_candidates"
+}

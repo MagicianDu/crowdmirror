@@ -1,0 +1,756 @@
+{
+  "acceptance_gates": {
+    "current_r12_gap_confirmed": true,
+    "existing_train_cases_excluded": true,
+    "field_outcome_validated": false,
+    "high_risk_research_holdout_candidates_present": true,
+    "product_default_low_sensitive_high_risk_holdout_present": false,
+    "runtime_default_allowed": false,
+    "source_backed_public_proxy_present": true
+  },
+  "allowed_claims": [
+    "R12 has source-backed public proxy candidates for a research-only high-risk holdout replay.",
+    "Sensitive or high-governance segment axes require explicit Product approval or customer outcome before default use."
+  ],
+  "artifact_id": "r12-high-risk-holdout-registry-current-001",
+  "blocked_claims": [
+    "R12 Product default high-risk recovery validated",
+    "R12 Product core method ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "customer outcome validated",
+    "sensitive segment axes can be used as Product default",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "candidate_summary": {
+    "current_r12_holdout_high_risk_case_count": 0,
+    "current_r12_holdout_static_prior_miss_case_count": 0,
+    "product_default_eligible_case_count": 0,
+    "rejected_existing_train_case_count": 2,
+    "research_eligible_case_count": 29,
+    "research_recoverable_static_prior_miss_count": 12,
+    "scanned_case_count": 84,
+    "scanned_segment_column_count": 6
+  },
+  "claim_level": "source_backed_public_proxy_high_risk_holdout_candidates",
+  "current_r12_gap": {
+    "abnormal_segment_recall_holdout_covered": false,
+    "extended_metric_support_level": "guarded_mae_positive_extended_metric_coverage_gap",
+    "holdout_high_risk_case_count": 0,
+    "holdout_static_prior_miss_case_count": 0,
+    "static_prior_miss_recovery_holdout_covered": false
+  },
+  "holdout_candidate_cases": [
+    {
+      "case_id": "hps_TAGE_81",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.763693,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.597381,
+      "r12_update_recovers_static_prior_miss": true,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "81",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.259568,
+      "source_signal_risk_share": 0.503491,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 104
+    },
+    {
+      "case_id": "hps_TAGE_77",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.730453,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.558777,
+      "r12_update_recovers_static_prior_miss": true,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "77",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.189379,
+      "source_signal_risk_share": 0.433302,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 183
+    },
+    {
+      "case_id": "hps_TAGE_67",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.660097,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.501904,
+      "r12_update_recovers_static_prior_miss": true,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "67",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.085972,
+      "source_signal_risk_share": 0.329895,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 263
+    },
+    {
+      "case_id": "hps_TAGE_82",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.65493,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.458965,
+      "r12_update_recovers_static_prior_miss": false,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "82",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.007901,
+      "source_signal_risk_share": 0.251824,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 115
+    },
+    {
+      "case_id": "hps_TAGE_71",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.632704,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.554883,
+      "r12_update_recovers_static_prior_miss": true,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "71",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.182299,
+      "source_signal_risk_share": 0.426222,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 237
+    },
+    {
+      "case_id": "hps_TAGE_76",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.623832,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.551378,
+      "r12_update_recovers_static_prior_miss": true,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "76",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.175926,
+      "source_signal_risk_share": 0.419849,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 215
+    },
+    {
+      "case_id": "hps_TAGE_74",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.614109,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.464009,
+      "r12_update_recovers_static_prior_miss": false,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "74",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.017073,
+      "source_signal_risk_share": 0.260996,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 232
+    },
+    {
+      "case_id": "hps_TAGE_68",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.60178,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.515826,
+      "r12_update_recovers_static_prior_miss": true,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "68",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.111286,
+      "source_signal_risk_share": 0.355209,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 280
+    },
+    {
+      "case_id": "hps_RHHINCOME_7",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.601441,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.491226,
+      "r12_update_recovers_static_prior_miss": true,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "RHHINCOME",
+        "segment_value": "7",
+        "sensitivity_level": "socioeconomic_sensitive"
+      },
+      "source_signal_delta": 0.066559,
+      "source_signal_risk_share": 0.310482,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 3050
+    },
+    {
+      "case_id": "hps_TAGE_55",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.59374,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.448336,
+      "r12_update_recovers_static_prior_miss": false,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "55",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": -0.011423,
+      "source_signal_risk_share": 0.2325,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 189
+    },
+    {
+      "case_id": "hps_TAGE_69",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.590232,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.536701,
+      "r12_update_recovers_static_prior_miss": true,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "69",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.14924,
+      "source_signal_risk_share": 0.393163,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 249
+    },
+    {
+      "case_id": "hps_TAGE_66",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.581009,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.545666,
+      "r12_update_recovers_static_prior_miss": true,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "66",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.16554,
+      "source_signal_risk_share": 0.409463,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 264
+    },
+    {
+      "case_id": "hps_TAGE_79",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.57537,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.52872,
+      "r12_update_recovers_static_prior_miss": true,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "79",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.134729,
+      "source_signal_risk_share": 0.378652,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 194
+    },
+    {
+      "case_id": "hps_TAGE_78",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.566932,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.454319,
+      "r12_update_recovers_static_prior_miss": false,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "78",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": -0.000545,
+      "source_signal_risk_share": 0.243378,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 165
+    },
+    {
+      "case_id": "hps_TAGE_75",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.566391,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.441695,
+      "r12_update_recovers_static_prior_miss": false,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "75",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": -0.023499,
+      "source_signal_risk_share": 0.220424,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 197
+    },
+    {
+      "case_id": "hps_TAGE_70",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.562667,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.453418,
+      "r12_update_recovers_static_prior_miss": false,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "70",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": -0.002184,
+      "source_signal_risk_share": 0.241739,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 262
+    },
+    {
+      "case_id": "hps_TAGE_64",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.553452,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.483822,
+      "r12_update_recovers_static_prior_miss": false,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "64",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.053097,
+      "source_signal_risk_share": 0.29702,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 241
+    },
+    {
+      "case_id": "hps_TAGE_88",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.549237,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.568213,
+      "r12_update_recovers_static_prior_miss": true,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "88",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.206534,
+      "source_signal_risk_share": 0.450457,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 187
+    },
+    {
+      "case_id": "hps_TAGE_39",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.547411,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.415035,
+      "r12_update_recovers_static_prior_miss": false,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "39",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": -0.071971,
+      "source_signal_risk_share": 0.171952,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 129
+    },
+    {
+      "case_id": "hps_TAGE_73",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.542813,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.472776,
+      "r12_update_recovers_static_prior_miss": false,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "73",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.033013,
+      "source_signal_risk_share": 0.276936,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 230
+    },
+    {
+      "case_id": "hps_TAGE_72",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.517916,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.454704,
+      "r12_update_recovers_static_prior_miss": false,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "72",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.000154,
+      "source_signal_risk_share": 0.244077,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 275
+    },
+    {
+      "case_id": "hps_RRACETH_1",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.515872,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.472101,
+      "r12_update_recovers_static_prior_miss": false,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "RRACETH",
+        "segment_value": "1",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.031786,
+      "source_signal_risk_share": 0.275709,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 6520
+    },
+    {
+      "case_id": "hps_TAGE_60",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.515487,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.469869,
+      "r12_update_recovers_static_prior_miss": false,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "60",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.027728,
+      "source_signal_risk_share": 0.271651,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 220
+    },
+    {
+      "case_id": "hps_TAGE_42",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.511203,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.492385,
+      "r12_update_recovers_static_prior_miss": true,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "42",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.068666,
+      "source_signal_risk_share": 0.312589,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 124
+    },
+    {
+      "case_id": "hps_TAGE_63",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.50943,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.461215,
+      "r12_update_recovers_static_prior_miss": false,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "63",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.011993,
+      "source_signal_risk_share": 0.255916,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 243
+    },
+    {
+      "case_id": "hps_TAGE_61",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.49362,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.463639,
+      "r12_update_recovers_static_prior_miss": false,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "61",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.0164,
+      "source_signal_risk_share": 0.260323,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 218
+    },
+    {
+      "case_id": "hps_ESEX_1",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.493435,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.4687,
+      "r12_update_recovers_static_prior_miss": false,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "ESEX",
+        "segment_value": "1",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.025601,
+      "source_signal_risk_share": 0.269524,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 5252
+    },
+    {
+      "case_id": "hps_TAGE_65",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.492714,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.456995,
+      "r12_update_recovers_static_prior_miss": false,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "65",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.00432,
+      "source_signal_risk_share": 0.248243,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 249
+    },
+    {
+      "case_id": "hps_TAGE_46",
+      "field_outcome_validated": false,
+      "observed_high_risk": true,
+      "observed_outcome_proxy": 0.490454,
+      "product_default_block_reason": "sensitive_or_high_governance_segment_axis",
+      "product_default_eligible": false,
+      "r12_after_prediction": 0.467826,
+      "r12_update_recovers_static_prior_miss": false,
+      "research_holdout_eligible": true,
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "TAGE",
+        "segment_value": "46",
+        "sensitivity_level": "protected_sensitive"
+      },
+      "source_signal_delta": 0.024012,
+      "source_signal_risk_share": 0.267935,
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "valid_response_count": 146
+    }
+  ],
+  "metric_support_projection": {
+    "field_outcome_validated": false,
+    "product_default_abnormal_segment_recall_holdout_coverable": false,
+    "product_default_static_prior_miss_recovery_holdout_coverable": false,
+    "research_abnormal_segment_recall_holdout_coverable": true,
+    "research_static_prior_miss_recovery_holdout_coverable": true,
+    "runtime_default_allowed": false
+  },
+  "next_required_artifact": "r12_high_risk_holdout_transfer_replay",
+  "registry_contract": {
+    "derives_from_hps_ingestion": true,
+    "excludes_existing_r12_train_cases": true,
+    "field_outcome_validated": false,
+    "outcome_proxy": "PRICESTRESS",
+    "product_default_requires_low_sensitive_axis": true,
+    "runtime_default_allowed": false,
+    "source_backed_public_proxy": true,
+    "source_signal": "PRICECONCERN"
+  },
+  "rejected_high_risk_cases": [
+    {
+      "case_id": "hps_METRO_STATUS_2",
+      "field_outcome_validated": false,
+      "observed_outcome_proxy": 0.55329,
+      "rejection_reason": "existing_r12_train_case_leakage_guard",
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "METRO_STATUS",
+        "segment_value": "2",
+        "sensitivity_level": "low"
+      },
+      "source_signal_risk_share": 0.33601
+    },
+    {
+      "case_id": "hps_REGION_2",
+      "field_outcome_validated": false,
+      "observed_outcome_proxy": 0.5214,
+      "rejection_reason": "existing_r12_train_case_leakage_guard",
+      "runtime_default_allowed": false,
+      "segment_labels": {
+        "segment_column": "REGION",
+        "segment_value": "2",
+        "sensitivity_level": "low"
+      },
+      "source_signal_risk_share": 0.32435
+    }
+  ],
+  "run_id": "r12-l5-current",
+  "schema_version": "r12-high-risk-holdout-registry-v1",
+  "selection_policy": {
+    "exclude_existing_r12_train_cases": true,
+    "high_risk_rule": "outcome_proxy_share >= global_outcome_risk_share + 0.03",
+    "minimum_valid_response_count": 100,
+    "outcome_proxy": "PRICESTRESS",
+    "product_default_allowed_segment_sensitivity": "low_only",
+    "source_signal": "PRICECONCERN",
+    "static_prior_miss_required": true
+  },
+  "source_refs": [
+    "r10-hps-policy-reaction-ingestion-current-001",
+    "r12-transfer-validation-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r10-hps-policy-reaction-ingestion-current-001",
+      "path": "experiments/results/r10_hps_policy_reaction_ingestion/r10-hps-policy-reaction-ingestion-current-001.json"
+    },
+    {
+      "artifact_id": "r12-transfer-validation-current-001",
+      "path": "experiments/results/r12_transfer_validation/r12-transfer-validation-current-001.json"
+    }
+  ],
+  "status": "r12_high_risk_holdout_registry_ready_research_only"
+}

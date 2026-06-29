@@ -1,0 +1,580 @@
+{
+  "acceptance_gates": {
+    "false_alarm_reducible_by_threshold": false,
+    "passing_threshold_found": false,
+    "separating_threshold_found": false,
+    "threshold_sweep_present": true,
+    "true_signal_false_alarm_delta_overlap": true
+  },
+  "artifact_id": "r6-risk-discovery-threshold-sweep-current-001",
+  "blocking_gaps": [
+    "needs_non_threshold_false_alarm_discriminator",
+    "needs_risk_discovery_holdout_validation",
+    "needs_field_outcome_validation"
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Threshold sweep diagnoses whether rule tuning can reduce false alarms; it is not field validation."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "decision": {
+    "decision": "needs_non_threshold_false_alarm_discriminator",
+    "recommended_next_step": "add_case_level_features_or_in_condition_holdout_before_threshold_tuning",
+    "threshold_tuning_sufficient": false
+  },
+  "risk_flags": [
+    "threshold_sweep_not_field_validation",
+    "threshold_tuning_cannot_resolve_current_false_alarms",
+    "true_signal_and_false_alarm_share_same_delta"
+  ],
+  "run_id": "r6-risk-discovery-threshold-sweep-run",
+  "schema_version": "r6-risk-discovery-threshold-sweep-v1",
+  "source_refs": [
+    "r6-risk-discovery-threshold-sweep-current-001-threshold-0p000",
+    "r6-risk-discovery-threshold-sweep-current-001-threshold-0p010",
+    "r6-risk-discovery-threshold-sweep-current-001-threshold-0p020",
+    "r6-risk-discovery-threshold-sweep-current-001-threshold-0p030",
+    "r6-risk-discovery-threshold-sweep-current-001-threshold-0p040",
+    "r6-risk-discovery-threshold-sweep-current-001-threshold-0p050",
+    "r6-risk-discovery-threshold-sweep-current-001-threshold-0p060",
+    "r6-risk-discovery-threshold-sweep-current-001-threshold-0p070",
+    "r6-risk-discovery-threshold-sweep-current-001-threshold-0p080",
+    "r6-risk-discovery-threshold-sweep-current-001-threshold-0p090",
+    "r6-risk-discovery-threshold-sweep-current-001-threshold-0p100"
+  ],
+  "status": "threshold_sweep_no_separating_rule",
+  "summary": {
+    "best_threshold": 0.0,
+    "best_threshold_score": 1.666,
+    "best_threshold_status": "decision_value_partial_high_false_alarm",
+    "false_alarm_delta_values": [
+      0.07
+    ],
+    "false_alarm_reducible_by_threshold": false,
+    "passing_threshold_count": 0,
+    "separating_threshold_found": false,
+    "threshold_count": 11,
+    "true_positive_delta_values": [
+      0.07
+    ],
+    "true_signal_false_alarm_delta_overlap": true,
+    "unique_interaction_delta_values": [
+      0.07
+    ]
+  },
+  "sweep_definition": {
+    "high_risk_threshold": 0.4,
+    "interaction_delta_thresholds": [
+      0.0,
+      0.01,
+      0.02,
+      0.03,
+      0.04,
+      0.05,
+      0.06,
+      0.07,
+      0.08,
+      0.09,
+      0.1
+    ],
+    "purpose": "Test whether threshold tuning alone can reduce false alarms while preserving static-prior miss recovery.",
+    "static_miss_threshold": 0.05
+  },
+  "threshold_results": [
+    {
+      "case_results": [
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": false,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": true,
+          "recovered_static_prior_miss": true,
+          "source_key": "htops_cost_pressure"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": true,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_health_heldout"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": true,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_climate_heldout"
+        }
+      ],
+      "decision_value_metrics_artifact_id": "r6-risk-discovery-threshold-sweep-current-001-threshold-0p000",
+      "decision_value_passed": false,
+      "risk_utility_score": 1.666,
+      "status": "decision_value_partial_high_false_alarm",
+      "summary": {
+        "case_count": 3,
+        "decision_regret_reduction": 1,
+        "false_alarm_count": 2,
+        "false_alarm_rate": 0.667,
+        "interaction_flagged_case_count": 3,
+        "interaction_flagged_observed_high_risk_count": 1,
+        "static_prior_miss_count": 1,
+        "static_prior_miss_recovered_count": 1,
+        "static_prior_miss_recovery_rate": 1.0,
+        "top_k_risk_hit_rate": 0.333
+      },
+      "threshold": 0.0
+    },
+    {
+      "case_results": [
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": false,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": true,
+          "recovered_static_prior_miss": true,
+          "source_key": "htops_cost_pressure"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": true,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_health_heldout"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": true,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_climate_heldout"
+        }
+      ],
+      "decision_value_metrics_artifact_id": "r6-risk-discovery-threshold-sweep-current-001-threshold-0p010",
+      "decision_value_passed": false,
+      "risk_utility_score": 1.666,
+      "status": "decision_value_partial_high_false_alarm",
+      "summary": {
+        "case_count": 3,
+        "decision_regret_reduction": 1,
+        "false_alarm_count": 2,
+        "false_alarm_rate": 0.667,
+        "interaction_flagged_case_count": 3,
+        "interaction_flagged_observed_high_risk_count": 1,
+        "static_prior_miss_count": 1,
+        "static_prior_miss_recovered_count": 1,
+        "static_prior_miss_recovery_rate": 1.0,
+        "top_k_risk_hit_rate": 0.333
+      },
+      "threshold": 0.01
+    },
+    {
+      "case_results": [
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": false,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": true,
+          "recovered_static_prior_miss": true,
+          "source_key": "htops_cost_pressure"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": true,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_health_heldout"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": true,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_climate_heldout"
+        }
+      ],
+      "decision_value_metrics_artifact_id": "r6-risk-discovery-threshold-sweep-current-001-threshold-0p020",
+      "decision_value_passed": false,
+      "risk_utility_score": 1.666,
+      "status": "decision_value_partial_high_false_alarm",
+      "summary": {
+        "case_count": 3,
+        "decision_regret_reduction": 1,
+        "false_alarm_count": 2,
+        "false_alarm_rate": 0.667,
+        "interaction_flagged_case_count": 3,
+        "interaction_flagged_observed_high_risk_count": 1,
+        "static_prior_miss_count": 1,
+        "static_prior_miss_recovered_count": 1,
+        "static_prior_miss_recovery_rate": 1.0,
+        "top_k_risk_hit_rate": 0.333
+      },
+      "threshold": 0.02
+    },
+    {
+      "case_results": [
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": false,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": true,
+          "recovered_static_prior_miss": true,
+          "source_key": "htops_cost_pressure"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": true,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_health_heldout"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": true,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_climate_heldout"
+        }
+      ],
+      "decision_value_metrics_artifact_id": "r6-risk-discovery-threshold-sweep-current-001-threshold-0p030",
+      "decision_value_passed": false,
+      "risk_utility_score": 1.666,
+      "status": "decision_value_partial_high_false_alarm",
+      "summary": {
+        "case_count": 3,
+        "decision_regret_reduction": 1,
+        "false_alarm_count": 2,
+        "false_alarm_rate": 0.667,
+        "interaction_flagged_case_count": 3,
+        "interaction_flagged_observed_high_risk_count": 1,
+        "static_prior_miss_count": 1,
+        "static_prior_miss_recovered_count": 1,
+        "static_prior_miss_recovery_rate": 1.0,
+        "top_k_risk_hit_rate": 0.333
+      },
+      "threshold": 0.03
+    },
+    {
+      "case_results": [
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": false,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": true,
+          "recovered_static_prior_miss": true,
+          "source_key": "htops_cost_pressure"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": true,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_health_heldout"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": true,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_climate_heldout"
+        }
+      ],
+      "decision_value_metrics_artifact_id": "r6-risk-discovery-threshold-sweep-current-001-threshold-0p040",
+      "decision_value_passed": false,
+      "risk_utility_score": 1.666,
+      "status": "decision_value_partial_high_false_alarm",
+      "summary": {
+        "case_count": 3,
+        "decision_regret_reduction": 1,
+        "false_alarm_count": 2,
+        "false_alarm_rate": 0.667,
+        "interaction_flagged_case_count": 3,
+        "interaction_flagged_observed_high_risk_count": 1,
+        "static_prior_miss_count": 1,
+        "static_prior_miss_recovered_count": 1,
+        "static_prior_miss_recovery_rate": 1.0,
+        "top_k_risk_hit_rate": 0.333
+      },
+      "threshold": 0.04
+    },
+    {
+      "case_results": [
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": false,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": true,
+          "recovered_static_prior_miss": true,
+          "source_key": "htops_cost_pressure"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": true,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_health_heldout"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": true,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_climate_heldout"
+        }
+      ],
+      "decision_value_metrics_artifact_id": "r6-risk-discovery-threshold-sweep-current-001-threshold-0p050",
+      "decision_value_passed": false,
+      "risk_utility_score": 1.666,
+      "status": "decision_value_partial_high_false_alarm",
+      "summary": {
+        "case_count": 3,
+        "decision_regret_reduction": 1,
+        "false_alarm_count": 2,
+        "false_alarm_rate": 0.667,
+        "interaction_flagged_case_count": 3,
+        "interaction_flagged_observed_high_risk_count": 1,
+        "static_prior_miss_count": 1,
+        "static_prior_miss_recovered_count": 1,
+        "static_prior_miss_recovery_rate": 1.0,
+        "top_k_risk_hit_rate": 0.333
+      },
+      "threshold": 0.05
+    },
+    {
+      "case_results": [
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": false,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": true,
+          "recovered_static_prior_miss": true,
+          "source_key": "htops_cost_pressure"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": true,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_health_heldout"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": true,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_climate_heldout"
+        }
+      ],
+      "decision_value_metrics_artifact_id": "r6-risk-discovery-threshold-sweep-current-001-threshold-0p060",
+      "decision_value_passed": false,
+      "risk_utility_score": 1.666,
+      "status": "decision_value_partial_high_false_alarm",
+      "summary": {
+        "case_count": 3,
+        "decision_regret_reduction": 1,
+        "false_alarm_count": 2,
+        "false_alarm_rate": 0.667,
+        "interaction_flagged_case_count": 3,
+        "interaction_flagged_observed_high_risk_count": 1,
+        "static_prior_miss_count": 1,
+        "static_prior_miss_recovered_count": 1,
+        "static_prior_miss_recovery_rate": 1.0,
+        "top_k_risk_hit_rate": 0.333
+      },
+      "threshold": 0.06
+    },
+    {
+      "case_results": [
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": false,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": true,
+          "recovered_static_prior_miss": true,
+          "source_key": "htops_cost_pressure"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": true,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_health_heldout"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": true,
+          "interaction_flags_new_risk": true,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_climate_heldout"
+        }
+      ],
+      "decision_value_metrics_artifact_id": "r6-risk-discovery-threshold-sweep-current-001-threshold-0p070",
+      "decision_value_passed": false,
+      "risk_utility_score": 1.666,
+      "status": "decision_value_partial_high_false_alarm",
+      "summary": {
+        "case_count": 3,
+        "decision_regret_reduction": 1,
+        "false_alarm_count": 2,
+        "false_alarm_rate": 0.667,
+        "interaction_flagged_case_count": 3,
+        "interaction_flagged_observed_high_risk_count": 1,
+        "static_prior_miss_count": 1,
+        "static_prior_miss_recovered_count": 1,
+        "static_prior_miss_recovery_rate": 1.0,
+        "top_k_risk_hit_rate": 0.333
+      },
+      "threshold": 0.07
+    },
+    {
+      "case_results": [
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": false,
+          "interaction_flags_new_risk": false,
+          "observed_high_risk": true,
+          "recovered_static_prior_miss": false,
+          "source_key": "htops_cost_pressure"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": false,
+          "interaction_flags_new_risk": false,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_health_heldout"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": false,
+          "interaction_flags_new_risk": false,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_climate_heldout"
+        }
+      ],
+      "decision_value_metrics_artifact_id": "r6-risk-discovery-threshold-sweep-current-001-threshold-0p080",
+      "decision_value_passed": false,
+      "risk_utility_score": 0.0,
+      "status": "decision_value_partial_high_false_alarm",
+      "summary": {
+        "case_count": 3,
+        "decision_regret_reduction": 0,
+        "false_alarm_count": 0,
+        "false_alarm_rate": 0.0,
+        "interaction_flagged_case_count": 0,
+        "interaction_flagged_observed_high_risk_count": 0,
+        "static_prior_miss_count": 1,
+        "static_prior_miss_recovered_count": 0,
+        "static_prior_miss_recovery_rate": 0.0,
+        "top_k_risk_hit_rate": 0.0
+      },
+      "threshold": 0.08
+    },
+    {
+      "case_results": [
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": false,
+          "interaction_flags_new_risk": false,
+          "observed_high_risk": true,
+          "recovered_static_prior_miss": false,
+          "source_key": "htops_cost_pressure"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": false,
+          "interaction_flags_new_risk": false,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_health_heldout"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": false,
+          "interaction_flags_new_risk": false,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_climate_heldout"
+        }
+      ],
+      "decision_value_metrics_artifact_id": "r6-risk-discovery-threshold-sweep-current-001-threshold-0p090",
+      "decision_value_passed": false,
+      "risk_utility_score": 0.0,
+      "status": "decision_value_partial_high_false_alarm",
+      "summary": {
+        "case_count": 3,
+        "decision_regret_reduction": 0,
+        "false_alarm_count": 0,
+        "false_alarm_rate": 0.0,
+        "interaction_flagged_case_count": 0,
+        "interaction_flagged_observed_high_risk_count": 0,
+        "static_prior_miss_count": 1,
+        "static_prior_miss_recovered_count": 0,
+        "static_prior_miss_recovery_rate": 0.0,
+        "top_k_risk_hit_rate": 0.0
+      },
+      "threshold": 0.09
+    },
+    {
+      "case_results": [
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": false,
+          "interaction_flags_new_risk": false,
+          "observed_high_risk": true,
+          "recovered_static_prior_miss": false,
+          "source_key": "htops_cost_pressure"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": false,
+          "interaction_flags_new_risk": false,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_health_heldout"
+        },
+        {
+          "interaction_delta_vs_static": 0.07,
+          "interaction_false_alarm": false,
+          "interaction_flags_new_risk": false,
+          "observed_high_risk": false,
+          "recovered_static_prior_miss": false,
+          "source_key": "anes_climate_heldout"
+        }
+      ],
+      "decision_value_metrics_artifact_id": "r6-risk-discovery-threshold-sweep-current-001-threshold-0p100",
+      "decision_value_passed": false,
+      "risk_utility_score": 0.0,
+      "status": "decision_value_partial_high_false_alarm",
+      "summary": {
+        "case_count": 3,
+        "decision_regret_reduction": 0,
+        "false_alarm_count": 0,
+        "false_alarm_rate": 0.0,
+        "interaction_flagged_case_count": 0,
+        "interaction_flagged_observed_high_risk_count": 0,
+        "static_prior_miss_count": 1,
+        "static_prior_miss_recovered_count": 0,
+        "static_prior_miss_recovery_rate": 0.0,
+        "top_k_risk_hit_rate": 0.0
+      },
+      "threshold": 0.1
+    }
+  ]
+}

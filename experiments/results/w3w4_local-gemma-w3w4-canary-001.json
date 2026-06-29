@@ -1,0 +1,17 @@
+{
+  "best_prompt": "You are simulating a person's transportation choice behavior. Given a persona description and a set of alternatives with attributes, output the probability that this person would choose each alternative.\n\nRules:\n- Probabilities must sum to 1.0\n- Output ONLY valid JSON: {\"alternative_name\": probability, ...}\n- Base your reasoning on how a real person with these characteristics would weigh travel time, cost, and convenience\n- Do NOT explain your reasoning, just output the JSON",
+  "best_loss": 0.4055871739728345,
+  "initial_loss": 0.4055871739728345,
+  "final_loss": 0.4055871739728345,
+  "n_iterations": 1,
+  "total_llm_calls": 4,
+  "elapsed_seconds": 141.31171703338623,
+  "history": [
+    {
+      "iteration": 0,
+      "total_loss": 0.4055871739728345,
+      "ece": 0.11771447806000591,
+      "ate_mae": 0.1439363479564143
+    }
+  ]
+}

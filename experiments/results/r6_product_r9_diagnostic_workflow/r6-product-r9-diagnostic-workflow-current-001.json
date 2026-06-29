@@ -1,0 +1,128 @@
+{
+  "allowed_claims": [
+    "Product can route a customer scenario through guarded R9 diagnostic support and outcome review handoff."
+  ],
+  "artifact_id": "r6-product-r9-diagnostic-workflow-current-001",
+  "blocked_claims": [
+    "\u9759\u6001\u5148\u9a8c\u7b49\u4e8e\u771f\u5b9e\u53cd\u5e94",
+    "\u6ca1\u6709 outcome \u4e5f\u80fd\u8bc1\u660e\u9884\u6d4b\u51c6\u786e",
+    "\u4ea4\u4e92\u504f\u79fb\u5df2\u7ecf\u88ab\u8bc1\u660e\u66f4\u51c6",
+    "\u4ea4\u4e92\u4eff\u771f\u53ef\u4ee5\u66ff\u4ee3\u771f\u5b9e outcome",
+    "mechanism cap \u5df2\u53ef\u4f5c\u4e3a runtime default",
+    "mechanism cap \u5df2\u901a\u8fc7 CCF-A \u7ea7 L4 \u8fc1\u79fb\u9a8c\u8bc1",
+    "outcome feedback \u5df2\u7ecf\u5f62\u6210\u901a\u7528\u81ea\u52a8\u6821\u51c6\u5668",
+    "same-case improvement \u53ef\u4ee5\u76f4\u63a5\u8fdb\u5165\u5168\u5c40\u53c2\u6570",
+    "\u5df2\u6709\u516c\u5f00 proxy \u8db3\u591f\u8bc1\u660e\u5168\u5c40\u53ef\u8fc1\u79fb",
+    "\u7ee7\u7eed\u589e\u52a0\u4efb\u610f proxy \u90fd\u80fd\u63d0\u5347\u8bba\u6587\u8bc1\u636e",
+    "\u4f20\u64ad\u8def\u5f84\u5df2\u7ecf field validated",
+    "\u5019\u9009\u66f4\u65b0\u5df2\u53ef\u81ea\u52a8\u4e0a\u7ebf",
+    "field validation \u5df2\u5b8c\u6210",
+    "runtime default \u53ef\u4ee5\u5f00\u542f",
+    "R6 \u5df2\u8fbe\u5230 CCF-A \u4e3b\u8d21\u732e",
+    "ccf_a_main_contribution_ready",
+    "field_outcome_validated",
+    "runtime_default_allowed",
+    "accuracy_superiority_established",
+    "Research \u5df2\u5b8c\u6574\u652f\u6491 Product \u5168\u90e8\u6838\u5fc3\u4ef7\u503c",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf",
+    "\u7cfb\u7edf\u53ef\u4ee5\u7cbe\u786e\u9884\u6d4b\u5355\u70b9\u7ed3\u679c",
+    "runtime default ready",
+    "R8 validated",
+    "accuracy superiority",
+    "R8 supports Product core method by default",
+    "R9 validated",
+    "R9 supports Product core method by default",
+    "field validation completed"
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "outcome_review_handoff": {
+    "minimum_required_fields": [
+      "outcome_id",
+      "measurement_window",
+      "observed_signal",
+      "source_level"
+    ],
+    "requires_customer_or_field_outcome": true,
+    "runtime_default_allowed": false,
+    "target_artifact_id": "r6-product-outcome-review-current-001"
+  },
+  "r9_diagnostic_summary": {
+    "best_combination_id": "A+B+C",
+    "false_alarm_gate_status": "r9_false_alarm_gate_redesign_ready_guarded",
+    "field_outcome_validated": false,
+    "holdout_guard_status": "r9_holdout_guard_passed_guarded",
+    "runtime_default_allowed": false,
+    "support_status": "guarded_diagnostic_candidate"
+  },
+  "run_id": "r6-product-r9-diagnostic-workflow-current",
+  "schema_version": "r6-product-r9-diagnostic-workflow-v1",
+  "source_refs": [
+    "r6-product-scenario-intake-current-001",
+    "r6-product-customer-value-report-current-001",
+    "r6-product-outcome-review-current-001",
+    "r9-combination-comparison-current-001",
+    "r9-synthetic-mechanism-lab-current-001",
+    "r9-false-alarm-gate-redesign-current-001",
+    "r9-holdout-guard-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r6-product-scenario-intake-current-001",
+      "path": "experiments/results/r6_product_scenario_intake/r6-product-scenario-intake-current-001.json"
+    },
+    {
+      "artifact_id": "r6-product-customer-value-report-current-001",
+      "path": "experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json"
+    },
+    {
+      "artifact_id": "r6-product-outcome-review-current-001",
+      "path": "experiments/results/r6_product_outcome_review/r6-product-outcome-review-current-001.json"
+    },
+    {
+      "artifact_id": "r9-combination-comparison-current-001",
+      "path": "experiments/results/r9_combination_comparison/r9-combination-comparison-current-001.json"
+    },
+    {
+      "artifact_id": "r9-synthetic-mechanism-lab-current-001",
+      "path": "experiments/results/r9_synthetic_mechanism_lab/r9-synthetic-mechanism-lab-current-001.json"
+    },
+    {
+      "artifact_id": "r9-false-alarm-gate-redesign-current-001",
+      "path": "experiments/results/r9_false_alarm_gate_redesign/r9-false-alarm-gate-redesign-current-001.json"
+    },
+    {
+      "artifact_id": "r9-holdout-guard-current-001",
+      "path": "experiments/results/r9_holdout_guard/r9-holdout-guard-current-001.json"
+    }
+  ],
+  "status": "product_r9_diagnostic_workflow_ready_guarded",
+  "workflow_contract": {
+    "customer_visible": true,
+    "field_outcome_validated": false,
+    "runtime_default_allowed": false,
+    "scenario_to_diagnostic_to_outcome_review": true,
+    "source_backed_only": true
+  },
+  "workflow_stages": [
+    {
+      "artifact_id": "r6-product-scenario-intake-current-001",
+      "customer_action": "provide scenario assumptions and decision question",
+      "stage_id": "scenario_intake",
+      "status": "scenario_intake_ready"
+    },
+    {
+      "artifact_id": "r6-product-customer-value-report-current-001",
+      "customer_action": "review guarded R9 trend, risk, mechanism, and blocked claims",
+      "stage_id": "r9_guarded_diagnostic_report",
+      "status": "customer_value_report_ready_guarded"
+    },
+    {
+      "artifact_id": "r6-product-outcome-review-current-001",
+      "customer_action": "attach post-release field or proxy outcome for replay",
+      "stage_id": "outcome_review",
+      "status": "outcome_review_ready_update_blocked"
+    }
+  ]
+}

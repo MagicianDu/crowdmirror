@@ -1,0 +1,134 @@
+{
+  "best_candidate": {
+    "candidate_index": 6,
+    "parameter_patches": [
+      {
+        "expected_effect": {
+          "cash_cost_of_living_rebate": "increase",
+          "food_subsidy_expansion": "increase"
+        },
+        "factor_id": "benefit_immediacy",
+        "factor_label": "\u5373\u65f6\u6536\u76ca\u504f\u597d",
+        "parameter_bounds": {
+          "max": 0.2,
+          "min": 0.0
+        },
+        "parameter_name": "benefit_immediacy_weight",
+        "parameter_value": 0.060082515358,
+        "policy_id": "baseline_no_new_support",
+        "provenance": {
+          "direction": "under_predicted",
+          "magnitude": 0.30041257679,
+          "match_score": 1.30041257679,
+          "residual": 0.30041257679,
+          "source_split": "calibration"
+        },
+        "segment": "working_family_price_stressed"
+      },
+      {
+        "expected_effect": {
+          "cash_cost_of_living_rebate": "increase",
+          "food_subsidy_expansion": "increase"
+        },
+        "factor_id": "benefit_immediacy",
+        "factor_label": "\u5373\u65f6\u6536\u76ca\u504f\u597d",
+        "parameter_bounds": {
+          "max": 0.85,
+          "min": 0.5
+        },
+        "parameter_name": "prior_anchor_strength",
+        "parameter_value": 0.605144401876,
+        "policy_id": "baseline_no_new_support",
+        "provenance": {
+          "direction": "under_predicted",
+          "magnitude": 0.30041257679,
+          "match_score": 1.30041257679,
+          "residual": 0.30041257679,
+          "source_split": "calibration"
+        },
+        "segment": "working_family_price_stressed"
+      },
+      {
+        "expected_effect": {
+          "cash_cost_of_living_rebate": "increase"
+        },
+        "factor_id": "cash_liquidity_preference",
+        "factor_label": "\u73b0\u91d1\u6d41\u52a8\u6027\u504f\u597d",
+        "parameter_bounds": {
+          "max": 0.2,
+          "min": 0.0
+        },
+        "parameter_name": "benefit_immediacy_weight",
+        "parameter_value": 0.060082515358,
+        "policy_id": "baseline_no_new_support",
+        "provenance": {
+          "direction": "under_predicted",
+          "magnitude": 0.30041257679,
+          "match_score": 1.30041257679,
+          "residual": 0.30041257679,
+          "source_split": "calibration"
+        },
+        "segment": "working_family_price_stressed"
+      },
+      {
+        "expected_effect": {
+          "cash_cost_of_living_rebate": "increase"
+        },
+        "factor_id": "cash_liquidity_preference",
+        "factor_label": "\u73b0\u91d1\u6d41\u52a8\u6027\u504f\u597d",
+        "parameter_bounds": {
+          "max": 0.25,
+          "min": 0.0
+        },
+        "parameter_name": "cash_cost_of_living_rebate_bias",
+        "parameter_value": 0.075103144197,
+        "policy_id": "baseline_no_new_support",
+        "provenance": {
+          "direction": "under_predicted",
+          "magnitude": 0.30041257679,
+          "match_score": 1.30041257679,
+          "residual": 0.30041257679,
+          "source_split": "calibration"
+        },
+        "segment": "working_family_price_stressed"
+      }
+    ],
+    "policy_id": "baseline_no_new_support",
+    "proxy_score": 1.562641172334,
+    "segment": "working_family_price_stressed"
+  },
+  "calibration_benchmark_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-initial-001",
+  "candidate_id": "policy-reaction-s2pc-l1-candidate-set-current-001-c06",
+  "candidate_prompt_components": {
+    "calibration_anchor": {
+      "working_family_price_stressed": "S2PC factors=benefit_immediacy,cash_liquidity_preference; primary_policy=baseline_no_new_support; parameters=benefit_immediacy_weight=0.060082515358;prior_anchor_strength=0.605144401876;benefit_immediacy_weight=0.060082515358;cash_cost_of_living_rebate_bias=0.075103144197"
+    },
+    "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+    "segment_prompt": {
+      "working_family_price_stressed": "Use the persona's calibrated policy-reaction parameters when estimating support probabilities for this segment."
+    }
+  },
+  "claim_boundary": "This S2PC L1 candidate is extracted from a multi-candidate search set for Product runtime probing. It requires heldout runtime-effect evaluation before any effectiveness claim.",
+  "generator": "s2pc_l1_multi_candidate_runtime_search",
+  "residual_summary": {
+    "parameter_patch_count": 44,
+    "residual_count": 11,
+    "semantic_match_count": 22,
+    "source_residual_artifact_id": "policy-reaction-official-segment-benchmark-gpt-oss-20b-12x3-calibration-split-initial-001"
+  },
+  "schema_version": "policy-reaction-s2pc-candidate-v1",
+  "search_summary": {
+    "beam_width": 6,
+    "candidate_count": 6,
+    "exported_candidate_count": 6,
+    "selected_candidate_rank": 6,
+    "selected_proxy_score": 1.562641172334
+  },
+  "source_prediction_artifact_id": "policy-reaction-segment-predictions-gpt-oss-20b-12x3-001",
+  "source_split_contract": {
+    "candidate_acceptance": "heldout_required",
+    "parameter_search": "calibration",
+    "residual_mining": "calibration",
+    "semantic_factor_retrieval": "calibration"
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "case_summaries": [
+    {
+      "best_loss": 0.2672993807727302,
+      "dataset_seed": 42,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "eval_size": 5,
+      "improvement_ratio": 0.3730476342187037,
+      "initial_loss": 0.4263471921660694,
+      "prompt_baseline": "default",
+      "repeat": 1,
+      "run_id": "textgrad-paper-gate-local-seed42-eval5-default-tg1024-r1",
+      "suspected_prompt_truncation_count": 0,
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 1024,
+      "textgrad_output_budget_saturated": false
+    },
+    {
+      "best_loss": 0.2259660474393969,
+      "dataset_seed": 42,
+      "diagnosis": {
+        "flags": [],
+        "primary_hypothesis": "no_obvious_matrix_diagnostic"
+      },
+      "eval_size": 5,
+      "improvement_ratio": 0.4699952255077141,
+      "initial_loss": 0.4263471921660694,
+      "prompt_baseline": "default",
+      "repeat": 1,
+      "run_id": "textgrad-paper-gate-local-seed42-eval5-default-tg2048-r1",
+      "suspected_prompt_truncation_count": 0,
+      "textgrad_effect_status": "improved",
+      "textgrad_max_tokens": 2048,
+      "textgrad_output_budget_saturated": false
+    }
+  ],
+  "claim_boundary": "paper-gate pilot only; not a complete TextGrad effectiveness claim",
+  "diagnostic_conclusion": [
+    "Both eval_size=5 seed42 default baseline pilot cells improved under local Gemma.",
+    "tg2048 improved more than tg1024 in this pilot cell, but this is not enough for a budget-level claim.",
+    "Paper-grade gate remains insufficient because most required seed, prompt baseline, token budget, and repeat cells are missing."
+  ],
+  "manifest_refs": [
+    "experiments/results/manifests/textgrad-paper-gate-local-seed42-eval5-default-tg1024-r1.json",
+    "experiments/results/manifests/textgrad-paper-gate-local-seed42-eval5-default-tg2048-r1.json"
+  ],
+  "matrix_id": "textgrad-paper-gate-pilot-001",
+  "paper_gate": {
+    "improved_run_count": 2,
+    "missing_cells": [
+      "missing_seed:7",
+      "missing_seed:99",
+      "missing_cell:seed7:compact:tg1024:r1",
+      "missing_cell:seed7:compact:tg1024:r2",
+      "missing_cell:seed7:compact:tg1024:r3",
+      "missing_cell:seed7:compact:tg2048:r1",
+      "missing_cell:seed7:compact:tg2048:r2",
+      "missing_cell:seed7:compact:tg2048:r3",
+      "missing_cell:seed7:default:tg1024:r1",
+      "missing_cell:seed7:default:tg1024:r2",
+      "missing_cell:seed7:default:tg1024:r3",
+      "missing_cell:seed7:default:tg2048:r1",
+      "missing_cell:seed7:default:tg2048:r2",
+      "missing_cell:seed7:default:tg2048:r3",
+      "missing_cell:seed7:structured:tg1024:r1",
+      "missing_cell:seed7:structured:tg1024:r2",
+      "missing_cell:seed7:structured:tg1024:r3",
+      "missing_cell:seed7:structured:tg2048:r1",
+      "missing_cell:seed7:structured:tg2048:r2",
+      "missing_cell:seed7:structured:tg2048:r3",
+      "missing_cell:seed42:compact:tg1024:r1",
+      "missing_cell:seed42:compact:tg1024:r2",
+      "missing_cell:seed42:compact:tg1024:r3",
+      "missing_cell:seed42:compact:tg2048:r1",
+      "missing_cell:seed42:compact:tg2048:r2",
+      "missing_cell:seed42:compact:tg2048:r3",
+      "missing_cell:seed42:default:tg1024:r2",
+      "missing_cell:seed42:default:tg1024:r3",
+      "missing_cell:seed42:default:tg2048:r2",
+      "missing_cell:seed42:default:tg2048:r3",
+      "missing_cell:seed42:structured:tg1024:r1",
+      "missing_cell:seed42:structured:tg1024:r2",
+      "missing_cell:seed42:structured:tg1024:r3",
+      "missing_cell:seed42:structured:tg2048:r1",
+      "missing_cell:seed42:structured:tg2048:r2",
+      "missing_cell:seed42:structured:tg2048:r3",
+      "missing_cell:seed99:compact:tg1024:r1",
+      "missing_cell:seed99:compact:tg1024:r2",
+      "missing_cell:seed99:compact:tg1024:r3",
+      "missing_cell:seed99:compact:tg2048:r1",
+      "missing_cell:seed99:compact:tg2048:r2",
+      "missing_cell:seed99:compact:tg2048:r3",
+      "missing_cell:seed99:default:tg1024:r1",
+      "missing_cell:seed99:default:tg1024:r2",
+      "missing_cell:seed99:default:tg1024:r3",
+      "missing_cell:seed99:default:tg2048:r1",
+      "missing_cell:seed99:default:tg2048:r2",
+      "missing_cell:seed99:default:tg2048:r3",
+      "missing_cell:seed99:structured:tg1024:r1",
+      "missing_cell:seed99:structured:tg1024:r2",
+      "missing_cell:seed99:structured:tg1024:r3",
+      "missing_cell:seed99:structured:tg2048:r1",
+      "missing_cell:seed99:structured:tg2048:r2",
+      "missing_cell:seed99:structured:tg2048:r3"
+    ],
+    "negative_result_count": 0,
+    "observed_run_count": 2,
+    "required_run_count": 54,
+    "status": "insufficient_evidence"
+  },
+  "schema_version": "circe-textgrad-matrix-v1",
+  "summary": {
+    "best_improvement_ratio": 0.4699952255077141,
+    "diagnosis_counts": {},
+    "negative_result_count": 0,
+    "run_count": 2
+  }
+}

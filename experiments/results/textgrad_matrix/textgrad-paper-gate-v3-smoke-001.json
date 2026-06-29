@@ -1,0 +1,135 @@
+{
+  "baseline_summaries": {
+    "default": {
+      "best_improvement_ratio": 0.6857326861346654,
+      "candidate_acceptance_rate": 1.0,
+      "candidate_accepted_count": 1,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 0,
+      "candidate_rejected_count": 0,
+      "candidate_update_count": 1,
+      "diagnosis_counts": {},
+      "negative_result_count": 0,
+      "run_count": 1
+    }
+  },
+  "case_summaries": [
+    {
+      "artifacts": {
+        "result_json": "experiments/results/w3w4_textgrad-paper-gate-v3-smoke-local-seed42-eval5-default-tg2048-r1.json",
+        "textgrad_steps_json": "experiments/results/w3w4_textgrad-paper-gate-v3-smoke-local-seed42-eval5-default-tg2048-r1_textgrad_steps.json"
+      },
+      "config": {
+        "dataset_seed": 42,
+        "eval_size": 5,
+        "local": true,
+        "max_iterations": 2,
+        "model": "google/gemma-4-31b",
+        "prompt_baseline": "default",
+        "provider": "openai",
+        "repeat": 1,
+        "request_timeout": 240.0,
+        "simulator_max_tokens": 256,
+        "textgrad_max_tokens": 2048
+      },
+      "metrics": {
+        "best_loss": 0.13398698685605823,
+        "candidate_acceptance_rate": 1.0,
+        "candidate_accepted_count": 1,
+        "candidate_evaluated_count": 1,
+        "candidate_pending_count": 0,
+        "candidate_rejected_count": 0,
+        "candidate_update_count": 1,
+        "candidate_update_policy": "accept_if_loss_improves_else_revert",
+        "candidate_update_status": "accepted",
+        "final_loss": 0.13398698685605823,
+        "improvement_ratio": 0.6857326861346654,
+        "initial_loss": 0.4263471921660694,
+        "min_edited_prompt_chars": 1577,
+        "n_iterations": 2,
+        "prompt_update_count": 1,
+        "suspected_prompt_truncation_count": 0,
+        "textgrad_call_count": 1,
+        "textgrad_effect_status": "accepted_improvement",
+        "textgrad_input_tokens": 1035,
+        "textgrad_output_budget_saturated": false,
+        "textgrad_output_tokens": 516,
+        "total_llm_calls": 31
+      },
+      "run_id": "textgrad-paper-gate-v3-smoke-local-seed42-eval5-default-tg2048-r1"
+    }
+  ],
+  "claim_boundaries": [
+    "Paper-gate evidence supports bounded TextGrad calibration diagnostics only within the recorded Swissmetro semi-synthetic setup; negative or rejected candidate updates must not be presented as calibration effectiveness.",
+    "Current paper-gate evidence uses an acceptance-gated prompt update policy: TextGrad proposes candidates, and measured loss decides whether each candidate is accepted or reverted."
+  ],
+  "claim_boundary": "Paper-gate evidence supports bounded TextGrad calibration diagnostics only within the recorded Swissmetro semi-synthetic setup; negative or rejected candidate updates must not be presented as calibration effectiveness.",
+  "evidence_generation_counts": {
+    "current_v3": 1
+  },
+  "manifest_refs": [
+    "experiments/results/manifests/textgrad-paper-gate-v3-smoke-local-seed42-eval5-default-tg2048-r1.json"
+  ],
+  "matrix_id": "textgrad-paper-gate-v3-smoke-001",
+  "matrix_summary": {
+    "best_improvement_ratio": 0.6857326861346654,
+    "candidate_acceptance_rate": 1.0,
+    "candidate_accepted_count": 1,
+    "candidate_evaluated_count": 1,
+    "candidate_pending_count": 0,
+    "candidate_rejected_count": 0,
+    "candidate_update_count": 1,
+    "diagnosis_counts": {},
+    "negative_result_count": 0,
+    "run_count": 1
+  },
+  "paper_conclusion": "coverage_complete_no_negative_cells",
+  "paper_gate": {
+    "best_loss": 0.13398698685605823,
+    "candidate_acceptance_rate": 1.0,
+    "candidate_accepted_count": 1,
+    "candidate_evaluated_count": 1,
+    "candidate_pending_count": 0,
+    "candidate_rejected_count": 0,
+    "candidate_update_count": 1,
+    "candidate_update_policy": "accept_if_loss_improves_else_revert",
+    "final_loss": 0.13398698685605823,
+    "improved_run_count": 1,
+    "initial_loss": 0.4263471921660694,
+    "missing_cells": [],
+    "negative_result_count": 0,
+    "observed_run_count": 1,
+    "required_run_count": 1,
+    "status": "passed",
+    "textgrad_effect_status": "accepted_improvement"
+  },
+  "schema_version": "circe-textgrad-paper-gate-v3",
+  "seed_summaries": {
+    "42": {
+      "best_improvement_ratio": 0.6857326861346654,
+      "candidate_acceptance_rate": 1.0,
+      "candidate_accepted_count": 1,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 0,
+      "candidate_rejected_count": 0,
+      "candidate_update_count": 1,
+      "diagnosis_counts": {},
+      "negative_result_count": 0,
+      "run_count": 1
+    }
+  },
+  "token_budget_summaries": {
+    "2048": {
+      "best_improvement_ratio": 0.6857326861346654,
+      "candidate_acceptance_rate": 1.0,
+      "candidate_accepted_count": 1,
+      "candidate_evaluated_count": 1,
+      "candidate_pending_count": 0,
+      "candidate_rejected_count": 0,
+      "candidate_update_count": 1,
+      "diagnosis_counts": {},
+      "negative_result_count": 0,
+      "run_count": 1
+    }
+  }
+}

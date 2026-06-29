@@ -1,0 +1,164 @@
+{
+  "acceptance_gates": {
+    "customer_data_request_ready": true,
+    "customer_slice_ready_for_revalidation": false,
+    "feedback_candidates_present": false,
+    "field_outcome_validated": false,
+    "holdout_review_executed": false,
+    "product_default_allowed": false,
+    "runtime_default_allowed": false,
+    "shadow_replay_executed": false,
+    "source_arrival_gate_ready": true,
+    "workflow_status_package_ready": true
+  },
+  "allowed_claims": [
+    "Customer validation workflow status is source-backed and machine-checkable.",
+    "Product can show the current customer validation stage and operator runbook without claiming field validation."
+  ],
+  "artifact_id": "r12-customer-validation-workflow-status-current-001",
+  "blocked_claims": [
+    "field validation \u5df2\u5b8c\u6210",
+    "customer field validation passed",
+    "feedback update is accepted for Product default",
+    "Product default can use customer feedback updates",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "customer_validation_workflow_ready_source_pending",
+  "next_required_artifact": "customer_field_slice_submission_or_target_outcome_artifact",
+  "operator_runbook": {
+    "commands_after_source_arrival": [
+      {
+        "command": ".venv/bin/python experiments/r12_customer_field_slice_intake_validation.py --customer-field-slice-path <customer-slice.csv>",
+        "step_id": "intake_validation"
+      },
+      {
+        "command": ".venv/bin/python experiments/r12_customer_field_slice_revalidation.py --r12-customer-field-slice-intake-validation-path <intake-artifact.json>",
+        "step_id": "field_revalidation"
+      },
+      {
+        "command": ".venv/bin/python experiments/r12_customer_field_outcome_feedback_update.py --r12-customer-field-slice-revalidation-path <revalidation-artifact.json>",
+        "step_id": "feedback_update_candidate"
+      },
+      {
+        "command": ".venv/bin/python experiments/r12_customer_feedback_update_shadow_replay.py --r12-customer-field-outcome-feedback-update-path <feedback-update-artifact.json>",
+        "step_id": "shadow_replay"
+      },
+      {
+        "command": ".venv/bin/python experiments/r12_customer_feedback_shadow_replay_holdout_review.py --r12-customer-feedback-update-shadow-replay-path <shadow-replay-artifact.json>",
+        "step_id": "holdout_review"
+      }
+    ],
+    "manual_approval_points": [
+      "customer_approval_reference_required_before_intake",
+      "governed_review_required_after_holdout_review"
+    ],
+    "runbook_id": "r12_customer_validation_workflow_operator_runbook"
+  },
+  "run_id": "r12-l27-current-001",
+  "schema_version": "r12-customer-validation-workflow-status-v1",
+  "source_refs": [
+    "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+    "r12-customer-field-slice-handoff-package-current-001",
+    "r12-customer-field-slice-intake-validation-current-001",
+    "r12-customer-field-slice-revalidation-current-001",
+    "r12-customer-field-outcome-feedback-update-current-001",
+    "r12-customer-feedback-update-shadow-replay-current-001",
+    "r12-customer-feedback-shadow-replay-holdout-review-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+      "path": "experiments/results/r12_target_outcome_or_customer_field_slice_arrival/r12-target-outcome-or-customer-field-slice-arrival-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-field-slice-handoff-package-current-001",
+      "path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-handoff-package-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-field-slice-intake-validation-current-001",
+      "path": "experiments/results/r12_customer_field_slice_intake_validation/r12-customer-field-slice-intake-validation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-field-slice-revalidation-current-001",
+      "path": "experiments/results/r12_customer_field_slice_revalidation/r12-customer-field-slice-revalidation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-field-outcome-feedback-update-current-001",
+      "path": "experiments/results/r12_customer_field_outcome_feedback_update/r12-customer-field-outcome-feedback-update-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-feedback-update-shadow-replay-current-001",
+      "path": "experiments/results/r12_customer_feedback_update_shadow_replay/r12-customer-feedback-update-shadow-replay-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-feedback-shadow-replay-holdout-review-current-001",
+      "path": "experiments/results/r12_customer_feedback_shadow_replay_holdout_review/r12-customer-feedback-shadow-replay-holdout-review-current-001.json"
+    }
+  ],
+  "status": "r12_customer_validation_workflow_waiting_for_source",
+  "workflow_steps": [
+    {
+      "artifact_id": "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+      "artifact_status": "r12_target_outcome_or_customer_field_slice_arrival_pending_no_source",
+      "next_required_artifact": "r12_target_outcome_or_customer_field_slice_arrival",
+      "step_id": "source_arrival",
+      "step_status": "pending"
+    },
+    {
+      "artifact_id": "r12-customer-field-slice-handoff-package-current-001",
+      "artifact_status": "r12_customer_field_slice_handoff_package_ready_guarded",
+      "next_required_artifact": "r12_target_outcome_or_customer_field_slice_arrival_with_customer_slice",
+      "step_id": "handoff_package",
+      "step_status": "ready"
+    },
+    {
+      "artifact_id": "r12-customer-field-slice-intake-validation-current-001",
+      "artifact_status": "r12_customer_field_slice_intake_validation_pending_no_slice",
+      "next_required_artifact": "customer_field_slice_submission",
+      "step_id": "intake_validation",
+      "step_status": "blocked"
+    },
+    {
+      "artifact_id": "r12-customer-field-slice-revalidation-current-001",
+      "artifact_status": "r12_customer_field_slice_revalidation_blocked_no_validated_intake",
+      "next_required_artifact": "validated_customer_field_slice_intake",
+      "step_id": "field_revalidation",
+      "step_status": "blocked"
+    },
+    {
+      "artifact_id": "r12-customer-field-outcome-feedback-update-current-001",
+      "artifact_status": "r12_customer_field_outcome_feedback_update_blocked_no_field_validation",
+      "next_required_artifact": "validated_customer_field_slice_revalidation",
+      "step_id": "feedback_update_candidate",
+      "step_status": "blocked"
+    },
+    {
+      "artifact_id": "r12-customer-feedback-update-shadow-replay-current-001",
+      "artifact_status": "r12_customer_feedback_update_shadow_replay_blocked_no_candidates",
+      "next_required_artifact": "validated_customer_field_feedback_update",
+      "step_id": "shadow_replay",
+      "step_status": "blocked"
+    },
+    {
+      "artifact_id": "r12-customer-feedback-shadow-replay-holdout-review-current-001",
+      "artifact_status": "r12_customer_feedback_shadow_replay_holdout_review_blocked_no_shadow_candidates",
+      "next_required_artifact": "customer_feedback_shadow_replay_holdout_review",
+      "step_id": "holdout_review",
+      "step_status": "blocked"
+    }
+  ],
+  "workflow_summary": {
+    "blocking_artifact_id": "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+    "current_stage": "source_arrival_pending",
+    "customer_slice_ready_for_revalidation": false,
+    "feedback_candidate_count": 0,
+    "field_outcome_validated": false,
+    "holdout_review_executed": false,
+    "metrics_computed": false,
+    "next_action": "collect_customer_field_slice_or_wait_for_target_outcome",
+    "shadow_replay_executed": false,
+    "source_arrived": false,
+    "workflow_generated_at": "2026-06-28T12:00:00Z"
+  }
+}

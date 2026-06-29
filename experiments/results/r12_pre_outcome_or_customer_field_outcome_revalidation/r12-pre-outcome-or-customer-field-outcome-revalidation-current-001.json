@@ -1,0 +1,126 @@
+{
+  "acceptance_decision": "reject_revalidation_without_outcome_keep_product_default_blocked",
+  "acceptance_gates": {
+    "customer_field_slice_present": false,
+    "field_or_pre_outcome_revalidation_passed": false,
+    "field_or_pre_outcome_revalidation_ready": false,
+    "field_outcome_validated": false,
+    "metrics_computed": false,
+    "pre_outcome_trial_locked": true,
+    "prediction_lock_timestamp_pre_target_outcome": true,
+    "product_default_allowed": false,
+    "runtime_default_allowed": false,
+    "target_outcome_artifact_present": false
+  },
+  "allowed_claims": [
+    "R12 has a fail-closed revalidation harness ready for future target outcome or customer field outcome arrival.",
+    "No validation metric is computed until an approved outcome source is present."
+  ],
+  "artifact_id": "r12-pre-outcome-or-customer-field-outcome-revalidation-current-001",
+  "blocked_claims": [
+    "metrics_computed=true",
+    "field_or_pre_outcome_revalidation_passed=true",
+    "target outcome artifact present",
+    "customer field outcome validated",
+    "field_outcome_validated=true",
+    "Product default can use R12 outcome revalidation by default",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "blocked_revalidation_reason": {
+    "fail_closed_policy": "Do not compute validation metrics and do not unlock Product or runtime defaults until at least one approved outcome source is present.",
+    "missing_inputs": [
+      "May 2026 DOT ATCR target outcome artifact",
+      "customer-approved field outcome slice"
+    ],
+    "reason": "target_outcome_or_customer_field_slice_missing"
+  },
+  "claim_level": "revalidation_harness_ready_no_outcome",
+  "metric_execution_plan": [
+    {
+      "acceptance_threshold": "mechanism_update_mae <= static_prior_mae",
+      "metric": "mean_absolute_error",
+      "required_inputs": [
+        "locked_prediction_share_or_score",
+        "observed_outcome"
+      ]
+    },
+    {
+      "acceptance_threshold": "coverage >= static_prior_coverage",
+      "metric": "interval_coverage",
+      "required_inputs": [
+        "locked_prediction_interval",
+        "observed_outcome"
+      ]
+    },
+    {
+      "acceptance_threshold": "ranking_quality >= static_prior_ranking_quality",
+      "metric": "risk_ranking_quality",
+      "required_inputs": [
+        "locked_risk_rank",
+        "observed_outcome_rank"
+      ]
+    },
+    {
+      "acceptance_threshold": "recovery_count > 0",
+      "metric": "static_prior_miss_recovery",
+      "required_inputs": [
+        "static_prior_prediction",
+        "mechanism_update_prediction",
+        "observed_outcome"
+      ]
+    },
+    {
+      "acceptance_threshold": "false_alarm_rate <= static_prior_false_alarm_rate",
+      "metric": "false_alarm_rate",
+      "required_inputs": [
+        "locked_risk_alert",
+        "observed_outcome"
+      ]
+    },
+    {
+      "acceptance_threshold": "decision_value >= static_prior_decision_value",
+      "metric": "decision_value",
+      "required_inputs": [
+        "locked_decision_action",
+        "observed_outcome",
+        "decision_cost_model"
+      ]
+    }
+  ],
+  "next_required_artifact": "r12_target_outcome_or_customer_field_slice_arrival",
+  "revalidation_summary": {
+    "customer_field_slice_present": false,
+    "field_or_pre_outcome_revalidation_ready": false,
+    "ingestion_artifact_id": "r12-pre-outcome-or-customer-field-outcome-ingestion-current-001",
+    "metrics_computed": false,
+    "prediction_case_count": 14,
+    "prediction_lock_timestamp": "2026-06-27T14:45:00Z",
+    "revalidation_requested_at": "2026-06-27T15:05:00Z",
+    "target_outcome_artifact_present": false,
+    "target_outcome_period": "May 2026",
+    "trial_artifact_id": "r12-pre-outcome-prediction-trial-or-customer-field-revalidation-current-001"
+  },
+  "run_id": "r12-l19-current-001",
+  "schema_version": "r12-pre-outcome-or-customer-field-outcome-revalidation-v1",
+  "source_refs": [
+    "r12-pre-outcome-or-customer-field-outcome-ingestion-current-001",
+    "dot_air_travel_consumer_reports_index_current",
+    "dot_airconsumer_latest_news_current"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-pre-outcome-or-customer-field-outcome-ingestion-current-001",
+      "path": "experiments/results/r12_pre_outcome_or_customer_field_outcome_ingestion/r12-pre-outcome-or-customer-field-outcome-ingestion-current-001.json"
+    },
+    {
+      "artifact_id": "dot_air_travel_consumer_reports_index_current",
+      "path": "https://www.transportation.gov/individuals/aviation-consumer-protection/air-travel-consumer-reports"
+    },
+    {
+      "artifact_id": "dot_airconsumer_latest_news_current",
+      "path": "https://www.transportation.gov/airconsumer/latest-news"
+    }
+  ],
+  "status": "r12_pre_outcome_or_customer_field_outcome_revalidation_blocked_no_outcome"
+}

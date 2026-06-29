@@ -1,0 +1,141 @@
+{
+  "acceptance_gates": {
+    "field_outcome_validated": false,
+    "l1_current_proxy_signal_passed": false,
+    "l2_holdout_signal_passed": false,
+    "robustness_gate_present": true,
+    "runtime_default_allowed": false
+  },
+  "allowed_claims": [
+    "R8 robustness gate can decide guarded continuation or diagnostic downgrade."
+  ],
+  "artifact_id": "r8-robustness-holdout-gate-current-001",
+  "blocked_claims": [
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "runtime default ready",
+    "R8 validated"
+  ],
+  "claim_boundary": "R8 learnable mechanism artifact. It supports guarded mechanism-causal interaction simulation, interval/risk diagnosis, attribution, and bounded operator update candidates only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+  "cross_family_fail_closed_results": [
+    {
+      "claim_level": "diagnostic_only",
+      "fail_closed": true,
+      "heldout_source_key": "htops_cost_pressure",
+      "source_family": "generic-rights-rule-change"
+    }
+  ],
+  "l1_status": "diagnostic_blocked",
+  "l2_status": "diagnostic_blocked",
+  "leave_one_case_results": [
+    {
+      "heldout_source_key": "htops_cost_pressure",
+      "non_regression": true,
+      "runtime_default_allowed": false
+    },
+    {
+      "heldout_source_key": "anes_health_heldout",
+      "non_regression": true,
+      "runtime_default_allowed": false
+    },
+    {
+      "heldout_source_key": "anes_climate_heldout",
+      "non_regression": true,
+      "runtime_default_allowed": false
+    }
+  ],
+  "outcome_perturbation_results": [
+    {
+      "delta": -0.03,
+      "observed_reject_proxy": 0.44,
+      "passed": true,
+      "source_artifact_id": "r8-perturbation-htops_cost_pressure--0.03",
+      "source_key": "htops_cost_pressure"
+    },
+    {
+      "delta": 0.0,
+      "observed_reject_proxy": 0.47,
+      "passed": true,
+      "source_artifact_id": "r8-perturbation-htops_cost_pressure-0.0",
+      "source_key": "htops_cost_pressure"
+    },
+    {
+      "delta": 0.03,
+      "observed_reject_proxy": 0.5,
+      "passed": true,
+      "source_artifact_id": "r8-perturbation-htops_cost_pressure-0.03",
+      "source_key": "htops_cost_pressure"
+    },
+    {
+      "delta": -0.03,
+      "observed_reject_proxy": 0.3,
+      "passed": true,
+      "source_artifact_id": "r8-perturbation-anes_health_heldout--0.03",
+      "source_key": "anes_health_heldout"
+    },
+    {
+      "delta": 0.0,
+      "observed_reject_proxy": 0.33,
+      "passed": true,
+      "source_artifact_id": "r8-perturbation-anes_health_heldout-0.0",
+      "source_key": "anes_health_heldout"
+    },
+    {
+      "delta": 0.03,
+      "observed_reject_proxy": 0.36,
+      "passed": true,
+      "source_artifact_id": "r8-perturbation-anes_health_heldout-0.03",
+      "source_key": "anes_health_heldout"
+    },
+    {
+      "delta": -0.03,
+      "observed_reject_proxy": 0.22,
+      "passed": true,
+      "source_artifact_id": "r8-perturbation-anes_climate_heldout--0.03",
+      "source_key": "anes_climate_heldout"
+    },
+    {
+      "delta": 0.0,
+      "observed_reject_proxy": 0.25,
+      "passed": true,
+      "source_artifact_id": "r8-perturbation-anes_climate_heldout-0.0",
+      "source_key": "anes_climate_heldout"
+    },
+    {
+      "delta": 0.03,
+      "observed_reject_proxy": 0.28,
+      "passed": true,
+      "source_artifact_id": "r8-perturbation-anes_climate_heldout-0.03",
+      "source_key": "anes_climate_heldout"
+    }
+  ],
+  "run_id": "r8-robustness-holdout-current",
+  "same_family_holdout_results": [
+    {
+      "false_alarm_not_worse": true,
+      "heldout_source_key": "anes_climate_heldout",
+      "passed": true,
+      "source_family": "generic-rights-rule-change"
+    }
+  ],
+  "schema_version": "r8-robustness-holdout-gate-v1",
+  "source_refs": [
+    "r8-robustness-holdout-gate-current-001-baseline-comparison"
+  ],
+  "status": "r8_robustness_diagnostic_or_stop_loss",
+  "stop_loss_recommendation": "keep_r8_as_diagnostic_asset",
+  "summary": {
+    "cross_family_fail_closed_trial_count": 1,
+    "leave_one_case_trial_count": 3,
+    "leave_one_non_regression_rate": 1.0,
+    "perturbation_pass_rate": 1.0,
+    "perturbation_scenario_count": 9,
+    "same_family_holdout_trial_count": 1
+  },
+  "validation_axes": [
+    "outcome_perturbation",
+    "leave_one_case",
+    "same_family_holdout",
+    "cross_family_fail_closed"
+  ]
+}

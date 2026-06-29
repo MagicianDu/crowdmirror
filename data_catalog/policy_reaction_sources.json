@@ -1,0 +1,62 @@
+{
+  "schema_version": "circe-policy-reaction-source-catalog-v1",
+  "sources": [
+    {
+      "source_id": "hps_htops_food_cost_core",
+      "name": "U.S. Census Household Pulse Survey / Household Trends and Outlook Pulse Survey public-use food and cost-pressure signals",
+      "url": "https://www.census.gov/programs-surveys/household-pulse-survey/data/datasets.html",
+      "license_or_access": "Public-use Census microdata and public tables with accompanying user notes/data dictionaries; access requires using the released public-use files rather than network calls at runtime.",
+      "unit_of_analysis": "public-use respondent or household survey record by collection period, with released geography and demographic segments",
+      "dataset_access_mode": "public_use_file_required",
+      "intake_status": "usable_for_policy_reaction_benchmark",
+      "candidate_policy_fields": [
+        "FD1_food_sufficiency_last_7_days",
+        "FD2_child_recent_food_insufficiency_unaffordable_last_7_days",
+        "FD3_reason_not_enough_food_last_7_days",
+        "FD6_rev_snap_wic_nslp_sun_bucks_receipt",
+        "SPN4_difficulty_paying_usual_household_expenses_last_2_months",
+        "INFLATE1_general_price_change_last_2_months",
+        "INFLATE2_stress_from_price_increases_last_2_months",
+        "EMP1_household_loss_employment_income_last_4_weeks"
+      ],
+      "segment_fields": [
+        "collection_period",
+        "state_or_division",
+        "top_10_metro_area",
+        "household_has_children",
+        "household_income_bracket",
+        "housing_tenure",
+        "respondent_age_group",
+        "respondent_education_group",
+        "respondent_race_ethnicity",
+        "employment_status"
+      ],
+      "target_fields": [
+        "FD1_food_sufficiency_last_7_days",
+        "FD2_child_recent_food_insufficiency_unaffordable_last_7_days",
+        "SPN4_difficulty_paying_usual_household_expenses_last_2_months",
+        "INFLATE2_stress_from_price_increases_last_2_months",
+        "EMP1_household_loss_employment_income_last_4_weeks"
+      ],
+      "official_htops_2506_puf_field_aliases": {
+        "FD1_food_sufficiency_last_7_days": "CURFOODSUF",
+        "FD2_child_recent_food_insufficiency_unaffordable_last_7_days": "CHILDFOOD",
+        "SPN4_difficulty_paying_usual_household_expenses_last_2_months": "EXPNS_DIF",
+        "INFLATE2_stress_from_price_increases_last_2_months": "PRICESTRESS",
+        "EMP1_household_loss_employment_income_last_4_weeks": "WRKLOSSRV",
+        "household_income_bracket": "RFAM_INCOME",
+        "household_has_children": "THHLD_NUMKID_TOPICAL",
+        "employment_status": "ANYWORK",
+        "respondent_age_group": "TAGE1",
+        "analysis_weight": "PWEIGHT"
+      },
+      "claim_boundary": "Public-data intake readiness only: this catalog records an auditable U.S. public-use survey source for food-cost and living-cost policy-reaction benchmark construction; it is not a model-quality result, not field validation, and not a China policy prediction.",
+      "documentation_urls": [
+        "https://www.census.gov/programs-surveys/household-pulse-survey/data/datasets.html",
+        "https://www.census.gov/programs-surveys/htops.html",
+        "https://www.census.gov/data/tables/2025/demo/hhp/2506.html",
+        "https://www2.census.gov/programs-surveys/demo/technical-documentation/hhp/2506_HTOPS_Household_Pulse_User_Notes_04232026.pdf"
+      ]
+    }
+  ]
+}

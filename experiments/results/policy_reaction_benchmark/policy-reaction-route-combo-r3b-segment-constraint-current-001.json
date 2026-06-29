@@ -1,0 +1,1178 @@
+{
+  "artifact_id": "policy-reaction-route-combo-r3b-segment-constraint-current-001",
+  "candidate_count": 4,
+  "candidates": [
+    {
+      "candidate_artifact": {
+        "best_candidate": {
+          "candidate_index": 1,
+          "parameter_patches": [
+            {
+              "expected_effect": {
+                "cash_cost_of_living_rebate": "increase",
+                "food_subsidy_expansion": "increase"
+              },
+              "factor_id": "institutional_trust",
+              "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+              "parameter_bounds": {
+                "max": 0.85,
+                "min": 0.45
+              },
+              "parameter_name": "prior_anchor_strength",
+              "parameter_value": 0.598734730696,
+              "policy_id": "food_subsidy_expansion",
+              "provenance": {
+                "constraint_program": [
+                  {
+                    "constraint_type": "distribution_smoothness",
+                    "max_top1_probability": 0.5
+                  },
+                  {
+                    "constraint_type": "segment_rank_guard",
+                    "guard": "retain_current_ordering_bias"
+                  }
+                ],
+                "direction": "over_predicted",
+                "latent_state_updates": {
+                  "household_cost_pressure": 0.06,
+                  "institutional_trust": -0.12,
+                  "policy_relief_urgency": 0.0
+                },
+                "lcdu_l0_tag": "trust_down_distribution_guard",
+                "magnitude": 0.436529326741,
+                "match_score": 2.436529326741,
+                "narrowing_program": {
+                  "coordination_mode": "support_order_primary",
+                  "narrowing_intent": "Retain the round1 mixed family but focus on low-income support ordering and reduce the direct high-price numeric burden.",
+                  "response_constraints": [
+                    {
+                      "constraint_type": "max_baseline_probability",
+                      "max_probability": 0.242,
+                      "policy_id": "baseline_no_new_support",
+                      "selector": "income_band=low"
+                    },
+                    {
+                      "constraint_type": "min_policy_probability",
+                      "min_probability": 0.404,
+                      "policy_id": "cash_cost_of_living_rebate",
+                      "selector": "working_family_price_stressed"
+                    }
+                  ],
+                  "target_selectors": [
+                    "income_band=low",
+                    "working_family_price_stressed"
+                  ]
+                },
+                "optimizer": "cross-family recomposition",
+                "representation": "segment program plus constraint program",
+                "residual": -0.436529326741,
+                "route_combo_id": "r3b-segment-constraint",
+                "route_combo_variant_tag": "conservative_bridge",
+                "secondary_candidate_id": "policy-reaction-constraint-program-l0-current-001-c01",
+                "segment_program_l0_variant_tag": "mixed_numeric_qualitative_family",
+                "segment_program_l1_variant_tag": "low_income_support_order_focus",
+                "source_split": "calibration",
+                "synchronized_program": {
+                  "coordination_rules": [
+                    {
+                      "guard": "qualitative_numeric_balance",
+                      "rule_type": "dual_axis_sync",
+                      "selectors": [
+                        "income_band=low",
+                        "price_stress_level=high"
+                      ]
+                    }
+                  ],
+                  "global_program_intent": "Combine numeric guardrails with qualitative synchronized guidance so high-price and low-income stress signals stay aligned.",
+                  "response_constraints": [
+                    {
+                      "constraint_type": "min_policy_probability",
+                      "min_probability": 0.295,
+                      "policy_id": "cash_cost_of_living_rebate",
+                      "selector": "price_stress_level=high"
+                    },
+                    {
+                      "constraint_type": "max_baseline_probability",
+                      "max_probability": 0.245,
+                      "policy_id": "baseline_no_new_support",
+                      "selector": "price_stress_level=high"
+                    }
+                  ],
+                  "synchronized_segments": [
+                    {
+                      "anchor_mode": "numeric_anchor",
+                      "anchor_text": "food_subsidy_expansion primary, baseline_no_new_support capped below the accepted guard band.",
+                      "instruction": "Keep the accepted relief-first ordering as the numeric anchor for the synchronized program.",
+                      "selector": "fixed_income_inflation_stressed"
+                    },
+                    {
+                      "anchor_mode": "qualitative_guard",
+                      "anchor_text": "support-oriented wording should dominate baseline-retention wording.",
+                      "instruction": "When low-income pressure is active, phrase support as compensatory rather than punitive or status-quo preserving.",
+                      "selector": "income_band=low"
+                    },
+                    {
+                      "anchor_mode": "numeric_anchor",
+                      "anchor_text": "cash_cost_of_living_rebate remains above a stability floor and baseline stays under a local cap.",
+                      "instruction": "Under high price stress, keep rebate support visible while avoiding a single-policy spike.",
+                      "selector": "price_stress_level=high"
+                    }
+                  ]
+                },
+                "system_level": "segment/population hybrid"
+              },
+              "segment": "fixed_income_inflation_stressed"
+            },
+            {
+              "expected_effect": {
+                "cash_cost_of_living_rebate": "increase",
+                "food_subsidy_expansion": "increase"
+              },
+              "factor_id": "institutional_trust",
+              "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+              "parameter_bounds": {
+                "max": 1.2,
+                "min": 0.8
+              },
+              "parameter_name": "trust_multiplier",
+              "parameter_value": 0.927811730696,
+              "policy_id": "food_subsidy_expansion",
+              "provenance": {
+                "constraint_program": [
+                  {
+                    "constraint_type": "distribution_smoothness",
+                    "max_top1_probability": 0.5
+                  },
+                  {
+                    "constraint_type": "segment_rank_guard",
+                    "guard": "retain_current_ordering_bias"
+                  }
+                ],
+                "direction": "over_predicted",
+                "latent_state_updates": {
+                  "household_cost_pressure": 0.06,
+                  "institutional_trust": -0.12,
+                  "policy_relief_urgency": 0.0
+                },
+                "lcdu_l0_tag": "trust_down_distribution_guard",
+                "magnitude": 0.436529326741,
+                "match_score": 2.436529326741,
+                "narrowing_program": {
+                  "coordination_mode": "support_order_primary",
+                  "narrowing_intent": "Retain the round1 mixed family but focus on low-income support ordering and reduce the direct high-price numeric burden.",
+                  "response_constraints": [
+                    {
+                      "constraint_type": "max_baseline_probability",
+                      "max_probability": 0.242,
+                      "policy_id": "baseline_no_new_support",
+                      "selector": "income_band=low"
+                    },
+                    {
+                      "constraint_type": "min_policy_probability",
+                      "min_probability": 0.404,
+                      "policy_id": "cash_cost_of_living_rebate",
+                      "selector": "working_family_price_stressed"
+                    }
+                  ],
+                  "target_selectors": [
+                    "income_band=low",
+                    "working_family_price_stressed"
+                  ]
+                },
+                "optimizer": "cross-family recomposition",
+                "representation": "segment program plus constraint program",
+                "residual": -0.436529326741,
+                "route_combo_id": "r3b-segment-constraint",
+                "route_combo_variant_tag": "conservative_bridge",
+                "secondary_candidate_id": "policy-reaction-constraint-program-l0-current-001-c01",
+                "segment_program_l0_variant_tag": "mixed_numeric_qualitative_family",
+                "segment_program_l1_variant_tag": "low_income_support_order_focus",
+                "source_split": "calibration",
+                "synchronized_program": {
+                  "coordination_rules": [
+                    {
+                      "guard": "qualitative_numeric_balance",
+                      "rule_type": "dual_axis_sync",
+                      "selectors": [
+                        "income_band=low",
+                        "price_stress_level=high"
+                      ]
+                    }
+                  ],
+                  "global_program_intent": "Combine numeric guardrails with qualitative synchronized guidance so high-price and low-income stress signals stay aligned.",
+                  "response_constraints": [
+                    {
+                      "constraint_type": "min_policy_probability",
+                      "min_probability": 0.295,
+                      "policy_id": "cash_cost_of_living_rebate",
+                      "selector": "price_stress_level=high"
+                    },
+                    {
+                      "constraint_type": "max_baseline_probability",
+                      "max_probability": 0.245,
+                      "policy_id": "baseline_no_new_support",
+                      "selector": "price_stress_level=high"
+                    }
+                  ],
+                  "synchronized_segments": [
+                    {
+                      "anchor_mode": "numeric_anchor",
+                      "anchor_text": "food_subsidy_expansion primary, baseline_no_new_support capped below the accepted guard band.",
+                      "instruction": "Keep the accepted relief-first ordering as the numeric anchor for the synchronized program.",
+                      "selector": "fixed_income_inflation_stressed"
+                    },
+                    {
+                      "anchor_mode": "qualitative_guard",
+                      "anchor_text": "support-oriented wording should dominate baseline-retention wording.",
+                      "instruction": "When low-income pressure is active, phrase support as compensatory rather than punitive or status-quo preserving.",
+                      "selector": "income_band=low"
+                    },
+                    {
+                      "anchor_mode": "numeric_anchor",
+                      "anchor_text": "cash_cost_of_living_rebate remains above a stability floor and baseline stays under a local cap.",
+                      "instruction": "Under high price stress, keep rebate support visible while avoiding a single-policy spike.",
+                      "selector": "price_stress_level=high"
+                    }
+                  ]
+                },
+                "system_level": "segment/population hybrid"
+              },
+              "segment": "fixed_income_inflation_stressed"
+            }
+          ],
+          "policy_id": "food_subsidy_expansion",
+          "proxy_score": 4.254466026348,
+          "segment": "fixed_income_inflation_stressed"
+        },
+        "candidate_id": "policy-reaction-route-combo-r3b-segment-constraint-current-001-v01",
+        "candidate_prompt_components": {
+          "calibration_anchor": {
+            "fixed_income_inflation_stressed": "ROUTE-COMBO combo_id=r3b-segment-constraint; variant=conservative_bridge; representation=segment program plus constraint program; optimizer=cross-family recomposition; system_level=segment/population hybrid; primary_policy=food_subsidy_expansion; secondary=policy-reaction-constraint-program-l0-current-001-c01; factors=institutional_trust; parameters=prior_anchor_strength=0.598734730696;trust_multiplier=0.927811730696",
+            "income_band=low": "SEGMENT-PROGRAM-L1 selector=income_band=low; mode=support_order_primary; variant=low_income_support_order_focus; constraints=max_baseline_probability(income_band=low; baseline_no_new_support <= 0.242) | min_policy_probability(working_family_price_stressed; cash_cost_of_living_rebate >= 0.404)",
+            "price_stress_level=high": "ROUTE-COMBO selector=price_stress_level=high; combo_id=r3b-segment-constraint; variant=conservative_bridge; strength=0.35.",
+            "working_family_price_stressed": "ROUTE-COMBO selector=working_family_price_stressed; combo_id=r3b-segment-constraint; variant=conservative_bridge; strength=0.35."
+          },
+          "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+          "segment_prompt": {
+            "fixed_income_inflation_stressed": "Apply synchronized program for fixed_income_inflation_stressed. Mode: numeric_anchor. Keep the accepted relief-first ordering as the numeric anchor for the synchronized program. Interpret this candidate through a narrowed segment program. Prefer the strongest synchronized signal only; drop weak decorative spread. Interpret this candidate through the finite route-combo coverage program. Combo: R3-B segment + constraint hybrid. Variant: conservative_bridge. Use only the shared signal between source families and avoid hard output forcing.",
+            "income_band=low": "Apply narrowed synchronized control for income_band=low. Mode: support_order_primary. Retain the round1 mixed family but focus on low-income support ordering and reduce the direct high-price numeric burden.",
+            "price_stress_level=high": "Apply route-combo coverage control for price_stress_level=high. Combo: R3-B segment + constraint hybrid. Variant intent: Use only the shared signal between source families and avoid hard output forcing.",
+            "working_family_price_stressed": "Apply route-combo coverage control for working_family_price_stressed. Combo: R3-B segment + constraint hybrid. Variant intent: Use only the shared signal between source families and avoid hard output forcing."
+          }
+        },
+        "claim_boundary": "Route-combo candidate is a runtime probe candidate only.",
+        "generator": "route_combo_coverage_candidate_builder",
+        "schema_version": "policy-reaction-s2pc-candidate-v1",
+        "source_split_contract": {
+          "candidate_acceptance": "heldout_required",
+          "parameter_search": "calibration",
+          "residual_mining": "calibration",
+          "semantic_factor_retrieval": "calibration"
+        }
+      },
+      "candidate_id": "policy-reaction-route-combo-r3b-segment-constraint-current-001-v01",
+      "combo_id": "r3b-segment-constraint",
+      "combo_label": "R3-B segment + constraint hybrid",
+      "combo_program": {
+        "optimizer": "cross-family recomposition",
+        "representation": "segment program plus constraint program",
+        "secondary_candidate_id": "policy-reaction-constraint-program-l0-current-001-c01",
+        "selectors": [
+          "working_family_price_stressed",
+          "price_stress_level=high"
+        ],
+        "system_level": "segment/population hybrid",
+        "variant": {
+          "intent": "Use only the shared signal between source families and avoid hard output forcing.",
+          "strength": 0.35,
+          "suffix": "v01",
+          "tag": "conservative_bridge"
+        }
+      },
+      "variant_tag": "conservative_bridge"
+    },
+    {
+      "candidate_artifact": {
+        "best_candidate": {
+          "candidate_index": 1,
+          "parameter_patches": [
+            {
+              "expected_effect": {
+                "cash_cost_of_living_rebate": "increase",
+                "food_subsidy_expansion": "increase"
+              },
+              "factor_id": "institutional_trust",
+              "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+              "parameter_bounds": {
+                "max": 0.85,
+                "min": 0.45
+              },
+              "parameter_name": "prior_anchor_strength",
+              "parameter_value": 0.601101730696,
+              "policy_id": "food_subsidy_expansion",
+              "provenance": {
+                "constraint_program": [
+                  {
+                    "constraint_type": "distribution_smoothness",
+                    "max_top1_probability": 0.5
+                  },
+                  {
+                    "constraint_type": "segment_rank_guard",
+                    "guard": "retain_current_ordering_bias"
+                  }
+                ],
+                "direction": "over_predicted",
+                "latent_state_updates": {
+                  "household_cost_pressure": 0.06,
+                  "institutional_trust": -0.12,
+                  "policy_relief_urgency": 0.0
+                },
+                "lcdu_l0_tag": "trust_down_distribution_guard",
+                "magnitude": 0.436529326741,
+                "match_score": 2.436529326741,
+                "narrowing_program": {
+                  "coordination_mode": "support_order_primary",
+                  "narrowing_intent": "Retain the round1 mixed family but focus on low-income support ordering and reduce the direct high-price numeric burden.",
+                  "response_constraints": [
+                    {
+                      "constraint_type": "max_baseline_probability",
+                      "max_probability": 0.242,
+                      "policy_id": "baseline_no_new_support",
+                      "selector": "income_band=low"
+                    },
+                    {
+                      "constraint_type": "min_policy_probability",
+                      "min_probability": 0.404,
+                      "policy_id": "cash_cost_of_living_rebate",
+                      "selector": "working_family_price_stressed"
+                    }
+                  ],
+                  "target_selectors": [
+                    "income_band=low",
+                    "working_family_price_stressed"
+                  ]
+                },
+                "optimizer": "cross-family recomposition",
+                "representation": "segment program plus constraint program",
+                "residual": -0.436529326741,
+                "route_combo_id": "r3b-segment-constraint",
+                "route_combo_variant_tag": "balanced_bridge",
+                "secondary_candidate_id": "policy-reaction-constraint-program-l0-current-001-c01",
+                "segment_program_l0_variant_tag": "mixed_numeric_qualitative_family",
+                "segment_program_l1_variant_tag": "low_income_support_order_focus",
+                "source_split": "calibration",
+                "synchronized_program": {
+                  "coordination_rules": [
+                    {
+                      "guard": "qualitative_numeric_balance",
+                      "rule_type": "dual_axis_sync",
+                      "selectors": [
+                        "income_band=low",
+                        "price_stress_level=high"
+                      ]
+                    }
+                  ],
+                  "global_program_intent": "Combine numeric guardrails with qualitative synchronized guidance so high-price and low-income stress signals stay aligned.",
+                  "response_constraints": [
+                    {
+                      "constraint_type": "min_policy_probability",
+                      "min_probability": 0.295,
+                      "policy_id": "cash_cost_of_living_rebate",
+                      "selector": "price_stress_level=high"
+                    },
+                    {
+                      "constraint_type": "max_baseline_probability",
+                      "max_probability": 0.245,
+                      "policy_id": "baseline_no_new_support",
+                      "selector": "price_stress_level=high"
+                    }
+                  ],
+                  "synchronized_segments": [
+                    {
+                      "anchor_mode": "numeric_anchor",
+                      "anchor_text": "food_subsidy_expansion primary, baseline_no_new_support capped below the accepted guard band.",
+                      "instruction": "Keep the accepted relief-first ordering as the numeric anchor for the synchronized program.",
+                      "selector": "fixed_income_inflation_stressed"
+                    },
+                    {
+                      "anchor_mode": "qualitative_guard",
+                      "anchor_text": "support-oriented wording should dominate baseline-retention wording.",
+                      "instruction": "When low-income pressure is active, phrase support as compensatory rather than punitive or status-quo preserving.",
+                      "selector": "income_band=low"
+                    },
+                    {
+                      "anchor_mode": "numeric_anchor",
+                      "anchor_text": "cash_cost_of_living_rebate remains above a stability floor and baseline stays under a local cap.",
+                      "instruction": "Under high price stress, keep rebate support visible while avoiding a single-policy spike.",
+                      "selector": "price_stress_level=high"
+                    }
+                  ]
+                },
+                "system_level": "segment/population hybrid"
+              },
+              "segment": "fixed_income_inflation_stressed"
+            },
+            {
+              "expected_effect": {
+                "cash_cost_of_living_rebate": "increase",
+                "food_subsidy_expansion": "increase"
+              },
+              "factor_id": "institutional_trust",
+              "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+              "parameter_bounds": {
+                "max": 1.2,
+                "min": 0.8
+              },
+              "parameter_name": "trust_multiplier",
+              "parameter_value": 0.927811730696,
+              "policy_id": "food_subsidy_expansion",
+              "provenance": {
+                "constraint_program": [
+                  {
+                    "constraint_type": "distribution_smoothness",
+                    "max_top1_probability": 0.5
+                  },
+                  {
+                    "constraint_type": "segment_rank_guard",
+                    "guard": "retain_current_ordering_bias"
+                  }
+                ],
+                "direction": "over_predicted",
+                "latent_state_updates": {
+                  "household_cost_pressure": 0.06,
+                  "institutional_trust": -0.12,
+                  "policy_relief_urgency": 0.0
+                },
+                "lcdu_l0_tag": "trust_down_distribution_guard",
+                "magnitude": 0.436529326741,
+                "match_score": 2.436529326741,
+                "narrowing_program": {
+                  "coordination_mode": "support_order_primary",
+                  "narrowing_intent": "Retain the round1 mixed family but focus on low-income support ordering and reduce the direct high-price numeric burden.",
+                  "response_constraints": [
+                    {
+                      "constraint_type": "max_baseline_probability",
+                      "max_probability": 0.242,
+                      "policy_id": "baseline_no_new_support",
+                      "selector": "income_band=low"
+                    },
+                    {
+                      "constraint_type": "min_policy_probability",
+                      "min_probability": 0.404,
+                      "policy_id": "cash_cost_of_living_rebate",
+                      "selector": "working_family_price_stressed"
+                    }
+                  ],
+                  "target_selectors": [
+                    "income_band=low",
+                    "working_family_price_stressed"
+                  ]
+                },
+                "optimizer": "cross-family recomposition",
+                "representation": "segment program plus constraint program",
+                "residual": -0.436529326741,
+                "route_combo_id": "r3b-segment-constraint",
+                "route_combo_variant_tag": "balanced_bridge",
+                "secondary_candidate_id": "policy-reaction-constraint-program-l0-current-001-c01",
+                "segment_program_l0_variant_tag": "mixed_numeric_qualitative_family",
+                "segment_program_l1_variant_tag": "low_income_support_order_focus",
+                "source_split": "calibration",
+                "synchronized_program": {
+                  "coordination_rules": [
+                    {
+                      "guard": "qualitative_numeric_balance",
+                      "rule_type": "dual_axis_sync",
+                      "selectors": [
+                        "income_band=low",
+                        "price_stress_level=high"
+                      ]
+                    }
+                  ],
+                  "global_program_intent": "Combine numeric guardrails with qualitative synchronized guidance so high-price and low-income stress signals stay aligned.",
+                  "response_constraints": [
+                    {
+                      "constraint_type": "min_policy_probability",
+                      "min_probability": 0.295,
+                      "policy_id": "cash_cost_of_living_rebate",
+                      "selector": "price_stress_level=high"
+                    },
+                    {
+                      "constraint_type": "max_baseline_probability",
+                      "max_probability": 0.245,
+                      "policy_id": "baseline_no_new_support",
+                      "selector": "price_stress_level=high"
+                    }
+                  ],
+                  "synchronized_segments": [
+                    {
+                      "anchor_mode": "numeric_anchor",
+                      "anchor_text": "food_subsidy_expansion primary, baseline_no_new_support capped below the accepted guard band.",
+                      "instruction": "Keep the accepted relief-first ordering as the numeric anchor for the synchronized program.",
+                      "selector": "fixed_income_inflation_stressed"
+                    },
+                    {
+                      "anchor_mode": "qualitative_guard",
+                      "anchor_text": "support-oriented wording should dominate baseline-retention wording.",
+                      "instruction": "When low-income pressure is active, phrase support as compensatory rather than punitive or status-quo preserving.",
+                      "selector": "income_band=low"
+                    },
+                    {
+                      "anchor_mode": "numeric_anchor",
+                      "anchor_text": "cash_cost_of_living_rebate remains above a stability floor and baseline stays under a local cap.",
+                      "instruction": "Under high price stress, keep rebate support visible while avoiding a single-policy spike.",
+                      "selector": "price_stress_level=high"
+                    }
+                  ]
+                },
+                "system_level": "segment/population hybrid"
+              },
+              "segment": "fixed_income_inflation_stressed"
+            }
+          ],
+          "policy_id": "food_subsidy_expansion",
+          "proxy_score": 4.254466026348,
+          "segment": "fixed_income_inflation_stressed"
+        },
+        "candidate_id": "policy-reaction-route-combo-r3b-segment-constraint-current-001-v02",
+        "candidate_prompt_components": {
+          "calibration_anchor": {
+            "fixed_income_inflation_stressed": "ROUTE-COMBO combo_id=r3b-segment-constraint; variant=balanced_bridge; representation=segment program plus constraint program; optimizer=cross-family recomposition; system_level=segment/population hybrid; primary_policy=food_subsidy_expansion; secondary=policy-reaction-constraint-program-l0-current-001-c01; factors=institutional_trust; parameters=prior_anchor_strength=0.601101730696;trust_multiplier=0.927811730696",
+            "income_band=low": "SEGMENT-PROGRAM-L1 selector=income_band=low; mode=support_order_primary; variant=low_income_support_order_focus; constraints=max_baseline_probability(income_band=low; baseline_no_new_support <= 0.242) | min_policy_probability(working_family_price_stressed; cash_cost_of_living_rebate >= 0.404)",
+            "price_stress_level=high": "ROUTE-COMBO selector=price_stress_level=high; combo_id=r3b-segment-constraint; variant=balanced_bridge; strength=0.5.",
+            "working_family_price_stressed": "ROUTE-COMBO selector=working_family_price_stressed; combo_id=r3b-segment-constraint; variant=balanced_bridge; strength=0.5."
+          },
+          "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+          "segment_prompt": {
+            "fixed_income_inflation_stressed": "Apply synchronized program for fixed_income_inflation_stressed. Mode: numeric_anchor. Keep the accepted relief-first ordering as the numeric anchor for the synchronized program. Interpret this candidate through a narrowed segment program. Prefer the strongest synchronized signal only; drop weak decorative spread. Interpret this candidate through the finite route-combo coverage program. Combo: R3-B segment + constraint hybrid. Variant: balanced_bridge. Balance the primary route signal with the secondary route signal.",
+            "income_band=low": "Apply narrowed synchronized control for income_band=low. Mode: support_order_primary. Retain the round1 mixed family but focus on low-income support ordering and reduce the direct high-price numeric burden.",
+            "price_stress_level=high": "Apply route-combo coverage control for price_stress_level=high. Combo: R3-B segment + constraint hybrid. Variant intent: Balance the primary route signal with the secondary route signal.",
+            "working_family_price_stressed": "Apply route-combo coverage control for working_family_price_stressed. Combo: R3-B segment + constraint hybrid. Variant intent: Balance the primary route signal with the secondary route signal."
+          }
+        },
+        "claim_boundary": "Route-combo candidate is a runtime probe candidate only.",
+        "generator": "route_combo_coverage_candidate_builder",
+        "schema_version": "policy-reaction-s2pc-candidate-v1",
+        "source_split_contract": {
+          "candidate_acceptance": "heldout_required",
+          "parameter_search": "calibration",
+          "residual_mining": "calibration",
+          "semantic_factor_retrieval": "calibration"
+        }
+      },
+      "candidate_id": "policy-reaction-route-combo-r3b-segment-constraint-current-001-v02",
+      "combo_id": "r3b-segment-constraint",
+      "combo_label": "R3-B segment + constraint hybrid",
+      "combo_program": {
+        "optimizer": "cross-family recomposition",
+        "representation": "segment program plus constraint program",
+        "secondary_candidate_id": "policy-reaction-constraint-program-l0-current-001-c01",
+        "selectors": [
+          "working_family_price_stressed",
+          "price_stress_level=high"
+        ],
+        "system_level": "segment/population hybrid",
+        "variant": {
+          "intent": "Balance the primary route signal with the secondary route signal.",
+          "strength": 0.5,
+          "suffix": "v02",
+          "tag": "balanced_bridge"
+        }
+      },
+      "variant_tag": "balanced_bridge"
+    },
+    {
+      "candidate_artifact": {
+        "best_candidate": {
+          "candidate_index": 1,
+          "parameter_patches": [
+            {
+              "expected_effect": {
+                "cash_cost_of_living_rebate": "increase",
+                "food_subsidy_expansion": "increase"
+              },
+              "factor_id": "institutional_trust",
+              "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+              "parameter_bounds": {
+                "max": 0.85,
+                "min": 0.45
+              },
+              "parameter_name": "prior_anchor_strength",
+              "parameter_value": 0.602995330696,
+              "policy_id": "food_subsidy_expansion",
+              "provenance": {
+                "constraint_program": [
+                  {
+                    "constraint_type": "distribution_smoothness",
+                    "max_top1_probability": 0.5
+                  },
+                  {
+                    "constraint_type": "segment_rank_guard",
+                    "guard": "retain_current_ordering_bias"
+                  }
+                ],
+                "direction": "over_predicted",
+                "latent_state_updates": {
+                  "household_cost_pressure": 0.06,
+                  "institutional_trust": -0.12,
+                  "policy_relief_urgency": 0.0
+                },
+                "lcdu_l0_tag": "trust_down_distribution_guard",
+                "magnitude": 0.436529326741,
+                "match_score": 2.436529326741,
+                "narrowing_program": {
+                  "coordination_mode": "support_order_primary",
+                  "narrowing_intent": "Retain the round1 mixed family but focus on low-income support ordering and reduce the direct high-price numeric burden.",
+                  "response_constraints": [
+                    {
+                      "constraint_type": "max_baseline_probability",
+                      "max_probability": 0.242,
+                      "policy_id": "baseline_no_new_support",
+                      "selector": "income_band=low"
+                    },
+                    {
+                      "constraint_type": "min_policy_probability",
+                      "min_probability": 0.404,
+                      "policy_id": "cash_cost_of_living_rebate",
+                      "selector": "working_family_price_stressed"
+                    }
+                  ],
+                  "target_selectors": [
+                    "income_band=low",
+                    "working_family_price_stressed"
+                  ]
+                },
+                "optimizer": "cross-family recomposition",
+                "representation": "segment program plus constraint program",
+                "residual": -0.436529326741,
+                "route_combo_id": "r3b-segment-constraint",
+                "route_combo_variant_tag": "axis_focus_bridge",
+                "secondary_candidate_id": "policy-reaction-constraint-program-l0-current-001-c01",
+                "segment_program_l0_variant_tag": "mixed_numeric_qualitative_family",
+                "segment_program_l1_variant_tag": "low_income_support_order_focus",
+                "source_split": "calibration",
+                "synchronized_program": {
+                  "coordination_rules": [
+                    {
+                      "guard": "qualitative_numeric_balance",
+                      "rule_type": "dual_axis_sync",
+                      "selectors": [
+                        "income_band=low",
+                        "price_stress_level=high"
+                      ]
+                    }
+                  ],
+                  "global_program_intent": "Combine numeric guardrails with qualitative synchronized guidance so high-price and low-income stress signals stay aligned.",
+                  "response_constraints": [
+                    {
+                      "constraint_type": "min_policy_probability",
+                      "min_probability": 0.295,
+                      "policy_id": "cash_cost_of_living_rebate",
+                      "selector": "price_stress_level=high"
+                    },
+                    {
+                      "constraint_type": "max_baseline_probability",
+                      "max_probability": 0.245,
+                      "policy_id": "baseline_no_new_support",
+                      "selector": "price_stress_level=high"
+                    }
+                  ],
+                  "synchronized_segments": [
+                    {
+                      "anchor_mode": "numeric_anchor",
+                      "anchor_text": "food_subsidy_expansion primary, baseline_no_new_support capped below the accepted guard band.",
+                      "instruction": "Keep the accepted relief-first ordering as the numeric anchor for the synchronized program.",
+                      "selector": "fixed_income_inflation_stressed"
+                    },
+                    {
+                      "anchor_mode": "qualitative_guard",
+                      "anchor_text": "support-oriented wording should dominate baseline-retention wording.",
+                      "instruction": "When low-income pressure is active, phrase support as compensatory rather than punitive or status-quo preserving.",
+                      "selector": "income_band=low"
+                    },
+                    {
+                      "anchor_mode": "numeric_anchor",
+                      "anchor_text": "cash_cost_of_living_rebate remains above a stability floor and baseline stays under a local cap.",
+                      "instruction": "Under high price stress, keep rebate support visible while avoiding a single-policy spike.",
+                      "selector": "price_stress_level=high"
+                    }
+                  ]
+                },
+                "system_level": "segment/population hybrid"
+              },
+              "segment": "fixed_income_inflation_stressed"
+            },
+            {
+              "expected_effect": {
+                "cash_cost_of_living_rebate": "increase",
+                "food_subsidy_expansion": "increase"
+              },
+              "factor_id": "institutional_trust",
+              "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+              "parameter_bounds": {
+                "max": 1.2,
+                "min": 0.8
+              },
+              "parameter_name": "trust_multiplier",
+              "parameter_value": 0.927811730696,
+              "policy_id": "food_subsidy_expansion",
+              "provenance": {
+                "constraint_program": [
+                  {
+                    "constraint_type": "distribution_smoothness",
+                    "max_top1_probability": 0.5
+                  },
+                  {
+                    "constraint_type": "segment_rank_guard",
+                    "guard": "retain_current_ordering_bias"
+                  }
+                ],
+                "direction": "over_predicted",
+                "latent_state_updates": {
+                  "household_cost_pressure": 0.06,
+                  "institutional_trust": -0.12,
+                  "policy_relief_urgency": 0.0
+                },
+                "lcdu_l0_tag": "trust_down_distribution_guard",
+                "magnitude": 0.436529326741,
+                "match_score": 2.436529326741,
+                "narrowing_program": {
+                  "coordination_mode": "support_order_primary",
+                  "narrowing_intent": "Retain the round1 mixed family but focus on low-income support ordering and reduce the direct high-price numeric burden.",
+                  "response_constraints": [
+                    {
+                      "constraint_type": "max_baseline_probability",
+                      "max_probability": 0.242,
+                      "policy_id": "baseline_no_new_support",
+                      "selector": "income_band=low"
+                    },
+                    {
+                      "constraint_type": "min_policy_probability",
+                      "min_probability": 0.404,
+                      "policy_id": "cash_cost_of_living_rebate",
+                      "selector": "working_family_price_stressed"
+                    }
+                  ],
+                  "target_selectors": [
+                    "income_band=low",
+                    "working_family_price_stressed"
+                  ]
+                },
+                "optimizer": "cross-family recomposition",
+                "representation": "segment program plus constraint program",
+                "residual": -0.436529326741,
+                "route_combo_id": "r3b-segment-constraint",
+                "route_combo_variant_tag": "axis_focus_bridge",
+                "secondary_candidate_id": "policy-reaction-constraint-program-l0-current-001-c01",
+                "segment_program_l0_variant_tag": "mixed_numeric_qualitative_family",
+                "segment_program_l1_variant_tag": "low_income_support_order_focus",
+                "source_split": "calibration",
+                "synchronized_program": {
+                  "coordination_rules": [
+                    {
+                      "guard": "qualitative_numeric_balance",
+                      "rule_type": "dual_axis_sync",
+                      "selectors": [
+                        "income_band=low",
+                        "price_stress_level=high"
+                      ]
+                    }
+                  ],
+                  "global_program_intent": "Combine numeric guardrails with qualitative synchronized guidance so high-price and low-income stress signals stay aligned.",
+                  "response_constraints": [
+                    {
+                      "constraint_type": "min_policy_probability",
+                      "min_probability": 0.295,
+                      "policy_id": "cash_cost_of_living_rebate",
+                      "selector": "price_stress_level=high"
+                    },
+                    {
+                      "constraint_type": "max_baseline_probability",
+                      "max_probability": 0.245,
+                      "policy_id": "baseline_no_new_support",
+                      "selector": "price_stress_level=high"
+                    }
+                  ],
+                  "synchronized_segments": [
+                    {
+                      "anchor_mode": "numeric_anchor",
+                      "anchor_text": "food_subsidy_expansion primary, baseline_no_new_support capped below the accepted guard band.",
+                      "instruction": "Keep the accepted relief-first ordering as the numeric anchor for the synchronized program.",
+                      "selector": "fixed_income_inflation_stressed"
+                    },
+                    {
+                      "anchor_mode": "qualitative_guard",
+                      "anchor_text": "support-oriented wording should dominate baseline-retention wording.",
+                      "instruction": "When low-income pressure is active, phrase support as compensatory rather than punitive or status-quo preserving.",
+                      "selector": "income_band=low"
+                    },
+                    {
+                      "anchor_mode": "numeric_anchor",
+                      "anchor_text": "cash_cost_of_living_rebate remains above a stability floor and baseline stays under a local cap.",
+                      "instruction": "Under high price stress, keep rebate support visible while avoiding a single-policy spike.",
+                      "selector": "price_stress_level=high"
+                    }
+                  ]
+                },
+                "system_level": "segment/population hybrid"
+              },
+              "segment": "fixed_income_inflation_stressed"
+            }
+          ],
+          "policy_id": "food_subsidy_expansion",
+          "proxy_score": 4.254466026348,
+          "segment": "fixed_income_inflation_stressed"
+        },
+        "candidate_id": "policy-reaction-route-combo-r3b-segment-constraint-current-001-v03",
+        "candidate_prompt_components": {
+          "calibration_anchor": {
+            "fixed_income_inflation_stressed": "ROUTE-COMBO combo_id=r3b-segment-constraint; variant=axis_focus_bridge; representation=segment program plus constraint program; optimizer=cross-family recomposition; system_level=segment/population hybrid; primary_policy=food_subsidy_expansion; secondary=policy-reaction-constraint-program-l0-current-001-c01; factors=institutional_trust; parameters=prior_anchor_strength=0.602995330696;trust_multiplier=0.927811730696",
+            "income_band=low": "SEGMENT-PROGRAM-L1 selector=income_band=low; mode=support_order_primary; variant=low_income_support_order_focus; constraints=max_baseline_probability(income_band=low; baseline_no_new_support <= 0.242) | min_policy_probability(working_family_price_stressed; cash_cost_of_living_rebate >= 0.404)",
+            "price_stress_level=high": "ROUTE-COMBO selector=price_stress_level=high; combo_id=r3b-segment-constraint; variant=axis_focus_bridge; strength=0.62.",
+            "working_family_price_stressed": "ROUTE-COMBO selector=working_family_price_stressed; combo_id=r3b-segment-constraint; variant=axis_focus_bridge; strength=0.62."
+          },
+          "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+          "segment_prompt": {
+            "fixed_income_inflation_stressed": "Apply synchronized program for fixed_income_inflation_stressed. Mode: numeric_anchor. Keep the accepted relief-first ordering as the numeric anchor for the synchronized program. Interpret this candidate through a narrowed segment program. Prefer the strongest synchronized signal only; drop weak decorative spread. Interpret this candidate through the finite route-combo coverage program. Combo: R3-B segment + constraint hybrid. Variant: axis_focus_bridge. Focus the route combination on the persistent axis-level weaknesses.",
+            "income_band=low": "Apply narrowed synchronized control for income_band=low. Mode: support_order_primary. Retain the round1 mixed family but focus on low-income support ordering and reduce the direct high-price numeric burden.",
+            "price_stress_level=high": "Apply route-combo coverage control for price_stress_level=high. Combo: R3-B segment + constraint hybrid. Variant intent: Focus the route combination on the persistent axis-level weaknesses.",
+            "working_family_price_stressed": "Apply route-combo coverage control for working_family_price_stressed. Combo: R3-B segment + constraint hybrid. Variant intent: Focus the route combination on the persistent axis-level weaknesses."
+          }
+        },
+        "claim_boundary": "Route-combo candidate is a runtime probe candidate only.",
+        "generator": "route_combo_coverage_candidate_builder",
+        "schema_version": "policy-reaction-s2pc-candidate-v1",
+        "source_split_contract": {
+          "candidate_acceptance": "heldout_required",
+          "parameter_search": "calibration",
+          "residual_mining": "calibration",
+          "semantic_factor_retrieval": "calibration"
+        }
+      },
+      "candidate_id": "policy-reaction-route-combo-r3b-segment-constraint-current-001-v03",
+      "combo_id": "r3b-segment-constraint",
+      "combo_label": "R3-B segment + constraint hybrid",
+      "combo_program": {
+        "optimizer": "cross-family recomposition",
+        "representation": "segment program plus constraint program",
+        "secondary_candidate_id": "policy-reaction-constraint-program-l0-current-001-c01",
+        "selectors": [
+          "working_family_price_stressed",
+          "price_stress_level=high"
+        ],
+        "system_level": "segment/population hybrid",
+        "variant": {
+          "intent": "Focus the route combination on the persistent axis-level weaknesses.",
+          "strength": 0.62,
+          "suffix": "v03",
+          "tag": "axis_focus_bridge"
+        }
+      },
+      "variant_tag": "axis_focus_bridge"
+    },
+    {
+      "candidate_artifact": {
+        "best_candidate": {
+          "candidate_index": 1,
+          "parameter_patches": [
+            {
+              "expected_effect": {
+                "cash_cost_of_living_rebate": "increase",
+                "food_subsidy_expansion": "increase"
+              },
+              "factor_id": "institutional_trust",
+              "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+              "parameter_bounds": {
+                "max": 0.85,
+                "min": 0.45
+              },
+              "parameter_name": "prior_anchor_strength",
+              "parameter_value": 0.611760130696,
+              "policy_id": "food_subsidy_expansion",
+              "provenance": {
+                "constraint_program": [
+                  {
+                    "constraint_type": "distribution_smoothness",
+                    "max_top1_probability": 0.5
+                  },
+                  {
+                    "constraint_type": "segment_rank_guard",
+                    "guard": "retain_current_ordering_bias"
+                  }
+                ],
+                "direction": "over_predicted",
+                "latent_state_updates": {
+                  "household_cost_pressure": 0.06,
+                  "institutional_trust": -0.12,
+                  "policy_relief_urgency": 0.0
+                },
+                "lcdu_l0_tag": "trust_down_distribution_guard",
+                "magnitude": 0.436529326741,
+                "match_score": 2.436529326741,
+                "narrowing_program": {
+                  "coordination_mode": "support_order_primary",
+                  "narrowing_intent": "Retain the round1 mixed family but focus on low-income support ordering and reduce the direct high-price numeric burden.",
+                  "response_constraints": [
+                    {
+                      "constraint_type": "max_baseline_probability",
+                      "max_probability": 0.242,
+                      "policy_id": "baseline_no_new_support",
+                      "selector": "income_band=low"
+                    },
+                    {
+                      "constraint_type": "min_policy_probability",
+                      "min_probability": 0.404,
+                      "policy_id": "cash_cost_of_living_rebate",
+                      "selector": "working_family_price_stressed"
+                    }
+                  ],
+                  "target_selectors": [
+                    "income_band=low",
+                    "working_family_price_stressed"
+                  ]
+                },
+                "optimizer": "cross-family recomposition",
+                "representation": "segment program plus constraint program",
+                "residual": -0.436529326741,
+                "route_combo_id": "r3b-segment-constraint",
+                "route_combo_variant_tag": "strong_counterfactual_bridge",
+                "secondary_candidate_id": "policy-reaction-constraint-program-l0-current-001-c01",
+                "segment_program_l0_variant_tag": "mixed_numeric_qualitative_family",
+                "segment_program_l1_variant_tag": "low_income_support_order_focus",
+                "source_split": "calibration",
+                "synchronized_program": {
+                  "coordination_rules": [
+                    {
+                      "guard": "qualitative_numeric_balance",
+                      "rule_type": "dual_axis_sync",
+                      "selectors": [
+                        "income_band=low",
+                        "price_stress_level=high"
+                      ]
+                    }
+                  ],
+                  "global_program_intent": "Combine numeric guardrails with qualitative synchronized guidance so high-price and low-income stress signals stay aligned.",
+                  "response_constraints": [
+                    {
+                      "constraint_type": "min_policy_probability",
+                      "min_probability": 0.295,
+                      "policy_id": "cash_cost_of_living_rebate",
+                      "selector": "price_stress_level=high"
+                    },
+                    {
+                      "constraint_type": "max_baseline_probability",
+                      "max_probability": 0.245,
+                      "policy_id": "baseline_no_new_support",
+                      "selector": "price_stress_level=high"
+                    }
+                  ],
+                  "synchronized_segments": [
+                    {
+                      "anchor_mode": "numeric_anchor",
+                      "anchor_text": "food_subsidy_expansion primary, baseline_no_new_support capped below the accepted guard band.",
+                      "instruction": "Keep the accepted relief-first ordering as the numeric anchor for the synchronized program.",
+                      "selector": "fixed_income_inflation_stressed"
+                    },
+                    {
+                      "anchor_mode": "qualitative_guard",
+                      "anchor_text": "support-oriented wording should dominate baseline-retention wording.",
+                      "instruction": "When low-income pressure is active, phrase support as compensatory rather than punitive or status-quo preserving.",
+                      "selector": "income_band=low"
+                    },
+                    {
+                      "anchor_mode": "numeric_anchor",
+                      "anchor_text": "cash_cost_of_living_rebate remains above a stability floor and baseline stays under a local cap.",
+                      "instruction": "Under high price stress, keep rebate support visible while avoiding a single-policy spike.",
+                      "selector": "price_stress_level=high"
+                    }
+                  ]
+                },
+                "system_level": "segment/population hybrid"
+              },
+              "segment": "fixed_income_inflation_stressed"
+            },
+            {
+              "expected_effect": {
+                "cash_cost_of_living_rebate": "increase",
+                "food_subsidy_expansion": "increase"
+              },
+              "factor_id": "institutional_trust",
+              "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+              "parameter_bounds": {
+                "max": 1.2,
+                "min": 0.8
+              },
+              "parameter_name": "trust_multiplier",
+              "parameter_value": 0.934051730696,
+              "policy_id": "food_subsidy_expansion",
+              "provenance": {
+                "constraint_program": [
+                  {
+                    "constraint_type": "distribution_smoothness",
+                    "max_top1_probability": 0.5
+                  },
+                  {
+                    "constraint_type": "segment_rank_guard",
+                    "guard": "retain_current_ordering_bias"
+                  }
+                ],
+                "direction": "over_predicted",
+                "latent_state_updates": {
+                  "household_cost_pressure": 0.06,
+                  "institutional_trust": -0.12,
+                  "policy_relief_urgency": 0.0
+                },
+                "lcdu_l0_tag": "trust_down_distribution_guard",
+                "magnitude": 0.436529326741,
+                "match_score": 2.436529326741,
+                "narrowing_program": {
+                  "coordination_mode": "support_order_primary",
+                  "narrowing_intent": "Retain the round1 mixed family but focus on low-income support ordering and reduce the direct high-price numeric burden.",
+                  "response_constraints": [
+                    {
+                      "constraint_type": "max_baseline_probability",
+                      "max_probability": 0.242,
+                      "policy_id": "baseline_no_new_support",
+                      "selector": "income_band=low"
+                    },
+                    {
+                      "constraint_type": "min_policy_probability",
+                      "min_probability": 0.404,
+                      "policy_id": "cash_cost_of_living_rebate",
+                      "selector": "working_family_price_stressed"
+                    }
+                  ],
+                  "target_selectors": [
+                    "income_band=low",
+                    "working_family_price_stressed"
+                  ]
+                },
+                "optimizer": "cross-family recomposition",
+                "representation": "segment program plus constraint program",
+                "residual": -0.436529326741,
+                "route_combo_id": "r3b-segment-constraint",
+                "route_combo_variant_tag": "strong_counterfactual_bridge",
+                "secondary_candidate_id": "policy-reaction-constraint-program-l0-current-001-c01",
+                "segment_program_l0_variant_tag": "mixed_numeric_qualitative_family",
+                "segment_program_l1_variant_tag": "low_income_support_order_focus",
+                "source_split": "calibration",
+                "synchronized_program": {
+                  "coordination_rules": [
+                    {
+                      "guard": "qualitative_numeric_balance",
+                      "rule_type": "dual_axis_sync",
+                      "selectors": [
+                        "income_band=low",
+                        "price_stress_level=high"
+                      ]
+                    }
+                  ],
+                  "global_program_intent": "Combine numeric guardrails with qualitative synchronized guidance so high-price and low-income stress signals stay aligned.",
+                  "response_constraints": [
+                    {
+                      "constraint_type": "min_policy_probability",
+                      "min_probability": 0.295,
+                      "policy_id": "cash_cost_of_living_rebate",
+                      "selector": "price_stress_level=high"
+                    },
+                    {
+                      "constraint_type": "max_baseline_probability",
+                      "max_probability": 0.245,
+                      "policy_id": "baseline_no_new_support",
+                      "selector": "price_stress_level=high"
+                    }
+                  ],
+                  "synchronized_segments": [
+                    {
+                      "anchor_mode": "numeric_anchor",
+                      "anchor_text": "food_subsidy_expansion primary, baseline_no_new_support capped below the accepted guard band.",
+                      "instruction": "Keep the accepted relief-first ordering as the numeric anchor for the synchronized program.",
+                      "selector": "fixed_income_inflation_stressed"
+                    },
+                    {
+                      "anchor_mode": "qualitative_guard",
+                      "anchor_text": "support-oriented wording should dominate baseline-retention wording.",
+                      "instruction": "When low-income pressure is active, phrase support as compensatory rather than punitive or status-quo preserving.",
+                      "selector": "income_band=low"
+                    },
+                    {
+                      "anchor_mode": "numeric_anchor",
+                      "anchor_text": "cash_cost_of_living_rebate remains above a stability floor and baseline stays under a local cap.",
+                      "instruction": "Under high price stress, keep rebate support visible while avoiding a single-policy spike.",
+                      "selector": "price_stress_level=high"
+                    }
+                  ]
+                },
+                "system_level": "segment/population hybrid"
+              },
+              "segment": "fixed_income_inflation_stressed"
+            }
+          ],
+          "policy_id": "food_subsidy_expansion",
+          "proxy_score": 4.254466026348,
+          "segment": "fixed_income_inflation_stressed"
+        },
+        "candidate_id": "policy-reaction-route-combo-r3b-segment-constraint-current-001-v04",
+        "candidate_prompt_components": {
+          "calibration_anchor": {
+            "fixed_income_inflation_stressed": "ROUTE-COMBO combo_id=r3b-segment-constraint; variant=strong_counterfactual_bridge; representation=segment program plus constraint program; optimizer=cross-family recomposition; system_level=segment/population hybrid; primary_policy=food_subsidy_expansion; secondary=policy-reaction-constraint-program-l0-current-001-c01; factors=institutional_trust; parameters=prior_anchor_strength=0.611760130696;trust_multiplier=0.934051730696",
+            "income_band=low": "SEGMENT-PROGRAM-L1 selector=income_band=low; mode=support_order_primary; variant=low_income_support_order_focus; constraints=max_baseline_probability(income_band=low; baseline_no_new_support <= 0.242) | min_policy_probability(working_family_price_stressed; cash_cost_of_living_rebate >= 0.404)",
+            "price_stress_level=high": "ROUTE-COMBO selector=price_stress_level=high; combo_id=r3b-segment-constraint; variant=strong_counterfactual_bridge; strength=0.78.",
+            "working_family_price_stressed": "ROUTE-COMBO selector=working_family_price_stressed; combo_id=r3b-segment-constraint; variant=strong_counterfactual_bridge; strength=0.78."
+          },
+          "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+          "segment_prompt": {
+            "fixed_income_inflation_stressed": "Apply synchronized program for fixed_income_inflation_stressed. Mode: numeric_anchor. Keep the accepted relief-first ordering as the numeric anchor for the synchronized program. Interpret this candidate through a narrowed segment program. Prefer the strongest synchronized signal only; drop weak decorative spread. Interpret this candidate through the finite route-combo coverage program. Combo: R3-B segment + constraint hybrid. Variant: strong_counterfactual_bridge. Stress-test whether a stronger combined correction can break the weak ceiling.",
+            "income_band=low": "Apply narrowed synchronized control for income_band=low. Mode: support_order_primary. Retain the round1 mixed family but focus on low-income support ordering and reduce the direct high-price numeric burden.",
+            "price_stress_level=high": "Apply route-combo coverage control for price_stress_level=high. Combo: R3-B segment + constraint hybrid. Variant intent: Stress-test whether a stronger combined correction can break the weak ceiling.",
+            "working_family_price_stressed": "Apply route-combo coverage control for working_family_price_stressed. Combo: R3-B segment + constraint hybrid. Variant intent: Stress-test whether a stronger combined correction can break the weak ceiling."
+          }
+        },
+        "claim_boundary": "Route-combo candidate is a runtime probe candidate only.",
+        "generator": "route_combo_coverage_candidate_builder",
+        "schema_version": "policy-reaction-s2pc-candidate-v1",
+        "source_split_contract": {
+          "candidate_acceptance": "heldout_required",
+          "parameter_search": "calibration",
+          "residual_mining": "calibration",
+          "semantic_factor_retrieval": "calibration"
+        }
+      },
+      "candidate_id": "policy-reaction-route-combo-r3b-segment-constraint-current-001-v04",
+      "combo_id": "r3b-segment-constraint",
+      "combo_label": "R3-B segment + constraint hybrid",
+      "combo_program": {
+        "optimizer": "cross-family recomposition",
+        "representation": "segment program plus constraint program",
+        "secondary_candidate_id": "policy-reaction-constraint-program-l0-current-001-c01",
+        "selectors": [
+          "working_family_price_stressed",
+          "price_stress_level=high"
+        ],
+        "system_level": "segment/population hybrid",
+        "variant": {
+          "intent": "Stress-test whether a stronger combined correction can break the weak ceiling.",
+          "strength": 0.78,
+          "suffix": "v04",
+          "tag": "strong_counterfactual_bridge"
+        }
+      },
+      "variant_tag": "strong_counterfactual_bridge"
+    }
+  ],
+  "claim_boundary": "Route-combo coverage candidates are finite-grid probes for route coverage; they are not accepted method evidence until held-out runtime gates pass.",
+  "combo_id": "r3b-segment-constraint",
+  "combo_label": "R3-B segment + constraint hybrid",
+  "generator": "route_combo_coverage_candidate_builder",
+  "optimizer": "cross-family recomposition",
+  "primary_candidate_id": "policy-reaction-segment-program-l1-current-001-t02",
+  "representation": "segment program plus constraint program",
+  "schema_version": "policy-reaction-route-combo-coverage-set-v1",
+  "secondary_candidate_id": "policy-reaction-constraint-program-l0-current-001-c01",
+  "source_split_contract": {
+    "candidate_acceptance": "heldout_required",
+    "parameter_search": "calibration",
+    "residual_mining": "calibration",
+    "semantic_factor_retrieval": "calibration"
+  },
+  "system_level": "segment/population hybrid"
+}

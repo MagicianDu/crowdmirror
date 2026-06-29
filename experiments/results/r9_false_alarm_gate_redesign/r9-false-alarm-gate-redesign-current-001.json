@@ -1,0 +1,51 @@
+{
+  "acceptance_gates": {
+    "field_outcome_validated": false,
+    "holdout_guard_rerun_required": true,
+    "near_threshold_false_alarm_fixed": true,
+    "runtime_default_allowed": false
+  },
+  "allowed_claims": [
+    "R9 near-threshold false alarm has a guarded downgrade rule ready for holdout rerun."
+  ],
+  "artifact_id": "r9-false-alarm-gate-redesign-current-001",
+  "blocked_claims": [
+    "R9 validated",
+    "runtime default ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "accuracy superiority",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "candidate_combination_id": "A+B+C",
+  "claim_boundary": "R9 evidence-constrained interaction world model artifact. It defines source-backed mechanism, retrieval, and constrained-agent rollout routes plus a combination matrix for guarded evaluation only; it is not field validation, not point-prediction evidence, and not runtime default authorization.",
+  "gate_contract": {
+    "field_outcome_validated": false,
+    "requires_external_evidence_margin": true,
+    "runtime_default_allowed": false,
+    "targets_near_threshold_false_alarm": true,
+    "uses_strong_static_prior_guard": true
+  },
+  "gate_rule": {
+    "action_when_triggered": "downgrade_high_risk_to_diagnostic_watch",
+    "minimum_external_evidence_margin": 0.08,
+    "near_threshold_band": 0.03,
+    "rule_id": "strong_prior_near_threshold_evidence_margin",
+    "strong_static_prior_min_confidence": 0.7
+  },
+  "near_threshold_trial_after_gate": {
+    "downgraded_to_diagnostic_watch": true,
+    "passed": true,
+    "risk_signal_after_guard": 0.49,
+    "risk_signal_before_guard": 0.51,
+    "risk_threshold": 0.5,
+    "trial_id": "anes_health_near_threshold_false_alarm"
+  },
+  "run_id": "r9-false-alarm-gate-redesign-current",
+  "schema_version": "r9-false-alarm-gate-redesign-v1",
+  "source_refs": [
+    "experiments/results/r9_holdout_guard/r9-holdout-guard-current-001.json",
+    "docs/superpowers/specs/2026-06-26-r9-evidence-constrained-interaction-world-model-spec.md"
+  ],
+  "status": "r9_false_alarm_gate_redesign_ready_guarded"
+}

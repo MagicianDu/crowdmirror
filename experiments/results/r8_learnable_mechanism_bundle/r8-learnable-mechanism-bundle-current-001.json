@@ -1,0 +1,648 @@
+{
+  "acceptance_gates": {
+    "artifact_contracts_present": true,
+    "field_outcome_validated": false,
+    "product_guard_consumable": true,
+    "runtime_default_allowed": false,
+    "source_refs_present": true
+  },
+  "allowed_claims": [
+    "R8 exposes a guarded learnable-mechanism artifact contract.",
+    "R8 can be compared against R7 v2 and conservative baselines before product escalation."
+  ],
+  "artifact_id": "r8-learnable-mechanism-bundle-current-001",
+  "artifacts": {
+    "r8_mechanism_causal_graph_manifest": {
+      "artifact_id": "r8-learnable-mechanism-bundle-current-001-mechanism-causal-graph",
+      "claim_boundary": "R8 learnable mechanism artifact. It supports guarded mechanism-causal interaction simulation, interval/risk diagnosis, attribution, and bounded operator update candidates only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+      "evidence_sources": [
+        "rule:scenario_impact_dimension",
+        "rule:segment_static_traits",
+        "rule:interaction_graph_fixture"
+      ],
+      "graph_edges": [
+        {
+          "edge_id": "scenario_to_price_sensitivity",
+          "effect_direction": "increase",
+          "effect_strength": 0.2,
+          "evidence_source": "rule:scenario_impact_dimension",
+          "guard_constraints": [
+            "bounded_update",
+            "holdout_required"
+          ],
+          "learnable": true,
+          "source_node": "scenario_shock",
+          "target_node": "price_sensitivity",
+          "uncertainty": 0.12
+        },
+        {
+          "edge_id": "scenario_to_trust_loss",
+          "effect_direction": "increase",
+          "effect_strength": 0.2,
+          "evidence_source": "rule:scenario_impact_dimension",
+          "guard_constraints": [
+            "bounded_update",
+            "holdout_required"
+          ],
+          "learnable": true,
+          "source_node": "scenario_shock",
+          "target_node": "trust_loss",
+          "uncertainty": 0.12
+        },
+        {
+          "edge_id": "scenario_to_fairness_perception",
+          "effect_direction": "increase",
+          "effect_strength": 0.2,
+          "evidence_source": "rule:scenario_impact_dimension",
+          "guard_constraints": [
+            "bounded_update",
+            "holdout_required"
+          ],
+          "learnable": true,
+          "source_node": "scenario_shock",
+          "target_node": "fairness_perception",
+          "uncertainty": 0.12
+        },
+        {
+          "edge_id": "scenario_to_substitution_option",
+          "effect_direction": "increase",
+          "effect_strength": 0.2,
+          "evidence_source": "rule:scenario_impact_dimension",
+          "guard_constraints": [
+            "bounded_update",
+            "holdout_required"
+          ],
+          "learnable": true,
+          "source_node": "scenario_shock",
+          "target_node": "substitution_option",
+          "uncertainty": 0.12
+        },
+        {
+          "edge_id": "scenario_to_identity_alignment",
+          "effect_direction": "increase",
+          "effect_strength": 0.2,
+          "evidence_source": "rule:scenario_impact_dimension",
+          "guard_constraints": [
+            "bounded_update",
+            "holdout_required"
+          ],
+          "learnable": true,
+          "source_node": "scenario_shock",
+          "target_node": "identity_alignment",
+          "uncertainty": 0.12
+        },
+        {
+          "edge_id": "scenario_to_service_access_constraint",
+          "effect_direction": "increase",
+          "effect_strength": 0.2,
+          "evidence_source": "rule:scenario_impact_dimension",
+          "guard_constraints": [
+            "bounded_update",
+            "holdout_required"
+          ],
+          "learnable": true,
+          "source_node": "scenario_shock",
+          "target_node": "service_access_constraint",
+          "uncertainty": 0.12
+        },
+        {
+          "edge_id": "scenario_to_loss_aversion",
+          "effect_direction": "increase",
+          "effect_strength": 0.2,
+          "evidence_source": "rule:scenario_impact_dimension",
+          "guard_constraints": [
+            "bounded_update",
+            "holdout_required"
+          ],
+          "learnable": true,
+          "source_node": "scenario_shock",
+          "target_node": "loss_aversion",
+          "uncertainty": 0.12
+        },
+        {
+          "edge_id": "scenario_to_social_diffusion_sensitivity",
+          "effect_direction": "increase",
+          "effect_strength": 0.2,
+          "evidence_source": "rule:scenario_impact_dimension",
+          "guard_constraints": [
+            "bounded_update",
+            "holdout_required"
+          ],
+          "learnable": true,
+          "source_node": "scenario_shock",
+          "target_node": "social_diffusion_sensitivity",
+          "uncertainty": 0.12
+        },
+        {
+          "edge_id": "mechanisms_to_segment_response",
+          "effect_direction": "mixed",
+          "effect_strength": 0.5,
+          "evidence_source": "rule:segment_static_traits",
+          "guard_constraints": [
+            "non_regression_required"
+          ],
+          "learnable": true,
+          "source_node": "mechanism_activation",
+          "target_node": "segment_response",
+          "uncertainty": 0.1
+        },
+        {
+          "edge_id": "segment_response_to_interaction",
+          "effect_direction": "amplify_or_buffer",
+          "effect_strength": 0.35,
+          "evidence_source": "rule:interaction_graph_fixture",
+          "guard_constraints": [
+            "false_alarm_guard"
+          ],
+          "learnable": true,
+          "source_node": "segment_response",
+          "target_node": "interaction_propagation",
+          "uncertainty": 0.16
+        }
+      ],
+      "graph_nodes": [
+        {
+          "node_id": "scenario_shock",
+          "node_type": "input",
+          "source_refs": [
+            "generic_public_service_policy_change_001"
+          ]
+        },
+        {
+          "node_id": "price_sensitivity",
+          "node_type": "mechanism",
+          "source_refs": [
+            "fixture:generic_policy_change_scenario"
+          ]
+        },
+        {
+          "node_id": "trust_loss",
+          "node_type": "mechanism",
+          "source_refs": [
+            "fixture:generic_policy_change_scenario"
+          ]
+        },
+        {
+          "node_id": "fairness_perception",
+          "node_type": "mechanism",
+          "source_refs": [
+            "fixture:generic_policy_change_scenario"
+          ]
+        },
+        {
+          "node_id": "substitution_option",
+          "node_type": "mechanism",
+          "source_refs": [
+            "fixture:generic_policy_change_scenario"
+          ]
+        },
+        {
+          "node_id": "identity_alignment",
+          "node_type": "mechanism",
+          "source_refs": [
+            "fixture:generic_policy_change_scenario"
+          ]
+        },
+        {
+          "node_id": "service_access_constraint",
+          "node_type": "mechanism",
+          "source_refs": [
+            "fixture:generic_policy_change_scenario"
+          ]
+        },
+        {
+          "node_id": "loss_aversion",
+          "node_type": "mechanism",
+          "source_refs": [
+            "fixture:generic_policy_change_scenario"
+          ]
+        },
+        {
+          "node_id": "social_diffusion_sensitivity",
+          "node_type": "mechanism",
+          "source_refs": [
+            "fixture:generic_policy_change_scenario"
+          ]
+        },
+        {
+          "node_id": "segment_response",
+          "node_type": "latent_state",
+          "source_refs": [
+            "generic-public-service-policy-change"
+          ]
+        },
+        {
+          "node_id": "interaction_propagation",
+          "node_type": "operator",
+          "source_refs": [
+            "generic-public-service-policy-change"
+          ]
+        },
+        {
+          "node_id": "risk_distribution",
+          "node_type": "output",
+          "source_refs": [
+            "generic-public-service-policy-change"
+          ]
+        }
+      ],
+      "learnable_parameters": [
+        "scenario_to_price_sensitivity",
+        "scenario_to_trust_loss",
+        "scenario_to_fairness_perception",
+        "scenario_to_substitution_option",
+        "scenario_to_identity_alignment",
+        "scenario_to_service_access_constraint",
+        "scenario_to_loss_aversion",
+        "scenario_to_social_diffusion_sensitivity",
+        "mechanisms_to_segment_response",
+        "segment_response_to_interaction"
+      ],
+      "llm_boundary": {
+        "llm_can_set_field_outcome_validated": false,
+        "llm_can_set_runtime_default_allowed": false,
+        "llm_may_generate_candidate_mechanisms": true,
+        "llm_may_generate_customer_narrative_draft": true,
+        "structured_output_required": true
+      },
+      "mechanism_catalog": [
+        "price_sensitivity",
+        "trust_loss",
+        "fairness_perception",
+        "substitution_option",
+        "identity_alignment",
+        "service_access_constraint",
+        "loss_aversion",
+        "social_diffusion_sensitivity"
+      ],
+      "non_learnable_constraints": [
+        "field_outcome_validated",
+        "runtime_default_allowed",
+        "blocked_claims"
+      ],
+      "run_id": "r8-learnable-mechanism-current",
+      "schema_version": "r8-mechanism-causal-graph-manifest-v1",
+      "source_refs": [
+        "generic-public-service-policy-change",
+        "generic_public_service_policy_change_001",
+        "fixture:generic_policy_change_scenario"
+      ]
+    },
+    "r8_operator_parameter_registry": {
+      "artifact_id": "r8-learnable-mechanism-bundle-current-001-operator-parameter-registry",
+      "claim_boundary": "R8 learnable mechanism artifact. It supports guarded mechanism-causal interaction simulation, interval/risk diagnosis, attribution, and bounded operator update candidates only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+      "parameter_families": [
+        "mechanism_activation",
+        "segment_sensitivity",
+        "propagation_edge",
+        "uncertainty_calibration",
+        "guard_penalty"
+      ],
+      "parameters": [
+        {
+          "allowed_range": [
+            0.0,
+            1.0
+          ],
+          "current_value": 0.2,
+          "evidence_level": "fixture_rule",
+          "last_update_source": "r8-learnable-mechanism-bundle-current-001-mechanism-causal-graph",
+          "parameter_family": "mechanism_activation",
+          "parameter_id": "mechanism_activation:0",
+          "rollback_policy": "revert_to_previous_registry_value",
+          "runtime_default_allowed": false
+        },
+        {
+          "allowed_range": [
+            0.0,
+            1.0
+          ],
+          "current_value": 0.3,
+          "evidence_level": "fixture_rule",
+          "last_update_source": "r8-learnable-mechanism-bundle-current-001-mechanism-causal-graph",
+          "parameter_family": "segment_sensitivity",
+          "parameter_id": "segment_sensitivity:1",
+          "rollback_policy": "revert_to_previous_registry_value",
+          "runtime_default_allowed": false
+        },
+        {
+          "allowed_range": [
+            0.0,
+            1.0
+          ],
+          "current_value": 0.4,
+          "evidence_level": "fixture_rule",
+          "last_update_source": "r8-learnable-mechanism-bundle-current-001-mechanism-causal-graph",
+          "parameter_family": "propagation_edge",
+          "parameter_id": "propagation_edge:2",
+          "rollback_policy": "revert_to_previous_registry_value",
+          "runtime_default_allowed": false
+        },
+        {
+          "allowed_range": [
+            0.0,
+            1.0
+          ],
+          "current_value": 0.5,
+          "evidence_level": "fixture_rule",
+          "last_update_source": "r8-learnable-mechanism-bundle-current-001-mechanism-causal-graph",
+          "parameter_family": "uncertainty_calibration",
+          "parameter_id": "uncertainty_calibration:3",
+          "rollback_policy": "revert_to_previous_registry_value",
+          "runtime_default_allowed": false
+        },
+        {
+          "allowed_range": [
+            0.0,
+            1.0
+          ],
+          "current_value": 0.6,
+          "evidence_level": "fixture_rule",
+          "last_update_source": "r8-learnable-mechanism-bundle-current-001-mechanism-causal-graph",
+          "parameter_family": "guard_penalty",
+          "parameter_id": "guard_penalty:4",
+          "rollback_policy": "revert_to_previous_registry_value",
+          "runtime_default_allowed": false
+        }
+      ],
+      "run_id": "r8-learnable-mechanism-current",
+      "runtime_default_allowed": false,
+      "schema_version": "r8-operator-parameter-registry-v1",
+      "source_refs": [
+        "r8-learnable-mechanism-bundle-current-001-mechanism-causal-graph"
+      ]
+    },
+    "r8_operator_update_candidate": {
+      "accepted": false,
+      "artifact_id": "r8-learnable-mechanism-bundle-current-001-operator-update-candidate",
+      "candidate_id": "r8-learnable-mechanism-bundle-current-001-operator-update-candidate:candidate-001",
+      "claim_boundary": "R8 learnable mechanism artifact. It supports guarded mechanism-causal interaction simulation, interval/risk diagnosis, attribution, and bounded operator update candidates only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+      "expected_metric_delta": {
+        "mean_absolute_error": "decrease"
+      },
+      "guard_checks": {
+        "bounded_update": true,
+        "holdout_required": true,
+        "robustness_required": true,
+        "runtime_default_allowed": false
+      },
+      "holdout_results": [],
+      "rejected_reason": "pending_holdout_review",
+      "robustness_results": [],
+      "run_id": "r8-learnable-mechanism-current",
+      "runtime_default_allowed": false,
+      "schema_version": "r8-operator-update-candidate-v1",
+      "source_refs": [
+        "r8-learnable-mechanism-bundle-current-001-outcome-attribution"
+      ],
+      "updated_parameters": [
+        {
+          "candidate_value": 0.4595,
+          "current_value": 0.4,
+          "delta": 0.0595,
+          "max_abs_delta": 0.08,
+          "parameter_family": "mechanism_activation",
+          "parameter_id": "mechanism_activation:service_access_constraint",
+          "source_attribution_id": "r8-learnable-mechanism-bundle-current-001-outcome-attribution"
+        },
+        {
+          "candidate_value": 0.3797,
+          "current_value": 0.35,
+          "delta": 0.0297,
+          "max_abs_delta": 0.08,
+          "parameter_family": "propagation_edge",
+          "parameter_id": "propagation_edge:segment_response_to_interaction",
+          "source_attribution_id": "r8-learnable-mechanism-bundle-current-001-outcome-attribution"
+        }
+      ]
+    },
+    "r8_outcome_attribution_report": {
+      "artifact_id": "r8-learnable-mechanism-bundle-current-001-outcome-attribution",
+      "attribution_by_edge": [
+        {
+          "edge_id": "segment_response_to_interaction",
+          "error_type": "propagation_strength_error",
+          "recommended_update_direction": "increase",
+          "residual_share": 0.25,
+          "source_refs": [
+            "r8-learnable-mechanism-bundle-current-001-rollout-distribution"
+          ]
+        }
+      ],
+      "attribution_by_mechanism": [
+        {
+          "error_type": "mechanism_strength_error",
+          "mechanism": "service_access_constraint",
+          "recommended_update_direction": "increase",
+          "residual_share": 0.45,
+          "source_refs": [
+            "r8-learnable-mechanism-bundle-current-001-rollout-distribution"
+          ]
+        },
+        {
+          "error_type": "mechanism_direction_supported",
+          "mechanism": "fairness_perception",
+          "recommended_update_direction": "increase",
+          "residual_share": 0.3,
+          "source_refs": [
+            "r8-learnable-mechanism-bundle-current-001-rollout-distribution"
+          ]
+        }
+      ],
+      "attribution_by_segment": [
+        {
+          "error_type": "segment_sensitivity_error",
+          "recommended_update_direction": "increase",
+          "residual_share": 0.0667,
+          "segment_id": "service_dependent_low_trust",
+          "source_refs": [
+            "fixture:generic_policy_change_prior"
+          ]
+        },
+        {
+          "error_type": "segment_sensitivity_error",
+          "recommended_update_direction": "increase",
+          "residual_share": 0.0667,
+          "segment_id": "community_watchers",
+          "source_refs": [
+            "fixture:generic_policy_change_prior"
+          ]
+        },
+        {
+          "error_type": "segment_sensitivity_error",
+          "recommended_update_direction": "increase",
+          "residual_share": 0.0667,
+          "segment_id": "low_dependency_high_trust",
+          "source_refs": [
+            "fixture:generic_policy_change_prior"
+          ]
+        }
+      ],
+      "claim_boundary": "R8 learnable mechanism artifact. It supports guarded mechanism-causal interaction simulation, interval/risk diagnosis, attribution, and bounded operator update candidates only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+      "false_alarm_sources": [],
+      "interval_error_type": "missed_interval",
+      "missed_risk_sources": [],
+      "outcome_reject_proxy": 0.47,
+      "outcome_residual": 0.1191,
+      "prediction_median": 0.3509,
+      "run_id": "r8-learnable-mechanism-current",
+      "schema_version": "r8-outcome-attribution-report-v1",
+      "source_refs": [
+        "r8-learnable-mechanism-bundle-current-001-rollout-distribution",
+        "r8-learnable-mechanism-bundle-current-001-risk-ranking",
+        "generic-public-service-policy-change"
+      ],
+      "unexplained_error": 0.0
+    },
+    "r8_product_support_gate": {
+      "abnormal_segment_supported": "contract_only",
+      "allowed_claims": [
+        "R8 contract artifacts can be inspected and compared under guard."
+      ],
+      "artifact_id": "r8-learnable-mechanism-bundle-current-001-product-support-gate",
+      "blocked_claims": [
+        "R8 validated",
+        "runtime default ready",
+        "field validated",
+        "accuracy superiority"
+      ],
+      "claim_boundary": "R8 learnable mechanism artifact. It supports guarded mechanism-causal interaction simulation, interval/risk diagnosis, attribution, and bounded operator update candidates only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+      "field_outcome_validated": false,
+      "interval_supported": "contract_only",
+      "mechanism_explanation_supported": "guarded",
+      "outcome_learning_supported": "blocked_until_outcome",
+      "risk_ranking_supported": "contract_only",
+      "run_id": "r8-learnable-mechanism-current",
+      "runtime_default_allowed": false,
+      "schema_version": "r8-product-support-gate-v1",
+      "source_refs": [
+        "r8-learnable-mechanism-bundle-current-001-risk-interval-calibration",
+        "r8-learnable-mechanism-bundle-current-001-risk-ranking",
+        "r8-learnable-mechanism-bundle-current-001-outcome-attribution",
+        "r8-learnable-mechanism-bundle-current-001-operator-update-candidate"
+      ],
+      "trend_supported": "contract_only"
+    },
+    "r8_risk_interval_calibration_report": {
+      "artifact_id": "r8-learnable-mechanism-bundle-current-001-risk-interval-calibration",
+      "claim_boundary": "R8 learnable mechanism artifact. It supports guarded mechanism-causal interaction simulation, interval/risk diagnosis, attribution, and bounded operator update candidates only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+      "claim_status": "contract_only",
+      "coverage_by_case_family": {},
+      "indeterminate_rate": 0.0,
+      "interval_coverage": null,
+      "interval_efficiency": null,
+      "mean_interval_width": 0.18,
+      "over_width_blocked": false,
+      "run_id": "r8-learnable-mechanism-current",
+      "schema_version": "r8-risk-interval-calibration-report-v1",
+      "source_refs": [
+        "r8-learnable-mechanism-bundle-current-001-rollout-distribution"
+      ],
+      "trend_direction_accuracy": null
+    },
+    "r8_risk_ranking_report": {
+      "artifact_id": "r8-learnable-mechanism-bundle-current-001-risk-ranking",
+      "claim_boundary": "R8 learnable mechanism artifact. It supports guarded mechanism-causal interaction simulation, interval/risk diagnosis, attribution, and bounded operator update candidates only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+      "false_alarm_rate": null,
+      "interaction_amplified_segments": [
+        {
+          "risk_score": 0.51,
+          "risk_type": "interaction_amplified_risk",
+          "segment_id": "service_dependent_low_trust",
+          "source_refs": [
+            "fixture:generic_policy_change_prior"
+          ]
+        },
+        {
+          "risk_score": 0.35,
+          "risk_type": "interaction_amplified_risk",
+          "segment_id": "community_watchers",
+          "source_refs": [
+            "fixture:generic_policy_change_prior"
+          ]
+        },
+        {
+          "risk_score": 0.16,
+          "risk_type": "interaction_amplified_risk",
+          "segment_id": "low_dependency_high_trust",
+          "source_refs": [
+            "fixture:generic_policy_change_prior"
+          ]
+        }
+      ],
+      "risk_ranking_quality": null,
+      "run_id": "r8-learnable-mechanism-current",
+      "schema_version": "r8-risk-ranking-report-v1",
+      "segment_precision": null,
+      "segment_recall": null,
+      "source_refs": [
+        "r8-learnable-mechanism-bundle-current-001-rollout-distribution",
+        "generic-public-service-policy-change"
+      ],
+      "static_hidden_risk_segments": [
+        {
+          "risk_score": 0.51,
+          "risk_type": "interaction_amplified_risk",
+          "segment_id": "service_dependent_low_trust",
+          "source_refs": [
+            "fixture:generic_policy_change_prior"
+          ]
+        }
+      ],
+      "static_prior_miss_recovery_rate": null,
+      "top_k_hit_rate": null
+    },
+    "r8_rollout_distribution": {
+      "artifact_id": "r8-learnable-mechanism-bundle-current-001-rollout-distribution",
+      "candidate_update_distribution": {
+        "median": 0.3419,
+        "p10": 0.2619,
+        "p90": 0.4219
+      },
+      "claim_boundary": "R8 learnable mechanism artifact. It supports guarded mechanism-causal interaction simulation, interval/risk diagnosis, attribution, and bounded operator update candidates only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+      "interaction_distribution": {
+        "median": 0.3509,
+        "p10": 0.2609,
+        "p90": 0.4409
+      },
+      "interval_width": 0.18,
+      "no_interaction_distribution": {
+        "median": 0.2909,
+        "p10": 0.2309,
+        "p90": 0.3509
+      },
+      "over_width_penalty": 0.0,
+      "rollout_count": 50,
+      "run_id": "r8-learnable-mechanism-current",
+      "schema_version": "r8-rollout-distribution-v1",
+      "seed_policy": "deterministic:0..rollout_count-1",
+      "source_refs": [
+        "r8-learnable-mechanism-bundle-current-001-mechanism-causal-graph",
+        "r8-learnable-mechanism-bundle-current-001-operator-parameter-registry"
+      ],
+      "uncertainty_breakdown": {
+        "mechanism": 0.05,
+        "outcome_proxy": 0.08,
+        "prior": 0.06,
+        "propagation": 0.06
+      }
+    }
+  },
+  "blocked_claims": [
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf",
+    "R8 validated",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "accuracy superiority"
+  ],
+  "case_id": "generic-public-service-policy-change",
+  "claim_boundary": "R8 learnable mechanism artifact. It supports guarded mechanism-causal interaction simulation, interval/risk diagnosis, attribution, and bounded operator update candidates only; it is not point-prediction evidence, not field validation, and not runtime default authorization.",
+  "run_id": "r8-learnable-mechanism-current",
+  "schema_version": "r8-learnable-mechanism-bundle-v1",
+  "source_refs": [
+    "generic-public-service-policy-change",
+    "generic_public_service_policy_change_001",
+    "fixture:generic_policy_change_scenario"
+  ],
+  "status": "r8_contract_ready_guarded"
+}

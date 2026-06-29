@@ -1,0 +1,265 @@
+{
+  "acceptance_gates": {
+    "cross_case_transfer_protocol_present": true,
+    "global_update_accepted": false,
+    "mechanism_cap_l4_in_condition_transfer_passed": false,
+    "mechanism_cap_source_fix_passed": true,
+    "outcome_feedback_transfer_available": true,
+    "outcome_feedback_transfer_beats_prior_interaction": true,
+    "outcome_feedback_transfer_beats_static_prior": false
+  },
+  "artifact_id": "r6-cross-case-transfer-protocol-current-001",
+  "blocking_gaps": [
+    "needs_in_condition_same_family_rights_rule_holdout",
+    "needs_outcome_feedback_transfer_beating_static_prior",
+    "needs_field_outcome_validation"
+  ],
+  "candidate_transfers": [
+    {
+      "acceptance_gates": {
+        "cross_proxy_non_regression_passed": true,
+        "global_update_accepted": false,
+        "l4_in_condition_transfer_passed": false,
+        "same_family_cap_condition_covered": false,
+        "same_family_holdout_available": true,
+        "source_fix_passed": true
+      },
+      "candidate_id": "r6-cross-case-transfer-protocol-current-001-candidate-mechanism-cap",
+      "candidate_type": "mechanism_cap",
+      "candidate_update": {
+        "default_runtime_enabled": false,
+        "derived_from_source_case": "anes_health_heldout",
+        "frozen_rule": {
+          "condition_static_prior_abs_error_lte": 0.03,
+          "max_aggregate_reject_delta": 0.02,
+          "scope": "rights_or_rule_change_rejection_amplification"
+        },
+        "update_rule_id": "rights_rule_reject_delta_cap_v1",
+        "update_type": "frozen_mechanism_cap"
+      },
+      "evidence_level": "L3_partial",
+      "holdout_trials": [
+        {
+          "cap_condition_met": false,
+          "holdout_case": {
+            "case_type": "public_service_policy_change",
+            "measurement_level": "public_proxy",
+            "population_axis": "public_use_segment_schema",
+            "proxy_family": "cost_pressure_reaction",
+            "role": "holdout",
+            "source_key": "htops_cost_pressure",
+            "source_public_outcome_proxy_id": "r6-cross-case-transfer-protocol-current-001-htops_cost_pressure-proxy",
+            "target_case_id": "generic-public-service-policy-change"
+          },
+          "holdout_outcome_used_for_rule_derivation": false,
+          "non_regression_vs_prior_interaction": true,
+          "prior_anchored_error": 0.11,
+          "prior_anchored_prediction": 0.36,
+          "same_family": false,
+          "source_case_key": "anes_health_heldout",
+          "static_prior_error": 0.18,
+          "static_prior_prediction": 0.29,
+          "strong_prior_gate_passed": true,
+          "transfer_status": "non_regression_only",
+          "trial_id": "mechanism-cap:anes_health_heldout->htops_cost_pressure",
+          "updated_error": 0.11,
+          "updated_prediction": 0.36
+        },
+        {
+          "cap_condition_met": false,
+          "holdout_case": {
+            "case_type": "rights_rule_change",
+            "measurement_level": "public_proxy",
+            "population_axis": "public_use_segment_schema",
+            "proxy_family": "climate_energy_regulation_preference",
+            "role": "holdout",
+            "source_key": "anes_climate_heldout",
+            "source_public_outcome_proxy_id": "r6-cross-case-transfer-protocol-current-001-anes_climate_heldout-proxy",
+            "target_case_id": "generic-rights-rule-change"
+          },
+          "holdout_outcome_used_for_rule_derivation": false,
+          "non_regression_vs_prior_interaction": true,
+          "prior_anchored_error": 0.13,
+          "prior_anchored_prediction": 0.38,
+          "same_family": true,
+          "source_case_key": "anes_health_heldout",
+          "static_prior_error": 0.06,
+          "static_prior_prediction": 0.31,
+          "strong_prior_gate_passed": false,
+          "transfer_status": "condition_not_covered",
+          "trial_id": "mechanism-cap:anes_health_heldout->anes_climate_heldout",
+          "updated_error": 0.13,
+          "updated_prediction": 0.38
+        }
+      ],
+      "source_case": {
+        "case_type": "rights_rule_change",
+        "measurement_level": "public_proxy",
+        "population_axis": "public_use_segment_schema",
+        "proxy_family": "public_health_insurance_preference",
+        "role": "source",
+        "source_key": "anes_health_heldout",
+        "source_public_outcome_proxy_id": "r6-cross-case-transfer-protocol-current-001-anes_health_heldout-proxy",
+        "target_case_id": "generic-rights-rule-change"
+      },
+      "transfer_decision": {
+        "accepted": false,
+        "decision": "blocked_until_in_condition_transfer",
+        "reason": "ANES climate is same-family but does not cover the cap trigger condition."
+      }
+    },
+    {
+      "acceptance_gates": {
+        "beats_prior_interaction_on_holdout": true,
+        "beats_static_prior_on_holdout": false,
+        "cross_case_transfer_available": true,
+        "global_update_accepted": false,
+        "l4_in_condition_transfer_passed": false
+      },
+      "candidate_id": "r6-cross-case-transfer-protocol-current-001-candidate-outcome-feedback",
+      "candidate_type": "outcome_feedback_residual_transfer",
+      "candidate_update": {
+        "default_runtime_enabled": false,
+        "direct_observed_value_copy": false,
+        "feedback_alpha": 0.6,
+        "holdout_outcome_used_for_rule_derivation": false,
+        "update_rule_id": "source_residual_shrinkage_transfer_v1",
+        "update_type": "frozen_residual_delta"
+      },
+      "evidence_level": "L2_same_case_to_non_regression_transfer",
+      "holdout_trials": [
+        {
+          "frozen_rule": {
+            "application": "add_source_residual_delta_to_holdout_prior_interaction",
+            "feedback_alpha": 0.6,
+            "source_residual_delta": -0.03
+          },
+          "holdout_case": {
+            "case_type": "rights_rule_change",
+            "measurement_level": "public_proxy",
+            "population_axis": "public_use_segment_schema",
+            "proxy_family": "climate_energy_regulation_preference",
+            "role": "holdout",
+            "source_key": "anes_climate_heldout",
+            "source_public_outcome_proxy_id": "r6-cross-case-transfer-protocol-current-001-anes_climate_heldout-proxy",
+            "target_case_id": "generic-rights-rule-change"
+          },
+          "holdout_outcome_used_for_rule_derivation": false,
+          "non_regression_vs_prior_interaction": true,
+          "prior_anchored_error": 0.13,
+          "prior_anchored_prediction": 0.38,
+          "same_family": true,
+          "source_case": {
+            "case_type": "rights_rule_change",
+            "measurement_level": "public_proxy",
+            "population_axis": "public_use_segment_schema",
+            "proxy_family": "public_health_insurance_preference",
+            "role": "source",
+            "source_key": "anes_health_heldout",
+            "source_public_outcome_proxy_id": "r6-cross-case-transfer-protocol-current-001-anes_health_heldout-proxy",
+            "target_case_id": "generic-rights-rule-change"
+          },
+          "source_prior_anchored_error": 0.05,
+          "source_static_prior_error": 0.02,
+          "static_prior_error": 0.06,
+          "static_prior_prediction": 0.31,
+          "strong_prior_gate_passed": false,
+          "transfer_status": "non_regression_only",
+          "trial_id": "outcome-feedback:anes_health_heldout->anes_climate_heldout",
+          "updated_error": 0.1,
+          "updated_prediction": 0.35
+        },
+        {
+          "frozen_rule": {
+            "application": "add_source_residual_delta_to_holdout_prior_interaction",
+            "feedback_alpha": 0.6,
+            "source_residual_delta": -0.078
+          },
+          "holdout_case": {
+            "case_type": "rights_rule_change",
+            "measurement_level": "public_proxy",
+            "population_axis": "public_use_segment_schema",
+            "proxy_family": "public_health_insurance_preference",
+            "role": "holdout",
+            "source_key": "anes_health_heldout",
+            "source_public_outcome_proxy_id": "r6-cross-case-transfer-protocol-current-001-anes_health_heldout-proxy",
+            "target_case_id": "generic-rights-rule-change"
+          },
+          "holdout_outcome_used_for_rule_derivation": false,
+          "non_regression_vs_prior_interaction": true,
+          "prior_anchored_error": 0.05,
+          "prior_anchored_prediction": 0.38,
+          "same_family": true,
+          "source_case": {
+            "case_type": "rights_rule_change",
+            "measurement_level": "public_proxy",
+            "population_axis": "public_use_segment_schema",
+            "proxy_family": "climate_energy_regulation_preference",
+            "role": "source",
+            "source_key": "anes_climate_heldout",
+            "source_public_outcome_proxy_id": "r6-cross-case-transfer-protocol-current-001-anes_climate_heldout-proxy",
+            "target_case_id": "generic-rights-rule-change"
+          },
+          "source_prior_anchored_error": 0.13,
+          "source_static_prior_error": 0.06,
+          "static_prior_error": 0.02,
+          "static_prior_prediction": 0.31,
+          "strong_prior_gate_passed": false,
+          "transfer_status": "non_regression_only",
+          "trial_id": "outcome-feedback:anes_climate_heldout->anes_health_heldout",
+          "updated_error": 0.03,
+          "updated_prediction": 0.3
+        }
+      ],
+      "transfer_decision": {
+        "accepted": false,
+        "decision": "blocked_by_strong_prior_gate",
+        "reason": "Frozen residual transfer improves prior-interaction error on same-family holdouts, but remains worse than the static prior baseline."
+      }
+    }
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Cross-case transfer protocol is method-governance evidence, not field validation.",
+    "A non-regression transfer is not enough for CCF-A-level accuracy superiority."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "global_update_decision": {
+    "accepted": false,
+    "decision": "blocked",
+    "reason": "Mechanism cap lacks an in-condition same-family holdout, and outcome feedback transfers improve prior-interaction error but still fail the strong static-prior gate."
+  },
+  "protocol_definition": {
+    "allowed_transfer_statuses": [
+      "condition_not_covered",
+      "invalid_proxy",
+      "non_regression_only",
+      "passed",
+      "regressed"
+    ],
+    "case_family_axes": [
+      "case_type",
+      "impact_dimension",
+      "proxy_family",
+      "population_axis",
+      "measurement_level",
+      "cap_condition"
+    ],
+    "purpose": "test frozen update rules across cases without peeking at holdout outcomes"
+  },
+  "risk_flags": [
+    "global_update_blocked",
+    "mechanism_cap_l4_transfer_missing",
+    "outcome_feedback_fails_strong_prior_gate",
+    "public_proxy_not_field_validation"
+  ],
+  "run_id": "r6-cross-case-transfer-protocol-current-001",
+  "schema_version": "r6-cross-case-transfer-protocol-v1",
+  "source_refs": [
+    "r6-cross-case-transfer-protocol-current-001-mechanism-cap-ablation",
+    "r6-cross-case-transfer-protocol-current-001-htops_cost_pressure-ablation",
+    "r6-cross-case-transfer-protocol-current-001-anes_health_heldout-ablation",
+    "r6-cross-case-transfer-protocol-current-001-anes_climate_heldout-ablation"
+  ],
+  "status": "transfer_protocol_ready_global_update_blocked"
+}

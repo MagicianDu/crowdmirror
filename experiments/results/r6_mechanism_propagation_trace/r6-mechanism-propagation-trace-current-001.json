@@ -1,0 +1,445 @@
+{
+  "acceptance_gates": {
+    "dynamic_path_distinct_from_static_prior": true,
+    "field_outcome_validated": false,
+    "mechanism_trace_present": true,
+    "product_guard_required": true
+  },
+  "artifact_id": "r6-mechanism-propagation-trace-current-001",
+  "blocking_gaps": [
+    "needs_mechanism_ablation_validation",
+    "needs_operator_holdout_validation",
+    "needs_field_outcome_validation"
+  ],
+  "case_traces": [
+    {
+      "case_id": "generic-public-service-policy-change",
+      "case_type": "public_service_policy_change",
+      "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+      "dynamic_paths": [
+        {
+          "mechanism_sequence": [
+            "official_exposure",
+            "peer_or_community_amplification"
+          ],
+          "path_type": "peer_amplified_risk_diffusion",
+          "rounds": [
+            1,
+            2
+          ],
+          "scenario_impact_dimensions": [
+            "access_constraint",
+            "service_reliability_concern",
+            "equity_concern"
+          ],
+          "source_segment_id": "service_dependent_low_trust",
+          "static_prior_can_express_path": false,
+          "target_segment_id": "community_watchers",
+          "why_static_prior_cannot_express_path": "Static prior stores segment-level response propensity but not cross-segment exposure, ordering, or peer amplification."
+        },
+        {
+          "mechanism_sequence": [
+            "official_exposure",
+            "peer_or_community_amplification",
+            "memory_accumulation_and_risk_activation"
+          ],
+          "path_type": "memory_threshold_activation",
+          "rounds": [
+            1,
+            2,
+            3
+          ],
+          "scenario_impact_dimensions": [
+            "access_constraint",
+            "service_reliability_concern",
+            "equity_concern"
+          ],
+          "source_segment_id": "low_dependency_high_trust",
+          "static_prior_can_express_path": false,
+          "target_segment_id": "service_dependent_low_trust",
+          "why_static_prior_cannot_express_path": "Static prior has no stateful memory threshold or repeated exposure accumulation operator."
+        }
+      ],
+      "exposure_graph": {
+        "edges": [
+          {
+            "channel": "peer_discussion",
+            "direction": "risk_diffusion",
+            "mechanism": "risk_salience_amplification",
+            "source_segment_id": "service_dependent_low_trust",
+            "target_segment_id": "community_watchers"
+          },
+          {
+            "channel": "official_exposure",
+            "direction": "official_to_low_trust",
+            "mechanism": "trust_buffer_contrast",
+            "source_segment_id": "low_dependency_high_trust",
+            "target_segment_id": "service_dependent_low_trust"
+          }
+        ],
+        "nodes": [
+          {
+            "segment_id": "service_dependent_low_trust",
+            "sensitivity": "high",
+            "static_reject_prior": 0.47,
+            "trust": "low",
+            "weight": 0.32
+          },
+          {
+            "segment_id": "low_dependency_high_trust",
+            "sensitivity": "low",
+            "static_reject_prior": 0.12,
+            "trust": "high",
+            "weight": 0.37
+          },
+          {
+            "segment_id": "community_watchers",
+            "sensitivity": "medium",
+            "static_reject_prior": 0.31,
+            "trust": "medium",
+            "weight": 0.31
+          }
+        ]
+      },
+      "propagation_rounds": [
+        {
+          "activated_segment_ids": [
+            "low_dependency_high_trust",
+            "service_dependent_low_trust"
+          ],
+          "mechanism": "official_exposure",
+          "phase": "official_exposure",
+          "round": 1,
+          "source": "official"
+        },
+        {
+          "activated_segment_ids": [
+            "service_dependent_low_trust",
+            "community_watchers"
+          ],
+          "mechanism": "peer_amplified_risk_diffusion",
+          "phase": "peer_or_community_amplification",
+          "round": 2,
+          "source": "peer_or_community_discussion"
+        },
+        {
+          "activated_segment_ids": [
+            "service_dependent_low_trust",
+            "community_watchers"
+          ],
+          "mechanism": "memory_threshold_activation",
+          "phase": "memory_accumulation_and_risk_activation",
+          "round": 3,
+          "source": "accumulated_exposure_memory"
+        }
+      ],
+      "proxy_summary": {
+        "observed_reject_proxy": 0.47,
+        "outcome_source_level": "public_proxy",
+        "row_count": 7317
+      },
+      "risk_flags": [
+        "mechanism_trace_not_field_validation",
+        "dynamic_path_requires_holdout_validation"
+      ],
+      "source_key": "htops_cost_pressure",
+      "source_public_outcome_proxy_id": "r6-mechanism-propagation-trace-current-001-htops_cost_pressure-proxy",
+      "target_case_type": "public_service_policy_change"
+    },
+    {
+      "case_id": "generic-rights-rule-change",
+      "case_type": "rights_rule_change",
+      "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+      "dynamic_paths": [
+        {
+          "mechanism_sequence": [
+            "official_exposure",
+            "peer_or_community_amplification"
+          ],
+          "path_type": "peer_amplified_risk_diffusion",
+          "rounds": [
+            1,
+            2
+          ],
+          "scenario_impact_dimensions": [
+            "rights_reduction",
+            "fairness_concern",
+            "trust_shock"
+          ],
+          "source_segment_id": "rights_dependent_low_trust",
+          "static_prior_can_express_path": false,
+          "target_segment_id": "rule_watchers",
+          "why_static_prior_cannot_express_path": "Static prior stores segment-level response propensity but not cross-segment exposure, ordering, or peer amplification."
+        },
+        {
+          "mechanism_sequence": [
+            "official_exposure",
+            "peer_or_community_amplification",
+            "memory_accumulation_and_risk_activation"
+          ],
+          "path_type": "memory_threshold_activation",
+          "rounds": [
+            1,
+            2,
+            3
+          ],
+          "scenario_impact_dimensions": [
+            "rights_reduction",
+            "fairness_concern",
+            "trust_shock"
+          ],
+          "source_segment_id": "low_usage_high_trust",
+          "static_prior_can_express_path": false,
+          "target_segment_id": "rights_dependent_low_trust",
+          "why_static_prior_cannot_express_path": "Static prior has no stateful memory threshold or repeated exposure accumulation operator."
+        }
+      ],
+      "exposure_graph": {
+        "edges": [
+          {
+            "channel": "peer_discussion",
+            "direction": "risk_diffusion",
+            "mechanism": "risk_salience_amplification",
+            "source_segment_id": "rights_dependent_low_trust",
+            "target_segment_id": "rule_watchers"
+          },
+          {
+            "channel": "official_exposure",
+            "direction": "official_to_low_trust",
+            "mechanism": "trust_buffer_contrast",
+            "source_segment_id": "low_usage_high_trust",
+            "target_segment_id": "rights_dependent_low_trust"
+          }
+        ],
+        "nodes": [
+          {
+            "segment_id": "rights_dependent_low_trust",
+            "sensitivity": "high",
+            "static_reject_prior": 0.5,
+            "trust": "low",
+            "weight": 0.34
+          },
+          {
+            "segment_id": "low_usage_high_trust",
+            "sensitivity": "low",
+            "static_reject_prior": 0.14,
+            "trust": "high",
+            "weight": 0.4
+          },
+          {
+            "segment_id": "rule_watchers",
+            "sensitivity": "medium",
+            "static_reject_prior": 0.34,
+            "trust": "medium",
+            "weight": 0.26
+          }
+        ]
+      },
+      "propagation_rounds": [
+        {
+          "activated_segment_ids": [
+            "low_usage_high_trust",
+            "rights_dependent_low_trust"
+          ],
+          "mechanism": "official_exposure",
+          "phase": "official_exposure",
+          "round": 1,
+          "source": "official"
+        },
+        {
+          "activated_segment_ids": [
+            "rights_dependent_low_trust",
+            "rule_watchers"
+          ],
+          "mechanism": "peer_amplified_risk_diffusion",
+          "phase": "peer_or_community_amplification",
+          "round": 2,
+          "source": "peer_or_community_discussion"
+        },
+        {
+          "activated_segment_ids": [
+            "rights_dependent_low_trust",
+            "rule_watchers"
+          ],
+          "mechanism": "memory_threshold_activation",
+          "phase": "memory_accumulation_and_risk_activation",
+          "round": 3,
+          "source": "accumulated_exposure_memory"
+        }
+      ],
+      "proxy_summary": {
+        "observed_reject_proxy": 0.33,
+        "outcome_source_level": "public_proxy",
+        "row_count": 954
+      },
+      "risk_flags": [
+        "mechanism_trace_not_field_validation",
+        "dynamic_path_requires_holdout_validation"
+      ],
+      "source_key": "anes_health_heldout",
+      "source_public_outcome_proxy_id": "r6-mechanism-propagation-trace-current-001-anes_health_heldout-proxy",
+      "target_case_type": "rights_rule_change"
+    },
+    {
+      "case_id": "generic-rights-rule-change",
+      "case_type": "rights_rule_change",
+      "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+      "dynamic_paths": [
+        {
+          "mechanism_sequence": [
+            "official_exposure",
+            "peer_or_community_amplification"
+          ],
+          "path_type": "peer_amplified_risk_diffusion",
+          "rounds": [
+            1,
+            2
+          ],
+          "scenario_impact_dimensions": [
+            "rights_reduction",
+            "fairness_concern",
+            "trust_shock"
+          ],
+          "source_segment_id": "rights_dependent_low_trust",
+          "static_prior_can_express_path": false,
+          "target_segment_id": "rule_watchers",
+          "why_static_prior_cannot_express_path": "Static prior stores segment-level response propensity but not cross-segment exposure, ordering, or peer amplification."
+        },
+        {
+          "mechanism_sequence": [
+            "official_exposure",
+            "peer_or_community_amplification",
+            "memory_accumulation_and_risk_activation"
+          ],
+          "path_type": "memory_threshold_activation",
+          "rounds": [
+            1,
+            2,
+            3
+          ],
+          "scenario_impact_dimensions": [
+            "rights_reduction",
+            "fairness_concern",
+            "trust_shock"
+          ],
+          "source_segment_id": "low_usage_high_trust",
+          "static_prior_can_express_path": false,
+          "target_segment_id": "rights_dependent_low_trust",
+          "why_static_prior_cannot_express_path": "Static prior has no stateful memory threshold or repeated exposure accumulation operator."
+        }
+      ],
+      "exposure_graph": {
+        "edges": [
+          {
+            "channel": "peer_discussion",
+            "direction": "risk_diffusion",
+            "mechanism": "risk_salience_amplification",
+            "source_segment_id": "rights_dependent_low_trust",
+            "target_segment_id": "rule_watchers"
+          },
+          {
+            "channel": "official_exposure",
+            "direction": "official_to_low_trust",
+            "mechanism": "trust_buffer_contrast",
+            "source_segment_id": "low_usage_high_trust",
+            "target_segment_id": "rights_dependent_low_trust"
+          }
+        ],
+        "nodes": [
+          {
+            "segment_id": "rights_dependent_low_trust",
+            "sensitivity": "high",
+            "static_reject_prior": 0.5,
+            "trust": "low",
+            "weight": 0.34
+          },
+          {
+            "segment_id": "low_usage_high_trust",
+            "sensitivity": "low",
+            "static_reject_prior": 0.14,
+            "trust": "high",
+            "weight": 0.4
+          },
+          {
+            "segment_id": "rule_watchers",
+            "sensitivity": "medium",
+            "static_reject_prior": 0.34,
+            "trust": "medium",
+            "weight": 0.26
+          }
+        ]
+      },
+      "propagation_rounds": [
+        {
+          "activated_segment_ids": [
+            "low_usage_high_trust",
+            "rights_dependent_low_trust"
+          ],
+          "mechanism": "official_exposure",
+          "phase": "official_exposure",
+          "round": 1,
+          "source": "official"
+        },
+        {
+          "activated_segment_ids": [
+            "rights_dependent_low_trust",
+            "rule_watchers"
+          ],
+          "mechanism": "peer_amplified_risk_diffusion",
+          "phase": "peer_or_community_amplification",
+          "round": 2,
+          "source": "peer_or_community_discussion"
+        },
+        {
+          "activated_segment_ids": [
+            "rights_dependent_low_trust",
+            "rule_watchers"
+          ],
+          "mechanism": "memory_threshold_activation",
+          "phase": "memory_accumulation_and_risk_activation",
+          "round": 3,
+          "source": "accumulated_exposure_memory"
+        }
+      ],
+      "proxy_summary": {
+        "observed_reject_proxy": 0.25,
+        "outcome_source_level": "public_proxy",
+        "row_count": 932
+      },
+      "risk_flags": [
+        "mechanism_trace_not_field_validation",
+        "dynamic_path_requires_holdout_validation"
+      ],
+      "source_key": "anes_climate_heldout",
+      "source_public_outcome_proxy_id": "r6-mechanism-propagation-trace-current-001-anes_climate_heldout-proxy",
+      "target_case_type": "rights_rule_change"
+    }
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Mechanism propagation trace is a diagnostic mechanism artifact; it does not validate field outcomes or enable Product runtime default behavior."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "risk_flags": [
+    "mechanism_trace_not_field_validation",
+    "dynamic_path_requires_holdout_validation"
+  ],
+  "run_id": "r6-mechanism-propagation-trace-current-001",
+  "schema_version": "r6-mechanism-propagation-trace-v1",
+  "source_refs": [
+    "r6-mechanism-propagation-trace-current-001-htops_cost_pressure-proxy",
+    "r6-mechanism-propagation-trace-current-001-anes_health_heldout-proxy",
+    "r6-mechanism-propagation-trace-current-001-anes_climate_heldout-proxy",
+    "generic-public-service-policy-change",
+    "generic-rights-rule-change"
+  ],
+  "status": "mechanism_propagation_trace_ready",
+  "trace_summary": {
+    "case_count": 3,
+    "distinct_from_static_prior_path_count": 3,
+    "dynamic_path_count": 6,
+    "exposure_graph_count": 3,
+    "field_outcome_validated": false,
+    "trace_round_count": 3
+  }
+}

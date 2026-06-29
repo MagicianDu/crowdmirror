@@ -1,0 +1,172 @@
+{
+  "acceptance_gates": {
+    "all_required_bundle_items_resolvable": true,
+    "field_outcome_validated": false,
+    "field_slice_template_resolvable": true,
+    "launch_bundle_verified": true,
+    "launch_handoff_json_resolvable": true,
+    "markdown_packet_resolvable": true,
+    "packet_export_json_resolvable": true,
+    "product_default_allowed": false,
+    "runtime_default_allowed": false
+  },
+  "allowed_claims": [
+    "Product can verify that the customer trial launch bundle contains resolvable packet, handoff, and template files.",
+    "The launch bundle is deliverable for customer field-slice submission, but does not claim field validation."
+  ],
+  "artifact_id": "r12-customer-trial-launch-bundle-verification-current-001",
+  "blocked_claims": [
+    "field validation \u5df2\u5b8c\u6210",
+    "customer field validation passed",
+    "customer trial produced accepted feedback update",
+    "Product default can use customer trial output",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "bundle_items": [
+    {
+      "artifact_id": "r12-customer-trial-launch-packet-export-current-001",
+      "bundle_item_id": "packet_export_json",
+      "path": "experiments/results/r12_customer_trial_launch_packet_export/r12-customer-trial-launch-packet-export-current-001.json",
+      "path_resolvable": true,
+      "required_for_customer_launch": true,
+      "sha256": "6fc1603d7c31cb6cdca386cef3feb104f61292bb8f8236d3daab21383b4f7146",
+      "size_bytes": 4690
+    },
+    {
+      "artifact_id": "r12-customer-trial-launch-handoff-package-current-001",
+      "bundle_item_id": "launch_handoff_json",
+      "path": "experiments/results/r12_customer_trial_launch_handoff_package/r12-customer-trial-launch-handoff-package-current-001.json",
+      "path_resolvable": true,
+      "required_for_customer_launch": true,
+      "sha256": "38ac2d8c3375cf781727790cfd9bed0d07715b1751ac0e9a18d7851dc5863c95",
+      "size_bytes": 6061
+    },
+    {
+      "artifact_id": "customer_trial_launch_packet_markdown:experiments/results/r12_customer_trial_launch_packet_export/r12-customer-trial-launch-packet-current-001.md",
+      "bundle_item_id": "customer_launch_packet_markdown",
+      "path": "experiments/results/r12_customer_trial_launch_packet_export/r12-customer-trial-launch-packet-current-001.md",
+      "path_resolvable": true,
+      "required_for_customer_launch": true,
+      "sha256": "4f5742cf9325efaeef23920df4520c55f62850e3273e4a4395bc31865b26368c",
+      "size_bytes": 1139
+    },
+    {
+      "artifact_id": "r12-customer-trial-readiness-package-current-001",
+      "bundle_item_id": "r12_customer_trial_readiness_package_current_001",
+      "path": "experiments/results/r12_customer_trial_readiness_package/r12-customer-trial-readiness-package-current-001.json",
+      "path_resolvable": true,
+      "required_for_customer_launch": false,
+      "sha256": "59cdb33cc3a400ddf0fb0bd1d13484f7fd2bb19f72ae7ddaeb77e0e16e8f69cd",
+      "size_bytes": 6070
+    },
+    {
+      "artifact_id": "r12-customer-trial-operational-check-current-001",
+      "bundle_item_id": "r12_customer_trial_operational_check_current_001",
+      "path": "experiments/results/r12_customer_trial_operational_check/r12-customer-trial-operational-check-current-001.json",
+      "path_resolvable": true,
+      "required_for_customer_launch": false,
+      "sha256": "5b3e7ee5d0704a6ffaffe8b1ab32d2a322591f0bf046dda99a3499de7573eb70",
+      "size_bytes": 6670
+    },
+    {
+      "artifact_id": "r12-customer-field-slice-handoff-package-current-001",
+      "bundle_item_id": "r12_customer_field_slice_handoff_package_current_001",
+      "path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-handoff-package-current-001.json",
+      "path_resolvable": true,
+      "required_for_customer_launch": false,
+      "sha256": "468af523b74d0ab8ff5d490b0be335e13a7b12126f9789157970ea5069a2682c",
+      "size_bytes": 5849
+    },
+    {
+      "artifact_id": "r12-customer-validation-workflow-status-current-001",
+      "bundle_item_id": "r12_customer_validation_workflow_status_current_001",
+      "path": "experiments/results/r12_customer_validation_workflow_status/r12-customer-validation-workflow-status-current-001.json",
+      "path_resolvable": true,
+      "required_for_customer_launch": false,
+      "sha256": "390e512cf39235d56c783f0bff40df9bad62ea74f735cbb1bbc30c8539ccffac",
+      "size_bytes": 7875
+    },
+    {
+      "artifact_id": "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+      "bundle_item_id": "r12_target_outcome_or_customer_field_slice_arrival_current_001",
+      "path": "experiments/results/r12_target_outcome_or_customer_field_slice_arrival/r12-target-outcome-or-customer-field-slice-arrival-current-001.json",
+      "path_resolvable": true,
+      "required_for_customer_launch": false,
+      "sha256": "e876983767321539f429f72e7a71d70ff8e5a22fe2b615613a52fcb60b6010f5",
+      "size_bytes": 3641
+    },
+    {
+      "artifact_id": "customer_field_slice_template:experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv",
+      "bundle_item_id": "field_slice_template_csv",
+      "path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv",
+      "path_resolvable": true,
+      "required_for_customer_launch": true,
+      "sha256": "75d82e617f6e95d230be6ed1a0c65aa4dbf8b5ecc70a925f96452f784994372a",
+      "size_bytes": 121
+    }
+  ],
+  "bundle_summary": {
+    "current_stage": "source_arrival_pending",
+    "field_outcome_validated": false,
+    "missing_required_item_ids": [],
+    "packet_export_artifact_id": "r12-customer-trial-launch-packet-export-current-001",
+    "required_item_count": 4,
+    "resolved_required_item_count": 4,
+    "verified_at": "2026-06-28T15:10:00Z"
+  },
+  "claim_level": "customer_trial_launch_bundle_verified_no_validation_claim",
+  "next_required_artifact": "customer_field_slice_submission_or_target_outcome_artifact",
+  "run_id": "r12-l32-current-001",
+  "schema_version": "r12-customer-trial-launch-bundle-verification-v1",
+  "source_refs": [
+    "r12-customer-trial-launch-packet-export-current-001",
+    "r12-customer-trial-launch-handoff-package-current-001",
+    "customer_trial_launch_packet_markdown:experiments/results/r12_customer_trial_launch_packet_export/r12-customer-trial-launch-packet-current-001.md",
+    "r12-customer-trial-readiness-package-current-001",
+    "r12-customer-trial-operational-check-current-001",
+    "r12-customer-field-slice-handoff-package-current-001",
+    "r12-customer-validation-workflow-status-current-001",
+    "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+    "customer_field_slice_template:experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-customer-trial-launch-packet-export-current-001",
+      "path": "experiments/results/r12_customer_trial_launch_packet_export/r12-customer-trial-launch-packet-export-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-trial-launch-handoff-package-current-001",
+      "path": "experiments/results/r12_customer_trial_launch_handoff_package/r12-customer-trial-launch-handoff-package-current-001.json"
+    },
+    {
+      "artifact_id": "customer_trial_launch_packet_markdown:experiments/results/r12_customer_trial_launch_packet_export/r12-customer-trial-launch-packet-current-001.md",
+      "path": "experiments/results/r12_customer_trial_launch_packet_export/r12-customer-trial-launch-packet-current-001.md"
+    },
+    {
+      "artifact_id": "r12-customer-trial-readiness-package-current-001",
+      "path": "experiments/results/r12_customer_trial_readiness_package/r12-customer-trial-readiness-package-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-trial-operational-check-current-001",
+      "path": "experiments/results/r12_customer_trial_operational_check/r12-customer-trial-operational-check-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-field-slice-handoff-package-current-001",
+      "path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-handoff-package-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-validation-workflow-status-current-001",
+      "path": "experiments/results/r12_customer_validation_workflow_status/r12-customer-validation-workflow-status-current-001.json"
+    },
+    {
+      "artifact_id": "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+      "path": "experiments/results/r12_target_outcome_or_customer_field_slice_arrival/r12-target-outcome-or-customer-field-slice-arrival-current-001.json"
+    },
+    {
+      "artifact_id": "customer_field_slice_template:experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv",
+      "path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv"
+    }
+  ],
+  "status": "r12_customer_trial_launch_bundle_verification_ready_source_pending"
+}

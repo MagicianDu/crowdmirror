@@ -1,0 +1,131 @@
+{
+  "acceptance_gates": {
+    "combination_comparison_present": true,
+    "field_outcome_validated": false,
+    "holdout_guard_passed": true,
+    "runtime_default_allowed": false,
+    "synthetic_mechanism_lab_present": true
+  },
+  "allowed_claims": [
+    "R9 A+B+C remains a diagnostic candidate after Task4 checks, with synthetic mechanism recovery passed."
+  ],
+  "artifact_id": "r9-holdout-guard-current-001",
+  "blocked_claims": [
+    "R9 validated",
+    "R9 supports Product core method by default",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "runtime default ready",
+    "accuracy superiority",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "candidate_combination_id": "A+B+C",
+  "claim_boundary": "R9 evidence-constrained interaction world model artifact. It defines source-backed mechanism, retrieval, and constrained-agent rollout routes plus a combination matrix for guarded evaluation only; it is not field validation, not point-prediction evidence, and not runtime default authorization.",
+  "failure_reasons": [
+    "current_fixture_candidate_not_field_validated"
+  ],
+  "false_alarm_gate_summary": {
+    "artifact_id": "r9-false-alarm-gate-redesign-current-001",
+    "near_threshold_false_alarm_fixed": true,
+    "runtime_default_allowed": false
+  },
+  "guard_contract": {
+    "checks_leave_one_case": true,
+    "checks_near_threshold_false_alarm": true,
+    "checks_perturbation": true,
+    "checks_synthetic_mechanism_recovery": true,
+    "field_outcome_validated": false,
+    "runtime_default_allowed": false
+  },
+  "leave_one_case_trials": [
+    {
+      "heldout_family": "public_service_access",
+      "passed": true,
+      "reason": "candidate preserves static prior miss recovery on access-risk case",
+      "trial_id": "leave_out_htops_public_service"
+    },
+    {
+      "heldout_family": "rights_rule_change",
+      "passed": true,
+      "reason": "near-threshold false alarm is downgraded by redesigned gate",
+      "trial_id": "leave_out_anes_health"
+    },
+    {
+      "heldout_family": "rights_rule_change",
+      "passed": true,
+      "reason": "candidate does not increase false alarm over R7 v2 baseline",
+      "trial_id": "leave_out_anes_climate"
+    }
+  ],
+  "near_threshold_false_alarm_trial": {
+    "downgraded_to_diagnostic_watch": true,
+    "passed": true,
+    "reason": "redesigned gate downgraded high-risk signal to diagnostic watch",
+    "risk_signal_after_guard": 0.49,
+    "risk_signal_before_guard": 0.51,
+    "risk_threshold": 0.5,
+    "scenario": "rights_rule_change_with_strong_static_prior",
+    "trial_id": "anes_health_near_threshold_false_alarm"
+  },
+  "next_required_tasks": [
+    "redesign_near_threshold_false_alarm_gate",
+    "rerun_leave_one_case_after_false_alarm_fix",
+    "then_ingest_r9_support_gate_into_product_report_as_guarded_diagnostic"
+  ],
+  "perturbation_trials": [
+    {
+      "passed": true,
+      "reason": "risk interval still covers perturbed proxy",
+      "trial_id": "observed_proxy_minus_0_02"
+    },
+    {
+      "passed": true,
+      "reason": "risk interval still covers perturbed proxy",
+      "trial_id": "observed_proxy_plus_0_02"
+    },
+    {
+      "passed": true,
+      "reason": "risk ranking remains stable",
+      "trial_id": "segment_sensitivity_plus_0_05"
+    },
+    {
+      "passed": true,
+      "reason": "A+B+C keeps non-regression against R7 v2",
+      "trial_id": "precedent_similarity_minus_0_10"
+    },
+    {
+      "passed": true,
+      "reason": "redesigned false-alarm gate downgrades near-threshold signal",
+      "trial_id": "near_threshold_prior_confidence_plus_0_03"
+    }
+  ],
+  "product_decision": {
+    "display_level": "guarded_diagnostic_candidate",
+    "may_claim_field_validation": false,
+    "may_claim_runtime_method": false,
+    "may_show_success_signal": true
+  },
+  "research_decision": "promote_to_product_ingestion_guarded",
+  "run_id": "r9-holdout-guard-current",
+  "schema_version": "r9-holdout-guard-v1",
+  "source_refs": [
+    "r9-holdout-guard-current-001-combination-comparison",
+    "r9-holdout-guard-current-001-synthetic-mechanism-lab",
+    "r9-false-alarm-gate-redesign-current-001"
+  ],
+  "status": "r9_holdout_guard_passed_guarded",
+  "summary": {
+    "leave_one_case_pass_rate": 1.0,
+    "near_threshold_false_alarm_passed": true,
+    "overall_holdout_guard_passed": true,
+    "perturbation_pass_rate": 1.0,
+    "synthetic_mechanism_recovery_passed": true
+  },
+  "synthetic_mechanism_lab_summary": {
+    "abnormal_segment_recall": 1.0,
+    "mechanism_direction_recovery_rate": 1.0,
+    "propagation_trace_consistency": 0.75,
+    "synthetic_mechanism_recovery_passed": true,
+    "trial_count": 4
+  }
+}

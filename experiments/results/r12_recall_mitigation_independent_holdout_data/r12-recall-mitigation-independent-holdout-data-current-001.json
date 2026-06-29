@@ -1,0 +1,145 @@
+{
+  "acceptance_decision": "block_product_default_prepare_external_or_customer_holdout_ingestion",
+  "acceptance_gates": {
+    "customer_approved_holdout_present": false,
+    "external_candidate_sources_registered": true,
+    "external_independent_data_ingested": false,
+    "field_outcome_validated": false,
+    "independent_dataset_present": false,
+    "independent_holdout_case_count_positive": false,
+    "low_sensitive_recall_evaluable": false,
+    "mitigation_independent_data_ready": false,
+    "product_default_allowed": false,
+    "runtime_default_allowed": false,
+    "same_dataset_non_derivation_candidates_present": true,
+    "source_backed_public_proxy_present": true
+  },
+  "allowed_claims": [
+    "Current HPS public proxy has same-dataset diagnostic cases for failure analysis.",
+    "External public sources are registered as next ingestion options, but not yet usable as independent holdout evidence."
+  ],
+  "artifact_id": "r12-recall-mitigation-independent-holdout-data-current-001",
+  "blocked_claims": [
+    "independent holdout data exists",
+    "low_sensitive_recall_evaluable=true",
+    "customer approved holdout slice exists",
+    "mitigation independent data ready",
+    "R12 Product default high-risk recovery validated",
+    "R12 Product core method ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "customer outcome validated",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "data_gap_audit_product_default_blocked",
+  "data_availability_ledger": [
+    {
+      "block_reason": "same_public_proxy_dataset_not_independent_holdout",
+      "case_count": 65,
+      "product_default_allowed": false,
+      "recall_candidate_count": 5,
+      "source_id": "current_hps_same_dataset_non_derivation_segments",
+      "status": "available_but_not_independent_dataset"
+    },
+    {
+      "block_reason": "low_sensitive_recall_not_evaluable",
+      "case_count": 4,
+      "observed_high_risk_count": 0,
+      "product_default_allowed": false,
+      "recall_candidate_count": 0,
+      "source_id": "current_hps_low_sensitive_slice",
+      "status": "available_but_no_observed_high_risk_recall_case"
+    },
+    {
+      "block_reason": "external_independent_data_not_ingested",
+      "case_count": 3,
+      "ingested_case_count": 0,
+      "product_default_allowed": false,
+      "source_id": "external_public_source_candidates",
+      "status": "candidate_sources_registered_not_ingested"
+    },
+    {
+      "block_reason": "customer_outcome_or_approval_missing",
+      "case_count": 0,
+      "product_default_allowed": false,
+      "source_id": "customer_approved_holdout_slice",
+      "status": "not_present"
+    }
+  ],
+  "data_contract": {
+    "answers_next_required_artifact": "r12_recall_mitigation_independent_holdout_data",
+    "customer_or_field_outcome_required_for_escalation": true,
+    "field_outcome_validated": false,
+    "requires_independent_dataset_or_customer_approved_slice": true,
+    "runtime_default_allowed": false,
+    "same_dataset_pseudo_holdout_is_insufficient_for_product_default": true
+  },
+  "data_summary": {
+    "customer_approved_holdout_case_count": 0,
+    "derivation_band_case_count": 5,
+    "evaluated_hps_case_count": 70,
+    "external_registry_candidate_count": 3,
+    "hps_public_proxy_ingested": true,
+    "ingested_external_independent_dataset_count": 0,
+    "low_sensitive_case_count": 4,
+    "low_sensitive_observed_high_risk_count": 0,
+    "low_sensitive_recall_candidate_count": 0,
+    "same_dataset_non_derivation_case_count": 65,
+    "same_dataset_non_derivation_recall_candidate_count": 5
+  },
+  "external_source_candidates": [
+    {
+      "case_id": "census_hps_policy_reaction_public_use_candidate",
+      "domain": "public_policy_household_response",
+      "ingestion_status": "candidate_source_not_ingested",
+      "recommended_next_action": "ingest_or_slice_for_independent_holdout"
+    },
+    {
+      "case_id": "bts_db1b_route_price_demand_candidate",
+      "domain": "air_travel_price_and_demand",
+      "ingestion_status": "candidate_source_not_ingested",
+      "recommended_next_action": "ingest_or_slice_for_independent_holdout"
+    },
+    {
+      "case_id": "dot_air_travel_consumer_report_complaint_candidate",
+      "domain": "air_travel_service_quality",
+      "ingestion_status": "candidate_source_not_ingested",
+      "recommended_next_action": "ingest_or_slice_for_independent_holdout"
+    }
+  ],
+  "next_required_artifact": "r12_recall_mitigation_external_holdout_ingestion_or_customer_slice",
+  "run_id": "r12-l11-current",
+  "same_dataset_non_derivation_recall_candidates": [
+    "hps_ESEX_1",
+    "hps_RRACETH_1",
+    "hps_TAGE_46",
+    "hps_TAGE_64",
+    "hps_TAGE_73"
+  ],
+  "schema_version": "r12-recall-mitigation-independent-holdout-data-v1",
+  "source_refs": [
+    "r10-hps-policy-reaction-ingestion-current-001",
+    "r12-transfer-validation-current-001",
+    "r12-recall-mitigation-holdout-validation-current-001",
+    "r10-external-evidence-registry-current-001"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r10-hps-policy-reaction-ingestion-current-001",
+      "path": "experiments/results/r10_hps_policy_reaction_ingestion/r10-hps-policy-reaction-ingestion-current-001.json"
+    },
+    {
+      "artifact_id": "r12-transfer-validation-current-001",
+      "path": "experiments/results/r12_transfer_validation/r12-transfer-validation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-recall-mitigation-holdout-validation-current-001",
+      "path": "experiments/results/r12_recall_mitigation_holdout_validation/r12-recall-mitigation-holdout-validation-current-001.json"
+    },
+    {
+      "artifact_id": "r10-external-evidence-registry-current-001",
+      "path": "experiments/results/r10_external_evidence_registry/r10-external-evidence-registry-current-001.json"
+    }
+  ],
+  "status": "r12_recall_mitigation_independent_holdout_data_blocked_needs_external_or_customer_slice"
+}

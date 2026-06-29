@@ -1,0 +1,277 @@
+{
+  "acceptance_decision": "accept_pre_outcome_trial_lock_keep_validation_and_product_default_blocked_until_outcome_ingestion",
+  "acceptance_gates": {
+    "customer_approval_present": false,
+    "customer_field_slice_contract_ready": true,
+    "customer_field_slice_present": false,
+    "field_outcome_validated": false,
+    "pre_outcome_prediction_trial_created": true,
+    "pre_outcome_revalidation_ready": false,
+    "prediction_lock_timestamp_pre_target_outcome": true,
+    "prediction_lock_timestamp_present": true,
+    "prediction_packet_locked": true,
+    "prediction_source_independent_of_target_outcome": true,
+    "product_default_allowed": false,
+    "runtime_default_allowed": false,
+    "supporting_independent_hindcast_passed": true,
+    "target_outcome_artifact_present": false,
+    "target_outcome_used_for_prediction_generation": false
+  },
+  "allowed_claims": [
+    "R12 has locked a pre-outcome public DOT prediction trial using feature data independent of the future target outcome.",
+    "The same artifact defines the customer field slice contract needed for outcome revalidation."
+  ],
+  "artifact_id": "r12-pre-outcome-prediction-trial-or-customer-field-revalidation-current-001",
+  "blocked_claims": [
+    "pre-outcome outcome revalidation passed",
+    "customer field outcome validated",
+    "target outcome artifact present",
+    "Product default can use R12 pre-outcome trial by default",
+    "R12 Product core method ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "pre_outcome_prediction_trial_locked_not_yet_validated",
+  "customer_field_slice_contract": {
+    "accepted_formats": [
+      "csv",
+      "jsonl"
+    ],
+    "manual_prompt_or_persona_patch_allowed": false,
+    "minimum_case_count": 10,
+    "must_include_customer_approval_reference": true,
+    "optional_fields": [
+      "segment_label",
+      "mechanism_label",
+      "baseline_prediction",
+      "interaction_prediction",
+      "decision_cost",
+      "review_note"
+    ],
+    "required_fields": [
+      "case_id",
+      "segment_id",
+      "scenario_id",
+      "prediction_share_or_score",
+      "observed_outcome",
+      "outcome_timestamp",
+      "customer_approval_reference"
+    ]
+  },
+  "evaluation_contract": {
+    "acceptance_requires": [
+      "target_outcome_artifact_present=true",
+      "target_outcome_used_for_prediction_generation=false",
+      "prediction_lock_timestamp_pre_target_outcome=true",
+      "false_alarm_non_regression=true",
+      "field_or_pre_outcome_revalidation_passed=true"
+    ],
+    "evaluation_metrics": [
+      "mean_absolute_error",
+      "interval_coverage",
+      "risk_ranking_quality",
+      "static_prior_miss_recovery",
+      "false_alarm_rate",
+      "decision_value"
+    ],
+    "next_required_artifact": "r12_pre_outcome_or_customer_field_outcome_ingestion"
+  },
+  "locked_predictions": [
+    {
+      "carrier": "American Airlines",
+      "case_id": "dot_atcr_2026_05_us_airline_american_airlines",
+      "feature_observed_total": 1341,
+      "locked_prediction_share": 0.277123,
+      "prediction_basis": "prior_month_official_complaint_share",
+      "prediction_interval_high": 0.327123,
+      "prediction_interval_low": 0.227123,
+      "source_case_id": "dot_atcr_2026_04_us_airline_american_airlines",
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Alaska Airlines",
+      "case_id": "dot_atcr_2026_05_us_airline_alaska_airlines",
+      "feature_observed_total": 161,
+      "locked_prediction_share": 0.033271,
+      "prediction_basis": "prior_month_official_complaint_share",
+      "prediction_interval_high": 0.083271,
+      "prediction_interval_low": 0.0,
+      "source_case_id": "dot_atcr_2026_04_us_airline_alaska_airlines",
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Allegiant Air",
+      "case_id": "dot_atcr_2026_05_us_airline_allegiant_air",
+      "feature_observed_total": 44,
+      "locked_prediction_share": 0.009093,
+      "prediction_basis": "prior_month_official_complaint_share",
+      "prediction_interval_high": 0.059093,
+      "prediction_interval_low": 0.0,
+      "source_case_id": "dot_atcr_2026_04_us_airline_allegiant_air",
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Avelo Airlines",
+      "case_id": "dot_atcr_2026_05_us_airline_avelo_airlines",
+      "feature_observed_total": 50,
+      "locked_prediction_share": 0.010333,
+      "prediction_basis": "prior_month_official_complaint_share",
+      "prediction_interval_high": 0.060333,
+      "prediction_interval_low": 0.0,
+      "source_case_id": "dot_atcr_2026_04_us_airline_avelo_airlines",
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Breeze Airways",
+      "case_id": "dot_atcr_2026_05_us_airline_breeze_airways",
+      "feature_observed_total": 61,
+      "locked_prediction_share": 0.012606,
+      "prediction_basis": "prior_month_official_complaint_share",
+      "prediction_interval_high": 0.062606,
+      "prediction_interval_low": 0.0,
+      "source_case_id": "dot_atcr_2026_04_us_airline_breeze_airways",
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Contour Airlines",
+      "case_id": "dot_atcr_2026_05_us_airline_contour_airlines",
+      "feature_observed_total": 6,
+      "locked_prediction_share": 0.00124,
+      "prediction_basis": "prior_month_official_complaint_share",
+      "prediction_interval_high": 0.05124,
+      "prediction_interval_low": 0.0,
+      "source_case_id": "dot_atcr_2026_04_us_airline_contour_airlines",
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Delta Air Lines",
+      "case_id": "dot_atcr_2026_05_us_airline_delta_air_lines",
+      "feature_observed_total": 769,
+      "locked_prediction_share": 0.158917,
+      "prediction_basis": "prior_month_official_complaint_share",
+      "prediction_interval_high": 0.208917,
+      "prediction_interval_low": 0.108917,
+      "source_case_id": "dot_atcr_2026_04_us_airline_delta_air_lines",
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Frontier Airlines",
+      "case_id": "dot_atcr_2026_05_us_airline_frontier_airlines",
+      "feature_observed_total": 659,
+      "locked_prediction_share": 0.136185,
+      "prediction_basis": "prior_month_official_complaint_share",
+      "prediction_interval_high": 0.186185,
+      "prediction_interval_low": 0.086185,
+      "source_case_id": "dot_atcr_2026_04_us_airline_frontier_airlines",
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "JetBlue",
+      "case_id": "dot_atcr_2026_05_us_airline_jetblue",
+      "feature_observed_total": 270,
+      "locked_prediction_share": 0.055797,
+      "prediction_basis": "prior_month_official_complaint_share",
+      "prediction_interval_high": 0.105797,
+      "prediction_interval_low": 0.005797,
+      "source_case_id": "dot_atcr_2026_04_us_airline_jetblue",
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Southwest Airlines",
+      "case_id": "dot_atcr_2026_05_us_airline_southwest_airlines",
+      "feature_observed_total": 218,
+      "locked_prediction_share": 0.045051,
+      "prediction_basis": "prior_month_official_complaint_share",
+      "prediction_interval_high": 0.095051,
+      "prediction_interval_low": 0.0,
+      "source_case_id": "dot_atcr_2026_04_us_airline_southwest_airlines",
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Sun Country Airlines",
+      "case_id": "dot_atcr_2026_05_us_airline_sun_country_airlines",
+      "feature_observed_total": 14,
+      "locked_prediction_share": 0.002893,
+      "prediction_basis": "prior_month_official_complaint_share",
+      "prediction_interval_high": 0.052893,
+      "prediction_interval_low": 0.0,
+      "source_case_id": "dot_atcr_2026_04_us_airline_sun_country_airlines",
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Spirit Airlines",
+      "case_id": "dot_atcr_2026_05_us_airline_spirit_airlines",
+      "feature_observed_total": 475,
+      "locked_prediction_share": 0.098161,
+      "prediction_basis": "prior_month_official_complaint_share",
+      "prediction_interval_high": 0.148161,
+      "prediction_interval_low": 0.048161,
+      "source_case_id": "dot_atcr_2026_04_us_airline_spirit_airlines",
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "United Airlines",
+      "case_id": "dot_atcr_2026_05_us_airline_united_airlines",
+      "feature_observed_total": 759,
+      "locked_prediction_share": 0.156851,
+      "prediction_basis": "prior_month_official_complaint_share",
+      "prediction_interval_high": 0.206851,
+      "prediction_interval_low": 0.106851,
+      "source_case_id": "dot_atcr_2026_04_us_airline_united_airlines",
+      "static_prior_prediction": 0.071429
+    },
+    {
+      "carrier": "Other U.S. Airline",
+      "case_id": "dot_atcr_2026_05_us_airline_other_u.s._airline",
+      "feature_observed_total": 12,
+      "locked_prediction_share": 0.00248,
+      "prediction_basis": "prior_month_official_complaint_share",
+      "prediction_interval_high": 0.05248,
+      "prediction_interval_low": 0.0,
+      "source_case_id": "dot_atcr_2026_04_us_airline_other_u.s._airline",
+      "static_prior_prediction": 0.071429
+    }
+  ],
+  "next_required_artifact": "r12_pre_outcome_or_customer_field_outcome_ingestion",
+  "route_selection": {
+    "customer_field_revalidation_fallback_enabled": true,
+    "customer_field_slice_contract_ready": true,
+    "selected_feature_source_artifact_id": "r12-external-or-customer-holdout-raw-slice-current-001",
+    "selected_route": "pre_outcome_public_dot_trial",
+    "supporting_hindcast_artifact_id": "r12-independent-hindcast-revalidation-current-001"
+  },
+  "run_id": "r12-l17-current",
+  "schema_version": "r12-pre-outcome-prediction-trial-or-customer-field-revalidation-v1",
+  "source_refs": [
+    "r12-independent-hindcast-revalidation-current-001",
+    "r12-external-or-customer-holdout-raw-slice-current-001",
+    "dot_air_travel_consumer_report_complaint_candidate"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-independent-hindcast-revalidation-current-001",
+      "path": "experiments/results/r12_independent_hindcast_revalidation/r12-independent-hindcast-revalidation-current-001.json"
+    },
+    {
+      "artifact_id": "r12-external-or-customer-holdout-raw-slice-current-001",
+      "path": "experiments/results/r12_external_or_customer_holdout_raw_slice/r12-external-or-customer-holdout-raw-slice-current-001.json"
+    }
+  ],
+  "status": "r12_pre_outcome_prediction_trial_locked_outcome_pending_guarded",
+  "trial_summary": {
+    "customer_approval_present": false,
+    "customer_field_slice_present": false,
+    "feature_period": "April 2026",
+    "pre_outcome_revalidation_ready": false,
+    "prediction_case_count": 14,
+    "prediction_lock_timestamp": "2026-06-27T14:45:00Z",
+    "prediction_lock_timestamp_pre_target_outcome": true,
+    "prediction_source_independent_of_target_outcome": true,
+    "prediction_total_basis": 4839,
+    "target_outcome_artifact_present": false,
+    "target_outcome_period": "May 2026",
+    "target_outcome_used_for_prediction_generation": false,
+    "trial_id": "r12-dot-atcr-2026-05-pre-outcome-trial-001"
+  }
+}

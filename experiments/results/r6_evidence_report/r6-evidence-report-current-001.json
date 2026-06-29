@@ -1,0 +1,69 @@
+{
+  "ablation_summary": {
+    "artifact_id": "r6-evidence-report-current-001-ablation",
+    "current_best_non_feedback_method": "prior_anchored_interaction",
+    "no_interaction_error": 0.18,
+    "outcome_feedback_global_status": "blocked_same_case_only",
+    "outcome_feedback_update_error": 0.04,
+    "prior_anchored_beats_no_interaction": true,
+    "prior_anchored_error": 0.11
+  },
+  "acceptance_gates": {
+    "ablation_baselines_present": true,
+    "deterministic_replay_passed": true,
+    "global_update_accepted": false,
+    "public_outcome_proxy_connected": true
+  },
+  "artifact_id": "r6-evidence-report-current-001",
+  "blocking_gaps": [
+    "global_update_acceptance_blocked",
+    "cross_case_validation_missing"
+  ],
+  "case_matrix_summary": {
+    "artifact_id": "r6-evidence-report-current-001-case-matrix",
+    "case_count": 3,
+    "public_outcome_proxy_case_count": 1
+  },
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "This is public proxy evidence only; it is not field validation."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "evidence_answer": {
+    "current_decision": "continue_r6_with_constraints",
+    "reason": "One public proxy case is connected, the prior-anchored interaction signal improves over the no-interaction prior on this proxy, and global updates remain blocked.",
+    "stoploss_triggered": false
+  },
+  "product_report_summary": {
+    "artifact_id": "r6-evidence-report-current-001-product-report",
+    "market_claim_status": "diagnostic_workflow_ready_not_accuracy_claim",
+    "status": "report_ready"
+  },
+  "public_outcome_proxy": {
+    "artifact_id": "r6-evidence-report-current-001-public-outcome-proxy",
+    "observed_reject_proxy": 0.47,
+    "source_url": "https://www.census.gov/programs-surveys/household-pulse-survey/data/datasets.html",
+    "target_case_id": "generic-public-service-policy-change",
+    "usable_row_count": 7317
+  },
+  "remaining_gaps": [
+    "needs_more_public_or_real_outcomes",
+    "needs_holdout_case_for_feedback_update_acceptance",
+    "needs_public_proxy_mapping_review",
+    "needs_product_demo_report_ingestion"
+  ],
+  "risk_flags": [
+    "public_proxy_not_field_validation",
+    "same_case_feedback_not_global_acceptance",
+    "not_cross_domain_accuracy_evidence"
+  ],
+  "run_id": "r6-evidence-report-current-001",
+  "schema_version": "r6-evidence-report-v1",
+  "source_refs": [
+    "r6-evidence-report-current-001-public-outcome-proxy",
+    "r6-evidence-report-current-001-case-matrix",
+    "r6-evidence-report-current-001-product-report",
+    "r6-evidence-report-current-001-ablation"
+  ],
+  "status": "public_proxy_evidence_ready"
+}

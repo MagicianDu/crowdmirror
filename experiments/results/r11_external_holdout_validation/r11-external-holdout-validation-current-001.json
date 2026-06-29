@@ -1,0 +1,254 @@
+{
+  "acceptance_gates": {
+    "external_holdout_passed_guarded": true,
+    "external_public_use_holdout_present": true,
+    "field_outcome_validated": false,
+    "minimum_holdout_cases_present": true,
+    "product_core_method_ready": false,
+    "runtime_default_allowed": false,
+    "source_signal_and_holdout_proxy_distinct": true
+  },
+  "allowed_claims": [
+    "R11 can be audited against a source-backed public-use proxy holdout using distinct HPS signal and outcome columns.",
+    "A passed guarded holdout may justify Product shadow-trial work, not Product runtime default."
+  ],
+  "artifact_id": "r11-external-holdout-validation-current-001",
+  "blocked_claims": [
+    "R11 validated",
+    "R11 supports Product core method by default",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "runtime default ready",
+    "HPS proxy equals customer field outcome",
+    "accuracy superiority",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_boundary": "R11 external holdout validation artifact. It maps the R11 learnable interaction risk discoverer onto a source-backed public-use HPS proxy holdout by using PRICECONCERN as the external signal and PRICESTRESS as the held-out outcome proxy. It is not customer field validation and does not authorize Product runtime default.",
+  "claim_level": "public_use_proxy_holdout_only",
+  "external_holdout_cases": [
+    {
+      "case_id": "hps_REGION_1",
+      "false_alarm": false,
+      "field_outcome_validated": false,
+      "high_risk_threshold": 0.484619,
+      "holdout_outcome_proxy": 0.433761,
+      "interval_contains_outcome": true,
+      "observed_high_risk": false,
+      "outcome_direction": "decrease",
+      "predicted_high_risk": false,
+      "r11_prediction": 0.450869,
+      "risk_interval": {
+        "median": 0.450869,
+        "p10": 0.350869,
+        "p90": 0.550869
+      },
+      "runtime_default_allowed": false,
+      "segment_column": "REGION",
+      "segment_value": "1",
+      "source_signal_delta": -0.007813,
+      "source_signal_risk_share": 0.23611,
+      "static_prior_miss_recovered": false,
+      "static_prior_missed_high_risk": false,
+      "static_prior_prediction": 0.454619,
+      "trend_direction": "stable",
+      "trend_matches_outcome": false
+    },
+    {
+      "case_id": "hps_REGION_2",
+      "false_alarm": false,
+      "field_outcome_validated": false,
+      "high_risk_threshold": 0.484619,
+      "holdout_outcome_proxy": 0.5214,
+      "interval_contains_outcome": true,
+      "observed_high_risk": true,
+      "outcome_direction": "increase",
+      "predicted_high_risk": true,
+      "r11_prediction": 0.493224,
+      "risk_interval": {
+        "median": 0.493224,
+        "p10": 0.393224,
+        "p90": 0.593224
+      },
+      "runtime_default_allowed": false,
+      "segment_column": "REGION",
+      "segment_value": "2",
+      "source_signal_delta": 0.080427,
+      "source_signal_risk_share": 0.32435,
+      "static_prior_miss_recovered": true,
+      "static_prior_missed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "trend_direction": "increase",
+      "trend_matches_outcome": true
+    },
+    {
+      "case_id": "hps_REGION_3",
+      "false_alarm": false,
+      "field_outcome_validated": false,
+      "high_risk_threshold": 0.484619,
+      "holdout_outcome_proxy": 0.447394,
+      "interval_contains_outcome": true,
+      "observed_high_risk": false,
+      "outcome_direction": "stable",
+      "predicted_high_risk": false,
+      "r11_prediction": 0.447311,
+      "risk_interval": {
+        "median": 0.447311,
+        "p10": 0.347311,
+        "p90": 0.547311
+      },
+      "runtime_default_allowed": false,
+      "segment_column": "REGION",
+      "segment_value": "3",
+      "source_signal_delta": -0.015224,
+      "source_signal_risk_share": 0.228699,
+      "static_prior_miss_recovered": false,
+      "static_prior_missed_high_risk": false,
+      "static_prior_prediction": 0.454619,
+      "trend_direction": "stable",
+      "trend_matches_outcome": true
+    },
+    {
+      "case_id": "hps_REGION_4",
+      "false_alarm": false,
+      "field_outcome_validated": false,
+      "high_risk_threshold": 0.484619,
+      "holdout_outcome_proxy": 0.425462,
+      "interval_contains_outcome": true,
+      "observed_high_risk": false,
+      "outcome_direction": "decrease",
+      "predicted_high_risk": false,
+      "r11_prediction": 0.435586,
+      "risk_interval": {
+        "median": 0.435586,
+        "p10": 0.335586,
+        "p90": 0.535586
+      },
+      "runtime_default_allowed": false,
+      "segment_column": "REGION",
+      "segment_value": "4",
+      "source_signal_delta": -0.039652,
+      "source_signal_risk_share": 0.204271,
+      "static_prior_miss_recovered": false,
+      "static_prior_missed_high_risk": false,
+      "static_prior_prediction": 0.454619,
+      "trend_direction": "decrease",
+      "trend_matches_outcome": true
+    },
+    {
+      "case_id": "hps_METRO_STATUS_1",
+      "false_alarm": false,
+      "field_outcome_validated": false,
+      "high_risk_threshold": 0.484619,
+      "holdout_outcome_proxy": 0.450089,
+      "interval_contains_outcome": true,
+      "observed_high_risk": false,
+      "outcome_direction": "stable",
+      "predicted_high_risk": false,
+      "r11_prediction": 0.452466,
+      "risk_interval": {
+        "median": 0.452466,
+        "p10": 0.352466,
+        "p90": 0.552466
+      },
+      "runtime_default_allowed": false,
+      "segment_column": "METRO_STATUS",
+      "segment_value": "1",
+      "source_signal_delta": -0.004485,
+      "source_signal_risk_share": 0.239438,
+      "static_prior_miss_recovered": false,
+      "static_prior_missed_high_risk": false,
+      "static_prior_prediction": 0.454619,
+      "trend_direction": "stable",
+      "trend_matches_outcome": true
+    },
+    {
+      "case_id": "hps_METRO_STATUS_2",
+      "false_alarm": false,
+      "field_outcome_validated": false,
+      "high_risk_threshold": 0.484619,
+      "holdout_outcome_proxy": 0.55329,
+      "interval_contains_outcome": true,
+      "observed_high_risk": true,
+      "outcome_direction": "increase",
+      "predicted_high_risk": true,
+      "r11_prediction": 0.498821,
+      "risk_interval": {
+        "median": 0.498821,
+        "p10": 0.398821,
+        "p90": 0.598821
+      },
+      "runtime_default_allowed": false,
+      "segment_column": "METRO_STATUS",
+      "segment_value": "2",
+      "source_signal_delta": 0.092087,
+      "source_signal_risk_share": 0.33601,
+      "static_prior_miss_recovered": true,
+      "static_prior_missed_high_risk": true,
+      "static_prior_prediction": 0.454619,
+      "trend_direction": "increase",
+      "trend_matches_outcome": true
+    }
+  ],
+  "external_holdout_summary": {
+    "case_count": 6,
+    "holdout_outcome_proxy": "PRICESTRESS",
+    "observed_high_risk_case_count": 2,
+    "predicted_high_risk_case_count": 2,
+    "segment_columns": [
+      "REGION",
+      "METRO_STATUS"
+    ],
+    "source_signal": "PRICECONCERN"
+  },
+  "failure_reasons": [],
+  "method_metrics": {
+    "r11_external_holdout_transfer": {
+      "abnormal_segment_recall": 1.0,
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 1.0,
+      "risk_ranking_quality": 1.0,
+      "static_prior_miss_recovery_rate": 1.0,
+      "trend_direction_accuracy": 0.833
+    },
+    "static_prior_external_holdout": {
+      "abnormal_segment_recall": 0.0,
+      "false_alarm_rate": 0.0,
+      "interval_coverage": 1.0,
+      "risk_ranking_quality": 0.0,
+      "static_prior_miss_recovery_rate": 0.0,
+      "trend_direction_accuracy": 0.333
+    }
+  },
+  "metric_floors": {
+    "abnormal_segment_recall": 0.667,
+    "false_alarm_rate": 0.333,
+    "interval_coverage": 0.667,
+    "risk_ranking_quality": 0.75,
+    "static_prior_miss_recovery_rate": 1.0,
+    "trend_direction_accuracy": 0.333
+  },
+  "operator_transfer_summary": {
+    "field_outcome_validated": false,
+    "runtime_default_allowed": false,
+    "source_operator_id": "mechanism_segment_residual_update_operator_l0",
+    "transfer_rule": "apply learned price_pressure weight to segment-level PRICECONCERN deviation from the HPS global PRICECONCERN risk share",
+    "transferred_mechanism": "price_pressure",
+    "transferred_weight": 0.48
+  },
+  "run_id": "r11-l1-current",
+  "schema_version": "r11-external-holdout-validation-v1",
+  "source_refs": [
+    "r11-interaction-risk-discoverer-current-001",
+    "r10-hps-policy-reaction-ingestion-current-001"
+  ],
+  "status": "r11_external_holdout_validation_passed_guarded",
+  "stop_loss_or_next_step": "continue_to_product_shadow_trial_guarded",
+  "validation_contract": {
+    "field_outcome_validated": false,
+    "holdout_outcome_proxy": "PRICESTRESS",
+    "independent_slice_or_proxy": true,
+    "runtime_default_allowed": false,
+    "source_backed_public_use_proxy": true,
+    "source_signal": "PRICECONCERN"
+  }
+}

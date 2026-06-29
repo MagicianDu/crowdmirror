@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Data / Models
+data/raw/
+data/cache/
+*.pkl
+*.pt
+*.ckpt
+
+# Logs / Results
+logs/
+results/
+outputs/
+wandb/
+mlruns/
+
+# Env
+.env
+.env.local
+
+# Jupyter
+.ipynb_checkpoints/

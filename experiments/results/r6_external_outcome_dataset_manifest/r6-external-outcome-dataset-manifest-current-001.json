@@ -1,0 +1,113 @@
+{
+  "acceptance_gates": {
+    "all_datasets_source_backed": true,
+    "at_least_two_domains_present": true,
+    "field_outcome_validated": false,
+    "manifest_present": true
+  },
+  "artifact_id": "r6-external-outcome-dataset-manifest-current-001",
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "datasets": [
+    {
+      "allowed_claim_level": "proxy_diagnostic",
+      "dataset_id": "htops_cost_pressure",
+      "domain": "public_service_cost_pressure",
+      "field_outcome_available": false,
+      "known_limitations": [
+        "not_real_customer_field_outcome",
+        "not_runtime_default_validation",
+        "segment_labels_are_proxy_or_audit_aligned"
+      ],
+      "proxy_outcome_available": true,
+      "scenario_shock_fields": [
+        "cost_increase",
+        "service_reliability_concern"
+      ],
+      "segment_label_fields": [
+        "service_dependent_low_trust",
+        "community_watchers"
+      ],
+      "source_refs": [
+        "r6-outcome-holdout-registry-v2-current-001-base-registry",
+        "htops_cost_pressure"
+      ],
+      "source_type": "public_proxy",
+      "static_prior_fields": [
+        "household_cost_pressure_prior",
+        "service_dependency"
+      ]
+    },
+    {
+      "allowed_claim_level": "proxy_diagnostic",
+      "dataset_id": "anes_health_heldout",
+      "domain": "health_policy_reaction",
+      "field_outcome_available": false,
+      "known_limitations": [
+        "not_real_customer_field_outcome",
+        "not_runtime_default_validation",
+        "segment_labels_are_proxy_or_audit_aligned"
+      ],
+      "proxy_outcome_available": true,
+      "scenario_shock_fields": [
+        "rights_reduction",
+        "trust_shock"
+      ],
+      "segment_label_fields": [
+        "rights_dependent_low_trust",
+        "rule_watchers"
+      ],
+      "source_refs": [
+        "r6-outcome-holdout-registry-v2-current-001-base-registry",
+        "anes_health_heldout"
+      ],
+      "source_type": "public_proxy",
+      "static_prior_fields": [
+        "party_prior",
+        "ideology_prior"
+      ]
+    },
+    {
+      "allowed_claim_level": "proxy_diagnostic",
+      "dataset_id": "anes_climate_heldout",
+      "domain": "climate_policy_reaction",
+      "field_outcome_available": false,
+      "known_limitations": [
+        "not_real_customer_field_outcome",
+        "not_runtime_default_validation",
+        "segment_labels_are_proxy_or_audit_aligned"
+      ],
+      "proxy_outcome_available": true,
+      "scenario_shock_fields": [
+        "rule_change",
+        "policy_salience"
+      ],
+      "segment_label_fields": [
+        "rights_dependent_low_trust",
+        "rule_watchers"
+      ],
+      "source_refs": [
+        "r6-outcome-holdout-registry-v2-current-001-base-registry",
+        "anes_climate_heldout"
+      ],
+      "source_type": "public_proxy",
+      "static_prior_fields": [
+        "party_prior",
+        "ideology_prior"
+      ]
+    }
+  ],
+  "manifest_summary": {
+    "blocked_count": 0,
+    "dataset_count": 3,
+    "domain_count": 3,
+    "field_outcome_count": 0,
+    "proxy_diagnostic_count": 3,
+    "validation_count": 0
+  },
+  "run_id": "r6-full-product-support-current-001",
+  "schema_version": "r6-external-outcome-dataset-manifest-v1",
+  "source_refs": [
+    "r6-outcome-holdout-registry-v2-current-001"
+  ],
+  "status": "external_outcome_dataset_manifest_proxy_diagnostic"
+}

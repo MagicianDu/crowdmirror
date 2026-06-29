@@ -1,0 +1,144 @@
+{
+  "acceptance_gates": {
+    "customer_trial_request_operationally_ready": true,
+    "field_outcome_validated": false,
+    "operator_runbook_declared": true,
+    "product_default_allowed": false,
+    "runtime_default_allowed": false,
+    "source_registry_resolvable": true,
+    "template_path_resolvable": true,
+    "template_required_fields_present": true,
+    "trial_readiness_package_loaded": true
+  },
+  "allowed_claims": [
+    "Product can verify that the customer trial readiness package has resolvable sources, template fields, and operator commands.",
+    "The operational check is ready for customer field-slice collection, but does not claim field validation."
+  ],
+  "artifact_id": "r12-customer-trial-operational-check-current-001",
+  "blocked_claims": [
+    "field validation \u5df2\u5b8c\u6210",
+    "customer field validation passed",
+    "customer trial produced accepted feedback update",
+    "Product default can use customer trial output",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "operational_trial_readiness_verified_no_validation_claim",
+  "next_required_artifact": "customer_field_slice_submission_or_target_outcome_artifact",
+  "operational_summary": {
+    "checked_at": "2026-06-28T13:20:00Z",
+    "current_stage": "source_arrival_pending",
+    "manual_approval_point_count": 2,
+    "next_action": "collect_customer_field_slice_or_wait_for_target_outcome",
+    "operator_command_count": 5,
+    "source_registry_entry_count": 4,
+    "source_registry_resolvable_count": 4,
+    "template_path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv",
+    "template_path_resolvable": true,
+    "template_required_fields_present": true,
+    "trial_package_artifact_id": "r12-customer-trial-readiness-package-current-001"
+  },
+  "operator_command_check": [
+    {
+      "command": ".venv/bin/python experiments/r12_customer_field_slice_intake_validation.py --customer-field-slice-path <customer-slice.csv>",
+      "command_declared": true,
+      "step_id": "intake_validation"
+    },
+    {
+      "command": ".venv/bin/python experiments/r12_customer_field_slice_revalidation.py --r12-customer-field-slice-intake-validation-path <intake-artifact.json>",
+      "command_declared": true,
+      "step_id": "field_revalidation"
+    },
+    {
+      "command": ".venv/bin/python experiments/r12_customer_field_outcome_feedback_update.py --r12-customer-field-slice-revalidation-path <revalidation-artifact.json>",
+      "command_declared": true,
+      "step_id": "feedback_update_candidate"
+    },
+    {
+      "command": ".venv/bin/python experiments/r12_customer_feedback_update_shadow_replay.py --r12-customer-field-outcome-feedback-update-path <feedback-update-artifact.json>",
+      "command_declared": true,
+      "step_id": "shadow_replay"
+    },
+    {
+      "command": ".venv/bin/python experiments/r12_customer_feedback_shadow_replay_holdout_review.py --r12-customer-feedback-update-shadow-replay-path <shadow-replay-artifact.json>",
+      "command_declared": true,
+      "step_id": "holdout_review"
+    }
+  ],
+  "run_id": "r12-l29-current-001",
+  "schema_version": "r12-customer-trial-operational-check-v1",
+  "source_refs": [
+    "r12-customer-trial-readiness-package-current-001",
+    "r12-customer-field-slice-handoff-package-current-001",
+    "r12-customer-validation-workflow-status-current-001",
+    "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+    "customer_field_slice_template:experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-customer-trial-readiness-package-current-001",
+      "path": "experiments/results/r12_customer_trial_readiness_package/r12-customer-trial-readiness-package-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-field-slice-handoff-package-current-001",
+      "path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-handoff-package-current-001.json"
+    },
+    {
+      "artifact_id": "r12-customer-validation-workflow-status-current-001",
+      "path": "experiments/results/r12_customer_validation_workflow_status/r12-customer-validation-workflow-status-current-001.json"
+    },
+    {
+      "artifact_id": "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+      "path": "experiments/results/r12_target_outcome_or_customer_field_slice_arrival/r12-target-outcome-or-customer-field-slice-arrival-current-001.json"
+    },
+    {
+      "artifact_id": "customer_field_slice_template:experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv",
+      "path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv"
+    }
+  ],
+  "source_registry_check": [
+    {
+      "artifact_id": "r12-customer-field-slice-handoff-package-current-001",
+      "path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-handoff-package-current-001.json",
+      "path_resolvable": true
+    },
+    {
+      "artifact_id": "r12-customer-validation-workflow-status-current-001",
+      "path": "experiments/results/r12_customer_validation_workflow_status/r12-customer-validation-workflow-status-current-001.json",
+      "path_resolvable": true
+    },
+    {
+      "artifact_id": "r12-target-outcome-or-customer-field-slice-arrival-current-001",
+      "path": "experiments/results/r12_target_outcome_or_customer_field_slice_arrival/r12-target-outcome-or-customer-field-slice-arrival-current-001.json",
+      "path_resolvable": true
+    },
+    {
+      "artifact_id": "customer_field_slice_template:experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv",
+      "path": "experiments/results/r12_customer_field_slice_handoff_package/r12-customer-field-slice-template-current-001.csv",
+      "path_resolvable": true
+    }
+  ],
+  "status": "r12_customer_trial_operational_check_ready_source_pending",
+  "template_check": {
+    "missing_required_fields": [],
+    "required_fields": [
+      "case_id",
+      "segment_id",
+      "scenario_id",
+      "prediction_share_or_score",
+      "observed_outcome",
+      "outcome_timestamp",
+      "customer_approval_reference"
+    ],
+    "template_header_fields": [
+      "case_id",
+      "segment_id",
+      "scenario_id",
+      "prediction_share_or_score",
+      "observed_outcome",
+      "outcome_timestamp",
+      "customer_approval_reference"
+    ]
+  },
+  "unresolved_sources": []
+}

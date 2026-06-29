@@ -1,0 +1,78 @@
+{
+  "acceptance_gates": {
+    "ccf_a_main_contribution_ready": false,
+    "field_outcome_validated": false,
+    "holdout_registry_present": true,
+    "independent_holdout_missing_slots_visible": true,
+    "runtime_default_allowed": false
+  },
+  "artifact_id": "r6-outcome-holdout-registry-current-001",
+  "blocking_gaps": [
+    "needs_independent_same_family_operator_holdout",
+    "needs_independent_supported_signal_holdout",
+    "needs_real_or_field_outcome_proxy"
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Current HTOPS and ANES proxies are registered for gap tracking only; they are not independent field validation and do not permit runtime default enablement."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "missing_required_slots": [
+    {
+      "slot_id": "independent_same_family_in_condition_holdout",
+      "status": "missing"
+    },
+    {
+      "slot_id": "independent_supported_signal_holdout",
+      "status": "missing"
+    },
+    {
+      "slot_id": "real_field_outcome",
+      "status": "missing"
+    }
+  ],
+  "outcome_entries": [
+    {
+      "accepted_for_generalization": false,
+      "case_family": "htops_cost_pressure",
+      "field_outcome_validated": false,
+      "in_condition_holdout": false,
+      "independence_level": "out_of_family_non_regression_proxy",
+      "outcome_type": "public_proxy",
+      "source_key": "htops_cost_pressure"
+    },
+    {
+      "accepted_for_generalization": false,
+      "case_family": "anes_health",
+      "field_outcome_validated": false,
+      "in_condition_holdout": false,
+      "independence_level": "source_case_proxy",
+      "outcome_type": "public_proxy",
+      "source_key": "anes_health_heldout"
+    },
+    {
+      "accepted_for_generalization": false,
+      "case_family": "anes_climate",
+      "field_outcome_validated": false,
+      "in_condition_holdout": false,
+      "independence_level": "same_source_out_of_condition_proxy",
+      "outcome_type": "public_proxy",
+      "source_key": "anes_climate_heldout"
+    }
+  ],
+  "registry_summary": {
+    "field_outcome_count": 0,
+    "in_condition_independent_holdout_available": false,
+    "independent_public_proxy_count": 0,
+    "missing_required_slot_count": 3,
+    "registered_outcome_count": 3
+  },
+  "risk_flags": [
+    "independent_holdout_missing",
+    "field_outcome_missing",
+    "not_runtime_default"
+  ],
+  "run_id": "r6-gap-closure-current-001",
+  "schema_version": "r6-outcome-holdout-registry-v1",
+  "status": "holdout_registry_ready_missing_required_slots"
+}

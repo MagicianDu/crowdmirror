@@ -1,0 +1,114 @@
+{
+  "acceptance_decision": "accept_outcome_ingestion_pending_keep_validation_and_product_default_blocked",
+  "acceptance_gates": {
+    "customer_approval_present": false,
+    "customer_field_slice_contract_ready": true,
+    "customer_field_slice_present": false,
+    "field_or_pre_outcome_revalidation_ready": false,
+    "field_outcome_validated": false,
+    "pre_outcome_trial_locked": true,
+    "prediction_lock_timestamp_pre_target_outcome": true,
+    "product_default_allowed": false,
+    "runtime_default_allowed": false,
+    "target_outcome_artifact_present": false,
+    "target_outcome_used_for_prediction_generation": false,
+    "target_public_outcome_available": false
+  },
+  "allowed_claims": [
+    "R12 pre-outcome trial is locked and ready for future outcome ingestion.",
+    "Customer-approved field slices can be ingested once supplied under the L17 contract."
+  ],
+  "artifact_id": "r12-pre-outcome-or-customer-field-outcome-ingestion-current-001",
+  "blocked_claims": [
+    "target outcome artifact present",
+    "pre-outcome outcome revalidation passed",
+    "customer field outcome validated",
+    "field_or_pre_outcome_revalidation_ready=true",
+    "Product default can use R12 outcome ingestion by default",
+    "R12 Product core method ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "claim_level": "target_outcome_ingestion_pending_customer_field_contract_ready",
+  "customer_field_ingestion_contract": {
+    "accepted_formats": [
+      "csv",
+      "jsonl"
+    ],
+    "contract_ready": true,
+    "customer_slice_path_provided": false,
+    "manual_prompt_or_persona_patch_allowed": false,
+    "minimum_case_count": 10,
+    "required_fields": [
+      "case_id",
+      "segment_id",
+      "scenario_id",
+      "prediction_share_or_score",
+      "observed_outcome",
+      "outcome_timestamp",
+      "customer_approval_reference"
+    ]
+  },
+  "evaluation_readiness": {
+    "field_or_pre_outcome_revalidation_ready": false,
+    "metrics_to_compute_when_available": [
+      "mean_absolute_error",
+      "interval_coverage",
+      "risk_ranking_quality",
+      "static_prior_miss_recovery",
+      "false_alarm_rate",
+      "decision_value"
+    ],
+    "missing_inputs": [
+      "May 2026 DOT ATCR target outcome artifact",
+      "customer-approved field outcome slice"
+    ],
+    "next_required_artifact": "r12_pre_outcome_or_customer_field_outcome_revalidation"
+  },
+  "ingestion_summary": {
+    "availability_checked_at": "2026-06-27T14:55:00Z",
+    "customer_approval_present": false,
+    "customer_field_slice_present": false,
+    "feature_period": "April 2026",
+    "prediction_case_count": 14,
+    "prediction_lock_timestamp": "2026-06-27T14:45:00Z",
+    "target_outcome_artifact_present": false,
+    "target_outcome_period": "May 2026",
+    "trial_artifact_id": "r12-pre-outcome-prediction-trial-or-customer-field-revalidation-current-001",
+    "trial_id": "r12-dot-atcr-2026-05-pre-outcome-trial-001"
+  },
+  "next_required_artifact": "r12_pre_outcome_or_customer_field_outcome_revalidation",
+  "public_source_availability": {
+    "expected_public_report": "July 2026 Air Travel Consumer Report (May 2026 Data)",
+    "latest_available_report": "June 2026 Air Travel Consumer Report (April 2026 Data)",
+    "latest_news_url": "https://www.transportation.gov/airconsumer/latest-news",
+    "official_reports_index_url": "https://www.transportation.gov/individuals/aviation-consumer-protection/air-travel-consumer-reports",
+    "target_pdf_url": null,
+    "target_public_source_id": "dot_atcr_2026_05_target_outcome_candidate",
+    "target_report_found": false,
+    "target_table_available": false
+  },
+  "run_id": "r12-l18-current",
+  "schema_version": "r12-pre-outcome-or-customer-field-outcome-ingestion-v1",
+  "source_refs": [
+    "r12-pre-outcome-prediction-trial-or-customer-field-revalidation-current-001",
+    "dot_air_travel_consumer_reports_index_current",
+    "dot_airconsumer_latest_news_current"
+  ],
+  "source_registry": [
+    {
+      "artifact_id": "r12-pre-outcome-prediction-trial-or-customer-field-revalidation-current-001",
+      "path": "experiments/results/r12_pre_outcome_prediction_trial_or_customer_field_revalidation/r12-pre-outcome-prediction-trial-or-customer-field-revalidation-current-001.json"
+    },
+    {
+      "artifact_id": "dot_air_travel_consumer_reports_index_current",
+      "path": "https://www.transportation.gov/individuals/aviation-consumer-protection/air-travel-consumer-reports"
+    },
+    {
+      "artifact_id": "dot_airconsumer_latest_news_current",
+      "path": "https://www.transportation.gov/airconsumer/latest-news"
+    }
+  ],
+  "status": "r12_pre_outcome_or_customer_field_outcome_ingestion_pending_no_target_outcome"
+}

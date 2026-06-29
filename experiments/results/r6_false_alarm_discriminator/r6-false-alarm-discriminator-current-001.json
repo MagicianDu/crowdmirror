@@ -1,0 +1,138 @@
+{
+  "acceptance_gates": {
+    "current_proxy_separation_found": true,
+    "false_alarm_discriminator_present": true,
+    "false_alarm_discriminator_ready": false,
+    "generalizable_discriminator_found": false,
+    "in_family_positive_signal_available": false,
+    "pre_outcome_safe_candidate_found": true
+  },
+  "artifact_id": "r6-false-alarm-discriminator-current-001",
+  "blocking_gaps": [
+    "needs_generalizable_false_alarm_discriminator",
+    "needs_discriminator_holdout_validation",
+    "needs_in_family_positive_signal",
+    "needs_field_outcome_validation"
+  ],
+  "candidate_discriminators": [
+    {
+      "accepted": false,
+      "candidate_id": "target_case_family_gate",
+      "current_proxy_separates": true,
+      "description": "Keep interaction risk only for target case families that already have a current true-positive proxy.",
+      "feature_scope": "pre_outcome_case_metadata",
+      "generalizable_without_holdout": false,
+      "pre_outcome_safe": true,
+      "rejected_false_alarm_source_keys": [
+        "anes_health_heldout",
+        "anes_climate_heldout"
+      ],
+      "rejection_reason": "case_family_memory_without_in_family_positive_holdout",
+      "rule": "target_case_id in current_true_positive_target_case_ids",
+      "selected_source_keys": [
+        "htops_cost_pressure"
+      ],
+      "summary": {
+        "false_alarm_kept_count": 0,
+        "false_alarm_rate": 0.0,
+        "false_alarm_rejected_count": 2,
+        "predicted_risk_count": 1,
+        "static_prior_miss_recovery_rate": 1.0,
+        "true_positive_kept_count": 1
+      },
+      "uses_observed_outcome": false
+    },
+    {
+      "accepted": false,
+      "candidate_id": "source_family_gate",
+      "current_proxy_separates": true,
+      "description": "Keep interaction risk only for public source families that already have a current true-positive proxy.",
+      "feature_scope": "pre_outcome_source_metadata",
+      "generalizable_without_holdout": false,
+      "pre_outcome_safe": true,
+      "rejected_false_alarm_source_keys": [
+        "anes_health_heldout",
+        "anes_climate_heldout"
+      ],
+      "rejection_reason": "source_family_memory_without_external_holdout",
+      "rule": "source_family in current_true_positive_source_families",
+      "selected_source_keys": [
+        "htops_cost_pressure"
+      ],
+      "summary": {
+        "false_alarm_kept_count": 0,
+        "false_alarm_rate": 0.0,
+        "false_alarm_rejected_count": 2,
+        "predicted_risk_count": 1,
+        "static_prior_miss_recovery_rate": 1.0,
+        "true_positive_kept_count": 1
+      },
+      "uses_observed_outcome": false
+    },
+    {
+      "accepted": false,
+      "candidate_id": "post_outcome_static_error_gate",
+      "current_proxy_separates": true,
+      "description": "Post-outcome diagnostic: keep cases where the static prior miss is large after observing the public proxy.",
+      "feature_scope": "post_outcome_diagnostic",
+      "generalizable_without_holdout": false,
+      "pre_outcome_safe": false,
+      "rejected_false_alarm_source_keys": [
+        "anes_health_heldout",
+        "anes_climate_heldout"
+      ],
+      "rejection_reason": "uses_observed_outcome_not_available_pre_release",
+      "rule": "static_absolute_error > max_false_alarm_static_absolute_error",
+      "selected_source_keys": [
+        "htops_cost_pressure"
+      ],
+      "summary": {
+        "false_alarm_kept_count": 0,
+        "false_alarm_rate": 0.0,
+        "false_alarm_rejected_count": 2,
+        "predicted_risk_count": 1,
+        "static_prior_miss_recovery_rate": 1.0,
+        "true_positive_kept_count": 1
+      },
+      "uses_observed_outcome": true
+    }
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "False-alarm discriminator diagnostics can identify overfit case memory; they are not field validation or runtime acceptance."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "decision": {
+    "decision": "continue_but_do_not_accept_discriminator",
+    "false_alarm_discriminator_ready": false,
+    "recommended_next_step": "add_in_family_positive_signal_or_external_holdout_before_runtime_gate"
+  },
+  "diagnostic_definition": {
+    "acceptance_rule": "A discriminator must separate current proxies and survive in-family or external holdout validation before runtime use.",
+    "pre_outcome_safe_rule": "A runtime discriminator may use only release-time case metadata and pre-outcome simulation signals.",
+    "purpose": "Test whether case-level or source-level features can distinguish interaction true positives from interaction false alarms after threshold tuning fails."
+  },
+  "risk_flags": [
+    "false_alarm_discriminator_not_field_validation",
+    "case_family_gate_overfit_risk",
+    "no_in_family_positive_signal",
+    "false_alarm_discriminator_not_runtime_ready"
+  ],
+  "run_id": "r6-false-alarm-discriminator-run-current-001",
+  "schema_version": "r6-false-alarm-discriminator-v1",
+  "source_refs": [
+    "r6-false-alarm-discriminator-current-001-decision-value-metrics"
+  ],
+  "status": "false_alarm_discriminator_diagnostic_only",
+  "summary": {
+    "accepted_candidate_count": 0,
+    "candidate_count": 3,
+    "case_count": 3,
+    "current_proxy_separating_candidate_count": 3,
+    "false_alarm_count": 2,
+    "generalizable_candidate_count": 0,
+    "post_outcome_diagnostic_candidate_count": 1,
+    "pre_outcome_safe_candidate_count": 2,
+    "true_positive_count": 1
+  }
+}

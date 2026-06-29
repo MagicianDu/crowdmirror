@@ -1,0 +1,89 @@
+{
+  "best_candidate": {
+    "candidate_index": 1,
+    "parameter_patches": [
+      {
+        "expected_effect": {
+          "cash_cost_of_living_rebate": "increase",
+          "food_subsidy_expansion": "increase"
+        },
+        "factor_id": "institutional_trust",
+        "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+        "parameter_bounds": {
+          "max": 0.85,
+          "min": 0.45
+        },
+        "parameter_name": "prior_anchor_strength",
+        "parameter_value": 0.65,
+        "policy_id": "food_subsidy_expansion",
+        "provenance": {
+          "direction": "over_predicted",
+          "magnitude": 0.436529326741,
+          "match_score": 2.436529326741,
+          "residual": -0.436529326741,
+          "route_b_generation_tag": "generation1_mechanism_profile",
+          "route_b_mechanism_profile": {
+            "anchor_regime": "balanced",
+            "focus_mode": "distributional_balance",
+            "trust_mode": "capped",
+            "uncertainty_mode": "retain"
+          },
+          "source_split": "calibration"
+        },
+        "segment": "fixed_income_inflation_stressed"
+      },
+      {
+        "expected_effect": {
+          "cash_cost_of_living_rebate": "increase",
+          "food_subsidy_expansion": "increase"
+        },
+        "factor_id": "institutional_trust",
+        "factor_label": "\u5236\u5ea6\u4fe1\u4efb",
+        "parameter_bounds": {
+          "max": 1.2,
+          "min": 0.8
+        },
+        "parameter_name": "trust_multiplier",
+        "parameter_value": 0.968,
+        "policy_id": "food_subsidy_expansion",
+        "provenance": {
+          "direction": "over_predicted",
+          "magnitude": 0.436529326741,
+          "match_score": 2.436529326741,
+          "residual": -0.436529326741,
+          "route_b_generation_tag": "generation1_mechanism_profile",
+          "route_b_mechanism_profile": {
+            "anchor_regime": "balanced",
+            "focus_mode": "distributional_balance",
+            "trust_mode": "capped",
+            "uncertainty_mode": "retain"
+          },
+          "source_split": "calibration"
+        },
+        "segment": "fixed_income_inflation_stressed"
+      }
+    ],
+    "policy_id": "food_subsidy_expansion",
+    "proxy_score": 4.254466026348,
+    "segment": "fixed_income_inflation_stressed"
+  },
+  "candidate_id": "policy-reaction-route-b-generation1-current-001-h01",
+  "candidate_prompt_components": {
+    "calibration_anchor": {
+      "fixed_income_inflation_stressed": "Route-B generation1 factors=institutional_trust; primary_policy=food_subsidy_expansion; anchor_regime=balanced; trust_mode=capped; uncertainty_mode=retain; focus_mode=distributional_balance; parameters=prior_anchor_strength=0.65;trust_multiplier=0.968"
+    },
+    "response_contract": "Return strict JSON probabilities over the available policy alternatives.",
+    "segment_prompt": {
+      "fixed_income_inflation_stressed": "Use the persona's calibrated policy-reaction parameters for this segment. Use a balanced prior anchor that preserves segment signal without overfitting. Apply trust effects with a cap so that they cannot dominate the full distribution. Retain visible uncertainty and avoid turning the response into a sharp single-policy peak. Preserve the full three-policy distribution while keeping food_subsidy_expansion competitive."
+    }
+  },
+  "claim_boundary": "Route B candidate is a runtime probe candidate only.",
+  "generator": "route_b_generation1_mechanism_search",
+  "schema_version": "policy-reaction-s2pc-candidate-v1",
+  "source_split_contract": {
+    "candidate_acceptance": "heldout_required",
+    "parameter_search": "calibration",
+    "residual_mining": "calibration",
+    "semantic_factor_retrieval": "calibration"
+  }
+}

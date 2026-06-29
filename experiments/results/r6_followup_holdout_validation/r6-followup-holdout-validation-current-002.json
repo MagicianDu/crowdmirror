@@ -1,0 +1,113 @@
+{
+  "acceptance_gates": {
+    "global_update_accepted": false,
+    "mechanism_cap_cross_proxy_non_regression": true,
+    "mechanism_cap_same_family_cap_condition_covered": false,
+    "mechanism_cap_same_family_holdout_available": true,
+    "mechanism_cap_same_family_validation_passed": false,
+    "mechanism_cap_source_failure_fixed": true,
+    "outcome_feedback_cross_case_transfer_available": false,
+    "third_public_proxy_connected": true
+  },
+  "artifact_id": "r6-followup-holdout-validation-current-002",
+  "blocking_gaps": [
+    "needs_in_condition_same_family_rights_rule_holdout",
+    "needs_outcome_feedback_cross_case_transfer_validation",
+    "needs_real_or_field_outcome_proxy"
+  ],
+  "claim_boundaries": [
+    "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+    "Follow-up holdout validation is partial: cross-proxy non-regression is not global acceptance.",
+    "Outcome feedback remains same-case only until a cross-case transfer protocol is validated."
+  ],
+  "claim_boundary": "R6 foundation artifact. It supports prior-anchored interaction risk diagnosis and outcome-feedback learning only; it is not accuracy superiority evidence, not cross-domain validation, and not customer field validation.",
+  "mechanism_cap_validation": {
+    "accepted_for_runtime": false,
+    "cross_proxy_holdout": {
+      "cap_applied": false,
+      "capped_prior_anchored_error": 0.11,
+      "non_regression_passed": true,
+      "original_prior_anchored_error": 0.11,
+      "source_proxy_key": "htops_cost_pressure",
+      "target_case_id": "generic-public-service-policy-change"
+    },
+    "missing_holdout": "in_condition_same_family_rights_rule_public_or_real_proxy",
+    "same_family_holdout": {
+      "cap_applied": false,
+      "cap_condition_met": false,
+      "capped_prior_anchored_error": 0.13,
+      "observed_reject_proxy": 0.25,
+      "original_prior_anchored_error": 0.13,
+      "source_proxy_key": "anes_climate_heldout",
+      "static_prior_error": 0.06,
+      "target_case_id": "generic-rights-rule-change",
+      "validation_status": "available_but_condition_not_exercised"
+    },
+    "source_case": {
+      "capped_prior_anchored_error": 0.0,
+      "failure_fixed": true,
+      "original_prior_anchored_error": 0.05,
+      "source_proxy_key": "anes_health_heldout",
+      "target_case_id": "generic-rights-rule-change"
+    },
+    "upgrade_status": "partial_pass_needs_in_condition_same_family_holdout"
+  },
+  "outcome_feedback_validation": {
+    "accepted_for_global_update": false,
+    "case_results": [
+      {
+        "global_update_status": "blocked_same_case_only",
+        "outcome_feedback_error": 0.04,
+        "prior_anchored_error": 0.11,
+        "same_case_feedback_improved": true,
+        "source_proxy_key": "htops_cost_pressure",
+        "target_case_id": "generic-public-service-policy-change"
+      },
+      {
+        "global_update_status": "blocked_same_case_only",
+        "outcome_feedback_error": 0.02,
+        "prior_anchored_error": 0.05,
+        "same_case_feedback_improved": true,
+        "source_proxy_key": "anes_health_heldout",
+        "target_case_id": "generic-rights-rule-change"
+      },
+      {
+        "global_update_status": "blocked_same_case_only",
+        "outcome_feedback_error": 0.05,
+        "prior_anchored_error": 0.13,
+        "same_case_feedback_improved": true,
+        "source_proxy_key": "anes_climate_heldout",
+        "target_case_id": "generic-rights-rule-change"
+      }
+    ],
+    "cross_case_transfer_available": false,
+    "same_case_feedback_improved_count": 3,
+    "upgrade_status": "blocked_same_case_only"
+  },
+  "recommended_next_data": [
+    "in_condition_same_family_rights_rule_holdout_proxy",
+    "real_or_field_outcome_proxy",
+    "outcome_feedback_cross_case_transfer_protocol"
+  ],
+  "risk_flags": [
+    "partial_holdout_not_runtime_acceptance",
+    "same_family_holdout_condition_not_covered",
+    "outcome_feedback_same_case_only",
+    "public_proxy_not_field_validation"
+  ],
+  "run_id": "r6-followup-holdout-validation-current-002",
+  "schema_version": "r6-followup-holdout-validation-v1",
+  "source_refs": [
+    "r6-followup-holdout-validation-current-002-mechanism-cap-ablation",
+    "r6-followup-holdout-validation-current-002-htops_cost_pressure-ablation",
+    "r6-followup-holdout-validation-current-002-anes_health_heldout-ablation",
+    "r6-followup-holdout-validation-current-002-anes_climate_heldout-ablation"
+  ],
+  "status": "holdout_validation_partial",
+  "validation_design": {
+    "cross_proxy_holdout_proxy_key": "htops_cost_pressure",
+    "mechanism_cap_source_proxy_key": "anes_health_heldout",
+    "same_family_holdout_proxy_key": "anes_climate_heldout",
+    "validation_scope": "same_family_condition_coverage_and_cross_proxy_non_regression"
+  }
+}

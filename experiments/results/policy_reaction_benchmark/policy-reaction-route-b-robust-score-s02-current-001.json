@@ -1,0 +1,63 @@
+{
+  "artifact_id": "policy-reaction-route-b-robust-score-s02-current-001",
+  "candidate_generator": "s2pc_c01_sparse_factor_subset",
+  "candidate_id": "policy-reaction-s2pc-c01-sparse-subset-current-001-s02",
+  "claim_boundaries": [
+    "Route B evaluates candidates under repeat-aware held-out loss, not single-run prompt quality alone.",
+    "A candidate must be judged by mean, instability, and worst-case behavior together.",
+    "This artifact does not establish cross-source or production-field generalization."
+  ],
+  "claim_boundary": "Route B robust score is repeat-aware local held-out optimization evidence, not field validation.",
+  "effect_artifact_ids": [
+    "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-s2pc-c01-s02-heldout-001",
+    "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-12x3-calibration-split-s2pc-s02-seed17-heldout-001",
+    "policy-reaction-s2pc-runtime-effect-gpt-oss-20b-16x3-calibration-split-s2pc-s02-seed11-heldout-001"
+  ],
+  "loss_metric": "weighted_choice_distribution_jsd",
+  "overall_status": "blocked_by_stop_loss",
+  "repeat_summary": {
+    "baseline_mean_loss": 0.000111404795,
+    "effect_count": 3,
+    "improved_count": 1,
+    "no_change_count": 1,
+    "regressed_count": 1,
+    "relative_mean_improvement": -0.946332370026
+  },
+  "robust_objective": {
+    "alpha": 1.0,
+    "beta": 1.0,
+    "complexity_penalty": 4.0,
+    "gamma": 0.001,
+    "instability_penalty": 0.000148896248,
+    "mean_loss": 0.000216830759,
+    "robust_score": 0.004793128859,
+    "worst_case_loss": 0.000427401852
+  },
+  "scale_axes": {
+    "persona_counts": [
+      12,
+      16
+    ],
+    "scenario_counts": [
+      36,
+      48
+    ],
+    "seeds": [
+      11,
+      17
+    ]
+  },
+  "schema_version": "policy-reaction-route-b-robust-score-v1",
+  "source_split_contract": {
+    "candidate_acceptance": "heldout_required",
+    "parameter_search": "calibration",
+    "residual_mining": "calibration",
+    "robust_objective_evaluation": "heldout_repeat_axes",
+    "semantic_factor_retrieval": "calibration"
+  },
+  "stop_loss_policy": {
+    "max_regressed_runs": 0,
+    "min_improved_runs": 2,
+    "rule": "require_at_least_min_improved_runs_and_no_more_than_max_regressed_runs"
+  }
+}

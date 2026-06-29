@@ -1,0 +1,351 @@
+{
+  "acceptance_gates": {
+    "false_alarm_rate_non_regression": true,
+    "field_outcome_validated": false,
+    "holdout_mae_improved": true,
+    "interval_coverage_non_regression": true,
+    "positive_transfer_guarded": true,
+    "runtime_default_allowed": false,
+    "train_metrics_used_for_transfer_decision": false,
+    "validation_mae_improved": true
+  },
+  "accepted_update": {
+    "recommended_value": 0.55,
+    "runtime_default_allowed": false,
+    "target": "price_pressure",
+    "update_id": "r12-mechanism-weight-price-pressure-accepted-001",
+    "update_type": "mechanism_weight"
+  },
+  "artifact_id": "r12-transfer-validation-current-001",
+  "blocked_claims": [
+    "R12 field validated",
+    "R12 Product core method ready",
+    "field_outcome_validated=true",
+    "runtime_default_allowed=true",
+    "customer outcome validated",
+    "\u7cbe\u51c6\u9884\u6d4b\u7cfb\u7edf"
+  ],
+  "case_replays": [
+    {
+      "absolute_error_after": 0.048023,
+      "absolute_error_before": 0.054469,
+      "after_false_alarm": false,
+      "after_interval": {
+        "median": 0.505267,
+        "p10": 0.405267,
+        "p90": 0.605267
+      },
+      "after_interval_hit": true,
+      "after_predicted_high_risk": true,
+      "after_prediction": 0.505267,
+      "before_false_alarm": false,
+      "before_interval": {
+        "median": 0.498821,
+        "p10": 0.398821,
+        "p90": 0.598821
+      },
+      "before_interval_hit": true,
+      "before_predicted_high_risk": true,
+      "before_prediction": 0.498821,
+      "case_id": "hps_METRO_STATUS_2",
+      "observed_high_risk": true,
+      "observed_value": 0.55329,
+      "source_signal_delta": 0.092087,
+      "split": "train",
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.454619
+    },
+    {
+      "absolute_error_after": 0.022546,
+      "absolute_error_before": 0.028176,
+      "after_false_alarm": false,
+      "after_interval": {
+        "median": 0.498854,
+        "p10": 0.398854,
+        "p90": 0.598854
+      },
+      "after_interval_hit": true,
+      "after_predicted_high_risk": true,
+      "after_prediction": 0.498854,
+      "before_false_alarm": false,
+      "before_interval": {
+        "median": 0.493224,
+        "p10": 0.393224,
+        "p90": 0.593224
+      },
+      "before_interval_hit": true,
+      "before_predicted_high_risk": true,
+      "before_prediction": 0.493224,
+      "case_id": "hps_REGION_2",
+      "observed_high_risk": true,
+      "observed_value": 0.5214,
+      "source_signal_delta": 0.080427,
+      "split": "train",
+      "static_prior_missed_observed_high_risk": true,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.454619
+    },
+    {
+      "absolute_error_after": 0.002063,
+      "absolute_error_before": 0.002377,
+      "after_false_alarm": false,
+      "after_interval": {
+        "median": 0.452152,
+        "p10": 0.352152,
+        "p90": 0.552152
+      },
+      "after_interval_hit": true,
+      "after_predicted_high_risk": false,
+      "after_prediction": 0.452152,
+      "before_false_alarm": false,
+      "before_interval": {
+        "median": 0.452466,
+        "p10": 0.352466,
+        "p90": 0.552466
+      },
+      "before_interval_hit": true,
+      "before_predicted_high_risk": false,
+      "before_prediction": 0.452466,
+      "case_id": "hps_METRO_STATUS_1",
+      "observed_high_risk": false,
+      "observed_value": 0.450089,
+      "source_signal_delta": -0.004485,
+      "split": "validation",
+      "static_prior_missed_observed_high_risk": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.454619
+    },
+    {
+      "absolute_error_after": 0.016561,
+      "absolute_error_before": 0.017108,
+      "after_false_alarm": false,
+      "after_interval": {
+        "median": 0.450322,
+        "p10": 0.350322,
+        "p90": 0.550322
+      },
+      "after_interval_hit": true,
+      "after_predicted_high_risk": false,
+      "after_prediction": 0.450322,
+      "before_false_alarm": false,
+      "before_interval": {
+        "median": 0.450869,
+        "p10": 0.350869,
+        "p90": 0.550869
+      },
+      "before_interval_hit": true,
+      "before_predicted_high_risk": false,
+      "before_prediction": 0.450869,
+      "case_id": "hps_REGION_1",
+      "observed_high_risk": false,
+      "observed_value": 0.433761,
+      "source_signal_delta": -0.007813,
+      "split": "validation",
+      "static_prior_missed_observed_high_risk": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.454619
+    },
+    {
+      "absolute_error_after": 0.001148,
+      "absolute_error_before": 8.3e-05,
+      "after_false_alarm": false,
+      "after_interval": {
+        "median": 0.446246,
+        "p10": 0.346246,
+        "p90": 0.546246
+      },
+      "after_interval_hit": true,
+      "after_predicted_high_risk": false,
+      "after_prediction": 0.446246,
+      "before_false_alarm": false,
+      "before_interval": {
+        "median": 0.447311,
+        "p10": 0.347311,
+        "p90": 0.547311
+      },
+      "before_interval_hit": true,
+      "before_predicted_high_risk": false,
+      "before_prediction": 0.447311,
+      "case_id": "hps_REGION_3",
+      "observed_high_risk": false,
+      "observed_value": 0.447394,
+      "source_signal_delta": -0.015224,
+      "split": "holdout",
+      "static_prior_missed_observed_high_risk": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.454619
+    },
+    {
+      "absolute_error_after": 0.007348,
+      "absolute_error_before": 0.010124,
+      "after_false_alarm": false,
+      "after_interval": {
+        "median": 0.43281,
+        "p10": 0.33281,
+        "p90": 0.53281
+      },
+      "after_interval_hit": true,
+      "after_predicted_high_risk": false,
+      "after_prediction": 0.43281,
+      "before_false_alarm": false,
+      "before_interval": {
+        "median": 0.435586,
+        "p10": 0.335586,
+        "p90": 0.535586
+      },
+      "before_interval_hit": true,
+      "before_predicted_high_risk": false,
+      "before_prediction": 0.435586,
+      "case_id": "hps_REGION_4",
+      "observed_high_risk": false,
+      "observed_value": 0.425462,
+      "source_signal_delta": -0.039652,
+      "split": "holdout",
+      "static_prior_missed_observed_high_risk": false,
+      "static_prior_predicted_high_risk": false,
+      "static_prior_prediction": 0.454619
+    }
+  ],
+  "claim_level": "guarded_public_proxy_transfer_signal",
+  "extended_metric_gates": {
+    "abnormal_segment_recall_holdout_covered": false,
+    "decision_value_non_regression": true,
+    "extended_product_metric_support_level": "guarded_mae_positive_extended_metric_coverage_gap",
+    "risk_ranking_non_regression": true,
+    "static_prior_miss_recovery_holdout_covered": false
+  },
+  "extended_transfer_metrics": {
+    "abnormal_segment_recall": {
+      "holdout": {
+        "after": null,
+        "before": null,
+        "delta": null,
+        "eligible_case_count": 0
+      },
+      "train": {
+        "after": 1.0,
+        "before": 1.0,
+        "delta": 0.0,
+        "eligible_case_count": 2
+      },
+      "validation": {
+        "after": null,
+        "before": null,
+        "delta": null,
+        "eligible_case_count": 0
+      }
+    },
+    "decision_value_score": {
+      "holdout": {
+        "after": 1.0,
+        "before": 1.0,
+        "delta": 0.0
+      },
+      "train": {
+        "after": 1.0,
+        "before": 1.0,
+        "delta": 0.0
+      },
+      "validation": {
+        "after": 1.0,
+        "before": 1.0,
+        "delta": 0.0
+      }
+    },
+    "risk_ranking_quality": {
+      "holdout": {
+        "after": 1.0,
+        "before": 1.0,
+        "delta": 0.0
+      },
+      "train": {
+        "after": 1.0,
+        "before": 1.0,
+        "delta": 0.0
+      },
+      "validation": {
+        "after": 1.0,
+        "before": 1.0,
+        "delta": 0.0
+      }
+    },
+    "static_prior_miss_recovery": {
+      "holdout": {
+        "after": null,
+        "before": null,
+        "delta": null,
+        "eligible_case_count": 0
+      },
+      "train": {
+        "after": 1.0,
+        "before": 1.0,
+        "delta": 0.0,
+        "eligible_case_count": 2
+      },
+      "validation": {
+        "after": null,
+        "before": null,
+        "delta": null,
+        "eligible_case_count": 0
+      }
+    }
+  },
+  "next_required_artifact": "r12_product_guarded_report",
+  "run_id": "r12-l3-plus-current",
+  "schema_version": "r12-transfer-validation-v1",
+  "source_refs": [
+    "r12-outcome-case-registry-current-001",
+    "r12-causal-interaction-operator-current-001",
+    "r12-outcome-supervised-update-current-001"
+  ],
+  "split_metrics": {
+    "holdout": {
+      "case_count": 2,
+      "false_alarm_rate_after": 0.0,
+      "false_alarm_rate_before": 0.0,
+      "false_alarm_rate_delta": 0.0,
+      "interval_coverage_after": 1.0,
+      "interval_coverage_before": 1.0,
+      "interval_coverage_delta": 0.0,
+      "mean_absolute_error_after": 0.004248,
+      "mean_absolute_error_before": 0.005104,
+      "mean_absolute_error_delta": -0.000856
+    },
+    "train": {
+      "case_count": 2,
+      "false_alarm_rate_after": 0.0,
+      "false_alarm_rate_before": 0.0,
+      "false_alarm_rate_delta": 0.0,
+      "interval_coverage_after": 1.0,
+      "interval_coverage_before": 1.0,
+      "interval_coverage_delta": 0.0,
+      "mean_absolute_error_after": 0.035285,
+      "mean_absolute_error_before": 0.041323,
+      "mean_absolute_error_delta": -0.006038
+    },
+    "validation": {
+      "case_count": 2,
+      "false_alarm_rate_after": 0.0,
+      "false_alarm_rate_before": 0.0,
+      "false_alarm_rate_delta": 0.0,
+      "interval_coverage_after": 1.0,
+      "interval_coverage_before": 1.0,
+      "interval_coverage_delta": 0.0,
+      "mean_absolute_error_after": 0.009312,
+      "mean_absolute_error_before": 0.009743,
+      "mean_absolute_error_delta": -0.000431
+    }
+  },
+  "status": "r12_transfer_validation_positive_guarded",
+  "transfer_accounting": {
+    "field_outcome_validated": false,
+    "holdout_metrics_used_for_transfer_decision": true,
+    "runtime_default_allowed": false,
+    "train_metrics_reported": true,
+    "train_metrics_used_for_transfer_decision": false,
+    "validation_metrics_used_for_transfer_decision": true
+  },
+  "transfer_decision": "r12_update_transfer_positive_guarded",
+  "update_transfer_gain": 0.001287
+}
