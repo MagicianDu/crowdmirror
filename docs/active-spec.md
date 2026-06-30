@@ -68,6 +68,7 @@ Product 对外定位是：
 2. 当前阶段允许的对外说法是“已在公开数据上测试并显示有效”，且必须绑定 public-data artifact、指标和 claim boundary。
 3. “有效”只覆盖 guarded public-data hindcast / replay 证据中的趋势、区间、风险排序、静态先验漏报恢复、误报控制和决策价值改善；不得扩张为精准单点预测、客户 field validated 或 runtime default。
 4. Product gate 必须显式暴露 `public_data_effectiveness_claim_allowed`、`customer_field_validation_required_for_current_stage=false` 和 `runtime_default_allowed=false`。
+5. R13 新增规模化仿真实现边界：LLM 负责生成 segment/persona 行为规则，结构化 rollout 负责按静态先验和规则扩展到 1 万+ synthetic individuals；LLM 不按个体调用，R13 artifact 只能证明 guarded 架构链路和可审计规模化能力，不能替代 public-data validation、客户 field validation 或 runtime default 授权。
 
 ## 当前方法边界
 
@@ -218,6 +219,7 @@ R11 L3 已把 shadow trial 的 outcome review handoff 转成可计算的 bounded
 14. `r12_external_or_customer_holdout_raw_slice`
 15. `r12_recall_mitigation_external_holdout_revalidation`
 16. `r12_pre_outcome_or_independent_prediction_packet`
+
 17. `r12_independent_hindcast_revalidation`
 18. `r12_pre_outcome_prediction_trial_or_customer_field_revalidation`
 19. `r12_pre_outcome_or_customer_field_outcome_ingestion`
@@ -235,6 +237,12 @@ R11 L3 已把 shadow trial 的 outcome review handoff 转成可计算的 bounded
 31. `r12_customer_trial_launch_handoff_package`
 32. `r12_customer_trial_launch_packet_export`
 33. `r12_customer_trial_launch_bundle_verification`
+
+当前 R13 已完成第一版 guarded 规模化 rollout：
+
+1. `r13_llm_rule_structured_rollout`
+
+R13 把 LLM 的位置收束为 segment/persona 行为规则生成，把规模扩展交给结构化 rollout。当前 artifact `r13-llm-rule-structured-rollout-current-001` 已覆盖 10,000 个 synthetic individuals、3 个 segment、趋势方向、风险区间、风险分布、异常群体、机制摘要、LLM 调用次数和 runtime guard。current artifact 使用 `offline_fixture_llm_shape` 规则源验证链路，真实 provider 运行需通过 operator 显式 `--execute-llm`；`field_outcome_validated=false`、`runtime_default_allowed=false` 边界继续保留。
 
 R12 不再把 R11 L3 的 bounded update ledger 继续包装成方法突破，而是把下一阶段 Research 目标改为 outcome-supervised causal interaction operator：用 train split outcome residual 监督机制权重、群体敏感度、传播边权和区间不确定性更新，再用 validation / holdout split 验证更新是否可迁移。R12 的关键指标是 `update_transfer_gain`，并继续要求 `interval_coverage_delta >= 0`、`false_alarm_rate_delta <= 0`、`runtime_default_allowed=false`。如果只产生 same-case improvement，必须判定为 `r12_update_transfer_blocked_same_case_only`。
 

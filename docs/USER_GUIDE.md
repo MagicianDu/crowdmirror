@@ -129,7 +129,7 @@ DeepSeek 示例参数：
 
 1. 静态人口先验负责规模化底座，例如 segment、权重、历史统计和公开数据 proxy。
 2. LLM 负责语义理解、角色反应和候选更新，例如理解“涨价”“服务规则变更”“政策发布”的情境差异。
-3. 交互传播算子负责把个体或群体反应扩展成大规模 rollout。
+3. R13 路线中，LLM 只生成 segment/persona 层面的行为规则；结构化 rollout 再按 segment 权重扩展到 1 万+ synthetic individuals，不按每个个体调用 LLM。
 4. 指标层负责输出趋势方向、可信数值区间、风险分布、异常群体和机制解释。
 5. outcome 回流后，系统进入校准候选、shadow replay 和 holdout review，而不是直接把更新上线。
 
@@ -153,6 +153,7 @@ DeepSeek 示例参数：
 当前可以说：
 
 - 系统已在公开数据上跑通过 guarded 有效性测试。
+- 系统已具备 guarded 的 1 万+ synthetic individuals 结构化 rollout 证据链：LLM 负责生成 segment/persona 行为规则，结构化 rollout 负责规模化扩展；当前 current artifact 使用 `offline_fixture_llm_shape` 规则源验证链路，不是客户 field validation。
 - 产品 demo 已能展示趋势方向、风险区间、风险排序、异常群体、机制解释和证据边界。
 - 离线校准与自优化候选链路已经具备生成、验证、接受或拒绝门禁。
 - 企业试用的数据回流、intake、revalidation 和 feedback loop 已有可操作流程。

@@ -34,6 +34,9 @@ def test_readme_explains_how_a_non_developer_uses_the_product():
         "DEEPSEEK_API_KEY",
         "LM Studio",
         "真实运行新场景的人群模拟需要 LLM",
+        "LLM 生成 segment/persona 行为规则",
+        "1 万+ synthetic individuals",
+        "r13-llm-rule-structured-rollout-current-001.json",
         "llm-crowd-simulation-architecture.png",
         "docs/USER_GUIDE.md",
         "https://magiciandu.github.io/crowdmirror/demo/promo.html",
@@ -79,7 +82,9 @@ def test_user_guide_provides_step_by_step_trial_workflow_and_boundaries():
         "浏览器端不会读取",
         "真实运行新场景的人群模拟需要 LLM",
         "静态人口先验负责规模化底座",
-        "LLM 负责语义理解、角色反应和候选更新",
+        "LLM 只生成 segment/persona 层面的行为规则",
+        "1 万+ synthetic individuals",
+        "offline_fixture_llm_shape",
     ]
     for phrase in required_phrases:
         assert phrase in text

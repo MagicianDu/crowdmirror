@@ -64,16 +64,23 @@ def test_r6_product_promo_page_explains_public_data_trial_scope():
     assert "promo-evidence-map.png" in html
     assert "llm-crowd-simulation-architecture.png" in html
     assert "真实运行新场景的人群模拟需要 LLM" in html
+    assert "LLM 生成 segment/persona 行为规则" in html
+    assert "1 万+ synthetic individuals" in html
     assert "在线 demo 只读取预计算 artifact，不需要 LLM key" in html
     assert "key 只配置在后端或本地 operator 环境" in html
     assert "打开产品 demo" in html
-    assert "查看证据 JSON" in html
+    assert "查看 1 万人 rollout 证据" in html
 
     assert "../experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json" in js
     assert "../experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json" in js
+    assert "../experiments/results/r13_llm_rule_structured_rollout/r13-llm-rule-structured-rollout-current-001.json" in js
+    assert "../experiments/results/r13_llm_rule_structured_rollout/r13-llm-rule-structured-rollout-current-001.json" in html
     assert 'href="../experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json"' in html
     assert 'href="../experiments/results/r6_product_customer_value_report/r6-product-customer-value-report-current-001.json"' in html
     assert "public_data_effectiveness_claim_allowed" in js
+    assert "promo-r13-scale" in js
+    assert "synthetic_population_10k_met" in js
+    assert "llm_calls_not_per_individual" in js
     assert "tested_effective_on_public_data_guarded" in js
     assert "离线校准与自优化候选" in js
     assert "人工确认后进入试用流程" in js

@@ -26,7 +26,7 @@
           </p>
           <div class="promo-actions">
             <a class="promo-button promo-button-primary" href="./">打开产品 demo</a>
-            <a class="promo-button" href="../experiments/results/r12_product_support_gate/r12-product-support-gate-current-001.json">查看证据 JSON</a>
+            <a class="promo-button" href="../experiments/results/r13_llm_rule_structured_rollout/r13-llm-rule-structured-rollout-current-001.json">查看 1 万人 rollout 证据</a>
           </div>
         </div>
       </section>
@@ -43,6 +43,10 @@
         <div>
           <span>默认上线策略</span>
           <strong id="promo-runtime">加载中</strong>
+        </div>
+        <div>
+          <span>大规模 rollout</span>
+          <strong id="promo-r13-scale">加载中</strong>
         </div>
       </section>
 
@@ -64,7 +68,7 @@
             <ul>
               <li>在线 demo 只读取预计算 artifact，不需要 LLM key。</li>
               <li>真实运行新场景的人群模拟需要 LLM，用于场景理解、角色反应、机制假设和候选更新。</li>
-              <li>大规模 rollout 由静态人口先验、交互传播算子和结构化指标完成，避免每一步都直接调用 LLM。</li>
+              <li>R13 已把 LLM 生成 segment/persona 行为规则和 1 万+ synthetic individuals 结构化 rollout 拆开，避免每个个体都直接调用 LLM。</li>
               <li>key 只配置在后端或本地 operator 环境，不能放进浏览器、README 或 artifact。</li>
             </ul>
           </div>
@@ -124,7 +128,7 @@
             <h3>当前可以说</h3>
             <ul id="promo-allowed-claims">
               <li>公开数据上测试有效，且指标有 artifact 支撑。</li>
-              <li>离线校准候选可以生成、验证和审计。</li>
+              <li>LLM 规则生成和 1 万+ synthetic individuals 结构化 rollout 已有 guarded artifact。</li>
               <li>适合受控企业试用和 design partner 反馈。</li>
             </ul>
           </article>
