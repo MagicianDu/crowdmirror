@@ -110,6 +110,19 @@ export OPENROUTER_API_KEY="替换成你的 OpenRouter key"
 
 注意：公开 demo 不会、也不应该要求用户输入 LLM key。真实客户试用如果需要重新仿真，应由部署方或 operator 在受控后端环境配置 key。
 
+## 架构：LLM 驱动，但不是浏览器里跑 LLM
+
+真实运行新场景的人群模拟需要 LLM。LLM 负责场景语义理解、虚拟人角色反应、机制假设和反馈后的候选更新；静态人口先验和结构化传播算子负责把这些语义信号扩展到更大人群，并产出趋势、区间、风险排序和异常群体。
+
+![CrowdMirror LLM 驱动人群模拟架构](demo/assets/llm-crowd-simulation-architecture.png)
+
+关键边界：
+
+- 在线 demo 只读取预计算 artifact，不需要 LLM key。
+- 运行新场景、重新仿真或做 prompt / feedback update 优化时，需要在后端或本地 operator 环境配置 LLM provider。
+- key 不进入浏览器、不写进 README、不写进 artifact、不提交到 GitHub。
+- 大规模仿真不是每个体每一步都直接调用 LLM，而是“LLM 语义生成 + 静态人口先验 + 交互传播算子 + 可审计指标”的混合架构。
+
 ## 不能承诺
 
 - 不承诺精确单点预测。

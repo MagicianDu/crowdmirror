@@ -62,6 +62,10 @@ def test_r6_product_promo_page_explains_public_data_trial_scope():
     assert "人群反应趋势与风险区间模拟器" in html
     assert "公开数据验证版企业试用" in html
     assert "promo-evidence-map.png" in html
+    assert "llm-crowd-simulation-architecture.png" in html
+    assert "真实运行新场景的人群模拟需要 LLM" in html
+    assert "在线 demo 只读取预计算 artifact，不需要 LLM key" in html
+    assert "key 只配置在后端或本地 operator 环境" in html
     assert "打开产品 demo" in html
     assert "查看证据 JSON" in html
 
@@ -77,6 +81,8 @@ def test_r6_product_promo_page_explains_public_data_trial_scope():
 
     assert ".promo-hero" in css
     assert "promo-evidence-map.png" in css
+    assert ".promo-architecture-figure" in css
+    assert ".promo-architecture-grid" in css
     assert ".promo-capability-grid" in css
     assert ".promo-workflow" in css
 
@@ -105,6 +111,12 @@ def test_github_pages_public_links_and_relative_artifact_paths():
     assert "../experiments/results/" in app_js
     assert "../experiments/results/" in promo_js
     assert "../experiments/results/" in promo_html
+
+
+def test_promo_architecture_image_asset_exists():
+    asset = DEMO / "assets" / "llm-crowd-simulation-architecture.png"
+    assert asset.exists()
+    assert asset.stat().st_size > 200_000
 
 
 def test_r6_product_frontend_is_source_backed_and_fail_closed():

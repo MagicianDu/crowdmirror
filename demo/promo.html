@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>公开数据验证版企业试用 | 人群反应趋势与风险区间模拟器</title>
     <link rel="preload" as="image" href="./assets/promo-evidence-map.png">
+    <link rel="preload" as="image" href="./assets/llm-crowd-simulation-architecture.png">
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body class="promo-page">
@@ -42,6 +43,31 @@
         <div>
           <span>默认上线策略</span>
           <strong id="promo-runtime">加载中</strong>
+        </div>
+      </section>
+
+      <section class="promo-section promo-architecture-section">
+        <div class="promo-section-heading">
+          <p class="eyebrow">Architecture</p>
+          <h2>真实运行新场景的人群模拟需要 LLM，但不是在浏览器里跑 LLM。</h2>
+        </div>
+        <div class="promo-architecture-grid">
+          <figure class="promo-architecture-figure">
+            <img
+              src="./assets/llm-crowd-simulation-architecture.png"
+              alt="CrowdMirror 架构图：在线 demo 读取预计算 artifact；仿真后端或 operator 调用 LLM provider；outcome 回流后进入校准、回放和审核闭环。"
+              loading="eager"
+            >
+          </figure>
+          <div class="promo-architecture-copy">
+            <h3>用户看到的是报告，仿真发生在后端或 operator 环境。</h3>
+            <ul>
+              <li>在线 demo 只读取预计算 artifact，不需要 LLM key。</li>
+              <li>真实运行新场景的人群模拟需要 LLM，用于场景理解、角色反应、机制假设和候选更新。</li>
+              <li>大规模 rollout 由静态人口先验、交互传播算子和结构化指标完成，避免每一步都直接调用 LLM。</li>
+              <li>key 只配置在后端或本地 operator 环境，不能放进浏览器、README 或 artifact。</li>
+            </ul>
+          </div>
         </div>
       </section>
 
